@@ -1,0 +1,11 @@
+D:\Coding\C#\hopper\obj\Debug\netcoreapp3.1\hopper.csprojAssemblyReference.cache
+D:\Coding\C#\hopper\obj\Debug\netcoreapp3.1\hopper.AssemblyInfoInputs.cache
+D:\Coding\C#\hopper\obj\Debug\netcoreapp3.1\hopper.AssemblyInfo.cs
+D:\Coding\C#\hopper\bin\Debug\netcoreapp3.1\hopper.exe
+D:\Coding\C#\hopper\bin\Debug\netcoreapp3.1\hopper.deps.json
+D:\Coding\C#\hopper\bin\Debug\netcoreapp3.1\hopper.runtimeconfig.json
+D:\Coding\C#\hopper\bin\Debug\netcoreapp3.1\hopper.runtimeconfig.dev.json
+D:\Coding\C#\hopper\bin\Debug\netcoreapp3.1\hopper.dll
+D:\Coding\C#\hopper\bin\Debug\netcoreapp3.1\hopper.pdb
+D:\Coding\C#\hopper\obj\Debug\netcoreapp3.1\hopper.dll
+D:\Coding\C#\hopper\obj\Debug\netcoreapp3.1\hopper.pdb
