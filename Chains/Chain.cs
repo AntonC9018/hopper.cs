@@ -16,13 +16,13 @@ namespace Chains
         public bool b_propagate = true;
     }
 
-    public class WeightedEventHandler<Event> where Event : EventBase
+    public class WeightedEventHandler
     {
-        public int m_priority;
-        public System.Action<Event> m_handlerFunction;
+        public int m_priority = (int)PRIORITY_RANKS.MEDIUM;
+        public System.Action<EventBase> m_handlerFunction;
     }
 
-    public class Chain<Event> where Event : EventBase
+    public class Chain
     {
         const int NUM_PRIORITY_RANKS = (int)PRIORITY_RANKS.HIGHEST + 1;
 
@@ -35,28 +35,28 @@ namespace Chains
         // This should not be referenced by anything outside the namespace
         // The reason it's not private is because this has to be referenced 
         // by ChainTemplate, which is kind of logically tied to this class
-        internal MyLinkedList<WeightedEventHandler<Event>> m_handlers { get; }
+        internal MyLinkedList<WeightedEventHandler> m_handlers { get; }
 
-        private List<MyListNode<WeightedEventHandler<Event>>> m_handlersToRemove
-            = new List<MyListNode<WeightedEventHandler<Event>>>();
+        private List<MyListNode<WeightedEventHandler>> m_handlersToRemove
+            = new List<MyListNode<WeightedEventHandler>>();
 
         private bool b_dirty = true;
 
 
         public Chain()
         {
-            m_handlers = new MyLinkedList<WeightedEventHandler<Event>>();
+            m_handlers = new MyLinkedList<WeightedEventHandler>();
         }
 
         // Assumes the given list is sorted        
 
-        public Chain(MyLinkedList<WeightedEventHandler<Event>> list)
+        public Chain(MyLinkedList<WeightedEventHandler> list)
         {
             m_handlers = list;
             b_dirty = false;
         }
 
-        public void Pass(Event ev)
+        public void Pass(EventBase ev)
         {
             CleanUp();
             foreach (var handler in m_handlers)
@@ -68,7 +68,7 @@ namespace Chains
             }
         }
 
-        public void Pass(Event ev, System.Func<Event, bool> stopFunc)
+        public void Pass(EventBase ev, System.Func<EventBase, bool> stopFunc)
         {
             CleanUp();
             foreach (var handler in m_handlers)
@@ -79,9 +79,8 @@ namespace Chains
             }
         }
 
-        public MyListNode<WeightedEventHandler<Event>> AddHandler(
-            WeightedEventHandler<Event> handler
-        )
+        public MyListNode<WeightedEventHandler> AddHandler(
+            WeightedEventHandler handler)
         {
             b_dirty = true;
             m_handlers.AddFront(handler);
@@ -89,21 +88,18 @@ namespace Chains
             return m_handlers.Head;
         }
 
-        public MyListNode<WeightedEventHandler<Event>> AddHandler(
-            System.Action<Event> handlerFunction,
-            int priority = (int)PRIORITY_RANKS.MEDIUM
-        )
+        public MyListNode<WeightedEventHandler> AddHandler(
+            System.Action<EventBase> handlerFunction)
         {
             return AddHandler(
-                new WeightedEventHandler<Event>
+                new WeightedEventHandler
                 {
-                    m_priority = priority,
                     m_handlerFunction = handlerFunction
                 }
             );
         }
 
-        public void RemoveHandler(MyListNode<WeightedEventHandler<Event>> handle)
+        public void RemoveHandler(MyListNode<WeightedEventHandler> handle)
         {
             m_handlersToRemove.Add(handle);
         }
