@@ -58,7 +58,7 @@ namespace Core
                 new ChainDefinition
                 {
                     name = "beAttacked",
-                    handlerFuncs = new List<WeightedEventHandler>
+                    handlers = new WeightedEventHandler[]
                     {
                         new WeightedEventHandler {
                             m_handlerFunction = TestBeAttacked
@@ -68,7 +68,7 @@ namespace Core
                 new ChainDefinition
                 {
                     name = "getAttackableness",
-                    handlerFuncs = new List<WeightedEventHandler>
+                    handlers = new WeightedEventHandler[]
                     {
                         new WeightedEventHandler {
                             m_handlerFunction = TestGetAttackableness

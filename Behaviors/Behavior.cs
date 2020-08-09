@@ -6,7 +6,7 @@ namespace Core
     public struct ChainDefinition
     {
         public string name;
-        public List<WeightedEventHandler> handlerFuncs;
+        public WeightedEventHandler[] handlers;
     }
 
     public class BehaviorFactory
@@ -37,7 +37,7 @@ namespace Core
             foreach (var chainDef in m_chainDefinitions)
             {
                 var template = new ChainTemplate();
-                foreach (var func in chainDef.handlerFuncs)
+                foreach (var func in chainDef.handlers)
                 {
                     template.AddHandler(func);
                 }

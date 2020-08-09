@@ -52,26 +52,31 @@ namespace HelloWorld
             var attackable = (Attackable)testEntity.m_behaviors[Attackable.s_factory.id];
             attackable.Activate();
 
-            var handle = attackable.chain_beAttacked.AddHandler(
-                (EventBase e) => System.Console.WriteLine("hello from the added handler"));
+            var testTinker = new Tinker
+            {
+                m_chainDefinition = new ChainDefinition[]
+                {
+                    new ChainDefinition
+                    {
+                        name = "beAttacked",
+                        handlers = new WeightedEventHandler[]
+                        {
+                            new WeightedEventHandler
+                            {
+                                m_handlerFunction = (EventBase e) => System.Console.WriteLine("hello from the added handler"),
+                                m_priority = 10000
+                            }
+                        }
+                    }
+                }
+            };
+
+            testEntity.AddTinker(testTinker);
             attackable.Activate();
-            attackable.chain_beAttacked.RemoveHandler(handle);
+            testEntity.RemoveTinker(testTinker);
 
             attackable.Activate();
         }
-        // class Test
-        // {
-        //     static IdGenerator s_idGenerator = new IdGenerator();
-        //     public readonly int id = s_idGenerator.GetNextId();
-        // }
-
-        // static void Main(string[] args)
-        // {
-        //     var t1 = new Test();
-        //     var t2 = new Test();
-        //     System.Console.WriteLine(t1.id);
-        //     System.Console.WriteLine(t2.id);
-        // }
 
     }
 

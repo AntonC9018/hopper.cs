@@ -29,7 +29,7 @@ namespace Chains
         const int PRIORITY_STEP = 5;
 
         private int[] m_priorityRanksMap = {
-            9000, 8000, 7000, 6000, 5000
+            5000, 6000, 7000, 8000, 9000
         };
 
         // This should not be referenced by anything outside the namespace
