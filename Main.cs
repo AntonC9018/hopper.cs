@@ -15,6 +15,11 @@ namespace HelloWorld
 
         static void Main(string[] args)
         {
+            StatTest();
+        }
+
+        static void StatTest()
+        {
             StatManager.RegisterStat("hello", 0);
             StatManager.RegisterCategory("cat1", new List<string> { "hello" });
             var stats = new StatManager();
@@ -22,6 +27,21 @@ namespace HelloWorld
             var statCategory = stats.GetStatCategory("cat1");
             System.Console.WriteLine(helloStat);
             System.Console.WriteLine(statCategory["hello"]);
+            var mul = new Multiplier
+            {
+                additiveStats = new Dictionary<string, int>
+                {
+                    { "hello", 2 }
+                },
+                multiplicativeStats = new Dictionary<string, int>
+                {
+                    { "hello", 1 }
+                }
+            };
+            stats.AddMultiplier(mul);
+            helloStat = stats.GetStat("hello");
+            System.Console.WriteLine(helloStat);
+
         }
 
 

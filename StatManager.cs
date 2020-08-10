@@ -1,9 +1,20 @@
 using System.Collections.Generic;
 using Chains;
+using Handle = MyLinkedList.MyListNode<Chains.WeightedEventHandler>;
 
 namespace Core
 {
-    public class Multiplier { }
+    public class Multiplier
+    {
+        static IdGenerator s_idGenerator = new IdGenerator();
+        public readonly int id = s_idGenerator.GetNextId();
+        public Dictionary<string, int> additiveStats
+            = new Dictionary<string, int>();
+        public Dictionary<string, int> multiplicativeStats
+            = new Dictionary<string, int>();
+        public Dictionary<string, WeightedEventHandler> handlers
+            = new Dictionary<string, WeightedEventHandler>();
+    }
 
     public class StatCache
     {
@@ -25,8 +36,6 @@ namespace Core
         public Dictionary<string, StatCache> m_statCaches
             = new Dictionary<string, StatCache>();
 
-        Dictionary<int, Multiplier> m_multipliers;
-
         public StatManager()
         { }
 
@@ -43,7 +52,18 @@ namespace Core
 
         public void RecalculateCache(string name)
         {
-            // TODO: should sum and cache multipliers 
+            // TODO: should sum and cache multipliers
+            foreach (var (id, multiplier) in m_multipliers)
+            {
+                if (multiplier.additiveStats.ContainsKey(name))
+                    m_statCaches[name].additive += multiplier.additiveStats[name];
+
+                if (multiplier.multiplicativeStats.ContainsKey(name))
+                    m_statCaches[name].multiplicative += multiplier.multiplicativeStats[name];
+
+                if (multiplier.handlers.ContainsKey(name))
+                    m_statCaches[name].chain.AddHandler(multiplier.handlers[name]);
+            }
         }
 
         public void LazyLoadStat(string name)
@@ -54,7 +74,6 @@ namespace Core
                 {
                     raw = s_defaultStats[name]
                 };
-                RecalculateCache(name);
             }
         }
 
@@ -139,6 +158,48 @@ namespace Core
         public static void RegisterStatInCategory(string categoryName, string name)
         {
             s_categories[categoryName].Add(name);
+        }
+
+        Dictionary<int, Multiplier> m_multipliers
+            = new Dictionary<int, Multiplier>();
+        Dictionary<int, Dictionary<string, Handle>> m_handles
+            = new Dictionary<int, Dictionary<string, Handle>>();
+
+        public void AddMultiplier(Multiplier multiplier)
+        {
+            foreach (var (name, value) in multiplier.additiveStats)
+            {
+                LazyLoadStat(name);
+                m_statCaches[name].additive += value;
+            }
+            foreach (var (name, value) in multiplier.multiplicativeStats)
+            {
+                LazyLoadStat(name);
+                m_statCaches[name].multiplicative += value;
+            }
+            foreach (var (name, handler) in multiplier.handlers)
+            {
+                LazyLoadStat(name);
+                Handle handle = m_statCaches[name].chain.AddHandler(handler);
+                m_handles[multiplier.id][name] = handle;
+            }
+            m_multipliers[multiplier.id] = multiplier;
+        }
+        public void RemoveMultiplier(Multiplier multiplier)
+        {
+            foreach (var (name, value) in multiplier.additiveStats)
+            {
+                m_statCaches[name].additive -= value;
+            }
+            foreach (var (name, value) in multiplier.multiplicativeStats)
+            {
+                m_statCaches[name].multiplicative -= value;
+            }
+            foreach (var (name, handle) in m_handles[multiplier.id])
+            {
+                m_statCaches[name].chain.RemoveHandler(handle);
+            }
+            m_multipliers.Remove(multiplier.id);
         }
     }
 }
