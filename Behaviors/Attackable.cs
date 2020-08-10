@@ -2,7 +2,6 @@ using Chains;
 using System.Collections.Generic;
 namespace Core
 {
-
     public class Attackable : Behavior
     {
         public Chain chain_beAttacked;
@@ -50,10 +49,10 @@ namespace Core
         }
 
         // I do hate the amount of boilerplate here
-        public static BehaviorFactory s_factory = new BehaviorFactory
-        {
-            t_behaviorType = typeof(Attackable),
-            m_chainDefinitions = new ChainDefinition[]
+        // Since we want to have just one copy of this factory per class
+        // I don't want to bloat my instances with copies of this
+        public static BehaviorFactory s_factory = new BehaviorFactory(
+            typeof(Attackable), new ChainDefinition[]
             {
                 new ChainDefinition
                 {
@@ -76,6 +75,6 @@ namespace Core
                     }
                 }
             }
-        };
+        );
     }
 }

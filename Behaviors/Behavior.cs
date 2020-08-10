@@ -9,13 +9,44 @@ namespace Core
         public WeightedEventHandler[] handlers;
     }
 
+    public struct ChainTemplateDefinition
+    {
+        public string name;
+        public ChainTemplate template
+        {
+            get { return template.Clone(); }
+            set { template = value; }
+        }
+    }
+
     public class BehaviorFactory
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
 
-        public BehaviorFactory()
+        public BehaviorFactory(
+            System.Type behaviorType,
+            ChainDefinition[] chainDefinitions)
         {
+            t_behaviorType = behaviorType;
+            m_chainTemplateDefinitions = new ChainTemplateDefinition[chainDefinitions.Length];
+
+            for (int i = 0; i < chainDefinitions.Length; i++)
+            {
+                var chainDef = chainDefinitions[i];
+                var template = new ChainTemplate();
+
+                foreach (var func in chainDef.handlers)
+                {
+                    template.AddHandler(func);
+                }
+
+                m_chainTemplateDefinitions[i] = new ChainTemplateDefinition
+                {
+                    name = chainDef.name,
+                    template = template
+                };
+            }
             System.Console.WriteLine("Hello from behaviour factory constructor");
         }
         // public BehaviorFactory(System.Type behaviorClass, ChainDefinition[] chainDefinitions)
@@ -30,20 +61,9 @@ namespace Core
         //     m_chainDefinitions = new ChainDefinition[] { chainDefinition };
         // }
 
-        public System.Type t_behaviorType;
-        public ChainDefinition[] m_chainDefinitions;
-        public System.Collections.Generic.IEnumerator<(string, ChainTemplate)> GetEnumerator()
-        {
-            foreach (var chainDef in m_chainDefinitions)
-            {
-                var template = new ChainTemplate();
-                foreach (var func in chainDef.handlers)
-                {
-                    template.AddHandler(func);
-                }
-                yield return (chainDef.name, template);
-            }
-        }
+        System.Type t_behaviorType;
+        public ChainTemplateDefinition[] m_chainTemplateDefinitions;
+
         public Behavior Instantiate(Entity entity)
         {
             return (Behavior)System.Activator.CreateInstance(t_behaviorType, entity);

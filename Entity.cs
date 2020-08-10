@@ -75,9 +75,11 @@ namespace Core
         public void AddBehavior(BehaviorFactory factory)
         {
             behaviors.Add(factory);
-            foreach (var (name, template) in factory)
+            foreach (var chainTemplateDefinition in factory.m_chainTemplateDefinitions)
             {
-                chainTemplates.Add(name, template);
+                chainTemplates.Add(
+                    chainTemplateDefinition.name,
+                    chainTemplateDefinition.template);
             }
         }
 

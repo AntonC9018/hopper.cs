@@ -3,56 +3,68 @@ using Chains;
 
 namespace Core
 {
+    public class Multiplier { }
+
+    public class StatCache
+    {
+        public int raw;
+        public int additive = 0;
+        public int multiplicative = 1;
+        public Chain chain = new Chain();
+    }
+
     public class StatManager
     {
         static Dictionary<string, int> s_defaultStats
             = new Dictionary<string, int>();
 
-        static List<List<string>> s_categories
-            = new List<List<string>>();
+        static Dictionary<string, List<string>> s_categories
+            = new Dictionary<string, List<string>>();
+        public HashSet<string> m_isCategoryLoaded
+            = new HashSet<string>();
+        public Dictionary<string, StatCache> m_statCaches
+            = new Dictionary<string, StatCache>();
 
-        public Dictionary<string, int> m_rawStats;
-        public bool[] isCategoryLoaded = new bool[s_categories.Count];
-        Dictionary<string, int> m_cachedAdditiveStats
-            = new Dictionary<string, int>();
-        Dictionary<string, float> m_cachedMultiplicativeStats
-            = new Dictionary<string, float>();
-        Dictionary<string, Chain> m_statChains
-            = new Dictionary<string, Chain>();
+        Dictionary<int, Multiplier> m_multipliers;
+
+        public StatManager()
+        { }
 
         public StatManager(Dictionary<string, int> rawStats)
         {
-            m_rawStats = rawStats;
+            foreach (var (name, value) in rawStats)
+            {
+                m_statCaches[name] = new StatCache
+                {
+                    raw = value
+                };
+            }
         }
 
-        public int GetRawStatSafe(string name)
+        public void RecalculateCache(string name)
         {
-            if (m_rawStats.ContainsKey(name))
-            {
-                return m_rawStats[name];
-            }
-            m_rawStats[name] = s_defaultStats[name];
-            return m_rawStats[name];
+            // TODO: should sum and cache multipliers 
         }
 
-        public int GetAdditiveStat(string name)
+        public void LazyLoadStat(string name)
         {
-            if (m_cachedAdditiveStats.ContainsKey(name))
+            if (!m_statCaches.ContainsKey(name))
             {
-                return m_cachedAdditiveStats[name];
+                m_statCaches[name] = new StatCache
+                {
+                    raw = s_defaultStats[name]
+                };
+                RecalculateCache(name);
             }
-            m_cachedAdditiveStats[name] = 0;
-            return 0;
         }
 
-        public float GetMultiplicativeStat(string name)
+        public int CalculateStat(string name)
         {
-            if (m_cachedMultiplicativeStats.ContainsKey(name))
-            {
-                return m_cachedMultiplicativeStats[name];
-            }
-            m_cachedMultiplicativeStats[name] = 1;
-            return 1;
+            var cache = m_statCaches[name];
+            var stat = cache.raw;
+            stat += cache.additive;
+            stat = (int)(stat * cache.multiplicative);
+            return stat;
         }
 
         // public int PassThroughStatChain(string name, int currentStat)
@@ -68,21 +80,15 @@ namespace Core
 
         public int GetStatSafe(string name)
         {
-            var stat = GetRawStatSafe(name);
-            stat += GetAdditiveStat(name);
-            stat = (int)(stat * GetMultiplicativeStat(name));
-            // TODO: pass through chain
-            // stat = PassThroughStatChain(name, stat)
-            return stat;
+            LazyLoadStat(name);
+            return CalculateStat(name);
         }
 
         public int GetStat(string name)
         {
-            var stat = m_rawStats[name];
-            stat += m_cachedAdditiveStats[name];
-            stat = (int)(stat * m_cachedMultiplicativeStats[name]);
-            return stat;
+            return CalculateStat(name);
         }
+
         public Dictionary<string, int> GetStatGroup(string[] names)
         {
             Dictionary<string, int> stats = new Dictionary<string, int>(names.Length);
@@ -93,10 +99,10 @@ namespace Core
             return stats;
         }
 
-        public Dictionary<string, int> GetStatCategory(int categoryIndex)
+        public Dictionary<string, int> GetStatCategory(string categoryName)
         {
-            var names = s_categories[categoryIndex];
-            if (isCategoryLoaded[categoryIndex])
+            var names = s_categories[categoryName];
+            if (m_isCategoryLoaded.Contains(categoryName))
             {
                 Dictionary<string, int> stats = new Dictionary<string, int>(names.Count);
                 foreach (var name in names)
@@ -105,38 +111,18 @@ namespace Core
                 }
                 return stats;
             }
-            isCategoryLoaded[categoryIndex] = true;
+            m_isCategoryLoaded.Add(categoryName);
             return GetStatGroup(names.ToArray());
         }
 
-        public void ResetStatsInCategory(int categoryIndex, int value)
+        public void ResetStatsInCategory(string categoryName, int value)
         {
-            foreach (string name in s_categories[categoryIndex])
+            foreach (string name in s_categories[categoryName])
             {
-                m_rawStats[name] = value;
-            }
-        }
-
-        public void ResetStatsInCategory(int categoryIndex, Dictionary<string, int> values)
-        {
-            foreach (string name in s_categories[categoryIndex])
-            {
-                m_rawStats[name] = values[name];
-            }
-        }
-
-        public void ResetStatsInCategory(int categoryIndex, Dictionary<string, int> values, int defaultValue)
-        {
-            foreach (string name in s_categories[categoryIndex])
-            {
-                if (values.ContainsKey(name))
+                m_statCaches[name] = new StatCache
                 {
-                    m_rawStats[name] = values[name];
-                }
-                else
-                {
-                    m_rawStats[name] = defaultValue;
-                }
+                    raw = value
+                };
             }
         }
 
@@ -145,15 +131,14 @@ namespace Core
             s_defaultStats[name] = defaultValue;
         }
 
-        public static int RegisterCategory(List<string> name)
+        public static void RegisterCategory(string categoryName, List<string> names)
         {
-            s_categories.Add(name);
-            return s_categories.Count - 1;
+            s_categories.Add(categoryName, names);
         }
 
-        public static void AddStatToCategory(int categoryIndex, string name)
+        public static void RegisterStatInCategory(string categoryName, string name)
         {
-            s_categories[categoryIndex].Add(name);
+            s_categories[categoryName].Add(name);
         }
     }
 }
