@@ -28,6 +28,7 @@ namespace Core
         public Vector2 m_pos;
         public Vector2 m_orientation = Vector2.UnitX;
         public World m_world;
+        public Layer m_layer;
 
         public Entity()
         { }
