@@ -9,7 +9,7 @@ namespace Core
         public Sequence m_sequence;
         public Entity m_entity;
 
-        public Sequenced(Entity entity)
+        public Sequenced(Entity entity, BehaviorParams pars)
         {
         }
 

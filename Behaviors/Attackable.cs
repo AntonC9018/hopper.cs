@@ -8,7 +8,7 @@ namespace Core
         public Chain chain_getAttackableness;
         public Entity m_entity;
 
-        public Attackable(Entity entity)
+        public Attackable(Entity entity, BehaviorParams pars)
         {
             chain_beAttacked = entity.m_chains["attacked:do"];
             chain_getAttackableness = entity.m_chains["attacked:condition"];

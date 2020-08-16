@@ -12,9 +12,10 @@ namespace Core
         public Entity m_entity;
         public bool b_didAction = false;
         public bool b_doingAction = false;
+        public bool b_didActionSucceed = false;
         public Action m_nextAction;
 
-        public Acting(Entity entity)
+        public Acting(Entity entity, BehaviorParams pars)
         {
             m_entity = entity;
             chain_checkAction = entity.m_chains["action:check"];
@@ -62,6 +63,7 @@ namespace Core
 
             b_doingAction = false;
             b_didAction = false;
+            b_didActionSucceed = ev.success;
 
             return ev.success;
         }
