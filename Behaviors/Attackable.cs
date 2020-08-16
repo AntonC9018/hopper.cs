@@ -10,15 +10,15 @@ namespace Core
 
         public Attackable(Entity entity)
         {
-            m_entity = entity;
-            chain_beAttacked = entity.m_chains["beAttacked"];
-            chain_getAttackableness = entity.m_chains["getAttackableness"];
+            chain_beAttacked = entity.m_chains["attacked:do"];
+            chain_getAttackableness = entity.m_chains["attacked:condition"];
         }
 
-        public void Activate()
+        public override bool Activate(Entity actor, Action action)
         {
             var ev = new EventBase();
             chain_beAttacked.Pass(ev);
+            return ev.propagate;
         }
 
         public enum Attackableness
@@ -56,7 +56,7 @@ namespace Core
             {
                 new ChainDefinition
                 {
-                    name = "beAttacked",
+                    name = "attacked:check",
                     handlers = new WeightedEventHandler[]
                     {
                         new WeightedEventHandler {
@@ -66,7 +66,17 @@ namespace Core
                 },
                 new ChainDefinition
                 {
-                    name = "getAttackableness",
+                    name = "attacked:do",
+                    handlers = new WeightedEventHandler[]
+                    {
+                        new WeightedEventHandler {
+                            m_handlerFunction = TestBeAttacked
+                        }
+                    }
+                },
+                new ChainDefinition
+                {
+                    name = "attacked:condition",
                     handlers = new WeightedEventHandler[]
                     {
                         new WeightedEventHandler {

@@ -22,6 +22,32 @@ namespace Core
         public readonly Dictionary<int, Behavior> m_behaviors =
             new Dictionary<int, Behavior>();
 
+        public Acting beh_Acting
+        {
+            get
+            {
+                int id = Acting.s_factory.id;
+                if (m_behaviors.ContainsKey(id))
+                {
+                    return (Acting)m_behaviors[id];
+                }
+                return null;
+            }
+        }
+
+        public Sequenced beh_Sequenced
+        {
+            get
+            {
+                int id = Sequenced.s_factory.id;
+                if (m_behaviors.ContainsKey(id))
+                {
+                    return (Sequenced)m_behaviors[id];
+                }
+                return null;
+            }
+        }
+
         public readonly Dictionary<int, Tinker> m_tinkers =
             new Dictionary<int, Tinker>();
 
@@ -29,6 +55,13 @@ namespace Core
         public Vector2 m_orientation = Vector2.UnitX;
         public World m_world;
         public Layer m_layer;
+
+        // state
+        // isDead is set to true when the entity needs to be filtered out 
+        // and removed from the internal lists
+        public bool b_isDead = false;
+
+        public bool b_isPlayer = false;
 
         public Entity()
         { }
@@ -51,6 +84,11 @@ namespace Core
             m_world = world;
         }
 
+        public List<Vector2> GetMovs()
+        {
+            return new List<Vector2>();
+        }
+
         ~Entity()
         {
             foreach (var (_, tinker) in m_tinkers)
@@ -70,12 +108,12 @@ namespace Core
         public Dictionary<string, ChainTemplate> chainTemplates =
             new Dictionary<string, ChainTemplate>();
 
-        protected List<BehaviorFactory> behaviors =
-            new List<BehaviorFactory>();
+        protected List<(BehaviorFactory, BehaviorParams)> behaviorSettings =
+            new List<(BehaviorFactory, BehaviorParams)>();
 
-        public void AddBehavior(BehaviorFactory factory)
+        public void AddBehavior(BehaviorFactory factory, BehaviorParams pars = null)
         {
-            behaviors.Add(factory);
+            behaviorSettings.Add((factory, pars));
             foreach (var chainTemplateDefinition in factory.m_chainTemplateDefinitions)
             {
                 chainTemplates.Add(
@@ -98,9 +136,9 @@ namespace Core
                 entity.m_chains[key] = template.Init();
             }
             // Instantiate and save behaviors
-            foreach (var behaviorFactory in behaviors)
+            foreach (var (behaviorFactory, pars) in behaviorSettings)
             {
-                var behavior = behaviorFactory.Instantiate(entity);
+                var behavior = behaviorFactory.Instantiate(entity, pars);
                 entity.m_behaviors[behaviorFactory.id] = behavior;
             }
             return entity;

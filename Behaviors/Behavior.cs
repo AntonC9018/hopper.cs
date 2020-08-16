@@ -64,13 +64,13 @@ namespace Core
         System.Type t_behaviorType;
         public ChainTemplateDefinition[] m_chainTemplateDefinitions;
 
-        public Behavior Instantiate(Entity entity)
+        public Behavior Instantiate(Entity entity, BehaviorParams pars)
         {
-            return (Behavior)System.Activator.CreateInstance(t_behaviorType, entity);
+            return (Behavior)System.Activator.CreateInstance(t_behaviorType, entity, pars);
         }
     }
 
-    public interface Behavior
+    public abstract class Behavior
     {
         // initialized chains
         // added handlers to existing chains (probably in form of behavior modifiers of some sort)
@@ -78,8 +78,12 @@ namespace Core
         // The question is whether I want to differentiate between the basic behaviors that simply add chains and handlers and e.g. the stats behavior
         // I probably don't and have them all inherit from this
         // abstract public Behavior(Entity entity) { }
-        public void Activate();
+        public virtual bool Activate(Entity actor, Action action) { return true; }
 
+    }
+
+    public abstract class BehaviorParams
+    {
     }
 
 

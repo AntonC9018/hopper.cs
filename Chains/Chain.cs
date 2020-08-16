@@ -13,7 +13,7 @@ namespace Chains
     }
     public class EventBase
     {
-        public bool b_propagate = true;
+        public bool propagate = true;
     }
 
     public class WeightedEventHandler
@@ -61,7 +61,7 @@ namespace Chains
             CleanUp();
             foreach (var handler in m_handlers)
             {
-                if (!ev.b_propagate)
+                if (!ev.propagate)
                     return;
                 handler.m_handlerFunction(ev);
 

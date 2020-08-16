@@ -3,38 +3,6 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public enum Layer
-    {
-        FLOOR = 0,
-        MISC = 1,
-        TRAP = 2,
-        GOLD = 3,
-        WALL = 4,
-        PROJECTILE = 5,
-        DROPPED = 6,
-        REAL = 7
-    }
-    public class Cell
-    {
-        public Vector2 pos;
-        public List<Entity> m_entities = new List<Entity>();
-
-        public Entity GetFirstEntity()
-        {
-            return m_entities[0];
-        }
-        public Entity GetEntityFromLayer(Layer layer)
-        {
-            foreach (var e in m_entities)
-            {
-                if (e.m_layer == layer)
-                {
-                    return e;
-                }
-            }
-            return null;
-        }
-    }
     public class GridManager
     {
         public Cell[,] m_grid;
@@ -67,16 +35,35 @@ namespace Core
 
         public void Reset(Entity entity)
         {
-            m_grid[(int)entity.m_pos.X, (int)entity.m_pos.Y]
-                .m_entities
-                .Add(entity);
+            var cell = m_grid[(int)entity.m_pos.X, (int)entity.m_pos.Y];
+            cell.m_entities.Add(entity);
+            cell.FireEnterEvent(entity);
+        }
+
+        public void Reset(Entity entity, Vector2 pos)
+        {
+            var cell = m_grid[(int)pos.X, (int)pos.Y];
+            cell.m_entities.Add(entity);
+            cell.FireEnterEvent(entity);
         }
 
         public void Remove(Entity entity)
         {
-            m_grid[(int)entity.m_pos.X, (int)entity.m_pos.Y]
-                .m_entities
-                .Remove(entity);
+            var cell = m_grid[(int)entity.m_pos.X, (int)entity.m_pos.Y];
+            cell.m_entities.Remove(entity);
+            cell.FireLeaveEvent(entity);
+        }
+
+        public void Remove(Entity entity, Vector2 pos)
+        {
+            var cell = m_grid[(int)pos.X, (int)pos.Y];
+            cell.m_entities.Remove(entity);
+            cell.FireLeaveEvent(entity);
+        }
+
+        public Cell GetCellAt(Vector2 pos)
+        {
+            return m_grid[(int)pos.X, (int)pos.Y];
         }
     }
 }
