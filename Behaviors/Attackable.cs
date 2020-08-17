@@ -66,8 +66,13 @@ namespace Core
                 action = action,
                 attack = ((Params)pars).attack
             };
+            chain_checkAttacked.Pass(ev);
+
+            if (!ev.propagate)
+                return false;
+
             chain_beAttacked.Pass(ev);
-            return ev.propagate;
+            return true;
         }
 
         static void SetResistance(EventBase e)
