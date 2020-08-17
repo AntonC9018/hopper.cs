@@ -5,29 +5,29 @@ namespace Core
 {
     public class Acting : Behavior
     {
-        public class Params : BehaviorParams
+        public class Config : BehaviorConfig
         {
             public System.Func<Entity, Action> calculateAction;
         }
-        public Chain chain_checkAction;
-        public Chain chain_doAction;
-        public Chain chain_failAction;
-        public Chain chain_succeedAction;
-        public Entity m_entity;
+        Chain chain_checkAction;
+        Chain chain_doAction;
+        Chain chain_failAction;
+        Chain chain_succeedAction;
+        Entity m_entity;
         public bool b_didAction = false;
         public bool b_doingAction = false;
         public bool b_didActionSucceed = false;
         public Action m_nextAction;
-        public System.Func<Entity, Action> param_calculateAction;
+        System.Func<Entity, Action> conf_calculateAction;
 
-        public Acting(Entity entity, BehaviorParams pars)
+        public Acting(Entity entity, BehaviorConfig pars)
         {
             m_entity = entity;
             chain_checkAction = entity.m_chains["action:check"];
             chain_doAction = entity.m_chains["action:do"];
             chain_failAction = entity.m_chains["action:fail"];
             chain_succeedAction = entity.m_chains["action:succeed"];
-            param_calculateAction = ((Params)pars).calculateAction;
+            conf_calculateAction = ((Config)pars).calculateAction;
         }
 
         public class ActingEvent : CommonEvent
@@ -38,7 +38,7 @@ namespace Core
         public override bool Activate(
             Entity actor,
             Action action,
-            BehaviorActivationParams pars)
+            ActivationParams pars)
         {
             throw new System.Exception("Acting decorator cannot be activated using the usual parameters: Entity actor, Action action, BehaviorActivationParams pars.");
         }
@@ -84,8 +84,8 @@ namespace Core
 
         public void CalculateNextAction()
         {
-            if (param_calculateAction != null)
-                m_nextAction = param_calculateAction(m_entity);
+            if (conf_calculateAction != null)
+                m_nextAction = conf_calculateAction(m_entity);
             else
             {
                 var sequenced = m_entity.beh_Sequenced;

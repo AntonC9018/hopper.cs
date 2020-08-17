@@ -18,8 +18,12 @@ namespace Chains
 
     public class WeightedEventHandler
     {
-        public int m_priority = (int)PRIORITY_RANKS.MEDIUM;
-        public System.Action<EventBase> m_handlerFunction;
+        public int priority = (int)PRIORITY_RANKS.MEDIUM;
+        public System.Action<EventBase> handlerFunction;
+
+        public WeightedEventHandler()
+        {
+        }
     }
 
     public class Chain
@@ -63,7 +67,7 @@ namespace Chains
             {
                 if (!ev.propagate)
                     return;
-                handler.m_handlerFunction(ev);
+                handler.handlerFunction(ev);
 
             }
         }
@@ -75,7 +79,7 @@ namespace Chains
             {
                 if (stopFunc(ev))
                     return;
-                handler.m_handlerFunction(ev);
+                handler.handlerFunction(ev);
             }
         }
 
@@ -84,7 +88,7 @@ namespace Chains
         {
             b_dirty = true;
             m_handlers.AddFront(handler);
-            handler.m_priority = MapPriority(handler.m_priority);
+            handler.priority = MapPriority(handler.priority);
             return m_handlers.Head;
         }
 
@@ -94,7 +98,7 @@ namespace Chains
             return AddHandler(
                 new WeightedEventHandler
                 {
-                    m_handlerFunction = handlerFunction
+                    handlerFunction = handlerFunction
                 }
             );
         }
@@ -134,7 +138,7 @@ namespace Chains
 
         private void SortHandlers()
         {
-            m_handlers.Sort((a, b) => a.m_priority - b.m_priority);
+            m_handlers.Sort((a, b) => a.priority - b.priority);
             b_dirty = false;
         }
     }

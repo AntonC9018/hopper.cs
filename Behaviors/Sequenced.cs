@@ -6,7 +6,7 @@ namespace Core
 {
     public class Sequenced : Behavior
     {
-        public class Params : BehaviorParams
+        public class Params : BehaviorConfig
         {
             public StepData[] stepData;
 
@@ -31,9 +31,9 @@ namespace Core
             }
         }
 
-        public Sequenced(Entity entity, BehaviorParams _pars)
+        public Sequenced(Entity entity, BehaviorConfig _conf)
         {
-            var pars = (Params)_pars;
+            var pars = (Params)_conf;
             m_sequence = new Sequence
             {
                 stepData = pars.stepData,
@@ -46,12 +46,8 @@ namespace Core
             return m_sequence.GetMovs();
         }
 
-        public static BehaviorFactory s_factory = new BehaviorFactory(
-            typeof(Sequenced), new ChainDefinition[] { }
-        );
-
-
-
+        public static BehaviorFactory s_factory =
+            new BehaviorFactory(typeof(Sequenced));
 
     }
 }

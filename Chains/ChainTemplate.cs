@@ -31,7 +31,7 @@ namespace Chains
         {
             AddHandler(new WeightedEventHandler
             {
-                m_handlerFunction = handlerFunc
+                handlerFunction = handlerFunc
             });
         }
 

@@ -28,24 +28,53 @@ namespace Core
             {
                 int id = Acting.s_factory.id;
                 if (m_behaviors.ContainsKey(id))
-                {
                     return (Acting)m_behaviors[id];
-                }
                 return null;
             }
         }
-
         public Sequenced beh_Sequenced
         {
             get
             {
                 int id = Sequenced.s_factory.id;
                 if (m_behaviors.ContainsKey(id))
-                {
                     return (Sequenced)m_behaviors[id];
-                }
                 return null;
             }
+        }
+        public Attackable beh_Attackable
+        {
+            get
+            {
+                int id = Attackable.s_factory.id;
+                if (m_behaviors.ContainsKey(id))
+                    return (Attackable)m_behaviors[id];
+                return null;
+            }
+
+        }
+        public Attacking beh_Attacking
+        {
+            get
+            {
+                int id = Attacking.s_factory.id;
+                if (m_behaviors.ContainsKey(id))
+                    return (Attacking)m_behaviors[id];
+                return null;
+            }
+
+        }
+
+        public Pushable beh_Pushable
+        {
+            get
+            {
+                int id = Pushable.s_factory.id;
+                if (m_behaviors.ContainsKey(id))
+                    return (Pushable)m_behaviors[id];
+                return null;
+            }
+
         }
 
         public readonly Dictionary<int, Tinker> m_tinkers =
@@ -54,6 +83,12 @@ namespace Core
         public Vector2 m_pos;
         public Vector2 m_orientation = Vector2.UnitX;
         public World m_world;
+
+        internal List<Target> GetTargets(Action action)
+        {
+            return new List<Target>();
+        }
+
         public Layer m_layer;
 
         // state
@@ -126,12 +161,12 @@ namespace Core
         public Dictionary<string, ChainTemplate> chainTemplates =
             new Dictionary<string, ChainTemplate>();
 
-        protected List<(BehaviorFactory, BehaviorParams)> behaviorSettings =
-            new List<(BehaviorFactory, BehaviorParams)>();
+        protected List<(BehaviorFactory, BehaviorConfig)> behaviorSettings =
+            new List<(BehaviorFactory, BehaviorConfig)>();
 
-        public void AddBehavior(BehaviorFactory factory, BehaviorParams pars = null)
+        public void AddBehavior(BehaviorFactory factory, BehaviorConfig conf = null)
         {
-            behaviorSettings.Add((factory, pars));
+            behaviorSettings.Add((factory, conf));
             foreach (var chainTemplateDefinition in factory.m_chainTemplateDefinitions)
             {
                 chainTemplates.Add(
@@ -154,9 +189,9 @@ namespace Core
                 entity.m_chains[key] = template.Init();
             }
             // Instantiate and save behaviors
-            foreach (var (behaviorFactory, pars) in behaviorSettings)
+            foreach (var (behaviorFactory, conf) in behaviorSettings)
             {
-                var behavior = behaviorFactory.Instantiate(entity, pars);
+                var behavior = behaviorFactory.Instantiate(entity, conf);
                 entity.m_behaviors[behaviorFactory.id] = behavior;
             }
             return entity;

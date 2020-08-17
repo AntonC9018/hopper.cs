@@ -15,7 +15,27 @@ namespace HelloWorld
 
         static void Main(string[] args)
         {
-            StatTest();
+            ClassTest();
+        }
+
+        abstract class A
+        {
+            public virtual void a(int i = 0) { System.Console.WriteLine($"Called A's a({i})"); }
+        }
+
+        class B : A
+        {
+            public override void a(int i) { System.Console.WriteLine($"Called B's a({i})"); }
+        }
+
+        static void ClassTest()
+        {
+            A b = new B();
+            b.a();
+            b.a(1);
+            B bee = (B)b;
+            bee.a(1);
+            bee.a(1);
         }
 
         static void StatTest()
@@ -95,8 +115,8 @@ namespace HelloWorld
                         {
                             new WeightedEventHandler
                             {
-                                m_handlerFunction = (EventBase e) => System.Console.WriteLine("hello from the added handler"),
-                                m_priority = 10000
+                                handlerFunction = (EventBase e) => System.Console.WriteLine("hello from the added handler"),
+                                priority = 10000
                             }
                         }
                     }

@@ -23,14 +23,30 @@ namespace Core
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
+        System.Type t_behaviorType;
+        public ChainTemplateDefinition[] m_chainTemplateDefinitions;
 
-        public BehaviorFactory(
-            System.Type behaviorType,
-            ChainDefinition[] chainDefinitions)
+        public BehaviorFactory(System.Type behaviorType, ChainDefinition[] chainDefinitions)
         {
             t_behaviorType = behaviorType;
-            m_chainTemplateDefinitions = new ChainTemplateDefinition[chainDefinitions.Length];
+            SetupTemplates(chainDefinitions);
+        }
 
+        public BehaviorFactory(System.Type behaviorClass, ChainDefinition chainDefinition)
+        {
+            t_behaviorType = behaviorClass;
+            SetupTemplates(new ChainDefinition[] { chainDefinition });
+        }
+
+        public BehaviorFactory(System.Type behaviorClass)
+        {
+            t_behaviorType = behaviorClass;
+            m_chainTemplateDefinitions = new ChainTemplateDefinition[0];
+        }
+
+        void SetupTemplates(ChainDefinition[] chainDefinitions)
+        {
+            m_chainTemplateDefinitions = new ChainTemplateDefinition[chainDefinitions.Length];
             for (int i = 0; i < chainDefinitions.Length; i++)
             {
                 var chainDef = chainDefinitions[i];
@@ -47,26 +63,11 @@ namespace Core
                     template = template
                 };
             }
-            System.Console.WriteLine("Hello from behaviour factory constructor");
         }
-        // public BehaviorFactory(System.Type behaviorClass, ChainDefinition[] chainDefinitions)
-        // {
-        //     t_behaviorType = behaviorClass;
-        //     m_chainDefinitions = chainDefinitions;
-        // }
 
-        // public BehaviorFactory(System.Type behaviorClass, ChainDefinition chainDefinition)
-        // {
-        //     t_behaviorType = behaviorClass;
-        //     m_chainDefinitions = new ChainDefinition[] { chainDefinition };
-        // }
-
-        System.Type t_behaviorType;
-        public ChainTemplateDefinition[] m_chainTemplateDefinitions;
-
-        public Behavior Instantiate(Entity entity, BehaviorParams pars)
+        public Behavior Instantiate(Entity entity, BehaviorConfig conf)
         {
-            return (Behavior)System.Activator.CreateInstance(t_behaviorType, entity, pars);
+            return (Behavior)System.Activator.CreateInstance(t_behaviorType, entity, conf);
         }
     }
 
@@ -81,22 +82,19 @@ namespace Core
         public virtual bool Activate(
             Entity actor,
             Action action,
-            BehaviorActivationParams pars)
+            ActivationParams conf = null)
         {
             return true;
         }
 
     }
 
-    public abstract class BehaviorParams
+    public abstract class BehaviorConfig
     {
     }
 
-    public abstract class BehaviorActivationParams
+    public abstract class ActivationParams
     {
     }
-
-
-
 
 }
