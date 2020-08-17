@@ -14,9 +14,16 @@ namespace Core
             chain_getAttackableness = entity.m_chains["attacked:condition"];
         }
 
-        public override bool Activate(Entity actor, Action action)
+        public override bool Activate(
+            Entity actor,
+            Action action,
+            BehaviorActivationParams pars)
         {
-            var ev = new EventBase();
+            var ev = new CommonEvent
+            {
+                actor = actor,
+                action = action
+            };
             chain_beAttacked.Pass(ev);
             return ev.propagate;
         }

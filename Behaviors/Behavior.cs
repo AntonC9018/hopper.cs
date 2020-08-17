@@ -78,11 +78,21 @@ namespace Core
         // The question is whether I want to differentiate between the basic behaviors that simply add chains and handlers and e.g. the stats behavior
         // I probably don't and have them all inherit from this
         // abstract public Behavior(Entity entity) { }
-        public virtual bool Activate(Entity actor, Action action) { return true; }
+        public virtual bool Activate(
+            Entity actor,
+            Action action,
+            BehaviorActivationParams pars)
+        {
+            return true;
+        }
 
     }
 
     public abstract class BehaviorParams
+    {
+    }
+
+    public abstract class BehaviorActivationParams
     {
     }
 

@@ -5,6 +5,10 @@ namespace Core
 {
     public class Acting : Behavior
     {
+        public class Params : BehaviorParams
+        {
+            public System.Func<Entity, Action> calculateAction;
+        }
         public Chain chain_checkAction;
         public Chain chain_doAction;
         public Chain chain_failAction;
@@ -14,6 +18,7 @@ namespace Core
         public bool b_doingAction = false;
         public bool b_didActionSucceed = false;
         public Action m_nextAction;
+        public System.Func<Entity, Action> param_calculateAction;
 
         public Acting(Entity entity, BehaviorParams pars)
         {
@@ -22,6 +27,7 @@ namespace Core
             chain_doAction = entity.m_chains["action:do"];
             chain_failAction = entity.m_chains["action:fail"];
             chain_succeedAction = entity.m_chains["action:succeed"];
+            param_calculateAction = ((Params)pars).calculateAction;
         }
 
         public class ActingEvent : CommonEvent
@@ -29,12 +35,20 @@ namespace Core
             public bool success = false;
         }
 
-        public override bool Activate(Entity actor, Action action)
+        public override bool Activate(
+            Entity actor,
+            Action action,
+            BehaviorActivationParams pars)
+        {
+            throw new System.Exception("Acting decorator cannot be activated using the usual parameters: Entity actor, Action action, BehaviorActivationParams pars.");
+        }
+
+        public bool Activate()
         {
             var ev = new ActingEvent
             {
                 actor = m_entity,
-                action = action
+                action = m_nextAction
             };
 
             if (m_nextAction == null)
@@ -66,6 +80,17 @@ namespace Core
             b_didActionSucceed = ev.success;
 
             return ev.success;
+        }
+
+        public void CalculateNextAction()
+        {
+            if (param_calculateAction != null)
+                m_nextAction = param_calculateAction(m_entity);
+            else
+            {
+                var sequenced = m_entity.beh_Sequenced;
+                m_nextAction = sequenced.CurrentAction;
+            }
         }
 
         // I do hate the amount of boilerplate here

@@ -19,7 +19,8 @@ namespace Core
             if (acting == null || acting.b_didAction || acting.b_doingAction)
                 return false;
 
-            acting.Activate(thing, acting.m_nextAction);
+            acting.Activate();
+
             return true;
         }
 

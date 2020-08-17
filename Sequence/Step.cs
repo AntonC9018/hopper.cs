@@ -74,5 +74,10 @@ namespace Core
             if (exitFunction != null)
                 exitFunction(e);
         }
+
+        public List<Vector2> GetMovs(Entity e)
+        {
+            return movs(e, action);
+        }
     }
 }

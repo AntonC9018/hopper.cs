@@ -6,20 +6,52 @@ namespace Core
 {
     public class Sequenced : Behavior
     {
-        public Sequence m_sequence;
-        public Entity m_entity;
-
-        public Sequenced(Entity entity, BehaviorParams pars)
+        public class Params : BehaviorParams
         {
+            public StepData[] stepData;
+
+            public Params(StepData[] _stepData)
+            {
+                if (_stepData == null)
+                {
+                    throw new System.Exception("Step Data must be specified in order to use Sequenced behavior");
+                }
+                stepData = _stepData;
+            }
+        }
+
+        Sequence m_sequence;
+        Entity m_entity;
+
+        public Action CurrentAction
+        {
+            get
+            {
+                return m_sequence.CurrentAction;
+            }
+        }
+
+        public Sequenced(Entity entity, BehaviorParams _pars)
+        {
+            var pars = (Params)_pars;
+            m_sequence = new Sequence
+            {
+                stepData = pars.stepData,
+                actor = entity
+            };
+        }
+
+        public List<Vector2> GetMovs()
+        {
+            return m_sequence.GetMovs();
         }
 
         public static BehaviorFactory s_factory = new BehaviorFactory(
             typeof(Sequenced), new ChainDefinition[] { }
         );
 
-        public List<Vector2> GetMovs()
-        {
-            return new List<Vector2>();
-        }
+
+
+
     }
 }

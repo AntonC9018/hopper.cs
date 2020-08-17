@@ -97,6 +97,24 @@ namespace Core
             }
         }
 
+
+        public Entity GetClosestPlayer()
+        {
+            float minDist = 0;
+            Entity closestPlayer = null;
+            foreach (var player in m_world.m_state.m_players)
+            {
+                float curDist = (m_pos - player.m_pos).LengthSquared();
+
+                if (closestPlayer == null || curDist < minDist)
+                {
+                    minDist = curDist;
+                    closestPlayer = player;
+                }
+            }
+            return closestPlayer;
+        }
+
     }
 
     public class EntityFactory

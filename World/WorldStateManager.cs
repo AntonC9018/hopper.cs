@@ -4,11 +4,11 @@ namespace Core
 {
     public class WorldStateManager
     {
-        public List<Entity>[] entities
+        List<Entity>[] entities
             = new List<Entity>[System.Enum.GetNames(typeof(Layer)).Length];
 
         // note that players never get into the lists from above
-        public List<Entity> players = new List<Entity>();
+        public List<Entity> m_players = new List<Entity>();
 
         public int m_phase = 0;
 
@@ -22,8 +22,8 @@ namespace Core
 
         public int AddPlayer(Entity player)
         {
-            players.Add(player);
-            return players.Count - 1;
+            m_players.Add(player);
+            return m_players.Count - 1;
         }
 
         void Activate(Entity entity)
@@ -32,13 +32,14 @@ namespace Core
             var acting = entity.beh_Acting;
             if (acting != null && !acting.b_didAction)
             {
-                acting.Activate(entity, acting.m_nextAction);
+                // I've overloaded the Activate method here so that it is not as clunky
+                acting.Activate();
             }
         }
 
         public void Loop()
         {
-            foreach (var player in players)
+            foreach (var player in m_players)
             {
                 Activate(player);
             }
@@ -52,6 +53,8 @@ namespace Core
                 }
             }
         }
+
+
 
     }
 }

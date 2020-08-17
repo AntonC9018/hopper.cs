@@ -5,7 +5,8 @@ namespace Core
 {
     public class Sequence
     {
-        public StepData[] steps;
+        public StepData[] stepData;
+        public Entity actor;
 
         int currentStepIndex = 0;
         int currentRepeatCount = 0;
@@ -13,33 +14,33 @@ namespace Core
         {
             get
             {
-                return steps[currentStepIndex].action.Copy();
+                return stepData[currentStepIndex].action.Copy();
             }
         }
 
-        public void TickAction(Entity entity)
+        public void TickAction()
         {
             currentRepeatCount++;
-            StepData currentStep = steps[currentStepIndex];
+            StepData currentStep = stepData[currentStepIndex];
 
             if (!currentStep.IsRepeatLimitMet(currentRepeatCount))
                 return;
 
-            int relativeIndex = currentStep.CheckSuccessAndGetRelativeIndex(entity);
+            int relativeIndex = currentStep.CheckSuccessAndGetRelativeIndex(actor);
 
             if (relativeIndex != 0)
             {
-                currentStepIndex += relativeIndex + steps.Length;
-                currentStepIndex %= steps.Length;
+                currentStepIndex += relativeIndex + stepData.Length;
+                currentStepIndex %= stepData.Length;
                 currentRepeatCount = 0;
-                currentStep.Exit(entity);
-                steps[currentStepIndex].Enter(entity);
+                currentStep.Exit(actor);
+                stepData[currentStepIndex].Enter(actor);
             }
         }
 
-        public List<Vector2> GetMovs(Entity e, Action a)
+        public List<Vector2> GetMovs()
         {
-            return steps[currentStepIndex].movs(e, a);
+            return stepData[currentStepIndex].GetMovs(actor);
         }
     }
 }

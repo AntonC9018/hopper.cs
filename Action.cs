@@ -12,7 +12,7 @@ namespace Core
         }
         public Action(Behavior beh)
         {
-            Try = (Entity e, Action a) => beh.Activate(e, a);
+            Try = (Entity e, Action a) => beh.Activate(e, a, null);
         }
         public Action(System.Func<Entity, Action, bool> func)
         {

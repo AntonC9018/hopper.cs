@@ -82,7 +82,7 @@ namespace HelloWorld
             var testEntity = (TestEntity)testEntityFactory.Instantiate();
 
             var attackable = (Attackable)testEntity.m_behaviors[Attackable.s_factory.id];
-            attackable.Activate(testEntity, null);
+            attackable.Activate(testEntity, null, null);
 
             var testTinker = new Tinker
             {
@@ -104,10 +104,10 @@ namespace HelloWorld
             };
 
             testEntity.AddTinker(testTinker);
-            attackable.Activate(testEntity, null);
+            attackable.Activate(testEntity, null, null);
             testEntity.RemoveTinker(testTinker);
 
-            attackable.Activate(testEntity, null);
+            attackable.Activate(testEntity, null, null);
         }
 
     }
