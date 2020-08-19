@@ -4,13 +4,13 @@ using System.Numerics;
 
 namespace Core
 {
-    public class Sequenced : Behavior
+    public class Sequential : Behavior
     {
-        public class Params : BehaviorConfig
+        public class Config : BehaviorConfig
         {
             public StepData[] stepData;
 
-            public Params(StepData[] _stepData)
+            public Config(StepData[] _stepData)
             {
                 if (_stepData == null)
                 {
@@ -21,23 +21,21 @@ namespace Core
         }
 
         Sequence m_sequence;
-        Entity m_entity;
 
         public Action CurrentAction
-        {
-            get
-            {
-                return m_sequence.CurrentAction;
-            }
-        }
+        { get { return m_sequence.CurrentAction; } }
 
-        public Sequenced(Entity entity, BehaviorConfig _conf)
+        public Sequential(Entity entity, BehaviorConfig _conf)
         {
-            var pars = (Params)_conf;
+            var conf = (Config)_conf;
             m_sequence = new Sequence
             {
-                stepData = pars.stepData,
+                stepData = conf.stepData,
                 actor = entity
+            };
+            entity.EndOfLoopEvent += () =>
+            {
+                m_sequence.TickAction();
             };
         }
 
@@ -47,7 +45,7 @@ namespace Core
         }
 
         public static BehaviorFactory s_factory =
-            new BehaviorFactory(typeof(Sequenced));
+            new BehaviorFactory(typeof(Sequential));
 
     }
 }

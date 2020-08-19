@@ -12,7 +12,8 @@ namespace Core
     public struct ChainTemplateDefinition
     {
         public string name;
-        public ChainTemplate template
+        ChainTemplate template;
+        public ChainTemplate Template
         {
             get { return template.Clone(); }
             set { template = value; }
@@ -60,7 +61,7 @@ namespace Core
                 m_chainTemplateDefinitions[i] = new ChainTemplateDefinition
                 {
                     name = chainDef.name,
-                    template = template
+                    Template = template
                 };
             }
         }

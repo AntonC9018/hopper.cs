@@ -10,6 +10,12 @@ namespace Core
         // note that players never get into the lists from above
         public List<Entity> m_players = new List<Entity>();
 
+        // Subscribe to this event only from the entity
+        // This easily prevents memory leaks. How?
+        // The handlers added to this event are strong pointers.
+        // This event is replicated on the entity, to control this.
+        public event System.Action EndOfLoopEvent;
+
         public int m_phase = 0;
 
         public WorldStateManager()
@@ -18,6 +24,11 @@ namespace Core
             {
                 entities[i] = new List<Entity>();
             }
+        }
+
+        public void AddEntity(Entity entity)
+        {
+            entities[entity.m_layer.ToIndex()].Add(entity);
         }
 
         public int AddPlayer(Entity player)
@@ -32,6 +43,7 @@ namespace Core
             var acting = entity.beh_Acting;
             if (acting != null && !acting.b_didAction)
             {
+                System.Console.WriteLine("Activating entity");
                 // I've overloaded the Activate method here so that it is not as clunky
                 acting.Activate();
             }
@@ -52,9 +64,9 @@ namespace Core
                     Activate(e);
                 }
             }
+
+            EndOfLoopEvent?.Invoke();
         }
-
-
 
     }
 }

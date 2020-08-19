@@ -18,7 +18,7 @@ namespace Core
                 {
                     m_grid[i, j] = new Cell
                     {
-                        pos = new Vector2(i, j)
+                        m_pos = new Vector2(i, j)
                     };
                 }
             }

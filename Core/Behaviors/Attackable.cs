@@ -53,6 +53,7 @@ namespace Core
             chain_checkAttacked = entity.m_chains["attacked:check"];
             chain_beAttacked = entity.m_chains["attacked:do"];
             chain_getAttackableness = entity.m_chains["attacked:condition"];
+            m_entity = entity;
         }
 
         public override bool Activate(

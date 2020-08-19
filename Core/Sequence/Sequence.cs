@@ -14,7 +14,7 @@ namespace Core
         {
             get
             {
-                return stepData[currentStepIndex].action.Copy();
+                return stepData[currentStepIndex].action?.Copy();
             }
         }
 

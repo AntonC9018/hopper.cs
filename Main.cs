@@ -1,139 +1,103 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using Chains;
 using Core;
 
 // Hello World! program
-namespace HelloWorld
+namespace Hopper
 {
     class Hello
     {
-        static void Print(string str)
-        {
-            System.Console.WriteLine(str);
-        }
 
         static void Main(string[] args)
         {
-            ClassTest();
-        }
-
-        abstract class A
-        {
-            public virtual void a(int i = 0) { System.Console.WriteLine($"Called A's a({i})"); }
-        }
-
-        class B : A
-        {
-            public override void a(int i) { System.Console.WriteLine($"Called B's a({i})"); }
-        }
-
-        static void ClassTest()
-        {
-            A b = new B();
-            b.a();
-            b.a(1);
-            B bee = (B)b;
-            bee.a(1);
-            bee.a(1);
-        }
-
-        static void StatTest()
-        {
-            StatManager.RegisterStat("hello", 0);
-            StatManager.RegisterCategory("cat1", new List<string> { "hello" });
-            var stats = new StatManager();
-            int helloStat = stats.GetStatSafe("hello");
-            var statCategory = stats.GetStatCategory("cat1");
-            System.Console.WriteLine(helloStat);
-            System.Console.WriteLine(statCategory["hello"]);
-            var mul = new Multiplier
+            System.Console.WriteLine("Hello");
+            World world = new World
             {
-                additiveStats = new Dictionary<string, int>
-                {
-                    { "hello", 2 }
-                },
-                multiplicativeStats = new Dictionary<string, int>
-                {
-                    { "hello", 1 }
-                }
+                m_grid = new GridManager(5, 5),
+                m_state = new WorldStateManager()
             };
-            stats.AddMultiplier(mul);
-            helloStat = stats.GetStat("hello");
-            System.Console.WriteLine(helloStat);
+            System.Console.WriteLine("Created world");
 
-        }
+            var playerFactory = new EntityFactory(typeof(Entity));
+            playerFactory.AddBehavior(Attackable.s_factory);
+            System.Console.WriteLine("Attackable");
+            playerFactory.AddBehavior(Attacking.s_factory);
+            playerFactory.AddBehavior(Displaceable.s_factory);
+            playerFactory.AddBehavior(Moving.s_factory);
+            playerFactory.AddBehavior(Pushable.s_factory);
+            System.Console.WriteLine("Set up playerFactory");
 
-
-        static void ChainTest(string[] args)
-        {
-            var chain = new Chain();
-
-            System.Action<EventBase> func1 = (EventBase ev) => { Print(((TestEvent)ev).test); };
-            System.Action<EventBase> func2 = (EventBase ev) => Print("second function");
-
-
-            var handle2 = chain.AddHandler(func2);
-            var handle = chain.AddHandler(func1);
-
-
-            var ev = new TestEvent();
-
-            chain.Pass(ev);
-            chain.RemoveHandler(handle2);
-            chain.Pass(ev);
-        }
-
-        public class TestEntity : Entity
-        {
-        }
-
-        static void TinkerTest()
-        {
-            System.Console.WriteLine("Main started");
-
-            var testEntityFactory = new EntityFactory { entityClass = typeof(TestEntity) };
-
-            testEntityFactory.AddBehavior(Attackable.s_factory);
-
-            var template = testEntityFactory.chainTemplates["beAttacked"];
-            template.AddHandler((EventBase e) => System.Console.WriteLine("Hello from template"));
-
-            var testEntity = (TestEntity)testEntityFactory.Instantiate();
-
-            var attackable = (Attackable)testEntity.m_behaviors[Attackable.s_factory.id];
-            attackable.Activate(testEntity, null, null);
-
-            var testTinker = new Tinker
+            Acting.Config playerActingConf = new Acting.Config
             {
-                m_chainDefinition = new ChainDefinition[]
-                {
-                    new ChainDefinition
-                    {
-                        name = "beAttacked",
-                        handlers = new WeightedEventHandler[]
-                        {
-                            new WeightedEventHandler
-                            {
-                                handlerFunction = (EventBase e) => System.Console.WriteLine("hello from the added handler"),
-                                priority = 10000
-                            }
-                        }
-                    }
-                }
+                doAction = Algos.SimpleAlgo
             };
 
-            testEntity.AddTinker(testTinker);
-            attackable.Activate(testEntity, null, null);
-            testEntity.RemoveTinker(testTinker);
+            playerFactory.AddBehavior(Acting.s_factory, playerActingConf);
 
-            attackable.Activate(testEntity, null, null);
+            var enemyFactory = new EntityFactory(typeof(Entity));
+            enemyFactory.AddBehavior(Attackable.s_factory);
+            enemyFactory.AddBehavior(Attacking.s_factory);
+            enemyFactory.AddBehavior(Displaceable.s_factory);
+            enemyFactory.AddBehavior(Moving.s_factory);
+            enemyFactory.AddBehavior(Pushable.s_factory);
+
+
+            Acting.Config enemyActingConf = new Acting.Config
+            {
+                doAction = Algos.EnemyAlgo
+            };
+
+            enemyFactory.AddBehavior(Acting.s_factory, enemyActingConf);
+
+
+            SimpleAction attackAction = new SimpleAction(Attacking.s_factory.id);
+            SimpleAction moveAction = new SimpleAction(Moving.s_factory.id);
+            CompositeAction attackMoveAction = new CompositeAction(
+                new SimpleAction[] { attackAction, moveAction }
+            );
+
+            StepData[] stepData =
+            {
+                new StepData { action = null },
+                new StepData { action = attackMoveAction, movs = Movs.Basic }
+            };
+
+            var sequenceConfig = new Sequential.Config(stepData);
+
+            enemyFactory.AddBehavior(Sequential.s_factory, sequenceConfig);
+            System.Console.WriteLine("Set up enemyFactory");
+
+            Entity player = playerFactory.Instantiate();
+            System.Console.WriteLine("Instantiated Player");
+
+            Entity enemy = enemyFactory.Instantiate();
+            System.Console.WriteLine("Instantiated Enemy");
+
+            enemy.Init(new Vector2(1, 1), world);
+            world.m_state.AddEntity(enemy);
+            world.m_grid.Reset(enemy);
+            System.Console.WriteLine("Enemy set in world");
+
+            player.Init(new Vector2(1, 2), world);
+            world.m_state.AddPlayer(player);
+            world.m_grid.Reset(player);
+            System.Console.WriteLine("Player set in world");
+
+
+            var playerNextAction = attackAction.Copy();
+            playerNextAction.direction = new Vector2(0, -1);
+            player.beh_Acting.m_nextAction = playerNextAction;
+            System.Console.WriteLine("Set player action");
+
+
+            world.m_state.Loop();
+            System.Console.WriteLine("Looped");
+            System.Console.WriteLine($"Player's new position {player.m_pos}");
+
         }
-
     }
 
-    class TestEvent : EventBase
-    {
-        public string test = "hello";
-    }
+
 }

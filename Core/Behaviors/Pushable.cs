@@ -38,7 +38,6 @@ namespace Core
 
         Chain chain_checkPushed;
         Chain chain_bePushed;
-        Entity m_entity;
 
         public Pushable(Entity entity, BehaviorConfig conf)
         {
@@ -53,7 +52,7 @@ namespace Core
         {
             var ev = new Event
             {
-                actor = m_entity,
+                actor = actor,
                 action = action,
                 push = ((Params)pars).push
             };

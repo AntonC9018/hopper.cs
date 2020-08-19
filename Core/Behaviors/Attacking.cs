@@ -20,7 +20,6 @@ namespace Core
 
         Chain chain_checkAttack;
         Chain chain_doAttack;
-        Entity m_entity;
 
         public Attacking(Entity entity, BehaviorConfig conf)
         {
@@ -49,7 +48,7 @@ namespace Core
         {
             var ev = new Event
             {
-                targets = ((Params)pars).targets,
+                targets = ((Params)pars)?.targets,
                 actor = actor,
                 action = action
             };
@@ -83,6 +82,7 @@ namespace Core
             if (ev.targets == null)
             {
                 ev.targets = ev.actor.beh_Attacking.GenerateTargets(ev);
+                System.Console.WriteLine("Generated targets");
             }
         }
 
@@ -117,7 +117,6 @@ namespace Core
                     {
                         push = ev.push.Copy()
                     };
-                    // let it throw if this has not been accounted for
                     pushable.Activate(target.entity, action, pars);
                 }
             }

@@ -8,9 +8,9 @@ namespace Core
         public class Config : BehaviorConfig
         {
             public System.Func<Entity, Action> calculateAction;
+            public System.Action<EventBase> doAction;
         }
         Chain chain_checkAction;
-        Chain chain_doAction;
         Chain chain_failAction;
         Chain chain_succeedAction;
         Entity m_entity;
@@ -19,15 +19,25 @@ namespace Core
         public bool b_didActionSucceed = false;
         public Action m_nextAction;
         System.Func<Entity, Action> conf_calculateAction;
+        System.Action<EventBase> conf_doActionFunc;
 
-        public Acting(Entity entity, BehaviorConfig pars)
+
+        public Acting(Entity entity, BehaviorConfig conf)
         {
             m_entity = entity;
             chain_checkAction = entity.m_chains["action:check"];
-            chain_doAction = entity.m_chains["action:do"];
             chain_failAction = entity.m_chains["action:fail"];
             chain_succeedAction = entity.m_chains["action:succeed"];
-            conf_calculateAction = ((Config)pars).calculateAction;
+            conf_calculateAction = ((Config)conf).calculateAction;
+            conf_doActionFunc = ((Config)conf).doAction;
+
+            entity.EndOfLoopEvent += () =>
+            {
+                b_didAction = false;
+                b_doingAction = false;
+                b_didActionSucceed = false;
+                m_nextAction = null;
+            };
         }
 
         public class ActingEvent : CommonEvent
@@ -53,6 +63,7 @@ namespace Core
 
             if (m_nextAction == null)
             {
+                System.Console.WriteLine("Action is null");
                 b_didAction = true;
                 ev.success = true;
                 chain_succeedAction.Pass(ev);
@@ -65,7 +76,7 @@ namespace Core
             if (ev.propagate)
             {
                 ev.success = true;
-                chain_doAction.Pass(ev);
+                conf_doActionFunc(ev);
             }
 
             ev.propagate = true;
@@ -84,6 +95,9 @@ namespace Core
 
         public void CalculateNextAction()
         {
+            if (m_nextAction != null)
+                return;
+
             if (conf_calculateAction != null)
                 m_nextAction = conf_calculateAction(m_entity);
             else
@@ -102,13 +116,6 @@ namespace Core
                 new ChainDefinition
                 {
                     name = "action:check",
-                    handlers = new WeightedEventHandler[]
-                    {
-                    }
-                },
-                new ChainDefinition
-                {
-                    name = "action:do",
                     handlers = new WeightedEventHandler[]
                     {
                     }
