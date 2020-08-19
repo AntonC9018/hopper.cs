@@ -37,6 +37,11 @@ namespace Core
             return m_players.Count - 1;
         }
 
+        void CalculateNextAction(Entity entity)
+        {
+            entity.beh_Acting?.CalculateNextAction();
+        }
+
         void Activate(Entity entity)
         {
             if (entity.b_isDead) return;
@@ -56,13 +61,16 @@ namespace Core
                 Activate(player);
             }
 
+            // Ideally, the acting decorators should be at one location in memory
+            for (int i = 0; i < entities.Length; i++)
+                foreach (var e in entities[i])
+                    CalculateNextAction(e);
+
             for (int i = 0; i < entities.Length; i++)
             {
                 m_phase = i;
                 foreach (var e in entities[i])
-                {
                     Activate(e);
-                }
             }
 
             EndOfLoopEvent?.Invoke();

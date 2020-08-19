@@ -22,7 +22,6 @@ namespace Hopper
 
             var playerFactory = new EntityFactory(typeof(Entity));
             playerFactory.AddBehavior(Attackable.s_factory);
-            System.Console.WriteLine("Attackable");
             playerFactory.AddBehavior(Attacking.s_factory);
             playerFactory.AddBehavior(Displaceable.s_factory);
             playerFactory.AddBehavior(Moving.s_factory);
@@ -91,6 +90,9 @@ namespace Hopper
             player.beh_Acting.m_nextAction = playerNextAction;
             System.Console.WriteLine("Set player action");
 
+            world.m_state.Loop();
+            System.Console.WriteLine("Looped");
+            System.Console.WriteLine($"Player's new position {player.m_pos}");
 
             world.m_state.Loop();
             System.Console.WriteLine("Looped");

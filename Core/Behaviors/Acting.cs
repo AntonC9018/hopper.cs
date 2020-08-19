@@ -35,7 +35,6 @@ namespace Core
             {
                 b_didAction = false;
                 b_doingAction = false;
-                b_didActionSucceed = false;
                 m_nextAction = null;
             };
         }
@@ -65,7 +64,7 @@ namespace Core
             {
                 System.Console.WriteLine("Action is null");
                 b_didAction = true;
-                ev.success = true;
+                b_didActionSucceed = true;
                 chain_succeedAction.Pass(ev);
                 return true;
             }

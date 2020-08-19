@@ -26,8 +26,8 @@ namespace Core
         public class Resistance
         {
             public int armor = 0;
-            public int minDamage = 0;
-            public int maxDamage = 1;
+            public int minDamage = 1;
+            public int maxDamage = 10;
             public int pierce = 1;
         }
 
@@ -97,7 +97,7 @@ namespace Core
                 ev.resistance.minDamage,
                 ev.resistance.maxDamage);
 
-            if (ev.attack.pierce <= ev.resistance.pierce)
+            if (ev.attack.pierce < ev.resistance.pierce)
             {
                 ev.attack.damage = 0;
             }
