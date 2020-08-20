@@ -24,6 +24,11 @@ namespace Chains
         public WeightedEventHandler()
         {
         }
+
+        public WeightedEventHandler(System.Action<EventBase> handlerFunc)
+        {
+            handlerFunction = handlerFunc;
+        }
     }
 
     public class Chain

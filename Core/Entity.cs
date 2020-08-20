@@ -10,6 +10,11 @@ namespace Core
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
 
+        internal void Reorient(Vector2 direction)
+        {
+            this.m_orientation = direction;
+        }
+
         // Don't add stuff here. The ontents of this are determined 
         // by the EntityFactory
         public readonly Dictionary<string, Chain> m_chains =
@@ -27,6 +32,11 @@ namespace Core
             if (m_behaviors.ContainsKey(id))
                 return m_behaviors[id];
             return null;
+        }
+
+        public bool IsPlayer()
+        {
+            return false;
         }
 
         /*

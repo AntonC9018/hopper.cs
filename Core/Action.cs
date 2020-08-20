@@ -40,9 +40,9 @@ namespace Core
 
     public class CompositeAction : Action
     {
-        SimpleAction[] m_actions;
+        Action[] m_actions;
 
-        public CompositeAction(SimpleAction[] actions)
+        public CompositeAction(Action[] actions)
         {
             m_actions = actions;
         }
@@ -62,6 +62,31 @@ namespace Core
                 }
             }
             return false;
+        }
+    }
+
+    public class JoinedAction : Action
+    {
+        Action[] m_actions;
+
+        public JoinedAction(Action[] actions)
+        {
+            m_actions = actions;
+        }
+
+        public override Action Copy()
+        {
+            return new JoinedAction(m_actions);
+        }
+
+        public override bool Do(Entity e)
+        {
+            bool success = false;
+            foreach (var a in m_actions)
+            {
+                success = a.Do(e) || success;
+            }
+            return success;
         }
     }
 

@@ -84,7 +84,6 @@ namespace Hopper
             world.m_grid.Reset(player);
             System.Console.WriteLine("Player set in world");
 
-
             var playerNextAction = attackAction.Copy();
             playerNextAction.direction = new Vector2(0, -1);
             player.beh_Acting.m_nextAction = playerNextAction;

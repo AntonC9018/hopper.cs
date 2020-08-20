@@ -3,13 +3,20 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public struct ChainDefinition
+    public class ChainDefinition
     {
         public string name;
         public WeightedEventHandler[] handlers;
+
+        public ChainDefinition() { }
+        public ChainDefinition(string name, WeightedEventHandler handler)
+        {
+            this.name = name;
+            this.handlers = new WeightedEventHandler[] { handler };
+        }
     }
 
-    public struct ChainTemplateDefinition
+    public class ChainTemplateDefinition
     {
         public string name;
         ChainTemplate template;
