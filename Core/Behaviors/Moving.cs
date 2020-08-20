@@ -37,9 +37,9 @@ namespace Core
             return true;
         }
 
-        static void SetBase(EventBase e)
+        static void SetBase(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             if (ev.move == null)
             {
                 // TODO: set stats for move
@@ -49,9 +49,9 @@ namespace Core
             }
         }
 
-        static void Displace(EventBase e)
+        static void Displace(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             var pars = new Displaceable.Params { move = ev.move };
             ev.actor.beh_Displaceable.Activate(ev.actor, ev.action, pars);
         }

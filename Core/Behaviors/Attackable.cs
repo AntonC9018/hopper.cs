@@ -76,21 +76,21 @@ namespace Core
             return true;
         }
 
-        static void SetResistance(EventBase e)
+        static void SetResistance(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             // TODO:
             ev.resistance = new Resistance();
         }
 
-        static void ResistSource(EventBase e)
+        static void ResistSource(EventBase eventBase)
         {
             // TODO
         }
 
-        static void Armor(EventBase e)
+        static void Armor(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
 
             ev.attack.damage = System.Math.Clamp(
                 ev.attack.damage - ev.resistance.armor,
@@ -103,9 +103,9 @@ namespace Core
             }
         }
 
-        static void TakeHit(EventBase e)
+        static void TakeHit(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             System.Console.WriteLine($"Taken {ev.attack.damage} damage");
         }
 

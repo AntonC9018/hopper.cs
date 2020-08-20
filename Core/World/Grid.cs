@@ -61,8 +61,14 @@ namespace Core
             cell.FireLeaveEvent(entity);
         }
 
+        bool IsWithinBounds(Vector2 pos)
+        {
+            return pos.X < 0 || pos.Y < 0 || pos.X >= m_height || pos.Y >= m_width;
+        }
+
         public Cell GetCellAt(Vector2 pos)
         {
+            if (IsWithinBounds(pos)) return null;
             return m_grid[(int)pos.X, (int)pos.Y];
         }
     }

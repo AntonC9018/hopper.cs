@@ -6,24 +6,31 @@ namespace Core.Retouchers
 {
     public static class Attackableness
     {
-        // public static Retoucher ConstantYes = new Retoucher(
-        //     new ChainDefinition("attacked:condition", new WeightedEventHandler(AnyReorient))
-        // );
-        // public static Retoucher ConstantNo = new Retoucher(
-        //     new ChainDefinition("attacked:condition", new WeightedEventHandler(AnyReorient))
-        // );
+        static System.Action<EventBase> _Constant(Attackable.Attackableness attackableness)
+        {
+            return (EventBase eventBase) =>
+            {
+                var ev = (Attackable.AttackablenessEvent)eventBase;
+                ev.attackableness = attackableness;
+            };
+        }
 
-        // static System.Action<EventBase> Constant(Attackable.Attackableness attackableness)
-        // {
-        //     return (EventBase e) =>
-        //     {
-        //         var ev = (Attackable.AttackablenessEvent)e;
-        //         if (ev.action.direction != null)
-        //         {
-        //             ev.actor.Reorient(ev.action.direction);
-        //         }
-        //     }
-        // }
+        static Retoucher[] ConstantRetouchers
+            = new Retoucher[System.Enum.GetNames(typeof(Attackable.Attackableness)).Length];
+
+        public static Retoucher Constant(Attackable.Attackableness attackableness)
+        {
+            int index = (int)attackableness;
+            if (ConstantRetouchers[index] == null)
+            {
+                ConstantRetouchers[index] = new Retoucher(
+                    new ChainDefinition(
+                        "attacked:condition",
+                        new WeightedEventHandler(_Constant(attackableness)))
+                );
+            }
+            return ConstantRetouchers[index];
+        }
 
     }
 }

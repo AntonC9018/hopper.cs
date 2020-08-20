@@ -34,6 +34,8 @@ namespace Hopper
             };
 
             playerFactory.AddBehavior(Acting.s_factory, playerActingConf);
+            playerFactory.AddRetoucher(Core.Retouchers.Skip.EmptyAttack);
+
 
             var enemyFactory = new EntityFactory(typeof(Entity));
             enemyFactory.AddBehavior(Attackable.s_factory);
@@ -79,13 +81,13 @@ namespace Hopper
             world.m_grid.Reset(enemy);
             System.Console.WriteLine("Enemy set in world");
 
-            player.Init(new Vector2(1, 2), world);
+            player.Init(new Vector2(2, 2), world);
             world.m_state.AddPlayer(player);
             world.m_grid.Reset(player);
             System.Console.WriteLine("Player set in world");
 
-            var playerNextAction = attackAction.Copy();
-            playerNextAction.direction = new Vector2(0, -1);
+            var playerNextAction = attackMoveAction.Copy();
+            playerNextAction.direction = new Vector2(0, 1);
             player.beh_Acting.m_nextAction = playerNextAction;
             System.Console.WriteLine("Set player action");
 
@@ -93,9 +95,9 @@ namespace Hopper
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position {player.m_pos}");
 
-            world.m_state.Loop();
-            System.Console.WriteLine("Looped");
-            System.Console.WriteLine($"Player's new position {player.m_pos}");
+            // world.m_state.Loop();
+            // System.Console.WriteLine("Looped");
+            // System.Console.WriteLine($"Player's new position {player.m_pos}");
 
         }
     }

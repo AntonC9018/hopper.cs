@@ -19,31 +19,31 @@ namespace Core.Retouchers
             new ChainDefinition("attack:check", new WeightedEventHandler(SkipEmptyAttack))
         );
 
-        static void SkipEmptyAttack(EventBase e)
+        static void SkipEmptyAttack(EventBase eventBase)
         {
-            var ev = (Attacking.Event)e;
+            var ev = (Attacking.Event)eventBase;
             ev.propagate = ev.targets.Count > 0;
         }
 
-        static void SkipBlocked(EventBase e)
+        static void SkipBlocked(EventBase eventBase)
         {
-            var ev = (Moving.Event)e;
+            var ev = (Moving.Event)eventBase;
             var block = ev.actor
                 .GetCellRelative(ev.action.direction)
                 .GetEntityFromLayer(Layer.BLOCK);
             ev.propagate = block == null;
         }
 
-        static void SkipNoPlayer(EventBase e)
+        static void SkipNoPlayer(EventBase eventBase)
         {
-            var ev = (Attacking.Event)e;
+            var ev = (Attacking.Event)eventBase;
             ev.propagate = ev.targets
                 .Any(t => t.entity.IsPlayer());
         }
 
-        static void SkipSelf(EventBase e)
+        static void SkipSelf(EventBase eventBase)
         {
-            var ev = (Attacking.Event)e;
+            var ev = (Attacking.Event)eventBase;
             ev.propagate = ev.targets
                 .Any(t => t.entity == ev.actor);
         }

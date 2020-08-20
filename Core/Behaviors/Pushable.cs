@@ -66,32 +66,35 @@ namespace Core
             return true;
         }
 
-        static void SetResistance(EventBase e)
+        static void SetResistance(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             // TODO:
             ev.resistance = new Resistance();
         }
 
-        static void ResistSource(EventBase e)
+        static void ResistSource(EventBase eventBase)
         {
             // TODO
         }
 
-        static void Armor(EventBase e)
+        static void Armor(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
 
             if (ev.push.power <= ev.resistance.level)
             {
-                e.propagate = false;
+                ev.propagate = false;
             }
         }
 
-        static void BePushed(EventBase e)
+        static void BePushed(EventBase eventBase)
         {
-            var ev = (Event)e;
-            System.Console.WriteLine($"Pushed by {ev.push.power}");
+            var ev = (Event)eventBase;
+            // TODO: set up properly
+            var move = new Displaceable.Move();
+            var pars = new Displaceable.Params { move = move };
+            ev.entity.beh_Displaceable.Activate(ev.actor, ev.action, pars);
         }
 
         public static BehaviorFactory s_factory = new BehaviorFactory(

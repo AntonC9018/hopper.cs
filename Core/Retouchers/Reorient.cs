@@ -19,9 +19,9 @@ namespace Core.Retouchers
             new ChainDefinition("displaced:do", new WeightedEventHandler(AnyReorient))
         );
 
-        static void AnyReorient(EventBase e)
+        static void AnyReorient(EventBase eventBase)
         {
-            var ev = (CommonEvent)e;
+            var ev = (CommonEvent)eventBase;
             if (ev.action.direction != null)
             {
                 ev.actor.Reorient(ev.action.direction);

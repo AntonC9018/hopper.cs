@@ -53,17 +53,15 @@ namespace Core
             return true;
         }
 
-        static void ConvertFromMove(EventBase e)
+        static void ConvertFromMove(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             int i = 1;
             for (; i < ev.move.power; i++)
             {
-                var block = ev.actor
-                    .GetCellRelative(ev.action.direction * i)
-                    .GetEntityFromLayer(Layer.BLOCK);
+                var cell = ev.actor.GetCellRelative(ev.action.direction * i);
 
-                if (block != null)
+                if (cell == null || cell.GetEntityFromLayer(Layer.BLOCK) != null)
                 {
                     i--;
                     break;
@@ -72,9 +70,9 @@ namespace Core
             ev.newPos = ev.actor.GetRelativePos(ev.action.direction * i);
         }
 
-        static void Displace(EventBase e)
+        static void Displace(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             ev.actor.RemoveFromGrid();
             ev.actor.m_pos = ev.newPos;
             ev.actor.ResetInGrid();

@@ -48,7 +48,6 @@ namespace Core
             var acting = entity.beh_Acting;
             if (acting != null && !acting.b_didAction)
             {
-                System.Console.WriteLine("Activating entity");
                 // I've overloaded the Activate method here so that it is not as clunky
                 acting.Activate();
             }

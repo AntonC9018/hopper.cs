@@ -29,8 +29,8 @@ namespace Core
 
         public List<Target> GenerateTargets(Event e)
         {
-            var entity = e.actor.m_world.m_grid
-                .GetCellAt(e.actor.m_pos + e.action.direction)
+            var entity = e.actor
+                .GetCellRelative(e.action.direction)
                 .GetEntityFromLayer(Layer.REAL);
 
             if (entity == null)
@@ -62,9 +62,9 @@ namespace Core
             return true;
         }
 
-        static void SetBase(EventBase e)
+        static void SetBase(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             if (ev.attack == null)
             {
                 // TODO: set stats for attack
@@ -76,19 +76,18 @@ namespace Core
             }
         }
 
-        static void GetTargets(EventBase e)
+        static void GetTargets(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             if (ev.targets == null)
             {
                 ev.targets = ev.actor.beh_Attacking.GenerateTargets(ev);
-                System.Console.WriteLine("Generated targets");
             }
         }
 
-        static void ApplyAttack(EventBase e)
+        static void ApplyAttack(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             foreach (var target in ev.targets)
             {
                 var action = ev.action.Copy();
@@ -103,9 +102,9 @@ namespace Core
             }
         }
 
-        static void ApplyPush(EventBase e)
+        static void ApplyPush(EventBase eventBase)
         {
-            var ev = (Event)e;
+            var ev = (Event)eventBase;
             foreach (var target in ev.targets)
             {
                 var action = ev.action.Copy();

@@ -22,7 +22,7 @@ namespace Core
         }
         public SimpleAction(System.Func<Entity, Action, bool> func)
         {
-            Try = (Entity e, Action a) => func(e, a);
+            Try = func;
         }
         public override Action Copy()
         {
@@ -56,6 +56,7 @@ namespace Core
         {
             foreach (var a in m_actions)
             {
+                a.direction = direction;
                 if (a.Do(e))
                 {
                     return true;

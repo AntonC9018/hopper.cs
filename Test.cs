@@ -194,7 +194,7 @@ namespace Test
             testEntityFactory.AddBehavior(Attackable.s_factory);
 
             // var template = testEntityFactory.m_chainTemplates["beAttacked"];
-            // template.AddHandler((EventBase e) => System.Console.WriteLine("Hello from template"));
+            // template.AddHandler((EventBase eventBase) => System.Console.WriteLine("Hello from template"));
 
             var testEntity = (TestEntity)testEntityFactory.Instantiate();
 
@@ -212,7 +212,7 @@ namespace Test
                         {
                             new WeightedEventHandler
                             {
-                                handlerFunction = (EventBase e) => System.Console.WriteLine("hello from the added handler"),
+                                handlerFunction = (EventBase eventBase) => System.Console.WriteLine("hello from the added handler"),
                                 priority = 10000
                             }
                         }

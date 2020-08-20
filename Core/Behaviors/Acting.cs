@@ -62,7 +62,6 @@ namespace Core
 
             if (m_nextAction == null)
             {
-                System.Console.WriteLine("Action is null");
                 b_didAction = true;
                 b_didActionSucceed = true;
                 chain_succeedAction.Pass(ev);
@@ -75,6 +74,7 @@ namespace Core
             if (ev.propagate)
             {
                 ev.success = true;
+
                 conf_doActionFunc(ev);
             }
 
