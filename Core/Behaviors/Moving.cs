@@ -43,9 +43,7 @@ namespace Core
             if (ev.move == null)
             {
                 // TODO: set stats for move
-                ev.move = new Displaceable.Move
-                {
-                };
+                ev.move = ev.actor.m_statManager.GetStats("move");
             }
         }
 

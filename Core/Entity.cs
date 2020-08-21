@@ -69,8 +69,11 @@ namespace Core
         public Vector2 m_pos;
         public Vector2 m_orientation = Vector2.UnitX;
         public World m_world;
-
         public Layer m_layer = Layer.REAL;
+
+        // TODO: we need a stat manager factory with the ability to set up 
+        // default stats.
+        public StatManager m_statManager = new StatManager();
 
         // state
         // isDead is set to true when the entity needs to be filtered out 

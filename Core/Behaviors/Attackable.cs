@@ -8,16 +8,12 @@ namespace Core
         // this makes more sense on stats. Think about moving it there via some
         // e.g. extension api
         public static List<string> s_indexSourceNameMap = new List<string>();
-        public static readonly string s_attackSourcePrefix = "as/";
-        public static readonly string s_attackSourceResistancePrefix = "asr/";
-        public static readonly string s_attackPrefix = "a/";
 
-        public static int RegisterAttackSource(string name, int defaultValue)
+        public static int RegisterAttackSource(string name, int defaultResValue = 1)
         {
-            StatManager.RegisterStat(s_attackSourcePrefix + name, defaultValue);
-            StatManager.RegisterStatInCategory("AttackSource", name);
-            StatManager.RegisterStat(s_attackSourceResistancePrefix + name, defaultValue);
-            StatManager.RegisterStatInCategory("AttackSourceRes", name);
+            var attackDir = StatManager.s_defaultStatsDir.directories["attack"];
+            var sourceResDir = attackDir.directories["source_res"];
+            sourceResDir.files.Add(name, defaultResValue);
             s_indexSourceNameMap.Add(name);
             return s_indexSourceNameMap.Count - 1;
         }
@@ -26,20 +22,37 @@ namespace Core
 
         static Attackable()
         {
-            StatManager.RegisterCategory("AttackSource");
-            StatManager.RegisterCategory("AttackSourceRes");
-            // Add the base type of attack, which is the default and its index is 0
-            RegisterAttackSource("basic", 1);
+            var baseDir = StatManager.s_defaultStatsDir;
 
-            var baseAttack = new Attack();
-            var attackStatNames = new List<string>
+            var attackDir = new Directory<int>();
+            attackDir.files = new Dictionary<string, int>
             {
-                $"{s_attackPrefix}source",
-                $"{s_attackPrefix}power",
-                $"{s_attackPrefix}damage",
-                $"{s_attackPrefix}pierce"
+                { "source", 0 },
+                { "power", 1 },
+                { "damage", 1 },
+                { "pierce", 1 }
             };
-            // StatManager.RegisterCategory(
+
+            var sourceResDir = new Directory<int>();
+            sourceResDir.files = new Dictionary<string, int>
+            {
+                { "basic", 1 }
+            };
+
+            var resDir = new Directory<int>();
+            resDir.files = new Dictionary<string, int>
+            {
+                { "armor", 0 },
+                { "minDamage", 1 },
+                { "maxDamage", 10 },
+                { "pierce", 1 }
+            };
+
+            baseDir.directories.Add("attack", attackDir);
+            attackDir.directories.Add("source_res", sourceResDir);
+            attackDir.directories.Add("res", resDir);
+
+            RegisterAttackSource("default");
         }
 
         public enum Attackableness
@@ -58,6 +71,17 @@ namespace Core
             {
                 return (Attack)this.MemberwiseClone();
             }
+
+            public static implicit operator Attack(Dictionary<string, int> operand)
+            {
+                return new Attack
+                {
+                    source = operand["source"],
+                    power = operand["power"],
+                    damage = operand["damage"],
+                    pierce = operand["pierce"]
+                };
+            }
         }
 
         public class Resistance
@@ -70,6 +94,17 @@ namespace Core
             public Resistance Copy()
             {
                 return (Resistance)this.MemberwiseClone();
+            }
+
+            public static implicit operator Resistance(Dictionary<string, int> operand)
+            {
+                return new Resistance
+                {
+                    armor = operand["armor"],
+                    minDamage = operand["minDamage"],
+                    maxDamage = operand["maxDamage"],
+                    pierce = operand["pierce"]
+                };
             }
         }
 
@@ -121,13 +156,19 @@ namespace Core
         static void SetResistance(EventBase eventBase)
         {
             var ev = (Event)eventBase;
-            // TODO:
-            ev.resistance = new Resistance();
+            ev.resistance = ev.actor.m_statManager.GetStats("attack/res");
         }
 
         static void ResistSource(EventBase eventBase)
         {
-            // TODO
+            var ev = (Event)eventBase;
+            System.Console.WriteLine(ev.attack.source);
+            var sourceName = s_indexSourceNameMap[ev.attack.source];
+            var sourceRes = ev.actor.m_statManager.GetStats("attack/source_res");
+            if (sourceRes[sourceName] > ev.attack.power)
+            {
+                ev.attack.damage = 0;
+            }
         }
 
         static void Armor(EventBase eventBase)

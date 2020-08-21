@@ -81,13 +81,13 @@ namespace Hopper
             world.m_grid.Reset(enemy);
             System.Console.WriteLine("Enemy set in world");
 
-            player.Init(new Vector2(2, 2), world);
+            player.Init(new Vector2(1, 2), world);
             world.m_state.AddPlayer(player);
             world.m_grid.Reset(player);
             System.Console.WriteLine("Player set in world");
 
             var playerNextAction = attackMoveAction.Copy();
-            playerNextAction.direction = new Vector2(0, 1);
+            playerNextAction.direction = new Vector2(0, -1);
             player.beh_Acting.m_nextAction = playerNextAction;
             System.Console.WriteLine("Set player action");
 

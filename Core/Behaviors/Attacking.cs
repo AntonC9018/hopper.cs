@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Chains;
 
 namespace Core
@@ -67,12 +68,11 @@ namespace Core
             var ev = (Event)eventBase;
             if (ev.attack == null)
             {
-                // TODO: set stats for attack
-                ev.attack = new Attackable.Attack();
+                ev.attack = ev.actor.m_statManager.GetStats("attack");
             }
             if (ev.push == null)
             {
-                ev.push = new Pushable.Push();
+                ev.push = ev.actor.m_statManager.GetStats("push");
             }
         }
 

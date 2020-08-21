@@ -6,10 +6,38 @@ namespace Core
 {
     public class Displaceable : Behavior
     {
+        static Displaceable()
+        {
+            var baseDir = StatManager.s_defaultStatsDir;
+
+            var moveDir = new Directory<int>();
+            moveDir.files = new Dictionary<string, int>
+            {
+                { "power", 1 },
+                { "through", 0 }
+            };
+
+            baseDir.directories.Add("move", moveDir);
+        }
+
         public class Move
         {
             public int power = 1;
             public int through = 0;
+
+            public Move Copy()
+            {
+                return (Move)this.MemberwiseClone();
+            }
+
+            public static implicit operator Move(Dictionary<string, int> operand)
+            {
+                return new Move
+                {
+                    power = operand["power"],
+                    through = operand["through"]
+                };
+            }
         }
 
         public class Event : CommonEvent

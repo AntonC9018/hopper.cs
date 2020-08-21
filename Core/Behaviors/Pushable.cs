@@ -6,21 +6,82 @@ namespace Core
 {
     public class Pushable : Behavior
     {
+        public static List<string> s_indexSourceNameMap = new List<string>();
+
+        public static int RegisterPushSource(string name, int defaultResValue = 1)
+        {
+            var pushDir = StatManager.s_defaultStatsDir.directories["push"];
+            var sourceResDir = pushDir.directories["source_res"];
+            pushDir.files.Add(name, defaultResValue);
+            s_indexSourceNameMap.Add(name);
+            return s_indexSourceNameMap.Count - 1;
+        }
+
+        static Pushable()
+        {
+            var baseDir = StatManager.s_defaultStatsDir;
+
+            var pushDir = new Directory<int>();
+            pushDir.files = new Dictionary<string, int>
+            {
+                { "source", 0 },
+                { "power", 1 },
+                { "distance", 1 },
+                { "pierce", 1 }
+            };
+
+            var sourceResDir = new Directory<int>();
+            sourceResDir.files = new Dictionary<string, int>
+            {
+                { "basic", 1 }
+            };
+
+            var resDir = new Directory<int>();
+            resDir.files = new Dictionary<string, int>
+            {
+                { "pierce", 0 }
+            };
+
+            baseDir.directories.Add("push", pushDir);
+            pushDir.directories.Add("source_res", sourceResDir);
+            pushDir.directories.Add("res", resDir);
+        }
 
         public class Resistance
         {
-            public int level = 0;
+            public int pierce = 0;
+
+            public static implicit operator Resistance(Dictionary<string, int> operand)
+            {
+                return new Resistance
+                {
+                    pierce = operand["pierce"]
+                };
+            }
         }
 
         public class Push
         {
             public int source = 0;
             public int power = 1;
+            public int distance = 1;
+            public int pierce = 1;
 
             // TODO
             public Push Copy()
             {
                 return new Push();
+            }
+
+            public static implicit operator Push(Dictionary<string, int> operand)
+            {
+                return new Push
+                {
+                    source = operand["source"],
+                    power = operand["power"],
+                    pierce = operand["pierce"],
+                    distance = operand["distance"]
+                };
             }
         }
 
@@ -69,20 +130,25 @@ namespace Core
         static void SetResistance(EventBase eventBase)
         {
             var ev = (Event)eventBase;
-            // TODO:
-            ev.resistance = new Resistance();
+            ev.resistance = ev.actor.m_statManager.GetStats("push/res");
         }
 
         static void ResistSource(EventBase eventBase)
         {
-            // TODO
+            var ev = (Event)eventBase;
+            var sourceName = s_indexSourceNameMap[ev.push.source];
+            var sourceRes = ev.actor.m_statManager.GetStats("push/source_res");
+            if (sourceRes[sourceName] > ev.push.power)
+            {
+                ev.push.distance = 0;
+            }
         }
 
         static void Armor(EventBase eventBase)
         {
             var ev = (Event)eventBase;
 
-            if (ev.push.power <= ev.resistance.level)
+            if (ev.push.pierce <= ev.resistance.pierce)
             {
                 ev.propagate = false;
             }
