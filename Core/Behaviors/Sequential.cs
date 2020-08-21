@@ -33,10 +33,10 @@ namespace Core
                 stepData = conf.stepData,
                 actor = entity
             };
-            entity.EndOfLoopEvent += () =>
+            entity.m_chains["tick"].AddHandler(e =>
             {
                 m_sequence.TickAction();
-            };
+            });
         }
 
         public List<Vector2> GetMovs()

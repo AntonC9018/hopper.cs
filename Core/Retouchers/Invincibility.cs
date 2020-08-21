@@ -9,9 +9,9 @@ namespace Core.Retouchers
         public static Retoucher PreventsDamage = new Retoucher(
             new ChainDefinition("attacked:do", new WeightedEventHandler(PreventDamage))
         );
-        // public static Retoucher PreventsDamage = new Retoucher(
-        //     new ChainDefinition("attacked:do", new WeightedEventHandler(PreventDamage))
-        // );
+        public static Retoucher Decreases = new Retoucher(
+            new ChainDefinition("tick", new WeightedEventHandler(Decrease))
+        );
 
         // TODO:
         static void PreventDamage(EventBase eventBase)
@@ -19,19 +19,10 @@ namespace Core.Retouchers
             var ev = (Attackable.Event)eventBase;
             // ev.propagate = ev.actor
         }
-
-        // TODO: think about how we do it
-        // right now it is impossible via retouchers.
-        // We've got to somehow add an end of turn event to the entity
-        // I guess we should add some hooks onto the entity factory
-        static void AddDecrease(Entity entity)
-        {
-
-        }
-
         // TODO:
-        static void Decrease(Entity entity)
+        static void Decrease(EventBase tickEvent)
         {
+            var ev = (Entity.TickEvent)tickEvent;
             // entity
         }
 

@@ -145,6 +145,11 @@ namespace Core
             }
         }
 
+        public static bool IsStatRegistered(string name)
+        {
+            return s_defaultStats.ContainsKey(name);
+        }
+
         public static void RegisterStat(string name, int defaultValue)
         {
             s_defaultStats[name] = defaultValue;
@@ -153,6 +158,11 @@ namespace Core
         public static void RegisterCategory(string categoryName, List<string> names)
         {
             s_categories.Add(categoryName, names);
+        }
+
+        public static void RegisterCategory(string categoryName)
+        {
+            s_categories.Add(categoryName, new List<string>());
         }
 
         public static void RegisterStatInCategory(string categoryName, string name)

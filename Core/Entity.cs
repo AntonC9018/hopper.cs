@@ -10,6 +10,7 @@ namespace Core
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
 
+
         internal void Reorient(Vector2 direction)
         {
             this.m_orientation = direction;
@@ -86,13 +87,6 @@ namespace Core
             m_pos = pos;
             m_world = world;
             StartMonitoringEvents();
-
-            // the init event is called once
-            if (InitEvent != null)
-            {
-                InitEvent();
-                InitEvent = null;
-            }
         }
 
         public void AddTinker(Tinker tinker)
@@ -119,12 +113,14 @@ namespace Core
             }
         }
 
-        public event System.Action EndOfLoopEvent;
-        public event System.Action InitEvent;
+        public class TickEvent : EventBase
+        {
+            public Entity actor;
+        }
 
         void RetranslateEndOfLoopEvent()
         {
-            EndOfLoopEvent?.Invoke();
+            m_chains["tick"].Pass(new TickEvent { actor = this });
         }
         void StartMonitoringEvents()
         {
@@ -179,10 +175,12 @@ namespace Core
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
         public Type m_entityClass;
+        public event System.Action<Entity> InitEvent;
 
         public EntityFactory(System.Type entityClass)
         {
             m_entityClass = entityClass;
+            m_chainTemplates.Add("tick", new ChainTemplate());
         }
 
         protected Dictionary<string, ChainTemplate> m_chainTemplates =
@@ -234,6 +232,7 @@ namespace Core
                 var behavior = behaviorFactory.Instantiate(entity, conf);
                 entity.m_behaviors[behaviorFactory.id] = behavior;
             }
+            InitEvent?.Invoke(entity);
             return entity;
         }
     }

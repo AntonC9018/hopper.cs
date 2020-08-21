@@ -31,12 +31,12 @@ namespace Core
             conf_calculateAction = ((Config)conf).calculateAction;
             conf_doActionFunc = ((Config)conf).doAction;
 
-            entity.EndOfLoopEvent += () =>
+            entity.m_chains["tick"].AddHandler(e =>
             {
                 b_didAction = false;
                 b_doingAction = false;
                 m_nextAction = null;
-            };
+            });
         }
 
         public class ActingEvent : CommonEvent
@@ -74,7 +74,6 @@ namespace Core
             if (ev.propagate)
             {
                 ev.success = true;
-
                 conf_doActionFunc(ev);
             }
 

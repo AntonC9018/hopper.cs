@@ -4,6 +4,44 @@ namespace Core
 {
     public class Attackable : Behavior
     {
+
+        // this makes more sense on stats. Think about moving it there via some
+        // e.g. extension api
+        public static List<string> s_indexSourceNameMap = new List<string>();
+        public static readonly string s_attackSourcePrefix = "as/";
+        public static readonly string s_attackSourceResistancePrefix = "asr/";
+        public static readonly string s_attackPrefix = "a/";
+
+        public static int RegisterAttackSource(string name, int defaultValue)
+        {
+            StatManager.RegisterStat(s_attackSourcePrefix + name, defaultValue);
+            StatManager.RegisterStatInCategory("AttackSource", name);
+            StatManager.RegisterStat(s_attackSourceResistancePrefix + name, defaultValue);
+            StatManager.RegisterStatInCategory("AttackSourceRes", name);
+            s_indexSourceNameMap.Add(name);
+            return s_indexSourceNameMap.Count - 1;
+        }
+
+        public static int BasicAttackSource = 0;
+
+        static Attackable()
+        {
+            StatManager.RegisterCategory("AttackSource");
+            StatManager.RegisterCategory("AttackSourceRes");
+            // Add the base type of attack, which is the default and its index is 0
+            RegisterAttackSource("basic", 1);
+
+            var baseAttack = new Attack();
+            var attackStatNames = new List<string>
+            {
+                $"{s_attackPrefix}source",
+                $"{s_attackPrefix}power",
+                $"{s_attackPrefix}damage",
+                $"{s_attackPrefix}pierce"
+            };
+            // StatManager.RegisterCategory(
+        }
+
         public enum Attackableness
         {
             ATTACKABLE, UNATTACKABLE, SKIP
@@ -18,8 +56,7 @@ namespace Core
 
             public Attack Copy()
             {
-                // TODO
-                return new Attack();
+                return (Attack)this.MemberwiseClone();
             }
         }
 
@@ -29,6 +66,11 @@ namespace Core
             public int minDamage = 1;
             public int maxDamage = 10;
             public int pierce = 1;
+
+            public Resistance Copy()
+            {
+                return (Resistance)this.MemberwiseClone();
+            }
         }
 
         public class Event : CommonEvent
