@@ -87,7 +87,7 @@ namespace Hopper
             System.Console.WriteLine("Player set in world");
 
             var playerNextAction = attackMoveAction.Copy();
-            playerNextAction.direction = new Vector2(0, -1);
+            playerNextAction.direction = new Vector2(0, 1);
             player.beh_Acting.m_nextAction = playerNextAction;
             System.Console.WriteLine("Set player action");
 

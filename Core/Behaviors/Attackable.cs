@@ -11,9 +11,9 @@ namespace Core
 
         public static int RegisterAttackSource(string name, int defaultResValue = 1)
         {
-            var attackDir = StatManager.s_defaultStatsDir.directories["attack"];
-            var sourceResDir = attackDir.directories["source_res"];
-            sourceResDir.files.Add(name, defaultResValue);
+            var sourceResFile = (ArrayFile)StatManager.s_defaultFS.GetFile("attack/source_res");
+            sourceResFile.content.Add(defaultResValue);
+
             s_indexSourceNameMap.Add(name);
             return s_indexSourceNameMap.Count - 1;
         }
@@ -22,35 +22,29 @@ namespace Core
 
         static Attackable()
         {
-            var baseDir = StatManager.s_defaultStatsDir;
+            Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
-            var attackDir = new Directory<int>();
-            attackDir.files = new Dictionary<string, int>
+            Directory attackDir = new Directory();
+            File baseFile = new Attack
             {
-                { "source", 0 },
-                { "power", 1 },
-                { "damage", 1 },
-                { "pierce", 1 }
+                source = 0,
+                power = 1,
+                damage = 1,
+                pierce = 1
+            };
+            File sourceResFile = new ArrayFile();
+            File resFile = new Resistance
+            {
+                armor = 0,
+                minDamage = 1,
+                maxDamage = 10,
+                pierce = 1
             };
 
-            var sourceResDir = new Directory<int>();
-            sourceResDir.files = new Dictionary<string, int>
-            {
-                { "basic", 1 }
-            };
-
-            var resDir = new Directory<int>();
-            resDir.files = new Dictionary<string, int>
-            {
-                { "armor", 0 },
-                { "minDamage", 1 },
-                { "maxDamage", 10 },
-                { "pierce", 1 }
-            };
-
-            baseDir.directories.Add("attack", attackDir);
-            attackDir.directories.Add("source_res", sourceResDir);
-            attackDir.directories.Add("res", resDir);
+            baseDir.AddDirectory("attack", attackDir);
+            attackDir.AddFile("base", baseFile);
+            attackDir.AddFile("source_res", sourceResFile);
+            attackDir.AddFile("res", resFile);
 
             RegisterAttackSource("default");
         }
@@ -60,52 +54,20 @@ namespace Core
             ATTACKABLE, UNATTACKABLE, SKIP
         }
 
-        public class Attack
+        public class Attack : File
         {
-            public int source = 0;
-            public int power = 1;
-            public int damage = 1;
-            public int pierce = 1;
-
-            public Attack Copy()
-            {
-                return (Attack)this.MemberwiseClone();
-            }
-
-            public static implicit operator Attack(Dictionary<string, int> operand)
-            {
-                return new Attack
-                {
-                    source = operand["source"],
-                    power = operand["power"],
-                    damage = operand["damage"],
-                    pierce = operand["pierce"]
-                };
-            }
+            public int source;
+            public int power;
+            public int damage;
+            public int pierce;
         }
 
-        public class Resistance
+        public class Resistance : File
         {
-            public int armor = 0;
-            public int minDamage = 1;
-            public int maxDamage = 10;
-            public int pierce = 1;
-
-            public Resistance Copy()
-            {
-                return (Resistance)this.MemberwiseClone();
-            }
-
-            public static implicit operator Resistance(Dictionary<string, int> operand)
-            {
-                return new Resistance
-                {
-                    armor = operand["armor"],
-                    minDamage = operand["minDamage"],
-                    maxDamage = operand["maxDamage"],
-                    pierce = operand["pierce"]
-                };
-            }
+            public int armor;
+            public int minDamage;
+            public int maxDamage;
+            public int pierce;
         }
 
         public class Event : CommonEvent
@@ -156,16 +118,15 @@ namespace Core
         static void SetResistance(EventBase eventBase)
         {
             var ev = (Event)eventBase;
-            ev.resistance = ev.actor.m_statManager.GetStats("attack/res");
+            ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("attack/res");
         }
 
         static void ResistSource(EventBase eventBase)
         {
             var ev = (Event)eventBase;
             System.Console.WriteLine(ev.attack.source);
-            var sourceName = s_indexSourceNameMap[ev.attack.source];
-            var sourceRes = ev.actor.m_statManager.GetStats("attack/source_res");
-            if (sourceRes[sourceName] > ev.attack.power)
+            var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("attack/source_res");
+            if (sourceRes[ev.attack.source] > ev.attack.power)
             {
                 ev.attack.damage = 0;
             }

@@ -10,79 +10,50 @@ namespace Core
 
         public static int RegisterPushSource(string name, int defaultResValue = 1)
         {
-            var pushDir = StatManager.s_defaultStatsDir.directories["push"];
-            var sourceResDir = pushDir.directories["source_res"];
-            pushDir.files.Add(name, defaultResValue);
+            var sourceResFile = (ArrayFile)StatManager.s_defaultFS.GetFile("push/source_res");
+            sourceResFile.content.Add(defaultResValue);
+
             s_indexSourceNameMap.Add(name);
             return s_indexSourceNameMap.Count - 1;
         }
 
         static Pushable()
         {
-            var baseDir = StatManager.s_defaultStatsDir;
+            Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
-            var pushDir = new Directory<int>();
-            pushDir.files = new Dictionary<string, int>
+            Directory pushDir = new Directory();
+            File baseFile = new Push
             {
-                { "source", 0 },
-                { "power", 1 },
-                { "distance", 1 },
-                { "pierce", 1 }
+                source = 0,
+                power = 1,
+                distance = 1,
+                pierce = 1
+            };
+            File sourceResFile = new ArrayFile();
+            File resFile = new Resistance
+            {
+                pierce = 1
             };
 
-            var sourceResDir = new Directory<int>();
-            sourceResDir.files = new Dictionary<string, int>
-            {
-                { "basic", 1 }
-            };
+            baseDir.AddDirectory("push", pushDir);
+            pushDir.AddFile("base", baseFile);
+            pushDir.AddFile("source_res", sourceResFile);
+            pushDir.AddFile("res", resFile);
 
-            var resDir = new Directory<int>();
-            resDir.files = new Dictionary<string, int>
-            {
-                { "pierce", 0 }
-            };
-
-            baseDir.directories.Add("push", pushDir);
-            pushDir.directories.Add("source_res", sourceResDir);
-            pushDir.directories.Add("res", resDir);
+            RegisterPushSource("default", 1);
         }
 
-        public class Resistance
+        public class Resistance : File
         {
             public int pierce = 0;
-
-            public static implicit operator Resistance(Dictionary<string, int> operand)
-            {
-                return new Resistance
-                {
-                    pierce = operand["pierce"]
-                };
-            }
         }
 
-        public class Push
+        public class Push : File
         {
             public int source = 0;
             public int power = 1;
             public int distance = 1;
             public int pierce = 1;
-
-            // TODO
-            public Push Copy()
-            {
-                return new Push();
-            }
-
-            public static implicit operator Push(Dictionary<string, int> operand)
-            {
-                return new Push
-                {
-                    source = operand["source"],
-                    power = operand["power"],
-                    pierce = operand["pierce"],
-                    distance = operand["distance"]
-                };
-            }
         }
 
         public class Event : CommonEvent
@@ -130,15 +101,14 @@ namespace Core
         static void SetResistance(EventBase eventBase)
         {
             var ev = (Event)eventBase;
-            ev.resistance = ev.actor.m_statManager.GetStats("push/res");
+            ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("push/res");
         }
 
         static void ResistSource(EventBase eventBase)
         {
             var ev = (Event)eventBase;
-            var sourceName = s_indexSourceNameMap[ev.push.source];
-            var sourceRes = ev.actor.m_statManager.GetStats("push/source_res");
-            if (sourceRes[sourceName] > ev.push.power)
+            var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("push/source_res");
+            if (sourceRes[ev.push.source] > ev.push.power)
             {
                 ev.push.distance = 0;
             }

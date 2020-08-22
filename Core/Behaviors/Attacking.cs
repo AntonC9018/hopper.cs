@@ -68,11 +68,11 @@ namespace Core
             var ev = (Event)eventBase;
             if (ev.attack == null)
             {
-                ev.attack = ev.actor.m_statManager.GetStats("attack");
+                ev.attack = (Attackable.Attack)ev.actor.m_statManager.GetFile("attack/base");
             }
             if (ev.push == null)
             {
-                ev.push = ev.actor.m_statManager.GetStats("push");
+                ev.push = (Pushable.Push)ev.actor.m_statManager.GetFile("push/base");
             }
         }
 
@@ -95,7 +95,7 @@ namespace Core
                 var attackable = target.entity.beh_Attackable;
                 var pars = new Attackable.Params
                 {
-                    attack = ev.attack.Copy()
+                    attack = (Attackable.Attack)ev.attack.Copy()
                 };
                 // let it throw if this has not been accounted for
                 attackable.Activate(target.entity, action, pars);
@@ -114,7 +114,7 @@ namespace Core
                 {
                     var pars = new Pushable.Params
                     {
-                        push = ev.push.Copy()
+                        push = (Pushable.Push)ev.push.Copy()
                     };
                     pushable.Activate(target.entity, action, pars);
                 }

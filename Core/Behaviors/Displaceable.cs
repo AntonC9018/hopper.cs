@@ -8,36 +8,21 @@ namespace Core
     {
         static Displaceable()
         {
-            var baseDir = StatManager.s_defaultStatsDir;
+            var baseDir = StatManager.s_defaultFS.BaseDir;
 
-            var moveDir = new Directory<int>();
-            moveDir.files = new Dictionary<string, int>
+            var move = new Move
             {
-                { "power", 1 },
-                { "through", 0 }
+                power = 1,
+                through = 0
             };
 
-            baseDir.directories.Add("move", moveDir);
+            baseDir.AddFile("move", move);
         }
 
-        public class Move
+        public class Move : File
         {
             public int power = 1;
             public int through = 0;
-
-            public Move Copy()
-            {
-                return (Move)this.MemberwiseClone();
-            }
-
-            public static implicit operator Move(Dictionary<string, int> operand)
-            {
-                return new Move
-                {
-                    power = operand["power"],
-                    through = operand["through"]
-                };
-            }
         }
 
         public class Event : CommonEvent
