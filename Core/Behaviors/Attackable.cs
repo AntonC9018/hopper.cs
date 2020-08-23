@@ -11,7 +11,7 @@ namespace Core
 
         public static int RegisterAttackSource(string name, int defaultResValue = 1)
         {
-            var sourceResFile = (ArrayFile)StatManager.s_defaultFS.GetFile("attack/source_res");
+            var sourceResFile = (ArrayFile)StatManager.s_defaultFS.GetFile("attacked/source_res");
             sourceResFile.content.Add(defaultResValue);
 
             s_indexSourceNameMap.Add(name);
@@ -25,13 +25,6 @@ namespace Core
             Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
             Directory attackDir = new Directory();
-            File baseFile = new Attack
-            {
-                source = 0,
-                power = 1,
-                damage = 1,
-                pierce = 1
-            };
             File sourceResFile = new ArrayFile();
             File resFile = new Resistance
             {
@@ -41,8 +34,7 @@ namespace Core
                 pierce = 1
             };
 
-            baseDir.AddDirectory("attack", attackDir);
-            attackDir.AddFile("base", baseFile);
+            baseDir.AddDirectory("attacked", attackDir);
             attackDir.AddFile("source_res", sourceResFile);
             attackDir.AddFile("res", resFile);
 
@@ -52,14 +44,6 @@ namespace Core
         public enum Attackableness
         {
             ATTACKABLE, UNATTACKABLE, SKIP
-        }
-
-        public class Attack : File
-        {
-            public int source;
-            public int power;
-            public int damage;
-            public int pierce;
         }
 
         public class Resistance : File
@@ -73,13 +57,13 @@ namespace Core
         public class Event : CommonEvent
         {
             public Entity entity;
-            public Attack attack;
+            public Attacking.Attack attack;
             public Resistance resistance;
         }
 
         public class Params : ActivationParams
         {
-            public Attack attack;
+            public Attacking.Attack attack;
         }
 
         Chain chain_checkAttacked;
@@ -118,14 +102,14 @@ namespace Core
         static void SetResistance(EventBase eventBase)
         {
             var ev = (Event)eventBase;
-            ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("attack/res");
+            ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("attacked/res");
         }
 
         static void ResistSource(EventBase eventBase)
         {
             var ev = (Event)eventBase;
             System.Console.WriteLine(ev.attack.source);
-            var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("attack/source_res");
+            var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("attacked/source_res");
             if (sourceRes[ev.attack.source] > ev.attack.power)
             {
                 ev.attack.damage = 0;

@@ -7,11 +7,50 @@ namespace Core
     public class Attacking : Behavior
     {
 
+        static Attacking()
+        {
+            Directory baseDir = StatManager.s_defaultFS.BaseDir;
+
+            File attackFile = new Attack
+            {
+                source = 0,
+                power = 1,
+                damage = 1,
+                pierce = 1
+            };
+            File pushFile = new Push
+            {
+                source = 0,
+                power = 1,
+                distance = 1,
+                pierce = 1
+            };
+
+            baseDir.AddFile("attack", attackFile);
+            baseDir.AddFile("push", pushFile);
+        }
+
+        public class Attack : File
+        {
+            public int source;
+            public int power;
+            public int damage;
+            public int pierce;
+        }
+
+        public class Push : File
+        {
+            public int source = 0;
+            public int power = 1;
+            public int distance = 1;
+            public int pierce = 1;
+        }
+
         public class Event : CommonEvent
         {
             public List<Target> targets;
-            public Attackable.Attack attack;
-            public Pushable.Push push;
+            public Attack attack;
+            public Push push;
         }
 
         public class Params : ActivationParams
@@ -68,11 +107,11 @@ namespace Core
             var ev = (Event)eventBase;
             if (ev.attack == null)
             {
-                ev.attack = (Attackable.Attack)ev.actor.m_statManager.GetFile("attack/base");
+                ev.attack = (Attack)ev.actor.m_statManager.GetFile("attack");
             }
             if (ev.push == null)
             {
-                ev.push = (Pushable.Push)ev.actor.m_statManager.GetFile("push/base");
+                ev.push = (Push)ev.actor.m_statManager.GetFile("push");
             }
         }
 
@@ -95,7 +134,7 @@ namespace Core
                 var attackable = target.entity.beh_Attackable;
                 var pars = new Attackable.Params
                 {
-                    attack = (Attackable.Attack)ev.attack.Copy()
+                    attack = (Attack)ev.attack.Copy()
                 };
                 // let it throw if this has not been accounted for
                 attackable.Activate(target.entity, action, pars);
@@ -114,7 +153,7 @@ namespace Core
                 {
                     var pars = new Pushable.Params
                     {
-                        push = (Pushable.Push)ev.push.Copy()
+                        push = (Push)ev.push.Copy()
                     };
                     pushable.Activate(target.entity, action, pars);
                 }

@@ -10,7 +10,7 @@ namespace Core
 
         public static int RegisterPushSource(string name, int defaultResValue = 1)
         {
-            var sourceResFile = (ArrayFile)StatManager.s_defaultFS.GetFile("push/source_res");
+            var sourceResFile = (ArrayFile)StatManager.s_defaultFS.GetFile("pushed/source_res");
             sourceResFile.content.Add(defaultResValue);
 
             s_indexSourceNameMap.Add(name);
@@ -22,21 +22,13 @@ namespace Core
             Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
             Directory pushDir = new Directory();
-            File baseFile = new Push
-            {
-                source = 0,
-                power = 1,
-                distance = 1,
-                pierce = 1
-            };
             File sourceResFile = new ArrayFile();
             File resFile = new Resistance
             {
                 pierce = 1
             };
 
-            baseDir.AddDirectory("push", pushDir);
-            pushDir.AddFile("base", baseFile);
+            baseDir.AddDirectory("pushed", pushDir);
             pushDir.AddFile("source_res", sourceResFile);
             pushDir.AddFile("res", resFile);
 
@@ -48,24 +40,16 @@ namespace Core
             public int pierce = 0;
         }
 
-        public class Push : File
-        {
-            public int source = 0;
-            public int power = 1;
-            public int distance = 1;
-            public int pierce = 1;
-        }
-
         public class Event : CommonEvent
         {
             public Entity entity;
-            public Push push;
+            public Attacking.Push push;
             public Resistance resistance;
         }
 
         public class Params : ActivationParams
         {
-            public Push push;
+            public Attacking.Push push;
         }
 
         Chain chain_checkPushed;
@@ -101,13 +85,13 @@ namespace Core
         static void SetResistance(EventBase eventBase)
         {
             var ev = (Event)eventBase;
-            ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("push/res");
+            ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("pushed/res");
         }
 
         static void ResistSource(EventBase eventBase)
         {
             var ev = (Event)eventBase;
-            var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("push/source_res");
+            var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("pushed/source_res");
             if (sourceRes[ev.push.source] > ev.push.power)
             {
                 ev.push.distance = 0;
