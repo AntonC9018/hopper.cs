@@ -1,19 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Chains;
-using Handle = MyLinkedList.MyListNode<Chains.WeightedEventHandler>;
 
-namespace Core
+namespace Core.FS
 {
-
     public class Node
     {
     }
 
     public class File : Node
     {
-        public virtual void _Add(File f)
+        public virtual void _Add(File f, int sign)
         {
             // let's do it the dumbest way so that it works
             // maybe I'll figure out a better solution later
@@ -26,7 +23,7 @@ namespace Core
             {
                 var oldVal = (int)field.GetValue(this);
                 var addVal = (int)field.GetValue(f);
-                var newVal = oldVal + addVal;
+                var newVal = oldVal + sign * addVal;
                 field.SetValue(this, newVal);
             }
         }
@@ -40,14 +37,14 @@ namespace Core
     {
         public List<int> content = new List<int>();
 
-        public override void _Add(File f)
+        public override void _Add(File f, int sign)
         {
             // we assume it is the same type 
             var otherFile = (ArrayFile)f;
             var otherArray = otherFile.content;
             for (int i = 0; i < content.Count; i++)
             {
-                content[i] += otherArray[i];
+                content[i] += otherArray[i] * sign;
             }
         }
 
@@ -76,28 +73,6 @@ namespace Core
         public void AddDirectory(string name, Directory directory)
         {
             nodes.Add(name, directory);
-        }
-    }
-
-    public class StatNode : Node
-    {
-        public Chain chain;
-        public File file;
-    }
-
-    public class StatEvent : EventBase
-    {
-        public File file;
-    }
-
-    public class StatDir : Directory
-    {
-        public override File GetFile(string fileName)
-        {
-            var node = (StatNode)nodes[fileName];
-            var ev = new StatEvent { file = node.file };
-            node.chain.Pass(ev);
-            return ev.file;
         }
     }
 
@@ -143,6 +118,15 @@ namespace Core
             return GetDirectoryBySplitPath(dirName);
         }
 
+        public Node GetNode(string path)
+        {
+            var dirNames = Split(path);
+            var dirPath = dirNames.Take(dirNames.Length - 1);
+            var node = (T)GetDirectoryBySplitPath(dirPath);
+            var fileName = dirNames[dirNames.Length - 1];
+            return node.nodes[fileName];
+        }
+
         public File GetFile(string path)
         {
             var dirNames = Split(path);
@@ -165,37 +149,6 @@ namespace Core
                 if (value is Directory)
                 {
                     Debug((Directory)value, indentLevel + 4);
-                }
-            }
-        }
-    }
-
-    public class StatManager : FS<StatDir>
-    {
-        // contains either directories or files
-        public static FS<Directory> s_defaultFS = new FS<Directory>();
-
-        public StatManager()
-        {
-            CopyDirectoryStructure(s_defaultFS.m_baseDir, m_baseDir);
-        }
-
-        void CopyDirectoryStructure(Directory from, StatDir to)
-        {
-            foreach (var (name, node) in from.nodes)
-            {
-                if (node is Directory)
-                {
-                    var subdir = new StatDir();
-                    to.nodes.Add(name, subdir);
-                    CopyDirectoryStructure((Directory)node, subdir);
-                }
-                else if (node is File)
-                {
-                    var file = new StatNode();
-                    file.chain = new Chain();
-                    file.file = ((File)node).Copy();
-                    to.nodes.Add(name, file);
                 }
             }
         }

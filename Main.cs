@@ -95,6 +95,40 @@ namespace Hopper
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position {player.m_pos}");
 
+            var mod = new StatModifier("attack", new Attacking.Attack { damage = 1 });
+            var attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
+            System.Console.WriteLine("Attack damage:{0}", attack.damage);
+            System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
+            System.Console.WriteLine("Adding modifier");
+            player.m_statManager.AddModifier(mod);
+            // attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
+            System.Console.WriteLine("Attack damage:{0}", attack.damage);
+            System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
+            System.Console.WriteLine("Removing modifier");
+            player.m_statManager.RemoveModifier(mod);
+            System.Console.WriteLine("Attack damage:{0}", attack.damage);
+            System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
+
+            var mod2 = new ChainModifier("attack", new Chains.WeightedEventHandler(
+                (EventBase eventBase) =>
+                {
+                    var ev = (StatEvent)eventBase;
+                    System.Console.WriteLine("Called handler");
+                    ((Attacking.Attack)ev.file).damage *= 3;
+                })
+            );
+            System.Console.WriteLine("Adding modifier");
+            player.m_statManager.AddModifier(mod2);
+            attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
+            System.Console.WriteLine("Attack damage:{0}", attack.damage);
+            System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
+            System.Console.WriteLine("Removing modifier");
+            player.m_statManager.RemoveChainModifier(mod2);
+            attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
+            System.Console.WriteLine("Attack damage:{0}", attack.damage);
+            System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
+
+
             // world.m_state.Loop();
             // System.Console.WriteLine("Looped");
             // System.Console.WriteLine($"Player's new position {player.m_pos}");
