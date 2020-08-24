@@ -10,7 +10,7 @@ namespace Core.Weapon
             var first = weaponEvent.targets[0];
             if (first.index == 0 && first.attackableness != AtkCondition.NEVER)
                 return;
-            if (weaponEvent.targets.Any(t => t.attackableness == AtkCondition.IF_NEXT_TO
+            // if (weaponEvent.targets.Any(t => t.attackableness == AtkCondition.IF_NEXT_TO
         }
         // utils.nextToAny = function(event)
 
