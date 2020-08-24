@@ -1,0 +1,89 @@
+using System.Collections.Generic;
+using System.Numerics;
+using Chains;
+
+namespace Core
+{
+
+    class Weapon
+    {
+        public static double AngleBetween(Vector2 vector1, Vector2 vector2)
+        {
+            double sin = vector1.X * vector2.Y - vector2.X * vector1.Y;
+            double cos = vector1.X * vector2.X + vector1.Y * vector2.Y;
+
+            return System.Math.Atan2(sin, cos);
+        }
+
+        public class Piece
+        {
+            public Vector2 pos;
+            public Vector2 dir;
+            public bool reach;
+        }
+
+        static Vector2 right = new Vector2(1, 0);
+        static List<Piece> defaultPattern = new List<Piece>
+        {
+            new Piece
+            {
+                pos = new Vector2(1, 0),
+                dir = new Vector2(1, 0),
+                reach = false
+            }
+        };
+        List<Piece> pattern;
+        Chain chain;
+        Layer attackedLayer = Layer.REAL | Layer.MISC | Layer.WALL;
+
+        public class TargetsEvent : CommonEvent
+        {
+            public List<Target> targets;
+        }
+
+        public List<Target> GetTargets(Entity actor, Action action)
+        {
+            var map = new List<Target>();
+            double angle = AngleBetween(right, actor.m_orientation);
+
+            for (int i = 0; i < this.pattern.Count; i++)
+            {
+                var piece = this.pattern[i];
+                var pos = actor.m_pos + piece.pos;
+                var entity = actor.m_world.m_grid
+                    .GetCellAt(pos)
+                    .GetEntityFromLayer(attackedLayer);
+                map[i] = new Target
+                {
+                    direction = piece.dir,
+                    entity = entity
+                };
+            }
+
+            var ev = new TargetsEvent
+            {
+                targets = map,
+                actor = actor,
+                action = action
+            };
+
+            chain.Pass(ev);
+
+            return ev.targets;
+
+        }
+    }
+
+    //     -- after that, analyze it
+    //     local event = Event(actor, action)
+    //     event.targets = map
+
+    //     if self.check(event) then
+    //         return event.targets
+    //     end
+
+    //     self.chain:pass(event, self.check)
+
+    //     return event.targets
+    // end
+}
