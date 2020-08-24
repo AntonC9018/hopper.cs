@@ -4,7 +4,29 @@ namespace Vector
 {
     public class Vector2
     {
-        public double x, y;
+        public float x, y;
+
+        public static Vector2 Right = new Vector2(1, 0);
+        public static Vector2 Left = new Vector2(-1, 0);
+        public static Vector2 Up = new Vector2(0, 1);
+        public static Vector2 Down = new Vector2(0, -1);
+
+        public static Vector2 UnitX
+        {
+            get => new Vector2(1, 0);
+        }
+
+        public static Vector2 UnitY
+        {
+            get => new Vector2(0, 1);
+        }
+
+        public Vector2() { }
+        public Vector2(float x, float y)
+        {
+            this.x = x;
+            this.y = y;
+        }
 
         public static Vector2 operator +(Vector2 a, Vector2 b)
         {
@@ -15,14 +37,14 @@ namespace Vector
             };
         }
 
-        // public static Vector2 operator -(Vector2 a, Vector2 b)
-        // {
-        //     return new Vector2
-        //     {
-        //         x = a.x - b.x,
-        //         y = a.y - b.y
-        //     };
-        // }
+        public static Vector2 operator -(Vector2 a, Vector2 b)
+        {
+            return new Vector2
+            {
+                x = a.x - b.x,
+                y = a.y - b.y
+            };
+        }
 
         public static Vector2 operator -(Vector2 a)
         {
@@ -33,7 +55,7 @@ namespace Vector
             };
         }
 
-        public static Vector2 operator *(Vector2 a, double c)
+        public static Vector2 operator *(Vector2 a, float c)
         {
             return new Vector2
             {
@@ -67,13 +89,13 @@ namespace Vector
             return (int)x ^ (int)y;
         }
 
-        public double Cross(Vector2 v)
+        public float Cross(Vector2 v)
         {
             return x * v.y - y * v.x;
         }
 
 
-        public double Dot(Vector2 v)
+        public float Dot(Vector2 v)
         {
             return x * v.x + y * v.y;
         }
@@ -87,14 +109,14 @@ namespace Vector
             };
         }
 
-        public double SqMag()
+        public float SqMag()
         {
             return x * x + y * y;
         }
 
-        public double Mag()
+        public float Mag()
         {
-            return Math.Sqrt(SqMag());
+            return (float)Math.Sqrt(SqMag());
         }
 
         public double AngleTo(Vector2 v)
@@ -102,18 +124,18 @@ namespace Vector
             return Math.Atan2(Cross(v), Dot(v));
         }
 
-        public Vector2 Rotate(double angle_in_rads)
+        public Vector2 Rotate(float angle_in_rads)
         {
             return MatMul(
                 new Vector2
                 {
-                    x = Math.Cos(angle_in_rads),
-                    y = -Math.Sin(angle_in_rads)
+                    x = (float)Math.Cos(angle_in_rads),
+                    y = (float)-Math.Sin(angle_in_rads)
                 },
                 new Vector2
                 {
-                    x = Math.Sin(angle_in_rads),
-                    y = Math.Cos(angle_in_rads)
+                    x = (float)Math.Sin(angle_in_rads),
+                    y = (float)Math.Cos(angle_in_rads)
                 }
             );
         }

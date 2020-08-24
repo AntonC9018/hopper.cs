@@ -10,10 +10,10 @@ namespace Core
         {
             return new Relativeness
             {
-                gx = player.m_pos.X > actor.m_pos.X,
-                gy = player.m_pos.Y > actor.m_pos.Y,
-                lx = actor.m_pos.X > player.m_pos.X,
-                ly = actor.m_pos.Y > player.m_pos.Y
+                gx = player.m_pos.x > actor.m_pos.x,
+                gy = player.m_pos.y > actor.m_pos.y,
+                lx = actor.m_pos.x > player.m_pos.x,
+                ly = actor.m_pos.y > player.m_pos.y
             };
         }
     }

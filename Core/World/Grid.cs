@@ -1,4 +1,4 @@
-using System.Numerics;
+using Vector;
 using System.Collections.Generic;
 
 namespace Core
@@ -35,41 +35,41 @@ namespace Core
 
         public void Reset(Entity entity)
         {
-            var cell = m_grid[(int)entity.m_pos.X, (int)entity.m_pos.Y];
+            var cell = m_grid[(int)entity.m_pos.x, (int)entity.m_pos.y];
             cell.m_entities.Add(entity);
             cell.FireEnterEvent(entity);
         }
 
         public void Reset(Entity entity, Vector2 pos)
         {
-            var cell = m_grid[(int)pos.X, (int)pos.Y];
+            var cell = m_grid[(int)pos.x, (int)pos.y];
             cell.m_entities.Add(entity);
             cell.FireEnterEvent(entity);
         }
 
         public void Remove(Entity entity)
         {
-            var cell = m_grid[(int)entity.m_pos.X, (int)entity.m_pos.Y];
+            var cell = m_grid[(int)entity.m_pos.x, (int)entity.m_pos.y];
             cell.m_entities.Remove(entity);
             cell.FireLeaveEvent(entity);
         }
 
         public void Remove(Entity entity, Vector2 pos)
         {
-            var cell = m_grid[(int)pos.X, (int)pos.Y];
+            var cell = m_grid[(int)pos.x, (int)pos.y];
             cell.m_entities.Remove(entity);
             cell.FireLeaveEvent(entity);
         }
 
         bool IsWithinBounds(Vector2 pos)
         {
-            return pos.X < 0 || pos.Y < 0 || pos.X >= m_height || pos.Y >= m_width;
+            return pos.x < 0 || pos.y < 0 || pos.x >= m_height || pos.y >= m_width;
         }
 
         public Cell GetCellAt(Vector2 pos)
         {
             if (IsWithinBounds(pos)) return null;
-            return m_grid[(int)pos.X, (int)pos.Y];
+            return m_grid[(int)pos.x, (int)pos.y];
         }
     }
 }

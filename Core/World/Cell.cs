@@ -1,4 +1,4 @@
-using System.Numerics;
+using Vector;
 using System.Collections.Generic;
 
 namespace Core
@@ -21,7 +21,7 @@ namespace Core
     {
         public static int ToIndex(this Layer layer)
         {
-            return BitOperations.Log2((uint)layer);
+            return System.Numerics.BitOperations.Log2((uint)layer);
         }
     }
 

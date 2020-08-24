@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Numerics;
+using Vector;
 
 namespace Core
 {
@@ -17,28 +17,28 @@ namespace Core
             void Add(int x, int y) => list.Add(new Vector2(x, y));
             var rel = CalculateRelativeness(e, player);
 
-            if (e.m_orientation.X > 0)
+            if (e.m_orientation.x > 0)
             {
                 if (rel.gx) Add(1, 0);
                 if (rel.gy) Add(0, 1);
                 if (rel.lx) Add(0, -1);
                 if (rel.ly) Add(-1, 0);
             }
-            else if (e.m_orientation.X < 0)
+            else if (e.m_orientation.x < 0)
             {
                 if (rel.lx) Add(-1, 0);
                 if (rel.gy) Add(0, 1);
                 if (rel.ly) Add(0, -1);
                 if (rel.gx) Add(1, 0);
             }
-            else if (e.m_orientation.Y > 0)
+            else if (e.m_orientation.y > 0)
             {
                 if (rel.gy) Add(0, 1);
                 if (rel.gx) Add(1, 0);
                 if (rel.lx) Add(-1, 0);
                 if (rel.ly) Add(0, -1);
             }
-            else if (e.m_orientation.Y < 0)
+            else if (e.m_orientation.y < 0)
             {
                 if (rel.ly) Add(0, -1);
                 if (rel.gx) Add(1, 0);

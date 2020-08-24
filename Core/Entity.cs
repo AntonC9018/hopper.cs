@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Chains;
-using System.Numerics;
+using Vector;
 
 namespace Core
 {
@@ -135,7 +135,7 @@ namespace Core
             Entity closestPlayer = null;
             foreach (var player in m_world.m_state.m_players)
             {
-                float curDist = (m_pos - player.m_pos).LengthSquared();
+                float curDist = (m_pos - player.m_pos).SqMag();
 
                 if (closestPlayer == null || curDist < minDist)
                 {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Numerics;
+using Vector;
 using Chains;
 
 namespace Core.Weapon
@@ -8,8 +8,8 @@ namespace Core.Weapon
     {
         public static double AngleBetween(Vector2 vector1, Vector2 vector2)
         {
-            double sin = vector1.X * vector2.Y - vector2.X * vector1.Y;
-            double cos = vector1.X * vector2.X + vector1.Y * vector2.Y;
+            double sin = vector1.x * vector2.y - vector2.x * vector1.y;
+            double cos = vector1.x * vector2.x + vector1.y * vector2.y;
 
             return System.Math.Atan2(sin, cos);
         }
