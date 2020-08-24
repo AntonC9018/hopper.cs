@@ -72,7 +72,7 @@ namespace Core
         IChain chain_getAttackableness;
         Entity m_entity;
 
-        public Attackable(Entity entity, BehaviorConfig conf)
+        public Attackable(Entity entity)
         {
             chain_checkAttacked = entity.m_chains["attacked:check"];
             chain_beAttacked = entity.m_chains["attacked:do"];

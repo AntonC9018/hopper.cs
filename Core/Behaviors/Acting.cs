@@ -10,9 +10,9 @@ namespace Core
             public System.Func<Entity, Action> calculateAction;
             public System.Action<EventBase> doAction;
         }
-        Chain<Event> chain_checkAction;
-        Chain<Event> chain_failAction;
-        Chain<Event> chain_succeedAction;
+        IChain chain_checkAction;
+        IChain chain_failAction;
+        IChain chain_succeedAction;
         Entity m_entity;
         public bool b_didAction = false;
         public bool b_doingAction = false;
@@ -22,14 +22,14 @@ namespace Core
         System.Action<Event> conf_doActionFunc;
 
 
-        public Acting(Entity entity, BehaviorConfig conf)
+        public Acting(Entity entity, Config conf)
         {
             m_entity = entity;
-            chain_checkAction = (Chain<Event>)entity.m_chains["action:check"];
-            chain_failAction = (Chain<Event>)entity.m_chains["action:fail"];
-            chain_succeedAction = (Chain<Event>)entity.m_chains["action:succeed"];
-            conf_calculateAction = ((Config)conf).calculateAction;
-            conf_doActionFunc = ((Config)conf).doAction;
+            chain_checkAction = entity.m_chains["action:check"];
+            chain_failAction = entity.m_chains["action:fail"];
+            chain_succeedAction = entity.m_chains["action:succeed"];
+            conf_calculateAction = conf.calculateAction;
+            conf_doActionFunc = conf.doAction;
 
             entity.m_chains["tick"].AddHandler<CommonEvent>(e =>
             {

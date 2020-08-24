@@ -62,7 +62,7 @@ namespace Core
         IChain chain_checkAttack;
         IChain chain_doAttack;
 
-        public Attacking(Entity entity, BehaviorConfig conf)
+        public Attacking(Entity entity)
         {
             chain_checkAttack = entity.m_chains["attack:check"];
             chain_doAttack = entity.m_chains["attack:do"];

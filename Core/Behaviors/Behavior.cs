@@ -99,6 +99,10 @@ namespace Core
 
         public override Behavior Instantiate(Entity entity, BehaviorConfig conf)
         {
+            if (conf == null)
+            {
+                return (Behavior)Activator.CreateInstance(typeof(Beh), entity);
+            }
             return (Behavior)Activator.CreateInstance(typeof(Beh), entity, conf);
         }
     }

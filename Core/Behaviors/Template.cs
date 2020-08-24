@@ -16,7 +16,7 @@
 
 //         Chain chain_myChain;
 
-//         public Template(Entity entity, BehaviorConfig conf)
+//         public Template(Entity entity, Config conf)
 //         {
 //             var config = (Config)conf;
 //             chain_myChain = entity.m_chains["myChain:check"];

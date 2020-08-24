@@ -56,7 +56,7 @@ namespace Core
         IChain chain_checkPushed;
         IChain chain_bePushed;
 
-        public Pushable(Entity entity, BehaviorConfig conf)
+        public Pushable(Entity entity)
         {
             chain_checkPushed = entity.m_chains["pushed:check"];
             chain_bePushed = entity.m_chains["pushed:do"];

@@ -15,7 +15,7 @@ namespace Core
         IChain chain_checkMove;
         IChain chain_doMove;
 
-        public Moving(Entity entity, BehaviorConfig conf)
+        public Moving(Entity entity)
         {
             chain_checkMove = entity.m_chains["move:check"];
             chain_doMove = entity.m_chains["move:do"];

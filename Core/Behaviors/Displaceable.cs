@@ -41,7 +41,7 @@ namespace Core
         IChain chain_checkDisplaced;
         IChain chain_beDisplaced;
 
-        public Displaceable(Entity entity, BehaviorConfig conf)
+        public Displaceable(Entity entity)
         {
             chain_checkDisplaced = entity.m_chains["displaced:check"];
             chain_beDisplaced = entity.m_chains["displaced:do"];
