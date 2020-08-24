@@ -26,8 +26,8 @@ namespace Core
 
     public class ChainModifier : Modifier
     {
-        public Chains.WeightedEventHandler handler;
-        public ChainModifier(string path, Chains.WeightedEventHandler handler)
+        public Chains.EvHandler<StatEvent> handler;
+        public ChainModifier(string path, Chains.EvHandler<StatEvent> handler)
         {
             this.handler = handler;
             base.path = path;

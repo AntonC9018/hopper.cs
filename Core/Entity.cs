@@ -18,8 +18,8 @@ namespace Core
 
         // Don't add stuff here. The ontents of this are determined 
         // by the EntityFactory
-        public readonly Dictionary<string, Chain> m_chains =
-            new Dictionary<string, Chain>();
+        public readonly Dictionary<string, Chain<CommonEvent>> m_chains =
+            new Dictionary<string, Chain<CommonEvent>>();
 
         // the idea is to get the behavior instances like this:
         // entity.behaviors[Attackable.s_factory.id]
@@ -116,14 +116,9 @@ namespace Core
             }
         }
 
-        public class TickEvent : EventBase
-        {
-            public Entity actor;
-        }
-
         void RetranslateEndOfLoopEvent()
         {
-            m_chains["tick"].Pass(new TickEvent { actor = this });
+            m_chains["tick"].Pass(new CommonEvent { actor = this });
         }
         void StartMonitoringEvents()
         {
@@ -183,11 +178,11 @@ namespace Core
         public EntityFactory(System.Type entityClass)
         {
             m_entityClass = entityClass;
-            m_chainTemplates.Add("tick", new ChainTemplate());
+            m_chainTemplates.Add("tick", new ChainTemplate<CommonEvent>());
         }
 
-        protected Dictionary<string, ChainTemplate> m_chainTemplates =
-            new Dictionary<string, ChainTemplate>();
+        protected Dictionary<string, ChainTemplate<CommonEvent>> m_chainTemplates =
+            new Dictionary<string, ChainTemplate<CommonEvent>>();
 
         protected List<(BehaviorFactory, BehaviorConfig)> m_behaviorSettings =
             new List<(BehaviorFactory, BehaviorConfig)>();
@@ -209,7 +204,7 @@ namespace Core
         public void AddRetoucher(Retoucher retoucher)
         {
             m_retouchers.Add(retoucher.id, retoucher);
-            foreach (ChainDefinition cd in retoucher.chainDefinitions)
+            foreach (ChainDef<CommonEvent> cd in retoucher.chainDefinitions)
             {
                 foreach (var handler in cd.handlers)
                     m_chainTemplates[cd.name].AddHandler(handler);

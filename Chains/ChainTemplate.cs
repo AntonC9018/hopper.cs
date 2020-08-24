@@ -3,39 +3,39 @@ using MyLinkedList;
 
 namespace Chains
 {
-    public class ChainTemplate
+    public class ChainTemplate<Event> where Event : EventBase
     {
-        private List<WeightedEventHandler> m_handlers;
+        private List<EvHandler<Event>> m_handlers;
 
         private bool b_areHandlersCached;
 
         public ChainTemplate()
         {
-            m_handlers = new List<WeightedEventHandler>(8);
+            m_handlers = new List<EvHandler<Event>>(8);
             b_areHandlersCached = false;
         }
 
-        private ChainTemplate(List<WeightedEventHandler> handlers, bool areHandlersCached)
+        private ChainTemplate(List<EvHandler<Event>> handlers, bool areHandlersCached)
         {
-            m_handlers = new List<WeightedEventHandler>(handlers);
+            m_handlers = new List<EvHandler<Event>>(handlers);
             b_areHandlersCached = areHandlersCached;
         }
 
-        public void AddHandler(WeightedEventHandler handler)
+        public void AddHandler(EvHandler<Event> handler)
         {
             b_areHandlersCached = false;
             m_handlers.Add(handler);
         }
 
-        public void AddHandler(System.Action<EventBase> handlerFunc)
+        public void AddHandler(System.Action<Event> handlerFunc)
         {
-            AddHandler(new WeightedEventHandler
+            AddHandler(new EvHandler<Event>
             {
                 handlerFunction = handlerFunc
             });
         }
 
-        public Chain Init()
+        public Chain<Event> Init()
         {
             if (b_areHandlersCached)
             {
@@ -44,9 +44,9 @@ namespace Chains
             return InitAndCache();
         }
 
-        private Chain InitAndCache()
+        private Chain<Event> InitAndCache()
         {
-            var chain = new Chain();
+            var chain = new Chain<Event>();
             foreach (var handler in m_handlers)
             {
                 chain.AddHandler(handler);
@@ -66,19 +66,19 @@ namespace Chains
         }
 
 
-        private Chain InitFromCache()
+        private Chain<Event> InitFromCache()
         {
-            var linkedList = new MyLinkedList<WeightedEventHandler>();
+            var linkedList = new MyLinkedList<EvHandler<Event>>();
             foreach (var handler in m_handlers)
             {
                 linkedList.AddFront(handler);
             }
-            return new Chain(linkedList);
+            return new Chain<Event>(linkedList);
         }
 
-        public ChainTemplate Clone()
+        public ChainTemplate<Event> Clone()
         {
-            return new ChainTemplate(m_handlers, b_areHandlersCached);
+            return new ChainTemplate<Event>(m_handlers, b_areHandlersCached);
         }
 
     }

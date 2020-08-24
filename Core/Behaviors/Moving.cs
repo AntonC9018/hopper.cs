@@ -12,8 +12,8 @@ namespace Core
             public Displaceable.Move move;
         }
 
-        Chain chain_checkMove;
-        Chain chain_doMove;
+        Chain<CommonEvent> chain_checkMove;
+        Chain<CommonEvent> chain_doMove;
 
         public Moving(Entity entity, BehaviorConfig conf)
         {
@@ -38,9 +38,9 @@ namespace Core
             return true;
         }
 
-        static void SetBase(EventBase eventBase)
+        static void SetBase(CommonEvent commonEvent)
         {
-            var ev = (Event)eventBase;
+            var ev = (Event)commonEvent;
             if (ev.move == null)
             {
                 // TODO: set stats for move
@@ -48,33 +48,33 @@ namespace Core
             }
         }
 
-        static void Displace(EventBase eventBase)
+        static void Displace(CommonEvent commonEvent)
         {
-            var ev = (Event)eventBase;
+            var ev = (Event)commonEvent;
             var pars = new Displaceable.Params { move = ev.move };
             ev.actor.beh_Displaceable.Activate(ev.actor, ev.action, pars);
         }
 
         public static BehaviorFactory s_factory = new BehaviorFactory(
-            typeof(Moving), new ChainDefinition[]
+            typeof(Moving), new ChainDef<CommonEvent>[]
             {
-                new ChainDefinition
+                new ChainDef<CommonEvent>
                 {
                     name = "move:check",
-                    handlers = new WeightedEventHandler[]
+                    handlers = new EvHandler<CommonEvent>[]
                     {
-                        new WeightedEventHandler {
+                        new EvHandler<CommonEvent> {
                             handlerFunction = SetBase,
                             priority = (int)PRIORITY_RANKS.HIGH
                         }
                     }
                 },
-                new ChainDefinition
+                new ChainDef<CommonEvent>
                 {
                     name = "move:do",
-                    handlers = new WeightedEventHandler[]
+                    handlers = new EvHandler<CommonEvent>[]
                     {
-                        new WeightedEventHandler {
+                        new EvHandler<CommonEvent> {
                             handlerFunction = Displace
                         }
                     }

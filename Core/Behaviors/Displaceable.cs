@@ -38,8 +38,8 @@ namespace Core
             public Move move;
         }
 
-        Chain chain_checkDisplaced;
-        Chain chain_beDisplaced;
+        Chain<CommonEvent> chain_checkDisplaced;
+        Chain<CommonEvent> chain_beDisplaced;
 
         public Displaceable(Entity entity, BehaviorConfig conf)
         {
@@ -67,9 +67,9 @@ namespace Core
             return true;
         }
 
-        static void ConvertFromMove(EventBase eventBase)
+        static void ConvertFromMove(CommonEvent commonEvent)
         {
-            var ev = (Event)eventBase;
+            var ev = (Event)commonEvent;
             int i = 1;
             for (; i < ev.move.power; i++)
             {
@@ -84,9 +84,9 @@ namespace Core
             ev.newPos = ev.actor.GetRelativePos(ev.action.direction * i);
         }
 
-        static void Displace(EventBase eventBase)
+        static void Displace(CommonEvent commonEvent)
         {
-            var ev = (Event)eventBase;
+            var ev = (Event)commonEvent;
             ev.actor.RemoveFromGrid();
             ev.actor.m_pos = ev.newPos;
             ev.actor.ResetInGrid();
@@ -96,25 +96,25 @@ namespace Core
         // Since we want to have just one copy of this factory per class
         // I don't want to bloat my instances with copies of this
         public static BehaviorFactory s_factory = new BehaviorFactory(
-            typeof(Displaceable), new ChainDefinition[]
+            typeof(Displaceable), new ChainDef<CommonEvent>[]
             {
-                new ChainDefinition
+                new ChainDef<CommonEvent>
                 {
                     name = "displaced:check",
-                    handlers = new WeightedEventHandler[]
+                    handlers = new EvHandler<CommonEvent>[]
                     {
-                        new WeightedEventHandler {
+                        new EvHandler<CommonEvent> {
                             handlerFunction = ConvertFromMove,
                             priority = (int)PRIORITY_RANKS.HIGH
                         }
                     }
                 },
-                new ChainDefinition
+                new ChainDef<CommonEvent>
                 {
                     name = "displaced:do",
-                    handlers = new WeightedEventHandler[]
+                    handlers = new EvHandler<CommonEvent>[]
                     {
-                        new WeightedEventHandler {
+                        new EvHandler<CommonEvent> {
                             handlerFunction = Displace
                         }
                     }

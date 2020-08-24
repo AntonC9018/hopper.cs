@@ -5,7 +5,7 @@ namespace Core
 {
     static partial class Algos
     {
-        static bool AskMove(Acting.ActingEvent ev)
+        static bool AskMove(Acting.Event ev)
         {
             Entity thing = ev.actor.m_world.m_grid
                 .GetCellAt(ev.actor.m_pos + ev.action.direction) // change to action.direction
@@ -24,7 +24,7 @@ namespace Core
             return true;
         }
 
-        static bool Iterate(Acting.ActingEvent ev)
+        static bool Iterate(Acting.Event ev)
         {
             bool success = ev.action.Do(ev.actor);
 
@@ -41,7 +41,7 @@ namespace Core
 
         public static void EnemyAlgo(EventBase _ev)
         {
-            var ev = (Acting.ActingEvent)_ev;
+            var ev = (Acting.Event)_ev;
 
             var dirs = ev.actor.beh_Sequenced.GetMovs();
 

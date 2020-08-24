@@ -7,16 +7,16 @@ namespace Core.Retouchers
     public static class Reorient
     {
         public static Retoucher OnMove = new Retoucher(
-            new ChainDefinition("move:do", new WeightedEventHandler(AnyReorient))
+            new ChainDef<CommonEvent>("move:do", new EvHandler<CommonEvent>(AnyReorient))
         );
         public static Retoucher OnDisplace = new Retoucher(
-            new ChainDefinition("displaced:do", new WeightedEventHandler(AnyReorient))
+            new ChainDef<CommonEvent>("displaced:do", new EvHandler<CommonEvent>(AnyReorient))
         );
         public static Retoucher OnActionSuccess = new Retoucher(
-            new ChainDefinition("displaced:do", new WeightedEventHandler(AnyReorient))
+            new ChainDef<CommonEvent>("displaced:do", new EvHandler<CommonEvent>(AnyReorient))
         );
         public static Retoucher OnAttack = new Retoucher(
-            new ChainDefinition("displaced:do", new WeightedEventHandler(AnyReorient))
+            new ChainDef<CommonEvent>("displaced:do", new EvHandler<CommonEvent>(AnyReorient))
         );
 
         static void AnyReorient(EventBase eventBase)

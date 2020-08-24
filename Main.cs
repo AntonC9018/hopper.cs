@@ -109,10 +109,9 @@ namespace Hopper
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
-            var mod2 = new ChainModifier("attack", new Chains.WeightedEventHandler(
-                (EventBase eventBase) =>
+            var mod2 = new ChainModifier("attack", new Chains.EvHandler<StatEvent>(
+                (StatEvent ev) =>
                 {
-                    var ev = (StatEvent)eventBase;
                     System.Console.WriteLine("Called handler");
                     ((Attacking.Attack)ev.file).damage *= 3;
                 })

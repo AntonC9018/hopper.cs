@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using System.Numerics;
 using Chains;
 
-namespace Core
+namespace Core.Weapon
 {
-
     class Weapon
     {
         public static double AngleBetween(Vector2 vector1, Vector2 vector2)
@@ -22,6 +21,12 @@ namespace Core
             public bool reach;
         }
 
+        public class WeaponTarget : Target
+        {
+            public int index;
+            public Attackable.Attackableness attackableness;
+        }
+
         static Vector2 right = new Vector2(1, 0);
         static List<Piece> defaultPattern = new List<Piece>
         {
@@ -33,7 +38,7 @@ namespace Core
             }
         };
         List<Piece> pattern;
-        Chain chain;
+        Chain<CommonEvent> chain;
         Layer attackedLayer = Layer.REAL | Layer.MISC | Layer.WALL;
 
         public class TargetsEvent : CommonEvent
@@ -43,7 +48,7 @@ namespace Core
 
         public List<Target> GetTargets(Entity actor, Action action)
         {
-            var map = new List<Target>();
+            var targets = new List<Target>();
             double angle = AngleBetween(right, actor.m_orientation);
 
             for (int i = 0; i < this.pattern.Count; i++)
@@ -53,16 +58,35 @@ namespace Core
                 var entity = actor.m_world.m_grid
                     .GetCellAt(pos)
                     .GetEntityFromLayer(attackedLayer);
-                map[i] = new Target
+
+                // TODO: refactor
+                Attackable.Attackableness attackableness;
+                if (entity != null)
+                {
+                    var attackable = entity.beh_Attackable;
+
+                    attackableness =
+                        attackable == null
+                            ? Attackable.Attackableness.UNATTACKABLE
+                            : attackable.GetAttackableness();
+                }
+                else
+                {
+                    attackableness = Attackable.Attackableness.UNATTACKABLE;
+                }
+
+                targets[i] = new WeaponTarget
                 {
                     direction = piece.dir,
-                    entity = entity
+                    entity = entity,
+                    index = i,
+                    attackableness = attackableness
                 };
             }
 
             var ev = new TargetsEvent
             {
-                targets = map,
+                targets = targets,
                 actor = actor,
                 action = action
             };

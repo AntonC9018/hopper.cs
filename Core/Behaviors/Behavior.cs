@@ -3,24 +3,24 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public class ChainDefinition
+    public class ChainDef<Event> where Event : EventBase
     {
         public string name;
-        public WeightedEventHandler[] handlers;
+        public EvHandler<Event>[] handlers;
 
-        public ChainDefinition() { }
-        public ChainDefinition(string name, WeightedEventHandler handler)
+        public ChainDef() { }
+        public ChainDef(string name, EvHandler<Event> handler)
         {
             this.name = name;
-            this.handlers = new WeightedEventHandler[] { handler };
+            this.handlers = new EvHandler<Event>[] { handler };
         }
     }
 
     public class ChainTemplateDefinition
     {
         public string name;
-        ChainTemplate template;
-        public ChainTemplate Template
+        ChainTemplate<CommonEvent> template;
+        public ChainTemplate<CommonEvent> Template
         {
             get { return template.Clone(); }
             set { template = value; }
@@ -34,16 +34,16 @@ namespace Core
         System.Type t_behaviorType;
         public ChainTemplateDefinition[] m_chainTemplateDefinitions;
 
-        public BehaviorFactory(System.Type behaviorType, ChainDefinition[] chainDefinitions)
+        public BehaviorFactory(System.Type behaviorType, ChainDef<CommonEvent>[] chainDefinitions)
         {
             t_behaviorType = behaviorType;
             SetupTemplates(chainDefinitions);
         }
 
-        public BehaviorFactory(System.Type behaviorClass, ChainDefinition chainDefinition)
+        public BehaviorFactory(System.Type behaviorClass, ChainDef<CommonEvent> chainDefinitions)
         {
             t_behaviorType = behaviorClass;
-            SetupTemplates(new ChainDefinition[] { chainDefinition });
+            SetupTemplates(new ChainDef<CommonEvent>[] { chainDefinitions });
         }
 
         public BehaviorFactory(System.Type behaviorClass)
@@ -52,13 +52,13 @@ namespace Core
             m_chainTemplateDefinitions = new ChainTemplateDefinition[0];
         }
 
-        void SetupTemplates(ChainDefinition[] chainDefinitions)
+        void SetupTemplates(ChainDef<CommonEvent>[] chainDefinitions)
         {
             m_chainTemplateDefinitions = new ChainTemplateDefinition[chainDefinitions.Length];
             for (int i = 0; i < chainDefinitions.Length; i++)
             {
                 var chainDef = chainDefinitions[i];
-                var template = new ChainTemplate();
+                var template = new ChainTemplate<CommonEvent>();
 
                 foreach (var func in chainDef.handlers)
                 {

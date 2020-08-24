@@ -1,6 +1,6 @@
 
 using Chains;
-using Handle = MyLinkedList.MyListNode<Chains.WeightedEventHandler>;
+using Handle = MyLinkedList.MyListNode<Chains.EvHandler<Core.StatEvent>>;
 using Core.FS;
 using System.Collections.Generic;
 
@@ -8,7 +8,7 @@ namespace Core
 {
     public class StatNode : Node
     {
-        public Chain chain;
+        public Chain<StatEvent> chain;
         public File file;
     }
 
@@ -112,7 +112,7 @@ namespace Core
                 else if (node is File)
                 {
                     var file = new StatNode();
-                    file.chain = new Chain();
+                    file.chain = new Chain<StatEvent>();
                     file.file = ((File)node).Copy();
                     to.nodes.Add(name, file);
                 }

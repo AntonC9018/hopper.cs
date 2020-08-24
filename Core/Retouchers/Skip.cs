@@ -7,16 +7,16 @@ namespace Core.Retouchers
     public static class Skip
     {
         public static Retoucher EmptyAttack = new Retoucher(
-            new ChainDefinition("attack:check", new WeightedEventHandler(SkipEmptyAttack))
+            new ChainDef<CommonEvent>("attack:check", new EvHandler<CommonEvent>(SkipEmptyAttack))
         );
         public static Retoucher BlockedMove = new Retoucher(
-            new ChainDefinition("move:check", new WeightedEventHandler(SkipBlocked))
+            new ChainDef<CommonEvent>("move:check", new EvHandler<CommonEvent>(SkipBlocked))
         );
         public static Retoucher NoPlayer = new Retoucher(
-            new ChainDefinition("attack:check", new WeightedEventHandler(SkipEmptyAttack))
+            new ChainDef<CommonEvent>("attack:check", new EvHandler<CommonEvent>(SkipEmptyAttack))
         );
         public static Retoucher Self = new Retoucher(
-            new ChainDefinition("attack:check", new WeightedEventHandler(SkipEmptyAttack))
+            new ChainDef<CommonEvent>("attack:check", new EvHandler<CommonEvent>(SkipEmptyAttack))
         );
 
         static void SkipEmptyAttack(EventBase eventBase)

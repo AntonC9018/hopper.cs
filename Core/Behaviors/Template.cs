@@ -29,13 +29,13 @@
 //         }
 
 //         public static BehaviorFactory s_factory = new BehaviorFactory(
-//             typeof(Template), new ChainDefinition[] {
-//                 new ChainDefinition
+//             typeof(Template), new ChainDefinition<CommonEvent>[] {
+//                 new ChainDefinition<CommonEvent>
 //                 {
 //                     name = "",
-//                     handlers = new WeightedEventHandler[]
+//                     handlers = new WeightedEventHandler<CommonEvent>[]
 //                     {
-//                         // new WeightedEventHandler
+//                         // new WeightedEventHandler<CommonEvent>
 //                         // {
 //                         //     handlerFunction = func
 //                         // }

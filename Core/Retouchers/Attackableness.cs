@@ -24,9 +24,9 @@ namespace Core.Retouchers
             if (ConstantRetouchers[index] == null)
             {
                 ConstantRetouchers[index] = new Retoucher(
-                    new ChainDefinition(
+                    new ChainDef<CommonEvent>(
                         "attacked:condition",
-                        new WeightedEventHandler(_Constant(attackableness)))
+                        new EvHandler<CommonEvent>(_Constant(attackableness)))
                 );
             }
             return ConstantRetouchers[index];

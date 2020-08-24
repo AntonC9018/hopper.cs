@@ -68,9 +68,9 @@ namespace Core
             public Attacking.Attack attack;
         }
 
-        Chain chain_checkAttacked;
-        Chain chain_beAttacked;
-        Chain chain_getAttackableness;
+        Chain<CommonEvent> chain_checkAttacked;
+        Chain<CommonEvent> chain_beAttacked;
+        Chain<CommonEvent> chain_getAttackableness;
         Entity m_entity;
 
         public Attackable(Entity entity, BehaviorConfig conf)
@@ -101,15 +101,15 @@ namespace Core
             return true;
         }
 
-        static void SetResistance(EventBase eventBase)
+        static void SetResistance(CommonEvent commonEvent)
         {
-            var ev = (Event)eventBase;
+            var ev = (Event)commonEvent;
             ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("attacked/res");
         }
 
-        static void ResistSource(EventBase eventBase)
+        static void ResistSource(CommonEvent commonEvent)
         {
-            var ev = (Event)eventBase;
+            var ev = (Event)commonEvent;
             System.Console.WriteLine(ev.attack.source);
             var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("attacked/source_res");
             if (sourceRes[ev.attack.source] > ev.attack.power)
@@ -118,9 +118,9 @@ namespace Core
             }
         }
 
-        static void Armor(EventBase eventBase)
+        static void Armor(CommonEvent commonEvent)
         {
-            var ev = (Event)eventBase;
+            var ev = (Event)commonEvent;
 
             ev.attack.damage = System.Math.Clamp(
                 ev.attack.damage - ev.resistance.armor,
@@ -133,19 +133,20 @@ namespace Core
             }
         }
 
-        static void TakeHit(EventBase eventBase)
+        static void TakeHit(CommonEvent commonEvent)
         {
-            var ev = (Event)eventBase;
+            var ev = (Event)commonEvent;
             System.Console.WriteLine($"Taken {ev.attack.damage} damage");
         }
 
 
-        public class AttackablenessEvent : EventBase
+        public class AttackablenessEvent : CommonEvent
         {
-            public Entity actor;
             public Attackableness attackableness = Attackableness.ATTACKABLE;
         }
 
+        // TODO: this should get passed the attacker and the info about the attack
+        // so Attacking.Event event        
         public Attackableness GetAttackableness()
         {
             var ev = new AttackablenessEvent { actor = this.m_entity };
@@ -157,43 +158,43 @@ namespace Core
         // Since we want to have just one copy of this factory per class
         // I don't want to bloat my instances with copies of this
         public static BehaviorFactory s_factory = new BehaviorFactory(
-            typeof(Attackable), new ChainDefinition[]
+            typeof(Attackable), new ChainDef<CommonEvent>[]
             {
-                new ChainDefinition
+                new ChainDef<CommonEvent>
                 {
                     name = "attacked:check",
-                    handlers = new WeightedEventHandler[]
+                    handlers = new EvHandler<CommonEvent>[]
                     {
-                        new WeightedEventHandler {
+                        new EvHandler<CommonEvent> {
                             handlerFunction = SetResistance,
                             priority = (int)PRIORITY_RANKS.HIGH
                         },
-                        new WeightedEventHandler {
+                        new EvHandler<CommonEvent> {
                             handlerFunction = ResistSource,
                             priority = (int)PRIORITY_RANKS.LOW
                         },
-                        new WeightedEventHandler {
+                        new EvHandler<CommonEvent> {
                             handlerFunction = Armor,
                             priority = (int)PRIORITY_RANKS.LOW
                         }
                     }
                 },
-                new ChainDefinition
+                new ChainDef<CommonEvent>
                 {
                     name = "attacked:do",
-                    handlers = new WeightedEventHandler[]
+                    handlers = new EvHandler<CommonEvent>[]
                     {
-                        new WeightedEventHandler {
+                        new EvHandler<CommonEvent> {
                             handlerFunction = TakeHit
                         }
                     }
                 },
-                new ChainDefinition
+                new ChainDef<CommonEvent>
                 {
                     name = "attacked:condition",
-                    handlers = new WeightedEventHandler[]
+                    handlers = new EvHandler<CommonEvent>[]
                     {
-                        new WeightedEventHandler {
+                        new EvHandler<CommonEvent> {
                         }
                     }
                 }
