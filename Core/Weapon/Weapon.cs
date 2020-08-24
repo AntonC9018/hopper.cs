@@ -4,30 +4,35 @@ using Chains;
 
 namespace Core.Weapon
 {
-    class Weapon
+    public class Weapon
     {
-        public static double AngleBetween(Vector2 vector1, Vector2 vector2)
-        {
-            double sin = vector1.x * vector2.y - vector2.x * vector1.y;
-            double cos = vector1.x * vector2.x + vector1.y * vector2.y;
-
-            return System.Math.Atan2(sin, cos);
-        }
 
         public class Piece
         {
             public Vector2 pos;
             public Vector2 dir;
             public bool reach;
+            public Piece Rotate(double angle)
+            {
+                return new Piece
+                {
+                    pos = pos.Rotate(angle),
+                    dir = dir.Rotate(angle),
+                    reach = reach
+                };
+            }
         }
 
         public class WeaponTarget : Target
         {
             public int index;
-            public Attackable.Attackableness attackableness;
+            public AtkCondition attackableness;
+        }
+        public class Event : CommonEvent
+        {
+            public List<WeaponTarget> targets;
         }
 
-        static Vector2 right = new Vector2(1, 0);
         static List<Piece> defaultPattern = new List<Piece>
         {
             new Piece
@@ -41,38 +46,33 @@ namespace Core.Weapon
         Chain<CommonEvent> chain;
         Layer attackedLayer = Layer.REAL | Layer.MISC | Layer.WALL;
 
-        public class TargetsEvent : CommonEvent
+        public List<WeaponTarget> GetTargets(Entity actor, Action action)
         {
-            public List<Target> targets;
-        }
-
-        public List<Target> GetTargets(Entity actor, Action action)
-        {
-            var targets = new List<Target>();
-            double angle = AngleBetween(right, actor.m_orientation);
+            var targets = new List<WeaponTarget>();
+            double angle = Vector2.Right.AngleTo(actor.m_orientation);
 
             for (int i = 0; i < this.pattern.Count; i++)
             {
-                var piece = this.pattern[i];
+                var piece = this.pattern[i].Rotate(angle);
                 var pos = actor.m_pos + piece.pos;
                 var entity = actor.m_world.m_grid
                     .GetCellAt(pos)
                     .GetEntityFromLayer(attackedLayer);
 
                 // TODO: refactor
-                Attackable.Attackableness attackableness;
+                AtkCondition attackableness;
                 if (entity != null)
                 {
                     var attackable = entity.beh_Attackable;
 
                     attackableness =
                         attackable == null
-                            ? Attackable.Attackableness.UNATTACKABLE
+                            ? AtkCondition.NEVER
                             : attackable.GetAttackableness();
                 }
                 else
                 {
-                    attackableness = Attackable.Attackableness.UNATTACKABLE;
+                    attackableness = AtkCondition.NEVER;
                 }
 
                 targets[i] = new WeaponTarget
@@ -84,7 +84,7 @@ namespace Core.Weapon
                 };
             }
 
-            var ev = new TargetsEvent
+            var ev = new Event
             {
                 targets = targets,
                 actor = actor,

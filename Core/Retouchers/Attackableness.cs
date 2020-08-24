@@ -6,7 +6,7 @@ namespace Core.Retouchers
 {
     public static class Attackableness
     {
-        static System.Action<EventBase> _Constant(Attackable.Attackableness attackableness)
+        static System.Action<EventBase> _Constant(AtkCondition attackableness)
         {
             return (EventBase eventBase) =>
             {
@@ -16,9 +16,9 @@ namespace Core.Retouchers
         }
 
         static Retoucher[] ConstantRetouchers
-            = new Retoucher[System.Enum.GetNames(typeof(Attackable.Attackableness)).Length];
+            = new Retoucher[System.Enum.GetNames(typeof(AtkCondition)).Length];
 
-        public static Retoucher Constant(Attackable.Attackableness attackableness)
+        public static Retoucher Constant(AtkCondition attackableness)
         {
             int index = (int)attackableness;
             if (ConstantRetouchers[index] == null)

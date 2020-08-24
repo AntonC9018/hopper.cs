@@ -33,30 +33,35 @@ namespace Core
             m_height = grid.GetLength(1);
         }
 
+        public int Int(float x)
+        {
+            return (int)System.Math.Round(x);
+        }
+
         public void Reset(Entity entity)
         {
-            var cell = m_grid[(int)entity.m_pos.x, (int)entity.m_pos.y];
+            var cell = m_grid[Int(entity.m_pos.x), Int(entity.m_pos.y)];
             cell.m_entities.Add(entity);
             cell.FireEnterEvent(entity);
         }
 
         public void Reset(Entity entity, Vector2 pos)
         {
-            var cell = m_grid[(int)pos.x, (int)pos.y];
+            var cell = m_grid[Int(pos.x), Int(pos.y)];
             cell.m_entities.Add(entity);
             cell.FireEnterEvent(entity);
         }
 
         public void Remove(Entity entity)
         {
-            var cell = m_grid[(int)entity.m_pos.x, (int)entity.m_pos.y];
+            var cell = m_grid[Int(entity.m_pos.x), Int(entity.m_pos.y)];
             cell.m_entities.Remove(entity);
             cell.FireLeaveEvent(entity);
         }
 
         public void Remove(Entity entity, Vector2 pos)
         {
-            var cell = m_grid[(int)pos.x, (int)pos.y];
+            var cell = m_grid[Int(pos.x), Int(pos.y)];
             cell.m_entities.Remove(entity);
             cell.FireLeaveEvent(entity);
         }
@@ -69,7 +74,7 @@ namespace Core
         public Cell GetCellAt(Vector2 pos)
         {
             if (IsWithinBounds(pos)) return null;
-            return m_grid[(int)pos.x, (int)pos.y];
+            return m_grid[Int(pos.x), Int(pos.y)];
         }
     }
 }

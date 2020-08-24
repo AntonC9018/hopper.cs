@@ -4,6 +4,10 @@ using Core.FS;
 
 namespace Core
 {
+    public enum AtkCondition
+    {
+        ALWAYS, NEVER, SKIP, IF_NEXT_TO
+    }
     public class Attackable : Behavior
     {
 
@@ -41,11 +45,6 @@ namespace Core
             attackDir.AddFile("res", resFile);
 
             RegisterAttackSource("default");
-        }
-
-        public enum Attackableness
-        {
-            ATTACKABLE, UNATTACKABLE, SKIP
         }
 
         public class Resistance : File
@@ -142,12 +141,12 @@ namespace Core
 
         public class AttackablenessEvent : CommonEvent
         {
-            public Attackableness attackableness = Attackableness.ATTACKABLE;
+            public AtkCondition attackableness = AtkCondition.ALWAYS;
         }
 
         // TODO: this should get passed the attacker and the info about the attack
         // so Attacking.Event event        
-        public Attackableness GetAttackableness()
+        public AtkCondition GetAttackableness()
         {
             var ev = new AttackablenessEvent { actor = this.m_entity };
             chain_getAttackableness.Pass(ev);

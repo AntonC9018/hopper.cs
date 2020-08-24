@@ -124,7 +124,7 @@ namespace Vector
             return Math.Atan2(Cross(v), Dot(v));
         }
 
-        public Vector2 Rotate(float angle_in_rads)
+        public Vector2 Rotate(double angle_in_rads)
         {
             return MatMul(
                 new Vector2
