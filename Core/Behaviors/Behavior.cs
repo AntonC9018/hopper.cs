@@ -1,64 +1,70 @@
 using Chains;
-using System.Collections.Generic;
+using System;
 
 namespace Core
 {
-    public class ChainDef<Event> where Event : EventBase
+    public abstract class IChainDef
     {
         public string name;
-        public EvHandler<Event>[] handlers;
+        public IEvHandler[] handlers;
 
-        public ChainDef() { }
-        public ChainDef(string name, EvHandler<Event> handler)
+        public IChainDef() { }
+        public IChainDef(string name, IEvHandler handler)
         {
             this.name = name;
-            this.handlers = new EvHandler<Event>[] { handler };
+            this.handlers = new IEvHandler[] { handler };
+        }
+        public abstract IChainTemplate CreateChainTemplate();
+    }
+    public class ChainDef<Event> : IChainDef where Event : EventBase
+    {
+        public ChainDef() : base() { }
+        public ChainDef(string name, IEvHandler handler) : base(name, handler) { }
+        public override IChainTemplate CreateChainTemplate()
+        {
+            return new ChainTemplate<Event>();
         }
     }
 
     public class ChainTemplateDefinition
     {
         public string name;
-        ChainTemplate<CommonEvent> template;
-        public ChainTemplate<CommonEvent> Template
+        IChainTemplate template;
+        public IChainTemplate Template
         {
             get { return template.Clone(); }
             set { template = value; }
         }
     }
 
-    public class BehaviorFactory
+    public abstract class IBehaviorFactory
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        System.Type t_behaviorType;
         public ChainTemplateDefinition[] m_chainTemplateDefinitions;
 
-        public BehaviorFactory(System.Type behaviorType, ChainDef<CommonEvent>[] chainDefinitions)
+        public IBehaviorFactory(IChainDef[] chainDefinitions)
         {
-            t_behaviorType = behaviorType;
             SetupTemplates(chainDefinitions);
         }
 
-        public BehaviorFactory(System.Type behaviorClass, ChainDef<CommonEvent> chainDefinitions)
+        public IBehaviorFactory(IChainDef chainDefinitions)
         {
-            t_behaviorType = behaviorClass;
-            SetupTemplates(new ChainDef<CommonEvent>[] { chainDefinitions });
+            SetupTemplates(new IChainDef[] { chainDefinitions });
         }
 
-        public BehaviorFactory(System.Type behaviorClass)
+        public IBehaviorFactory()
         {
-            t_behaviorType = behaviorClass;
             m_chainTemplateDefinitions = new ChainTemplateDefinition[0];
         }
 
-        void SetupTemplates(ChainDef<CommonEvent>[] chainDefinitions)
+        protected void SetupTemplates(IChainDef[] chainDefinitions)
         {
             m_chainTemplateDefinitions = new ChainTemplateDefinition[chainDefinitions.Length];
             for (int i = 0; i < chainDefinitions.Length; i++)
             {
                 var chainDef = chainDefinitions[i];
-                var template = new ChainTemplate<CommonEvent>();
+                var template = chainDef.CreateChainTemplate();
 
                 foreach (var func in chainDef.handlers)
                 {
@@ -73,9 +79,27 @@ namespace Core
             }
         }
 
-        public Behavior Instantiate(Entity entity, BehaviorConfig conf)
+        public abstract Behavior Instantiate(Entity entity, BehaviorConfig conf);
+    }
+
+    public class BehaviorFactory<Beh> : IBehaviorFactory
+        where Beh : Behavior
+    {
+        public BehaviorFactory(IChainDef[] chainDefinitions)
+            : base(chainDefinitions)
+        { }
+
+        public BehaviorFactory(IChainDef chainDefinition)
+            : base(chainDefinition)
+        { }
+
+        public BehaviorFactory()
+            : base()
+        { }
+
+        public override Behavior Instantiate(Entity entity, BehaviorConfig conf)
         {
-            return (Behavior)System.Activator.CreateInstance(t_behaviorType, entity, conf);
+            return (Behavior)Activator.CreateInstance(typeof(Beh), entity, conf);
         }
     }
 

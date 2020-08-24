@@ -10,9 +10,9 @@ namespace Core
             public System.Func<Entity, Action> calculateAction;
             public System.Action<EventBase> doAction;
         }
-        Chain<CommonEvent> chain_checkAction;
-        Chain<CommonEvent> chain_failAction;
-        Chain<CommonEvent> chain_succeedAction;
+        Chain<Event> chain_checkAction;
+        Chain<Event> chain_failAction;
+        Chain<Event> chain_succeedAction;
         Entity m_entity;
         public bool b_didAction = false;
         public bool b_doingAction = false;
@@ -25,13 +25,13 @@ namespace Core
         public Acting(Entity entity, BehaviorConfig conf)
         {
             m_entity = entity;
-            chain_checkAction = entity.m_chains["action:check"];
-            chain_failAction = entity.m_chains["action:fail"];
-            chain_succeedAction = entity.m_chains["action:succeed"];
+            chain_checkAction = (Chain<Event>)entity.m_chains["action:check"];
+            chain_failAction = (Chain<Event>)entity.m_chains["action:fail"];
+            chain_succeedAction = (Chain<Event>)entity.m_chains["action:succeed"];
             conf_calculateAction = ((Config)conf).calculateAction;
             conf_doActionFunc = ((Config)conf).doAction;
 
-            entity.m_chains["tick"].AddHandler(e =>
+            entity.m_chains["tick"].AddHandler<CommonEvent>(e =>
             {
                 b_didAction = false;
                 b_doingAction = false;
@@ -108,27 +108,27 @@ namespace Core
         // I do hate the amount of boilerplate here
         // Since we want to have just one copy of this factory per class
         // I don't want to bloat my instances with copies of this
-        public static BehaviorFactory s_factory = new BehaviorFactory(
-            typeof(Acting), new ChainDef<CommonEvent>[]
+        public static BehaviorFactory<Acting> s_factory = new BehaviorFactory<Acting>(
+            new IChainDef[]
             {
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "action:check",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
                     }
                 },
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "action:fail",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
                     }
                 },
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "action:succeed",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
                     }
                 }

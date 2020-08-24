@@ -59,8 +59,8 @@ namespace Core
             public List<Target> targets;
         }
 
-        Chain<CommonEvent> chain_checkAttack;
-        Chain<CommonEvent> chain_doAttack;
+        IChain chain_checkAttack;
+        IChain chain_doAttack;
 
         public Attacking(Entity entity, BehaviorConfig conf)
         {
@@ -103,9 +103,8 @@ namespace Core
             return true;
         }
 
-        static void SetBase(CommonEvent commonEvent)
+        static void SetBase(Event ev)
         {
-            var ev = (Event)commonEvent;
             if (ev.attack == null)
             {
                 ev.attack = (Attack)ev.actor.m_statManager.GetFile("attack");
@@ -116,18 +115,16 @@ namespace Core
             }
         }
 
-        static void GetTargets(CommonEvent commonEvent)
+        static void GetTargets(Event ev)
         {
-            var ev = (Event)commonEvent;
             if (ev.targets == null)
             {
                 ev.targets = ev.actor.beh_Attacking.GenerateTargets(ev);
             }
         }
 
-        static void ApplyAttack(CommonEvent commonEvent)
+        static void ApplyAttack(Event ev)
         {
-            var ev = (Event)commonEvent;
             foreach (var target in ev.targets)
             {
                 var action = ev.action.Copy();
@@ -142,9 +139,8 @@ namespace Core
             }
         }
 
-        static void ApplyPush(CommonEvent commonEvent)
+        static void ApplyPush(Event ev)
         {
-            var ev = (Event)commonEvent;
             foreach (var target in ev.targets)
             {
                 var action = ev.action.Copy();
@@ -161,31 +157,31 @@ namespace Core
             }
         }
 
-        public static BehaviorFactory s_factory = new BehaviorFactory(
-            typeof(Attacking), new ChainDef<CommonEvent>[]
+        public static BehaviorFactory<Attacking> s_factory = new BehaviorFactory<Attacking>(
+            new IChainDef[]
             {
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "attack:check",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = SetBase,
-                            priority = (int)PRIORITY_RANKS.HIGH
-                        },
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = GetTargets
-                        }
+                        new EvHandler<Event>(
+                            SetBase,
+                            PRIORITY_RANKS.HIGH
+                        ),
+                        new EvHandler<Event>(
+                            GetTargets
+                        )
                     }
                 },
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "attack:do",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = ApplyAttack
-                        }
+                        new EvHandler<Event>(
+                            ApplyAttack
+                        )
                     }
                 }
             }

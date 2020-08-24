@@ -53,8 +53,8 @@ namespace Core
             public Attacking.Push push;
         }
 
-        Chain<CommonEvent> chain_checkPushed;
-        Chain<CommonEvent> chain_bePushed;
+        IChain chain_checkPushed;
+        IChain chain_bePushed;
 
         public Pushable(Entity entity, BehaviorConfig conf)
         {
@@ -83,15 +83,13 @@ namespace Core
             return true;
         }
 
-        static void SetResistance(CommonEvent commonEvent)
+        static void SetResistance(Event ev)
         {
-            var ev = (Event)commonEvent;
             ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("pushed/res");
         }
 
-        static void ResistSource(CommonEvent commonEvent)
+        static void ResistSource(Event ev)
         {
-            var ev = (Event)commonEvent;
             var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("pushed/source_res");
             if (sourceRes[ev.push.source] > ev.push.power)
             {
@@ -99,9 +97,8 @@ namespace Core
             }
         }
 
-        static void Armor(CommonEvent commonEvent)
+        static void Armor(Event ev)
         {
-            var ev = (Event)commonEvent;
 
             if (ev.push.pierce <= ev.resistance.pierce)
             {
@@ -109,45 +106,42 @@ namespace Core
             }
         }
 
-        static void BePushed(CommonEvent commonEvent)
+        static void BePushed(Event ev)
         {
-            var ev = (Event)commonEvent;
             // TODO: set up properly
             var move = new Displaceable.Move();
             var pars = new Displaceable.Params { move = move };
             ev.entity.beh_Displaceable.Activate(ev.actor, ev.action, pars);
         }
 
-        public static BehaviorFactory s_factory = new BehaviorFactory(
-            typeof(Pushable), new ChainDef<CommonEvent>[]
+        public static BehaviorFactory<Pushable> s_factory = new BehaviorFactory<Pushable>(
+            new IChainDef[]
             {
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "pushed:check",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = SetResistance,
-                            priority = (int)PRIORITY_RANKS.HIGH
-                        },
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = ResistSource,
-                            priority = (int)PRIORITY_RANKS.LOW
-                        },
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = Armor,
-                            priority = (int)PRIORITY_RANKS.LOW
-                        }
+                        new EvHandler<Event> (
+                            SetResistance,
+                            PRIORITY_RANKS.HIGH
+                        ),
+                        new EvHandler<Event> (
+                            ResistSource,
+                            PRIORITY_RANKS.LOW
+                        ),
+                        new EvHandler<Event> (
+                            Armor,
+                            PRIORITY_RANKS.LOW
+                        )
                     }
                 },
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "pushed:do",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = BePushed
-                        }
+                        new EvHandler<Event>(BePushed)
                     }
                 }
             }

@@ -67,9 +67,9 @@ namespace Core
             public Attacking.Attack attack;
         }
 
-        Chain<CommonEvent> chain_checkAttacked;
-        Chain<CommonEvent> chain_beAttacked;
-        Chain<CommonEvent> chain_getAttackableness;
+        IChain chain_checkAttacked;
+        IChain chain_beAttacked;
+        IChain chain_getAttackableness;
         Entity m_entity;
 
         public Attackable(Entity entity, BehaviorConfig conf)
@@ -100,15 +100,13 @@ namespace Core
             return true;
         }
 
-        static void SetResistance(CommonEvent commonEvent)
+        static void SetResistance(Event ev)
         {
-            var ev = (Event)commonEvent;
             ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("attacked/res");
         }
 
-        static void ResistSource(CommonEvent commonEvent)
+        static void ResistSource(Event ev)
         {
-            var ev = (Event)commonEvent;
             System.Console.WriteLine(ev.attack.source);
             var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("attacked/source_res");
             if (sourceRes[ev.attack.source] > ev.attack.power)
@@ -117,10 +115,8 @@ namespace Core
             }
         }
 
-        static void Armor(CommonEvent commonEvent)
+        static void Armor(Event ev)
         {
-            var ev = (Event)commonEvent;
-
             ev.attack.damage = System.Math.Clamp(
                 ev.attack.damage - ev.resistance.armor,
                 ev.resistance.minDamage,
@@ -132,9 +128,8 @@ namespace Core
             }
         }
 
-        static void TakeHit(CommonEvent commonEvent)
+        static void TakeHit(Event ev)
         {
-            var ev = (Event)commonEvent;
             System.Console.WriteLine($"Taken {ev.attack.damage} damage");
         }
 
@@ -156,45 +151,43 @@ namespace Core
         // I do hate the amount of boilerplate here
         // Since we want to have just one copy of this factory per class
         // I don't want to bloat my instances with copies of this
-        public static BehaviorFactory s_factory = new BehaviorFactory(
-            typeof(Attackable), new ChainDef<CommonEvent>[]
+        public static BehaviorFactory<Attackable> s_factory = new BehaviorFactory<Attackable>(
+            new IChainDef[]
             {
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "attacked:check",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = SetResistance,
-                            priority = (int)PRIORITY_RANKS.HIGH
-                        },
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = ResistSource,
-                            priority = (int)PRIORITY_RANKS.LOW
-                        },
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = Armor,
-                            priority = (int)PRIORITY_RANKS.LOW
-                        }
+                        new EvHandler<Event>(
+                            SetResistance,
+                            PRIORITY_RANKS.HIGH
+                        ),
+                        new EvHandler<Event>(
+                            ResistSource,
+                            PRIORITY_RANKS.LOW
+                        ),
+                        new EvHandler<Event>(
+                            Armor,
+                            PRIORITY_RANKS.LOW
+                        )
                     }
                 },
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "attacked:do",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = TakeHit
-                        }
+                        new EvHandler<Event>(
+                            TakeHit
+                        )
                     }
                 },
-                new ChainDef<CommonEvent>
+                new ChainDef<AttackablenessEvent>
                 {
                     name = "attacked:condition",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<AttackablenessEvent>[]
                     {
-                        new EvHandler<CommonEvent> {
-                        }
                     }
                 }
             }

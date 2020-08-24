@@ -1,6 +1,6 @@
 
 using Chains;
-using Handle = MyLinkedList.MyListNode<Chains.EvHandler<Core.StatEvent>>;
+using Handle = MyLinkedList.MyListNode<Chains.IEvHandler>;
 using Core.FS;
 using System.Collections.Generic;
 

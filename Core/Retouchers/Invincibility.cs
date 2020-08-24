@@ -7,23 +7,19 @@ namespace Core.Retouchers
     public static class Invinsibility
     {
         public static Retoucher PreventsDamage = new Retoucher(
-            new ChainDef<CommonEvent>("attacked:do", new EvHandler<CommonEvent>(PreventDamage))
+            new ChainDef<Attackable.Event>("attacked:do", new EvHandler<Attackable.Event>(PreventDamage))
         );
         public static Retoucher Decreases = new Retoucher(
             new ChainDef<CommonEvent>("tick", new EvHandler<CommonEvent>(Decrease))
         );
 
         // TODO:
-        static void PreventDamage(CommonEvent commonEvent)
+        static void PreventDamage(Attackable.Event ev)
         {
-            var ev = (Attackable.Event)commonEvent;
-            // ev.propagate = ev.actor
         }
         // TODO:
-        static void Decrease(CommonEvent commonEvent)
+        static void Decrease(CommonEvent ev)
         {
-            var ev = commonEvent;
-            // entity
         }
 
     }

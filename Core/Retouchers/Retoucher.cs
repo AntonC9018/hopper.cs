@@ -4,14 +4,14 @@ namespace Core
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        public ChainDef<CommonEvent>[] chainDefinitions;
+        public IChainDef[] chainDefinitions;
 
-        public Retoucher(ChainDef<CommonEvent> chainDefinition)
+        public Retoucher(IChainDef chainDefinition)
         {
-            chainDefinitions = new ChainDef<CommonEvent>[] { chainDefinition };
+            chainDefinitions = new IChainDef[] { chainDefinition };
         }
 
-        public Retoucher(ChainDef<CommonEvent>[] chainDefinitions)
+        public Retoucher(IChainDef[] chainDefinitions)
         {
             this.chainDefinitions = chainDefinitions;
         }

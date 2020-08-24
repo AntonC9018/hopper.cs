@@ -16,80 +16,77 @@ namespace Chains
         public bool propagate = true;
     }
 
-    public class EvHandler<Event> where Event : EventBase
+    public abstract class IEvHandler
     {
         public int priority = (int)PRIORITY_RANKS.MEDIUM;
-        public System.Action<Event> handlerFunction;
+
+        public abstract void Call(EventBase ev);
+    }
+
+    public class EvHandler<Event> : IEvHandler where Event : EventBase
+    {
+        System.Action<Event> handlerFunction;
 
         public EvHandler()
         {
         }
 
-        public EvHandler(System.Action<Event> handlerFunc)
+        public EvHandler(System.Action<Event> handlerFunc, PRIORITY_RANKS priority = PRIORITY_RANKS.MEDIUM)
         {
             handlerFunction = handlerFunc;
+            this.priority = (int)priority;
+        }
+
+        public override void Call(EventBase ev)
+        {
+            handlerFunction((Event)ev);
         }
     }
 
-    public class Chain<Event> where Event : EventBase
+    public abstract class IChain
     {
         const int NUM_PRIORITY_RANKS = (int)PRIORITY_RANKS.HIGHEST + 1;
-
         const int PRIORITY_STEP = 5;
+        internal MyLinkedList<IEvHandler> m_handlers;
+        protected List<MyListNode<IEvHandler>> m_handlersToRemove
+            = new List<MyListNode<IEvHandler>>();
 
         private int[] m_priorityRanksMap = {
             5000, 6000, 7000, 8000, 9000
         };
 
-        // This should not be referenced by anything outside the namespace
-        // The reason it's not private is because this has to be referenced 
-        // by ChainTemplate, which is kind of logically tied to this class
-        internal MyLinkedList<EvHandler<Event>> m_handlers { get; }
+        protected bool b_dirty;
 
-        private List<MyListNode<EvHandler<Event>>> m_handlersToRemove
-            = new List<MyListNode<EvHandler<Event>>>();
-
-        private bool b_dirty = true;
-
-
-        public Chain()
-        {
-            m_handlers = new MyLinkedList<EvHandler<Event>>();
-        }
-
-        // Assumes the given list is sorted        
-
-        public Chain(MyLinkedList<EvHandler<Event>> list)
-        {
-            m_handlers = list;
-            b_dirty = false;
-        }
-
-        public void Pass(Event ev)
+        public void Pass(EventBase ev)
         {
             CleanUp();
             foreach (var handler in m_handlers)
             {
                 if (!ev.propagate)
                     return;
-                handler.handlerFunction(ev);
-
+                handler.Call(ev);
             }
         }
 
-        public void Pass(Event ev, System.Func<Event, bool> stopFunc)
+        public void Pass(EventBase ev, System.Func<EventBase, bool> stopFunc)
         {
             CleanUp();
             foreach (var handler in m_handlers)
             {
                 if (stopFunc(ev))
                     return;
-                handler.handlerFunction(ev);
+                handler.Call(ev);
             }
         }
 
-        public MyListNode<EvHandler<Event>> AddHandler(
-            EvHandler<Event> handler)
+        public MyListNode<IEvHandler> AddHandler<T>(
+            System.Action<T> handlerFunction) where T : EventBase
+        {
+            return AddHandler(
+                new EvHandler<T>(handlerFunction));
+        }
+
+        public MyListNode<IEvHandler> AddHandler(IEvHandler handler)
         {
             b_dirty = true;
             m_handlers.AddFront(handler);
@@ -97,24 +94,7 @@ namespace Chains
             return m_handlers.Head;
         }
 
-        public MyListNode<EvHandler<Event>> AddHandler(
-            System.Action<Event> handlerFunction)
-        {
-            return AddHandler(
-                new EvHandler<Event>
-                {
-                    handlerFunction = handlerFunction
-                }
-            );
-        }
-
-        public void RemoveHandler(MyListNode<EvHandler<Event>> handle)
-        {
-            m_handlersToRemove.Add(handle);
-        }
-
-
-        private int MapPriority(int rank)
+        protected int MapPriority(int rank)
         {
             // given a rank
             if (rank < NUM_PRIORITY_RANKS)
@@ -128,7 +108,7 @@ namespace Chains
             return rank;
         }
 
-        private void CleanUp()
+        protected void CleanUp()
         {
             foreach (var handle in m_handlersToRemove)
             {
@@ -144,6 +124,26 @@ namespace Chains
         private void SortHandlers()
         {
             m_handlers.Sort((a, b) => a.priority - b.priority);
+            b_dirty = false;
+        }
+
+        public void RemoveHandler(MyListNode<IEvHandler> handle)
+        {
+            m_handlersToRemove.Add(handle);
+        }
+    }
+
+    public class Chain<Event> : IChain where Event : EventBase
+    {
+        public Chain()
+        {
+            m_handlers = new MyLinkedList<IEvHandler>();
+        }
+
+        // Assumes the given list is sorted        
+        public Chain(MyLinkedList<IEvHandler> list)
+        {
+            m_handlers = list;
             b_dirty = false;
         }
     }

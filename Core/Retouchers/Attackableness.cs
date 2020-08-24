@@ -6,11 +6,10 @@ namespace Core.Retouchers
 {
     public static class Attackableness
     {
-        static System.Action<EventBase> _Constant(AtkCondition attackableness)
+        static System.Action<Attackable.AttackablenessEvent> _Constant(AtkCondition attackableness)
         {
-            return (EventBase eventBase) =>
+            return (Attackable.AttackablenessEvent ev) =>
             {
-                var ev = (Attackable.AttackablenessEvent)eventBase;
                 ev.attackableness = attackableness;
             };
         }
@@ -24,9 +23,9 @@ namespace Core.Retouchers
             if (ConstantRetouchers[index] == null)
             {
                 ConstantRetouchers[index] = new Retoucher(
-                    new ChainDef<CommonEvent>(
+                    new ChainDef<Attackable.AttackablenessEvent>(
                         "attacked:condition",
-                        new EvHandler<CommonEvent>(_Constant(attackableness)))
+                        new EvHandler<Attackable.AttackablenessEvent>(_Constant(attackableness)))
                 );
             }
             return ConstantRetouchers[index];

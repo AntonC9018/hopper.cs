@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Handle = MyLinkedList.MyListNode<Chains.EvHandler<Core.CommonEvent>>;
+using Handle = MyLinkedList.MyListNode<Chains.IEvHandler>;
 
 namespace Core
 {
@@ -26,7 +26,7 @@ namespace Core
         // do not know in advance what we are instanciating
         // Also we keep track of the amount of inherits rather than the amount of instances
         // (for behaviors, that is)
-        public ChainDef<CommonEvent>[] m_ChainDefinition;
+        public IChainDef[] m_chainDefinition;
 
         // void AddStore(int entityId, TinkerData data)
         // {
@@ -49,7 +49,7 @@ namespace Core
         {
             return new TinkerData
             {
-                chainHandlesArray = new ChainHandles[m_ChainDefinition.Length]
+                chainHandlesArray = new ChainHandles[m_chainDefinition.Length]
             };
         }
 
@@ -64,9 +64,9 @@ namespace Core
             var data = MakeData();
             m_store[entity.id] = data;
 
-            for (int i = 0; i < m_ChainDefinition.Length; i++)
+            for (int i = 0; i < m_chainDefinition.Length; i++)
             {
-                var chainDef = m_ChainDefinition[i];
+                var chainDef = m_chainDefinition[i];
                 var handles = new Handle[chainDef.handlers.Length];
                 data.chainHandlesArray[i] = new ChainHandles
                 {

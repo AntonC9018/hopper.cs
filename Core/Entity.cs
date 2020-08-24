@@ -18,8 +18,8 @@ namespace Core
 
         // Don't add stuff here. The ontents of this are determined 
         // by the EntityFactory
-        public readonly Dictionary<string, Chain<CommonEvent>> m_chains =
-            new Dictionary<string, Chain<CommonEvent>>();
+        public readonly Dictionary<string, IChain> m_chains =
+            new Dictionary<string, IChain>();
 
         // the idea is to get the behavior instances like this:
         // entity.behaviors[Attackable.s_factory.id]
@@ -181,16 +181,16 @@ namespace Core
             m_chainTemplates.Add("tick", new ChainTemplate<CommonEvent>());
         }
 
-        protected Dictionary<string, ChainTemplate<CommonEvent>> m_chainTemplates =
-            new Dictionary<string, ChainTemplate<CommonEvent>>();
+        protected Dictionary<string, IChainTemplate> m_chainTemplates =
+            new Dictionary<string, IChainTemplate>();
 
-        protected List<(BehaviorFactory, BehaviorConfig)> m_behaviorSettings =
-            new List<(BehaviorFactory, BehaviorConfig)>();
+        protected List<(IBehaviorFactory, BehaviorConfig)> m_behaviorSettings =
+            new List<(IBehaviorFactory, BehaviorConfig)>();
 
         protected Dictionary<int, Retoucher> m_retouchers =
             new Dictionary<int, Retoucher>();
 
-        public void AddBehavior(BehaviorFactory factory, BehaviorConfig conf = null)
+        public void AddBehavior(IBehaviorFactory factory, BehaviorConfig conf = null)
         {
             m_behaviorSettings.Add((factory, conf));
             foreach (var chainTemplateDefinition in factory.m_chainTemplateDefinitions)
@@ -204,7 +204,7 @@ namespace Core
         public void AddRetoucher(Retoucher retoucher)
         {
             m_retouchers.Add(retoucher.id, retoucher);
-            foreach (ChainDef<CommonEvent> cd in retoucher.chainDefinitions)
+            foreach (IChainDef cd in retoucher.chainDefinitions)
             {
                 foreach (var handler in cd.handlers)
                     m_chainTemplates[cd.name].AddHandler(handler);

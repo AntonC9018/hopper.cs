@@ -3,39 +3,19 @@ using MyLinkedList;
 
 namespace Chains
 {
-    public class ChainTemplate<Event> where Event : EventBase
+    public abstract class IChainTemplate
     {
-        private List<EvHandler<Event>> m_handlers;
+        protected List<IEvHandler> m_handlers;
+        protected bool b_areHandlersCached;
 
-        private bool b_areHandlersCached;
-
-        public ChainTemplate()
+        public IChainTemplate() { }
+        protected IChainTemplate(List<IEvHandler> handlers, bool areHandlersCached)
         {
-            m_handlers = new List<EvHandler<Event>>(8);
-            b_areHandlersCached = false;
-        }
-
-        private ChainTemplate(List<EvHandler<Event>> handlers, bool areHandlersCached)
-        {
-            m_handlers = new List<EvHandler<Event>>(handlers);
+            m_handlers = new List<IEvHandler>(handlers);
             b_areHandlersCached = areHandlersCached;
         }
 
-        public void AddHandler(EvHandler<Event> handler)
-        {
-            b_areHandlersCached = false;
-            m_handlers.Add(handler);
-        }
-
-        public void AddHandler(System.Action<Event> handlerFunc)
-        {
-            AddHandler(new EvHandler<Event>
-            {
-                handlerFunction = handlerFunc
-            });
-        }
-
-        public Chain<Event> Init()
+        public IChain Init()
         {
             if (b_areHandlersCached)
             {
@@ -44,9 +24,8 @@ namespace Chains
             return InitAndCache();
         }
 
-        private Chain<Event> InitAndCache()
+        protected IChain _InitAndCache(IChain chain)
         {
-            var chain = new Chain<Event>();
             foreach (var handler in m_handlers)
             {
                 chain.AddHandler(handler);
@@ -64,11 +43,45 @@ namespace Chains
 
             return chain;
         }
-
-
-        private Chain<Event> InitFromCache()
+        protected abstract IChain InitFromCache();
+        protected abstract IChain InitAndCache();
+        public abstract void AddHandler(System.Action<EventBase> handlerFunc);
+        public void AddHandler(IEvHandler handler)
         {
-            var linkedList = new MyLinkedList<EvHandler<Event>>();
+            b_areHandlersCached = false;
+            m_handlers.Add(handler);
+        }
+        public abstract IChainTemplate Clone();
+
+
+
+    }
+    public class ChainTemplate<Event> : IChainTemplate where Event : EventBase
+    {
+        public ChainTemplate()
+        {
+            m_handlers = new List<IEvHandler>(8);
+            b_areHandlersCached = false;
+        }
+        protected ChainTemplate(List<IEvHandler> handlers, bool areHandlersCached)
+            : base(handlers, areHandlersCached)
+        {
+        }
+
+        public override void AddHandler(System.Action<EventBase> handlerFunc)
+        {
+            AddHandler(new EvHandler<Event>(handlerFunc));
+        }
+
+        protected override IChain InitAndCache()
+        {
+            var chain = new Chain<Event>();
+            return base._InitAndCache(chain);
+        }
+
+        protected override IChain InitFromCache()
+        {
+            var linkedList = new MyLinkedList<IEvHandler>();
             foreach (var handler in m_handlers)
             {
                 linkedList.AddFront(handler);
@@ -76,7 +89,7 @@ namespace Chains
             return new Chain<Event>(linkedList);
         }
 
-        public ChainTemplate<Event> Clone()
+        public override IChainTemplate Clone()
         {
             return new ChainTemplate<Event>(m_handlers, b_areHandlersCached);
         }

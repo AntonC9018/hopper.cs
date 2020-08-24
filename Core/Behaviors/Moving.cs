@@ -12,8 +12,8 @@ namespace Core
             public Displaceable.Move move;
         }
 
-        Chain<CommonEvent> chain_checkMove;
-        Chain<CommonEvent> chain_doMove;
+        IChain chain_checkMove;
+        IChain chain_doMove;
 
         public Moving(Entity entity, BehaviorConfig conf)
         {
@@ -38,9 +38,8 @@ namespace Core
             return true;
         }
 
-        static void SetBase(CommonEvent commonEvent)
+        static void SetBase(Event ev)
         {
-            var ev = (Event)commonEvent;
             if (ev.move == null)
             {
                 // TODO: set stats for move
@@ -48,35 +47,34 @@ namespace Core
             }
         }
 
-        static void Displace(CommonEvent commonEvent)
+        static void Displace(Event ev)
         {
-            var ev = (Event)commonEvent;
             var pars = new Displaceable.Params { move = ev.move };
             ev.actor.beh_Displaceable.Activate(ev.actor, ev.action, pars);
         }
 
-        public static BehaviorFactory s_factory = new BehaviorFactory(
-            typeof(Moving), new ChainDef<CommonEvent>[]
+        public static BehaviorFactory<Moving> s_factory = new BehaviorFactory<Moving>(
+            new IChainDef[]
             {
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "move:check",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = SetBase,
-                            priority = (int)PRIORITY_RANKS.HIGH
-                        }
+                        new EvHandler<Event> (
+                            SetBase,
+                            PRIORITY_RANKS.HIGH
+                        )
                     }
                 },
-                new ChainDef<CommonEvent>
+                new ChainDef<Event>
                 {
                     name = "move:do",
-                    handlers = new EvHandler<CommonEvent>[]
+                    handlers = new EvHandler<Event>[]
                     {
-                        new EvHandler<CommonEvent> {
-                            handlerFunction = Displace
-                        }
+                        new EvHandler<Event> (
+                            Displace
+                        )
                     }
                 }
             }

@@ -19,9 +19,8 @@ namespace Core.Retouchers
             new ChainDef<CommonEvent>("displaced:do", new EvHandler<CommonEvent>(AnyReorient))
         );
 
-        static void AnyReorient(EventBase eventBase)
+        static void AnyReorient(CommonEvent ev)
         {
-            var ev = (CommonEvent)eventBase;
             if (ev.action.direction != null)
             {
                 ev.actor.Reorient(ev.action.direction);
