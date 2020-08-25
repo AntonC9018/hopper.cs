@@ -12,14 +12,14 @@ namespace Core
         {
             Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
-            File attackFile = new Attack
+            StatFile attackStatFile = new Attack
             {
                 source = 0,
                 power = 1,
                 damage = 1,
                 pierce = 1
             };
-            File pushFile = new Push
+            StatFile pushStatFile = new Push
             {
                 source = 0,
                 power = 1,
@@ -27,11 +27,11 @@ namespace Core
                 pierce = 1
             };
 
-            baseDir.AddFile("attack", attackFile);
-            baseDir.AddFile("push", pushFile);
+            baseDir.AddFile("attack", attackStatFile);
+            baseDir.AddFile("push", pushStatFile);
         }
 
-        public class Attack : File
+        public class Attack : StatFile
         {
             public int source;
             public int power;
@@ -39,7 +39,7 @@ namespace Core
             public int pierce;
         }
 
-        public class Push : File
+        public class Push : StatFile
         {
             public int source = 0;
             public int power = 1;
@@ -59,13 +59,13 @@ namespace Core
             public List<Target> targets;
         }
 
-        IChain chain_checkAttack;
-        IChain chain_doAttack;
+        Chain<Event> chain_checkAttack;
+        Chain<Event> chain_doAttack;
 
         public Attacking(Entity entity)
         {
-            chain_checkAttack = entity.m_chains["attack:check"];
-            chain_doAttack = entity.m_chains["attack:do"];
+            chain_checkAttack = (Chain<Event>)entity.m_chains["attack:check"];
+            chain_doAttack = (Chain<Event>)entity.m_chains["attack:do"];
         }
 
         public List<Target> GenerateTargets(Event e)

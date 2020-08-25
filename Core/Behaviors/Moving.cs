@@ -12,13 +12,13 @@ namespace Core
             public Displaceable.Move move;
         }
 
-        IChain chain_checkMove;
-        IChain chain_doMove;
+        Chain<Event> chain_checkMove;
+        Chain<Event> chain_doMove;
 
         public Moving(Entity entity)
         {
-            chain_checkMove = entity.m_chains["move:check"];
-            chain_doMove = entity.m_chains["move:do"];
+            chain_checkMove = (Chain<Event>)entity.m_chains["move:check"];
+            chain_doMove = (Chain<Event>)entity.m_chains["move:do"];
         }
 
         public override bool Activate(Entity actor, Action action, ActivationParams pars)

@@ -10,51 +10,11 @@ namespace Core.FS
 
     public class File : Node
     {
-        public virtual void _Add(File f, int sign)
-        {
-            // let's do it the dumbest way so that it works
-            // maybe I'll figure out a better solution later
-            var type = f.GetType();
-            if (type != this.GetType())
-            {
-                throw new System.Exception("Can't add files of different types");
-            }
-            foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
-            {
-                var oldVal = (int)field.GetValue(this);
-                var addVal = (int)field.GetValue(f);
-                var newVal = oldVal + sign * addVal;
-                field.SetValue(this, newVal);
-            }
-        }
-        public File Copy()
+        public virtual File Copy()
         {
             return (File)this.MemberwiseClone();
         }
     }
-
-    public class ArrayFile : File
-    {
-        public List<int> content = new List<int>();
-
-        public override void _Add(File f, int sign)
-        {
-            // we assume it is the same type 
-            var otherFile = (ArrayFile)f;
-            var otherArray = otherFile.content;
-            for (int i = 0; i < content.Count; i++)
-            {
-                content[i] += otherArray[i] * sign;
-            }
-        }
-
-        public int this[int index]
-        {
-            get => content[index];
-            set => content[index] = value;
-        }
-    }
-
     public class Directory : Node
     {
         public Dictionary<string, Node> nodes =
@@ -76,7 +36,7 @@ namespace Core.FS
         }
     }
 
-    public class FS<T> where T : Directory, new()
+    public class FS<D> where D : Directory, new()
     {
         public static readonly char s_separationChar = '/';
         public static string[] Split(string path)
@@ -84,23 +44,23 @@ namespace Core.FS
             return path.Split(s_separationChar);
         }
 
-        public T m_baseDir;
+        public D m_baseDir;
 
-        public T BaseDir
+        public D BaseDir
         {
             get => m_baseDir;
         }
 
         public FS()
         {
-            m_baseDir = new T();
+            m_baseDir = new D();
         }
-        public FS(T d)
+        public FS(D d)
         {
             m_baseDir = d;
         }
 
-        T GetDirectoryBySplitPath(IEnumerable<string> dirNames)
+        D GetDirectoryBySplitPath(IEnumerable<string> dirNames)
         {
             Directory dir = m_baseDir;
             foreach (var dirName in dirNames)
@@ -109,10 +69,10 @@ namespace Core.FS
                 // since it is always just nodes in an array
                 dir = (Directory)dir.nodes[dirName];
             }
-            return (T)dir;
+            return (D)dir;
         }
 
-        public T GetDirectory(string path)
+        public D GetDirectory(string path)
         {
             var dirName = Split(path);
             return GetDirectoryBySplitPath(dirName);
@@ -122,7 +82,7 @@ namespace Core.FS
         {
             var dirNames = Split(path);
             var dirPath = dirNames.Take(dirNames.Length - 1);
-            var node = (T)GetDirectoryBySplitPath(dirPath);
+            var node = (D)GetDirectoryBySplitPath(dirPath);
             var fileName = dirNames[dirNames.Length - 1];
             return node.nodes[fileName];
         }
@@ -131,17 +91,17 @@ namespace Core.FS
         {
             var dirNames = Split(path);
             var dirPath = dirNames.Take(dirNames.Length - 1);
-            var node = (T)GetDirectoryBySplitPath(dirPath);
+            var node = (D)GetDirectoryBySplitPath(dirPath);
             var fileName = dirNames[dirNames.Length - 1];
             return node.GetFile(fileName);
         }
 
-        void Debug()
+        public void Debug()
         {
             Debug(m_baseDir, 0);
         }
 
-        void Debug(Directory dir, int indentLevel = 0)
+        public void Debug(Directory dir, int indentLevel = 0)
         {
             foreach (var (key, value) in dir.nodes)
             {
@@ -151,6 +111,30 @@ namespace Core.FS
                     Debug((Directory)value, indentLevel + 4);
                 }
             }
+        }
+
+        // TODO: lazy load
+        protected void CopyDirectoryStructure(Directory from, D to)
+        {
+            foreach (var (name, node) in from.nodes)
+            {
+                if (node is Directory)
+                {
+                    var subdir = new D();
+                    to.nodes.Add(name, subdir);
+                    CopyDirectoryStructure((Directory)node, subdir);
+                }
+                else
+                {
+                    var copy = CopyFileNode((File)node);
+                    to.nodes.Add(name, copy);
+                }
+            }
+        }
+
+        protected virtual File CopyFileNode(File node)
+        {
+            return ((File)node).Copy();
         }
     }
 }

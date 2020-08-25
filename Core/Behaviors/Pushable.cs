@@ -23,8 +23,8 @@ namespace Core
             Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
             Directory pushDir = new Directory();
-            File sourceResFile = new ArrayFile();
-            File resFile = new Resistance
+            StatFile sourceResFile = new ArrayFile();
+            StatFile resFile = new Resistance
             {
                 pierce = 1
             };
@@ -36,7 +36,7 @@ namespace Core
             RegisterPushSource("default", 1);
         }
 
-        public class Resistance : File
+        public class Resistance : StatFile
         {
             public int pierce = 0;
         }
@@ -53,13 +53,13 @@ namespace Core
             public Attacking.Push push;
         }
 
-        IChain chain_checkPushed;
-        IChain chain_bePushed;
+        Chain<Event> chain_checkPushed;
+        Chain<Event> chain_bePushed;
 
         public Pushable(Entity entity)
         {
-            chain_checkPushed = entity.m_chains["pushed:check"];
-            chain_bePushed = entity.m_chains["pushed:do"];
+            chain_checkPushed = (Chain<Event>)entity.m_chains["pushed:check"];
+            chain_bePushed = (Chain<Event>)entity.m_chains["pushed:do"];
         }
 
         public override bool Activate(

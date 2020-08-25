@@ -31,8 +31,8 @@ namespace Core
             Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
             Directory attackDir = new Directory();
-            File sourceResFile = new ArrayFile();
-            File resFile = new Resistance
+            StatFile sourceResFile = new ArrayFile();
+            StatFile resFile = new Resistance
             {
                 armor = 0,
                 minDamage = 1,
@@ -47,7 +47,7 @@ namespace Core
             RegisterAttackSource("default");
         }
 
-        public class Resistance : File
+        public class Resistance : StatFile
         {
             public int armor;
             public int minDamage;
@@ -67,16 +67,16 @@ namespace Core
             public Attacking.Attack attack;
         }
 
-        IChain chain_checkAttacked;
-        IChain chain_beAttacked;
-        IChain chain_getAttackableness;
+        Chain<Event> chain_checkAttacked;
+        Chain<Event> chain_beAttacked;
+        Chain<AttackablenessEvent> chain_getAttackableness;
         Entity m_entity;
 
         public Attackable(Entity entity)
         {
-            chain_checkAttacked = entity.m_chains["attacked:check"];
-            chain_beAttacked = entity.m_chains["attacked:do"];
-            chain_getAttackableness = entity.m_chains["attacked:condition"];
+            chain_checkAttacked = (Chain<Event>)entity.m_chains["attacked:check"];
+            chain_beAttacked = (Chain<Event>)entity.m_chains["attacked:do"];
+            chain_getAttackableness = (Chain<AttackablenessEvent>)entity.m_chains["attacked:condition"];
             m_entity = entity;
         }
 

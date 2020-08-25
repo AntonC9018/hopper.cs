@@ -20,7 +20,7 @@ namespace Core
             baseDir.AddFile("move", move);
         }
 
-        public class Move : File
+        public class Move : StatFile
         {
             public int power = 1;
             public int through = 0;
@@ -38,13 +38,13 @@ namespace Core
             public Move move;
         }
 
-        IChain chain_checkDisplaced;
-        IChain chain_beDisplaced;
+        Chain<Event> chain_checkDisplaced;
+        Chain<Event> chain_beDisplaced;
 
         public Displaceable(Entity entity)
         {
-            chain_checkDisplaced = entity.m_chains["displaced:check"];
-            chain_beDisplaced = entity.m_chains["displaced:do"];
+            chain_checkDisplaced = (Chain<Event>)entity.m_chains["displaced:check"];
+            chain_beDisplaced = (Chain<Event>)entity.m_chains["displaced:do"];
         }
 
         public override bool Activate(

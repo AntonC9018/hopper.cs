@@ -119,6 +119,7 @@ namespace Hopper
             System.Console.WriteLine("Adding modifier");
             player.m_statManager.AddModifier(mod2);
             attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
+            attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Removing modifier");

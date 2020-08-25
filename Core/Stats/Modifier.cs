@@ -16,8 +16,8 @@ namespace Core
 
     public class StatModifier : Modifier
     {
-        public File file;
-        public StatModifier(string path, File file)
+        public StatFile file;
+        public StatModifier(string path, StatFile file)
         {
             this.file = file;
             base.path = path;
