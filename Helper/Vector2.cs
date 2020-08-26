@@ -64,6 +64,15 @@ namespace Vector
             };
         }
 
+        public static Vector2 operator /(Vector2 a, float c)
+        {
+            return new Vector2
+            {
+                x = a.x / c,
+                y = a.y / c
+            };
+        }
+
         public Vector2 Copy()
         {
             return new Vector2

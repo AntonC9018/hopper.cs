@@ -82,7 +82,7 @@ namespace Core.FS
         {
             var dirNames = Split(path);
             var dirPath = dirNames.Take(dirNames.Length - 1);
-            var node = (D)GetDirectoryBySplitPath(dirPath);
+            var node = GetDirectoryBySplitPath(dirPath);
             var fileName = dirNames[dirNames.Length - 1];
             return node.nodes[fileName];
         }
@@ -91,7 +91,7 @@ namespace Core.FS
         {
             var dirNames = Split(path);
             var dirPath = dirNames.Take(dirNames.Length - 1);
-            var node = (D)GetDirectoryBySplitPath(dirPath);
+            var node = GetDirectoryBySplitPath(dirPath);
             var fileName = dirNames[dirNames.Length - 1];
             return node.GetFile(fileName);
         }
