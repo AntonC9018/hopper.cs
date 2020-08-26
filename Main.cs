@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Vector;
 using Chains;
 using Core;
+using Core.Items;
+using System.Linq;
 
 // Hello World! program
 namespace Hopper
@@ -127,6 +129,44 @@ namespace Hopper
             attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
+
+
+            var poolDef = new PoolDefinition<SubPool>();
+            // other option: new PoolDefinition<EndlessSubPool>();
+            Item[] items = new[]
+            {
+                new Item(0, 1),
+                new Item(1, 1),
+                new Item(2, 1),
+                new Item(3, 1),
+                new Item(4, 10)
+            };
+            poolDef.RegisterItems(items);
+
+            Pool zone1dir = new Pool();
+
+            SubPool weapons = new SubPool();
+            SubPool trinkets = new SubPool();
+            SubPool armor = new SubPool();
+
+            poolDef.m_baseDir.AddDirectory("zone1", zone1dir);
+            // TODO: create + add
+            zone1dir.AddFile("weapons", weapons);
+            zone1dir.AddFile("trinkets", trinkets);
+            zone1dir.AddFile("armor", armor);
+
+            poolDef.AddItemsToPool(items.Take(2), "zone1/weapons");
+            poolDef.AddItemsToPool(items.Skip(2).Take(2), "zone1/trinkets");
+            poolDef.AddItemToPool(items[4], "zone1/trinkets");
+
+            SuperPool<SubPool> superPool = new SuperPool<SubPool>(poolDef);
+
+            var it1 = superPool.GetNextItem("zone1/weapons");
+            System.Console.WriteLine($"Item Id = {it1.id}, q = {it1.q}");
+            var it2 = superPool.GetNextItem("zone1/weapons");
+            System.Console.WriteLine($"Item Id = {it2.id}, q = {it2.q}");
+            var it3 = superPool.GetNextItem("zone1/weapons");
+            System.Console.WriteLine($"Item Id = {it3.id}, q = {it3.q}");
 
 
             // world.m_state.Loop();

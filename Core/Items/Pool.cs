@@ -21,7 +21,7 @@ namespace Core.Items
         }
     }
 
-    public class SubPool : File
+    public abstract class ISubPool : File
     {
         public Dictionary<int, Item> items
             = new Dictionary<int, Item>();
@@ -29,7 +29,9 @@ namespace Core.Items
         public List<Item> deck;
         public int index;
 
-        public void GenerateList()
+        public bool IsReadyToGenerate { get => deck != null; }
+
+        public void GenerateDeck()
         {
             deck = new List<Item>();
             index = 0;
@@ -42,10 +44,29 @@ namespace Core.Items
             }
             deck.Shuffle(rng);
         }
-
-        public Item GetNextItem()
+        public void ReshuffleDeck()
         {
-            if (index == deck.Count - 1)
+            deck.Shuffle(rng);
+            index = 0;
+        }
+        public abstract ISubPool Copy(Dictionary<int, Item> items);
+        public abstract Item GetNextItem();
+    }
+
+    public class SubPool : ISubPool
+    {
+        public override ISubPool Copy(Dictionary<int, Item> items)
+        {
+            var sp = new SubPool();
+            foreach (var (id, item) in this.items)
+            {
+                sp.items.Add(id, items[id]);
+            }
+            return sp;
+        }
+        public override Item GetNextItem()
+        {
+            if (index >= deck.Count)
             {
                 return null;
             }
@@ -56,15 +77,28 @@ namespace Core.Items
             item.q--;
             return item;
         }
+    }
 
-        public SubPool Copy(Dictionary<int, Item> items)
+    public class EndlessSubPool : ISubPool
+    {
+        public override ISubPool Copy(Dictionary<int, Item> items)
         {
-            var sp = new SubPool();
+            var sp = new EndlessSubPool();
             foreach (var (id, item) in this.items)
             {
                 sp.items.Add(id, items[id]);
             }
             return sp;
+        }
+        public override Item GetNextItem()
+        {
+            if (index == deck.Count - 1)
+            {
+                ReshuffleDeck();
+            }
+            var item = deck[index];
+            index++;
+            return item;
         }
     }
 
@@ -72,12 +106,12 @@ namespace Core.Items
     {
     }
 
-    public class SuperPool : FS<Pool>
+    public class SuperPool<SP> : FS<Pool> where SP : ISubPool
     {
-        public PoolDefinition poolDef;
-        public Dictionary<int, Item> items;
+        public PoolDefinition<SP> poolDef;
+        public Dictionary<int, Item> items = new Dictionary<int, Item>();
 
-        public SuperPool(PoolDefinition poolDef)
+        public SuperPool(PoolDefinition<SP> poolDef)
         {
             this.poolDef = poolDef;
             foreach (var (id, item) in poolDef.items)
@@ -87,11 +121,12 @@ namespace Core.Items
             CopyDirectoryStructure(poolDef.m_baseDir, this.m_baseDir);
         }
 
-        protected void Exhaust(SubPool subPool)
+        protected void Exhaust(ISubPool subPool)
         {
             foreach (var (id, item) in subPool.items)
             {
                 item.q = poolDef.items[id].q;
+                subPool.ReshuffleDeck();
             }
         }
         protected void ExhaustAll()
@@ -103,7 +138,11 @@ namespace Core.Items
         }
         public Item GetNextItem(string path)
         {
-            var subPool = (SubPool)GetFile(path);
+            var subPool = (ISubPool)GetFile(path);
+            if (!subPool.IsReadyToGenerate)
+            {
+                subPool.GenerateDeck();
+            }
             var item = subPool.GetNextItem();
             if (item == null)
             {
@@ -112,15 +151,16 @@ namespace Core.Items
             }
             return item;
         }
+        // public List<Item> GetNextItems(string path, int count)
         protected override File CopyFileNode(File node)
         {
-            return ((SubPool)node).Copy(items);
+            return ((ISubPool)node).Copy(items);
         }
     }
 
-    public class PoolDefinition : FS<Pool>
+    public class PoolDefinition<SP> : FS<Pool> where SP : ISubPool
     {
-        public Dictionary<int, Item> items;
+        public Dictionary<int, Item> items = new Dictionary<int, Item>();
         public void RegisterItem(Item item)
         {
             items[item.id] = item;
@@ -134,12 +174,12 @@ namespace Core.Items
         }
         public void AddItemToPool(Item item, string path)
         {
-            var subPool = (SubPool)GetFile(path);
+            var subPool = (ISubPool)GetFile(path);
             subPool.items.Add(item.id, item);
         }
         public void AddItemsToPool(IEnumerable<Item> items, string path)
         {
-            var subPool = (SubPool)GetFile(path);
+            var subPool = (ISubPool)GetFile(path);
             foreach (var item in items)
                 subPool.items.Add(item.id, item);
         }

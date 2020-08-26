@@ -13,11 +13,15 @@ namespace Core
         public Chain<StatEvent> chain;
         public StatFile file;
 
+        public StatFileContainer(StatFile file)
+        {
+            this.chain = new Chain<StatEvent>();
+            this.file = (StatFile)file.Copy();
+        }
+
         public override File Copy()
         {
-            var statNode = new StatFileContainer();
-            statNode.chain = new Chain<StatEvent>();
-            statNode.file = (StatFile)file.Copy();
+            var statNode = new StatFileContainer((StatFile)file.Copy());
             return statNode;
         }
     }
@@ -149,6 +153,11 @@ namespace Core
 
             else if (modifier is ChainModifier)
                 RemoveChainModifier((ChainModifier)modifier);
+        }
+
+        protected override File CopyFileNode(File node)
+        {
+            return new StatFileContainer((StatFile)node.Copy());
         }
     }
 }

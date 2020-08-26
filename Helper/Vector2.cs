@@ -139,5 +139,10 @@ namespace Vector
                 }
             );
         }
+
+        public override string ToString()
+        {
+            return $"<{x}, {y}>";
+        }
     }
 }
