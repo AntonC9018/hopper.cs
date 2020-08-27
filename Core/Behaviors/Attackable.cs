@@ -6,9 +6,9 @@ namespace Core
 {
     public enum AtkCondition
     {
-        ALWAYS, 
-        NEVER, 
-        SKIP, 
+        ALWAYS,
+        NEVER,
+        SKIP,
         IF_NEXT_TO
     }
     public class Attackable : Behavior
@@ -140,13 +140,18 @@ namespace Core
         public class AttackablenessEvent : CommonEvent
         {
             public AtkCondition attackableness = AtkCondition.ALWAYS;
+            public Attacking.Event attackingEvent;
         }
 
         // TODO: this should get passed the attacker and the info about the attack
         // so Attacking.Event event        
-        public AtkCondition GetAttackableness()
+        public AtkCondition GetAttackableness(Attacking.Event attackingEvent)
         {
-            var ev = new AttackablenessEvent { actor = this.m_entity };
+            var ev = new AttackablenessEvent
+            {
+                actor = this.m_entity,
+                attackingEvent = attackingEvent
+            };
             chain_getAttackableness.Pass(ev);
             return ev.attackableness;
         }

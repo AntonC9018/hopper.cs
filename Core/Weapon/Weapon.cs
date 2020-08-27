@@ -50,7 +50,7 @@ namespace Core.Weapon
                     attackable == null
                         ? AtkCondition.NEVER
                         // TODO: this requires action with the attack already set
-                        : attackable.GetAttackableness();
+                        : attackable.GetAttackableness((Attacking.Event)ev);
             }
             else
             {
