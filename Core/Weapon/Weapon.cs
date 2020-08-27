@@ -104,13 +104,15 @@ namespace Core.Weapon
                     .GetCellAt(pos)
                     .GetEntityFromLayer(attackedLayer);
 
-                targets.Add(new T
+                var target = new T
                 {
                     direction = piece.dir,
                     entity = entity,
                     index = i,
                     initialPiece = this.pattern[i]
-                });
+                };
+                target.CalculateCondition(commonEvent);
+                targets.Add(target);
             }
 
             var ev = new Event
@@ -122,7 +124,7 @@ namespace Core.Weapon
 
             chain.Pass(ev, check);
 
-            return ev.targets.ConvertAll(t => (T)t);
+            return ev.targets;
         }
     }
 }
