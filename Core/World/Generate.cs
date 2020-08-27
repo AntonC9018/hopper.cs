@@ -9,15 +9,15 @@ namespace Core
 
         public int Width
         {
-            get => (int)Math.Round(dim.x);
+            get => dim.x;
             set => dim.x = value;
         }
         public int Height
         {
-            get => (int)Math.Round(dim.y);
+            get => dim.y;
             set => dim.y = value;
         }
-        public Vector2 dim;
+        public IntVector2 dim;
         public Options options;
 
         public Generator(int w, int h, Options ops)
@@ -45,7 +45,7 @@ namespace Core
             }
             ResetGrid();
 
-            Vector2 startPos = (dim - rootNode.dim) / 2;
+            IntVector2 startPos = (dim - rootNode.dim) / 2;
             Room startRoom = new Room(startPos, rootNode.dim);
             // TODO: complete
             return true;
@@ -62,10 +62,10 @@ namespace Core
 
     public class Room
     {
-        private Vector2 startPos;
-        private Vector2 dim;
+        private IntVector2 startPos;
+        private IntVector2 dim;
 
-        public Room(Vector2 startPos, Vector2 dim)
+        public Room(IntVector2 startPos, IntVector2 dim)
         {
             this.startPos = startPos;
             this.dim = dim;
@@ -74,8 +74,8 @@ namespace Core
 
     public class Node
     {
-        public Vector2 posInGraph;
-        public Vector2 dim;
+        public IntVector2 posInGraph;
+        public IntVector2 dim;
         public List<Node> neighbors;
         public Room room;
     }

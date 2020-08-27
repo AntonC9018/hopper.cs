@@ -6,15 +6,15 @@ namespace Core
     public static partial class Movs
     {
 
-        public static List<Vector2> Basic(Entity e, Action a)
+        public static List<IntVector2> Basic(Entity e, Action a)
         {
             Entity player = e.GetClosestPlayer();
-            var list = new List<Vector2>();
+            var list = new List<IntVector2>();
             if (player == null)
             {
                 return list;
             }
-            void Add(int x, int y) => list.Add(new Vector2(x, y));
+            void Add(int x, int y) => list.Add(new IntVector2(x, y));
             var rel = CalculateRelativeness(e, player);
 
             if (e.m_orientation.x > 0)

@@ -4,110 +4,125 @@ using Chains;
 
 namespace Core.Weapon
 {
-    public class Weapon
+    public class Piece
     {
-
-        public class Piece
+        public IntVector2 pos;
+        public IntVector2 dir;
+        // null is no checking required
+        // empty list to check all previous indeces
+        // list of indices to check the specified indeces
+        public List<int> reach;
+        public Piece Rotate(double angle)
         {
-            public Vector2 pos;
-            public Vector2 dir;
-            public bool reach;
-            public Piece Rotate(double angle)
+            return new Piece
             {
-                return new Piece
-                {
-                    pos = pos.Rotate(angle),
-                    dir = dir.Rotate(angle),
-                    reach = reach
-                };
+                pos = pos.Rotate(angle),
+                dir = dir.Rotate(angle),
+                reach = reach
+            };
+        }
+    }
+    public abstract class Target
+    {
+        public int index;
+        public Piece initialPiece;
+        public Entity entity;
+        public IntVector2 direction;
+
+        public virtual void CalculateCondition(CommonEvent ev)
+        { }
+    }
+    public class AtkTarget : Target
+    {
+        public AtkCondition atkCondition;
+
+        public override void CalculateCondition(CommonEvent ev)
+        {
+            if (ev.GetType() != typeof(Attacking.Event))
+            {
+                throw new System.Exception("Expected event type to be Attacking.Event");
+            }
+            if (entity != null)
+            {
+                var attackable = entity.beh_Attackable;
+
+                atkCondition =
+                    attackable == null
+                        ? AtkCondition.NEVER
+                        // TODO: this requires action with the attack already set
+                        : attackable.GetAttackableness();
+            }
+            else
+            {
+                atkCondition = AtkCondition.NEVER;
             }
         }
+    }
 
-        public class WeaponTarget : Target
-        {
-            public int index;
-            public AtkCondition attackableness;
-        }
+
+
+    // static List<Piece> defaultPattern = new List<Piece>
+    // {
+    //     new Piece
+    //     {
+    //         pos = new IntVector2(1, 0),
+    //         dir = new IntVector2(1, 0),
+    //         reach = null
+    //     }
+    // };
+
+    public class Weapon<T> where T : Target, new()
+    {
         public class Event : CommonEvent
         {
-            public List<WeaponTarget> targets;
+            public List<T> targets;
         }
-
-        static List<Piece> defaultPattern = new List<Piece>
-        {
-            new Piece
-            {
-                pos = new Vector2(1, 0),
-                dir = new Vector2(1, 0),
-                reach = false
-            }
-        };
         List<Piece> pattern;
-        Chain<CommonEvent> chain;
+        Chain<Event> chain;
+        System.Func<Event, bool> check;
         Layer attackedLayer = Layer.REAL | Layer.MISC | Layer.WALL;
 
-        public List<WeaponTarget> GetTargets(Entity actor, Action action)
+        public Weapon(List<Piece> pattern, Chain<Event> chain, System.Func<Event, bool> check)
         {
-            var targets = new List<WeaponTarget>();
-            double angle = Vector2.Right.AngleTo(actor.m_orientation);
+            this.pattern = pattern;
+            this.chain = chain;
+            this.check = check;
+        }
+
+        public List<T> GetTargets(CommonEvent commonEvent)
+        {
+            var targets = new List<T>();
+            double angle = IntVector2.Right.AngleTo(commonEvent.action.direction);
 
             for (int i = 0; i < this.pattern.Count; i++)
             {
                 var piece = this.pattern[i].Rotate(angle);
-                var pos = actor.m_pos + piece.pos;
-                var entity = actor.m_world.m_grid
+                System.Console.WriteLine(piece.pos);
+
+                var pos = commonEvent.actor.m_pos + piece.pos;
+                var entity = commonEvent.actor.m_world.m_grid
                     .GetCellAt(pos)
                     .GetEntityFromLayer(attackedLayer);
 
-                // TODO: refactor
-                AtkCondition attackableness;
-                if (entity != null)
-                {
-                    var attackable = entity.beh_Attackable;
-
-                    attackableness =
-                        attackable == null
-                            ? AtkCondition.NEVER
-                            : attackable.GetAttackableness();
-                }
-                else
-                {
-                    attackableness = AtkCondition.NEVER;
-                }
-
-                targets[i] = new WeaponTarget
+                targets.Add(new T
                 {
                     direction = piece.dir,
                     entity = entity,
                     index = i,
-                    attackableness = attackableness
-                };
+                    initialPiece = this.pattern[i]
+                });
             }
 
             var ev = new Event
             {
                 targets = targets,
-                actor = actor,
-                action = action
+                actor = commonEvent.actor,
+                action = commonEvent.action
             };
 
-            chain.Pass(ev);
+            chain.Pass(ev, check);
 
-            return ev.targets;
-
+            return ev.targets.ConvertAll(t => (T)t);
         }
     }
-
-    //     -- after that, analyze it
-    //     local event = Event(actor, action)
-    //     event.targets = map
-
-    //     if self.check(event) then
-    //         return event.targets
-    //     end
-
-    //     self.chain:pass(event, self.check)
-
-    //     return event.targets
-    // end
 }

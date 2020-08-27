@@ -11,7 +11,7 @@ namespace Core
         public readonly int id = s_idGenerator.GetNextId();
 
 
-        internal void Reorient(Vector2 direction)
+        internal void Reorient(IntVector2 direction)
         {
             this.m_orientation = direction;
         }
@@ -66,8 +66,8 @@ namespace Core
         public readonly Dictionary<int, Tinker> m_tinkers =
             new Dictionary<int, Tinker>();
 
-        public Vector2 m_pos;
-        public Vector2 m_orientation = Vector2.UnitX;
+        public IntVector2 m_pos;
+        public IntVector2 m_orientation = IntVector2.UnitX;
         public World m_world;
         public Layer m_layer = Layer.REAL;
 
@@ -85,7 +85,7 @@ namespace Core
         public Entity()
         { }
 
-        public void Init(Vector2 pos, World world)
+        public void Init(IntVector2 pos, World world)
         {
             m_pos = pos;
             m_world = world;
@@ -118,7 +118,7 @@ namespace Core
 
         void RetranslateEndOfLoopEvent()
         {
-            m_chains["tick"].Pass(new CommonEvent { actor = this });
+            ((Chain<CommonEvent>)m_chains["tick"]).Pass(new CommonEvent { actor = this });
         }
         void StartMonitoringEvents()
         {
@@ -146,12 +146,12 @@ namespace Core
             return closestPlayer;
         }
 
-        public Vector2 GetRelativePos(Vector2 offset)
+        public IntVector2 GetRelativePos(IntVector2 offset)
         {
             return m_pos + offset;
         }
 
-        public Cell GetCellRelative(Vector2 offset)
+        public Cell GetCellRelative(IntVector2 offset)
         {
             return m_world.m_grid.GetCellAt(m_pos + offset);
         }

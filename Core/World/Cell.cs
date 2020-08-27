@@ -28,7 +28,7 @@ namespace Core
     public class Cell
     {
 
-        public Vector2 m_pos;
+        public IntVector2 m_pos;
         public List<Entity> m_entities = new List<Entity>();
         public event System.Action<Entity> EnterEvent;
         public event System.Action<Entity> LeaveEvent;

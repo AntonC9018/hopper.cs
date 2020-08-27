@@ -57,28 +57,6 @@ namespace Chains
 
         protected bool b_dirty;
 
-        public void Pass(EventBase ev)
-        {
-            CleanUp();
-            foreach (var handler in m_handlers)
-            {
-                if (!ev.propagate)
-                    return;
-                handler.Call(ev);
-            }
-        }
-
-        public void Pass(EventBase ev, System.Func<EventBase, bool> stopFunc)
-        {
-            CleanUp();
-            foreach (var handler in m_handlers)
-            {
-                if (stopFunc(ev))
-                    return;
-                handler.Call(ev);
-            }
-        }
-
         public MyListNode<IEvHandler> AddHandler<T>(
             System.Action<T> handlerFunction) where T : EventBase
         {
@@ -145,6 +123,28 @@ namespace Chains
         {
             m_handlers = list;
             b_dirty = false;
+        }
+
+        public void Pass(Event ev)
+        {
+            CleanUp();
+            foreach (var handler in m_handlers)
+            {
+                if (!ev.propagate)
+                    return;
+                handler.Call(ev);
+            }
+        }
+
+        public void Pass(Event ev, System.Func<Event, bool> stopFunc)
+        {
+            CleanUp();
+            foreach (var handler in m_handlers)
+            {
+                if (stopFunc(ev))
+                    return;
+                handler.Call(ev);
+            }
         }
     }
 }

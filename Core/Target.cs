@@ -5,7 +5,7 @@ namespace Core
     public class Target
     {
         public Entity entity;
-        public Vector2 direction;
+        public IntVector2 direction;
     }
 
 }

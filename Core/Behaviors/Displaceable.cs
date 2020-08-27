@@ -30,7 +30,7 @@ namespace Core
         {
             public Entity entity;
             public Move move;
-            public Vector2 newPos;
+            public IntVector2 newPos;
         }
 
         public class Params : ActivationParams

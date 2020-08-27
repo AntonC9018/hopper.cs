@@ -6,7 +6,7 @@ namespace Core
     {
         public abstract Action Copy();
         public abstract bool Do(Entity e);
-        public Vector2 direction;
+        public IntVector2 direction;
 
     }
     public class SimpleAction : Action

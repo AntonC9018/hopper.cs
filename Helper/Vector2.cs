@@ -139,11 +139,11 @@ namespace Vector
                 new Vector2
                 {
                     x = (float)Math.Cos(angle_in_rads),
-                    y = (float)-Math.Sin(angle_in_rads)
+                    y = (float)Math.Sin(angle_in_rads)
                 },
                 new Vector2
                 {
-                    x = (float)Math.Sin(angle_in_rads),
+                    x = -(float)Math.Sin(angle_in_rads),
                     y = (float)Math.Cos(angle_in_rads)
                 }
             );
@@ -153,5 +153,17 @@ namespace Vector
         {
             return $"<{x}, {y}>";
         }
+
+        public IntVector2 Round()
+        {
+            return new IntVector2
+            {
+                x = (int)Math.Round(x),
+                y = (int)Math.Round(y)
+            };
+        }
+
+        public static explicit operator IntVector2(Vector2 v)
+            => new IntVector2((int)v.x, (int)v.y);
     }
 }

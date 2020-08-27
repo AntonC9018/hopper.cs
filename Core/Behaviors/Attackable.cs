@@ -6,7 +6,10 @@ namespace Core
 {
     public enum AtkCondition
     {
-        ALWAYS, NEVER, SKIP, IF_NEXT_TO
+        ALWAYS, 
+        NEVER, 
+        SKIP, 
+        IF_NEXT_TO
     }
     public class Attackable : Behavior
     {

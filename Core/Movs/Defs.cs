@@ -3,5 +3,5 @@ using Vector;
 
 namespace Core
 {
-    public delegate List<Vector2> MovsFunc(Entity entity, Action action);
+    public delegate List<IntVector2> MovsFunc(Entity entity, Action action);
 }

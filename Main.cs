@@ -5,6 +5,7 @@ using Chains;
 using Core;
 using Core.Items;
 using System.Linq;
+using Core.Weapon;
 
 // Hello World! program
 namespace Hopper
@@ -78,24 +79,24 @@ namespace Hopper
             Entity enemy = enemyFactory.Instantiate();
             System.Console.WriteLine("Instantiated Enemy");
 
-            enemy.Init(new Vector2(1, 1), world);
+            enemy.Init(new IntVector2(1, 2), world);
             world.m_state.AddEntity(enemy);
             world.m_grid.Reset(enemy);
             System.Console.WriteLine("Enemy set in world");
 
-            player.Init(new Vector2(1, 2), world);
+            player.Init(new IntVector2(1, 0), world);
             world.m_state.AddPlayer(player);
             world.m_grid.Reset(player);
             System.Console.WriteLine("Player set in world");
 
             var playerNextAction = attackMoveAction.Copy();
-            playerNextAction.direction = new Vector2(0, 1);
+            playerNextAction.direction = new IntVector2(0, 1);
             player.beh_Acting.m_nextAction = playerNextAction;
             System.Console.WriteLine("Set player action");
 
-            world.m_state.Loop();
-            System.Console.WriteLine("Looped");
-            System.Console.WriteLine($"Player's new position {player.m_pos}");
+            // world.m_state.Loop();
+            // System.Console.WriteLine("Looped");
+            // System.Console.WriteLine($"Player's new position {player.m_pos}");
 
             var mod = new StatModifier("attack", new Attacking.Attack { damage = 1 });
             var attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
@@ -168,6 +169,33 @@ namespace Hopper
             var it3 = superPool.GetNextItem("zone1/weapons");
             System.Console.WriteLine($"Item Id = {it3.id}, q = {it3.q}");
 
+            var pattern = new List<Piece>
+            {
+                new Piece
+                {
+                    pos = new IntVector2(1, 0),
+                    dir = new IntVector2(1, 0),
+                    reach = null
+                },
+                new Piece
+                {
+                    pos = new IntVector2(2, 0),
+                    dir = new IntVector2(1, 0),
+                    reach = new List<int>()
+                }
+            };
+            var weapon = new Weapon<AtkTarget>
+            (
+                pattern: pattern,
+                chain: Handlers.GeneralChain,
+                check: e => !e.propagate || e.targets.Count == 0
+            );
+            var ev = new Attacking.Event { actor = player, action = playerNextAction };
+            var targets = weapon.GetTargets(ev);
+            foreach (var t in targets)
+            {
+                System.Console.WriteLine($"Attacking entity at {t.entity.m_pos}");
+            }
 
             // world.m_state.Loop();
             // System.Console.WriteLine("Looped");

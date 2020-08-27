@@ -38,7 +38,7 @@ namespace Core
             }
         }
 
-        public List<Vector2> GetMovs()
+        public List<IntVector2> GetMovs()
         {
             return stepData[currentStepIndex].GetMovs(actor);
         }
