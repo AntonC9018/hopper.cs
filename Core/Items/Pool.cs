@@ -4,36 +4,36 @@ using Core.FS;
 
 namespace Core.Items
 {
-    public class Item
+    public class PoolItem
     {
         public int id;
         public int q;
 
-        public Item(int id, int q)
+        public PoolItem(int id, int q)
         {
             this.id = id;
             this.q = q;
         }
 
-        public Item Copy()
+        public PoolItem Copy()
         {
-            return (Item)this.MemberwiseClone();
+            return (PoolItem)this.MemberwiseClone();
         }
     }
 
     public abstract class ISubPool : File
     {
-        public Dictionary<int, Item> items
-            = new Dictionary<int, Item>();
+        public Dictionary<int, PoolItem> items
+            = new Dictionary<int, PoolItem>();
         public Random rng = new Random();
-        public List<Item> deck;
+        public List<PoolItem> deck;
         public int index;
 
         public bool IsReadyToGenerate { get => deck != null; }
 
         public void GenerateDeck()
         {
-            deck = new List<Item>();
+            deck = new List<PoolItem>();
             index = 0;
             foreach (var (id, item) in items)
             {
@@ -49,13 +49,13 @@ namespace Core.Items
             deck.Shuffle(rng);
             index = 0;
         }
-        public abstract ISubPool Copy(Dictionary<int, Item> items);
-        public abstract Item GetNextItem();
+        public abstract ISubPool Copy(Dictionary<int, PoolItem> items);
+        public abstract PoolItem GetNextItem();
     }
 
     public class SubPool : ISubPool
     {
-        public override ISubPool Copy(Dictionary<int, Item> items)
+        public override ISubPool Copy(Dictionary<int, PoolItem> items)
         {
             var sp = new SubPool();
             foreach (var (id, item) in this.items)
@@ -64,7 +64,7 @@ namespace Core.Items
             }
             return sp;
         }
-        public override Item GetNextItem()
+        public override PoolItem GetNextItem()
         {
             if (index >= deck.Count)
             {
@@ -81,7 +81,7 @@ namespace Core.Items
 
     public class EndlessSubPool : ISubPool
     {
-        public override ISubPool Copy(Dictionary<int, Item> items)
+        public override ISubPool Copy(Dictionary<int, PoolItem> items)
         {
             var sp = new EndlessSubPool();
             foreach (var (id, item) in this.items)
@@ -90,7 +90,7 @@ namespace Core.Items
             }
             return sp;
         }
-        public override Item GetNextItem()
+        public override PoolItem GetNextItem()
         {
             if (index == deck.Count - 1)
             {
@@ -109,7 +109,7 @@ namespace Core.Items
     public class SuperPool<SP> : FS<Pool> where SP : ISubPool
     {
         public PoolDefinition<SP> poolDef;
-        public Dictionary<int, Item> items = new Dictionary<int, Item>();
+        public Dictionary<int, PoolItem> items = new Dictionary<int, PoolItem>();
 
         public SuperPool(PoolDefinition<SP> poolDef)
         {
@@ -136,7 +136,7 @@ namespace Core.Items
                 item.q = poolDef.items[id].q;
             }
         }
-        public Item GetNextItem(string path)
+        public PoolItem GetNextItem(string path)
         {
             var subPool = (ISubPool)GetFile(path);
             if (!subPool.IsReadyToGenerate)
@@ -160,24 +160,24 @@ namespace Core.Items
 
     public class PoolDefinition<SP> : FS<Pool> where SP : ISubPool
     {
-        public Dictionary<int, Item> items = new Dictionary<int, Item>();
-        public void RegisterItem(Item item)
+        public Dictionary<int, PoolItem> items = new Dictionary<int, PoolItem>();
+        public void RegisterItem(PoolItem item)
         {
             items[item.id] = item;
         }
-        public void RegisterItems(IEnumerable<Item> items)
+        public void RegisterItems(IEnumerable<PoolItem> items)
         {
             foreach (var item in items)
             {
                 this.items[item.id] = item;
             }
         }
-        public void AddItemToPool(Item item, string path)
+        public void AddItemToPool(PoolItem item, string path)
         {
             var subPool = (ISubPool)GetFile(path);
             subPool.items.Add(item.id, item);
         }
-        public void AddItemsToPool(IEnumerable<Item> items, string path)
+        public void AddItemsToPool(IEnumerable<PoolItem> items, string path)
         {
             var subPool = (ISubPool)GetFile(path);
             foreach (var item in items)

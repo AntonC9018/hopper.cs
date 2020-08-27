@@ -71,7 +71,7 @@ namespace Core.Weapon
     //     }
     // };
 
-    public class Weapon<T> where T : Target, new()
+    public class TargetProvider<T> where T : Target, new()
     {
         public class Event : CommonEvent
         {
@@ -79,14 +79,14 @@ namespace Core.Weapon
         }
         List<Piece> pattern;
         Chain<Event> chain;
-        System.Func<Event, bool> check;
+        System.Func<Event, bool> stopFunc;
         Layer attackedLayer = Layer.REAL | Layer.MISC | Layer.WALL;
 
-        public Weapon(List<Piece> pattern, Chain<Event> chain, System.Func<Event, bool> check)
+        public TargetProvider(List<Piece> pattern, Chain<Event> chain, System.Func<Event, bool> stopFunc)
         {
             this.pattern = pattern;
             this.chain = chain;
-            this.check = check;
+            this.stopFunc = stopFunc;
         }
 
         public List<T> GetTargets(CommonEvent commonEvent)
@@ -122,7 +122,7 @@ namespace Core.Weapon
                 action = commonEvent.action
             };
 
-            chain.Pass(ev, check);
+            chain.Pass(ev, stopFunc);
 
             return ev.targets;
         }

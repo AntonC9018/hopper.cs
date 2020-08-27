@@ -92,15 +92,19 @@ namespace Core
             StartMonitoringEvents();
         }
 
-        public void AddTinker(Tinker tinker)
+        public void Tink(Tinker tinker)
         {
             m_tinkers[tinker.id] = tinker;
-            tinker.Apply(this);
+            tinker.Tink(this);
         }
-        public void RemoveTinker(Tinker tinker)
+        public void Untink(Tinker tinker)
         {
             m_tinkers.Remove(tinker.id);
-            tinker.Remove(this);
+            tinker.Untink(this);
+        }
+        // TODO:
+        public void CreateDroppedItem(int id)
+        {
         }
         // TODO: this won't work, since other tinkers may also reference
         // this entity in their stores.

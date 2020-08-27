@@ -8,7 +8,7 @@ namespace Core.Weapon
 {
     public static class Handlers
     {
-        public static void NextToAny(Weapon<Weapon.AtkTarget>.Event weaponEvent)
+        public static void NextToAny(TargetProvider<Weapon.AtkTarget>.Event weaponEvent)
         {
             var first = weaponEvent.targets[0];
             if (first.index == 0 && first.atkCondition != AtkCondition.NEVER)
@@ -22,7 +22,7 @@ namespace Core.Weapon
             }
         }
 
-        public static void TakeFirstNotSkip(Weapon<Weapon.AtkTarget>.Event weaponEvent)
+        public static void TakeFirstNotSkip(TargetProvider<Weapon.AtkTarget>.Event weaponEvent)
         {
             if (weaponEvent.targets.Count == 0)
                 return;
@@ -39,7 +39,7 @@ namespace Core.Weapon
             weaponEvent.targets.Add(first);
         }
 
-        public static void DiscardUnreachable<T>(Weapon<T>.Event weaponEvent)
+        public static void DiscardUnreachable<T>(TargetProvider<T>.Event weaponEvent)
             where T : Weapon.Target, new()
         {
             weaponEvent.targets = weaponEvent.targets
@@ -63,37 +63,37 @@ namespace Core.Weapon
             return !targets.Any(t => reach.Contains(t.index));
         }
 
-        public static void DiscardNotClose(Weapon<Weapon.AtkTarget>.Event weaponEvent)
+        public static void DiscardNotClose(TargetProvider<Weapon.AtkTarget>.Event weaponEvent)
         {
             weaponEvent.targets = weaponEvent.targets
                 .FilterFromIndex(t => t.atkCondition != AtkCondition.IF_NEXT_TO, 1);
         }
 
-        public static void DiscardUnattackable(Weapon<Weapon.AtkTarget>.Event weaponEvent)
+        public static void DiscardUnattackable(TargetProvider<Weapon.AtkTarget>.Event weaponEvent)
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => t.atkCondition != AtkCondition.NEVER);
         }
 
-        public static void DiscardNoEntity<T>(Weapon<T>.Event weaponEvent)
+        public static void DiscardNoEntity<T>(TargetProvider<T>.Event weaponEvent)
             where T : Weapon.Target, new()
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => t.entity != null);
         }
 
-        public static void KeepAttackable(Weapon<Weapon.AtkTarget>.Event weaponEvent)
+        public static void KeepAttackable(TargetProvider<Weapon.AtkTarget>.Event weaponEvent)
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => t.atkCondition == AtkCondition.ALWAYS
                          || t.atkCondition == AtkCondition.IF_NEXT_TO);
         }
 
-        public static Chain<Weapon<Weapon.AtkTarget>.Event> GeneralChain;
+        public static Chain<TargetProvider<Weapon.AtkTarget>.Event> GeneralChain;
 
         static Handlers()
         {
-            var list = new List<System.Action<Weapon<Weapon.AtkTarget>.Event>>{
+            var list = new List<System.Action<TargetProvider<Weapon.AtkTarget>.Event>>{
                 DiscardNoEntity,
                 NextToAny,
                 DiscardUnreachable,
@@ -101,10 +101,10 @@ namespace Core.Weapon
                 DiscardNotClose,
                 TakeFirstNotSkip
             };
-            GeneralChain = new Chain<Weapon<Weapon.AtkTarget>.Event>();
+            GeneralChain = new Chain<TargetProvider<Weapon.AtkTarget>.Event>();
             foreach (var func in list)
             {
-                GeneralChain.AddHandler(new EvHandler<Weapon<Weapon.AtkTarget>.Event>(func));
+                GeneralChain.AddHandler(new EvHandler<TargetProvider<Weapon.AtkTarget>.Event>(func));
             }
 
             // GeneralChain.AddHandler(new EvHandler<Weapon<Weapon.AtkTarget>.Event>(DiscardNoEntity));

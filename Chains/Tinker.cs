@@ -14,6 +14,7 @@ namespace Core
     }
 
     // TODO: refactor into a factory. probably
+    // TODO: refactor into an abstract class or an interface
     public class Tinker
     {
         static IdGenerator s_idGenerator = new IdGenerator();
@@ -53,7 +54,7 @@ namespace Core
             };
         }
 
-        public virtual void Apply(Entity entity)
+        public virtual void Tink(Entity entity)
         {
 
             if (m_store.ContainsKey(entity.id))
@@ -82,7 +83,7 @@ namespace Core
             }
         }
 
-        public void Remove(Entity entity)
+        public void Untink(Entity entity)
         {
             var data = m_store[entity.id];
             foreach (var chainHandles in data.chainHandlesArray)

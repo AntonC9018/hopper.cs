@@ -89,8 +89,8 @@ namespace Core
     {
         // contains either directories or files
         public static FS<Directory> s_defaultFS = new FS<Directory>();
-        public Dictionary<StatModifier, int> m_statModifierCounts
-            = new Dictionary<StatModifier, int>();
+        public Dictionary<Modifier, int> m_modifierCounts
+            = new Dictionary<Modifier, int>();
 
         public Dictionary<ChainModifier, Handle> m_chainModifierHandles
             = new Dictionary<ChainModifier, Handle>();
@@ -103,18 +103,18 @@ namespace Core
 
         public void AddStatModifier(StatModifier modifier)
         {
-            if (m_statModifierCounts.ContainsKey(modifier))
+            if (m_modifierCounts.ContainsKey(modifier))
             {
-                m_statModifierCounts[modifier]++;
+                m_modifierCounts[modifier]++;
             }
-            m_statModifierCounts[modifier] = 1;
+            m_modifierCounts[modifier] = 1;
             StatFile file = (StatFile)GetFile(modifier.path);
             file._Add(modifier.file, 1);
         }
 
         public void RemoveStatModifier(StatModifier modifier)
         {
-            m_statModifierCounts[modifier]--;
+            m_modifierCounts[modifier]--;
             StatFile file = (StatFile)GetFile(modifier.path);
             file._Add(modifier.file, -1);
         }
@@ -123,7 +123,8 @@ namespace Core
         {
             if (m_chainModifierHandles.ContainsKey(modifier))
             {
-                throw new System.Exception("Can't add more than one of the same chain modifiers");
+                m_modifierCounts[modifier]++;
+                return;
             }
             var node = (StatFileContainer)GetNode(modifier.path);
             var handle = node.chain.AddHandler(modifier.handler);
@@ -132,6 +133,13 @@ namespace Core
 
         public void RemoveChainModifier(ChainModifier modifier)
         {
+            if (m_chainModifierHandles.ContainsKey(modifier))
+            {
+                var val = m_modifierCounts[modifier] - 1;
+                m_modifierCounts[modifier] = val;
+                if (val > 0)
+                    return;
+            }
             var node = (StatFileContainer)GetNode(modifier.path);
             var handle = m_chainModifierHandles[modifier];
             node.chain.RemoveHandler(handle);

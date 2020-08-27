@@ -134,13 +134,13 @@ namespace Hopper
 
             var poolDef = new PoolDefinition<SubPool>();
             // other option: new PoolDefinition<EndlessSubPool>();
-            Item[] items = new[]
+            PoolItem[] items = new[]
             {
-                new Item(0, 1),
-                new Item(1, 1),
-                new Item(2, 1),
-                new Item(3, 1),
-                new Item(4, 10)
+                new PoolItem(0, 1),
+                new PoolItem(1, 1),
+                new PoolItem(2, 1),
+                new PoolItem(3, 1),
+                new PoolItem(4, 10)
             };
             poolDef.RegisterItems(items);
 
@@ -184,11 +184,11 @@ namespace Hopper
                     reach = new List<int>()
                 }
             };
-            var weapon = new Weapon<AtkTarget>
+            var weapon = new TargetProvider<AtkTarget>
             (
                 pattern: pattern,
                 chain: Handlers.GeneralChain,
-                check: e => !e.propagate || e.targets.Count == 0
+                stopFunc: e => !e.propagate || e.targets.Count == 0
             );
             var ev = new Attacking.Event { actor = player, action = playerNextAction };
             var targets = weapon.GetTargets(ev);
