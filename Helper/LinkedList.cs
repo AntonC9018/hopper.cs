@@ -4,6 +4,17 @@ namespace MyLinkedList
     {
         public MyListNode<T> Head;
 
+        public int Count
+        {
+            get
+            {
+                int i = 0;
+                foreach (var node in this)
+                    i++;
+                return i;
+            }
+        }
+
         public void AddFront(T item)
         {
             var node = new MyListNode<T>(item);

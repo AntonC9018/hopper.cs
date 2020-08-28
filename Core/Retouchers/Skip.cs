@@ -35,7 +35,7 @@ namespace Core.Retouchers
         static void SkipNoPlayer(Attacking.Event ev)
         {
             ev.propagate = ev.targets
-                .Any(t => t.entity.IsPlayer());
+                .Any(t => t.entity.IsPlayer);
         }
 
         static void SkipSelf(Attacking.Event ev)

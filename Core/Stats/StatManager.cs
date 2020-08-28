@@ -129,6 +129,7 @@ namespace Core
             var node = (StatFileContainer)GetNode(modifier.path);
             var handle = node.chain.AddHandler(modifier.handler);
             m_chainModifierHandles[modifier] = handle;
+            m_modifierCounts[modifier] = 0;
         }
 
         public void RemoveChainModifier(ChainModifier modifier)

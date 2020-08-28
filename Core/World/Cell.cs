@@ -41,7 +41,7 @@ namespace Core
         {
             foreach (var e in m_entities)
             {
-                if ((e.m_layer & layer) != 0)
+                if ((e.Layer & layer) != 0)
                 {
                     return e;
                 }

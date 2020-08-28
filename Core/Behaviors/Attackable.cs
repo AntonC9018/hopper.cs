@@ -110,7 +110,6 @@ namespace Core
 
         static void ResistSource(Event ev)
         {
-            System.Console.WriteLine(ev.attack.source);
             var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("attacked/source_res");
             if (sourceRes[ev.attack.source] > ev.attack.power)
             {

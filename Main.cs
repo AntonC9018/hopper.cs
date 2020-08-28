@@ -15,7 +15,8 @@ namespace Hopper
 
         static void Main(string[] args)
         {
-            System.Console.WriteLine("Hello");
+            System.Console.WriteLine("\n ------ Definition + Instantiation Demo ------ \n");
+
             World world = new World
             {
                 m_grid = new GridManager(5, 5),
@@ -23,7 +24,7 @@ namespace Hopper
             };
             System.Console.WriteLine("Created world");
 
-            var playerFactory = new EntityFactory(typeof(Entity));
+            var playerFactory = new EntityFactory<Entity>();
             playerFactory.AddBehavior(Attackable.s_factory);
             playerFactory.AddBehavior(Attacking.s_factory);
             playerFactory.AddBehavior(Displaceable.s_factory);
@@ -40,7 +41,7 @@ namespace Hopper
             playerFactory.AddRetoucher(Core.Retouchers.Skip.EmptyAttack);
 
 
-            var enemyFactory = new EntityFactory(typeof(Entity));
+            var enemyFactory = new EntityFactory<Entity>();
             enemyFactory.AddBehavior(Attackable.s_factory);
             enemyFactory.AddBehavior(Attacking.s_factory);
             enemyFactory.AddBehavior(Displaceable.s_factory);
@@ -84,7 +85,7 @@ namespace Hopper
             world.m_grid.Reset(enemy);
             System.Console.WriteLine("Enemy set in world");
 
-            player.Init(new IntVector2(1, 0), world);
+            player.Init(new IntVector2(1, 1), world);
             world.m_state.AddPlayer(player);
             world.m_grid.Reset(player);
             System.Console.WriteLine("Player set in world");
@@ -93,10 +94,7 @@ namespace Hopper
             playerNextAction.direction = new IntVector2(0, 1);
             player.beh_Acting.m_nextAction = playerNextAction;
             System.Console.WriteLine("Set player action");
-
-            // world.m_state.Loop();
-            // System.Console.WriteLine("Looped");
-            // System.Console.WriteLine($"Player's new position {player.m_pos}");
+            System.Console.WriteLine("\n ------ Modifier Demo ------ \n");
 
             var mod = new StatModifier("attack", new Attacking.Attack { damage = 1 });
             var attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
@@ -131,7 +129,7 @@ namespace Hopper
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
-
+            System.Console.WriteLine("\n ------ Pools Demo ------ \n");
             var poolDef = new PoolDefinition<SubPool>();
             // other option: new PoolDefinition<EndlessSubPool>();
             PoolItem[] items = new[]
@@ -169,6 +167,8 @@ namespace Hopper
             var it3 = superPool.GetNextItem("zone1/weapons");
             System.Console.WriteLine($"Item Id = {it3.id}, q = {it3.q}");
 
+
+            System.Console.WriteLine("\n ------ TargetProvider Demo ------ \n");
             var pattern = new List<Piece>
             {
                 new Piece
@@ -194,12 +194,48 @@ namespace Hopper
             var targets = weapon.GetTargets(ev);
             foreach (var t in targets)
             {
-                System.Console.WriteLine($"Attacking entity at {t.entity.m_pos}");
+                System.Console.WriteLine($"Entity at {t.entity.m_pos} has been considered a potential target");
             }
 
-            // world.m_state.Loop();
-            // System.Console.WriteLine("Looped");
-            // System.Console.WriteLine($"Player's new position {player.m_pos}");
+
+            System.Console.WriteLine("\n ------ Inventory Demo ------ \n");
+            var inventory = new Inventory(player);
+
+            var cyclicContainer = new CyclicItemContainer(1);
+            inventory.AddContainerInSlot(0, cyclicContainer);
+
+            var chainDefs = new IChainDef[]
+            {
+                new ChainDef<Attacking.Event>
+                (
+                    "attack:check",
+                    new EvHandler<Attacking.Event>(
+                        e => System.Console.WriteLine("Hello from tinker applied by item")
+                    )
+                )
+            };
+            var tinker = new Tinker(chainDefs);
+            var item = new TinkerItem(tinker);
+
+            // inventory.Equip(item) ->         // the starting point
+            // item.BeEquipped(entity) ->       // it's interface method
+            // entity.Tink(item.tinker) ->      // it adds data to its list
+            // tinker.Tink(entity)              // creates tinker data
+            inventory.Equip(item);
+
+            world.m_state.Loop();
+            System.Console.WriteLine("Looped");
+
+            // creates excess as the size is 1
+            inventory.Equip(item);
+            // inventory.DropExcess() ->
+            // item.BeUnequipped() ->
+            // entity.Untink() +
+            // world.CreateDroppedItem(id, pos)
+            inventory.DropExcess();
+
+            var entities = world.m_grid.GetCellAt(player.m_pos).m_entities;
+            System.Console.WriteLine($"There's {entities.Count} entities in the cell where the player is standing");
 
         }
     }

@@ -77,7 +77,10 @@ namespace CircularBuffer
         /// Maximum capacity of the buffer. Elements pushed into the buffer after
         /// maximum capacity is reached (IsFull = true), will remove an element.
         /// </summary>
-        public int Capacity { get => _buffer.Length; }
+        public int Capacity
+        {
+            get => _buffer.Length;
+        }
 
         public bool IsFull { get => Size == Capacity; }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Vector;
 
 namespace Core
 {
@@ -28,7 +29,7 @@ namespace Core
 
         public void AddEntity(Entity entity)
         {
-            entities[entity.m_layer.ToIndex()].Add(entity);
+            entities[entity.Layer.ToIndex()].Add(entity);
         }
 
         public int AddPlayer(Entity player)

@@ -11,6 +11,7 @@ namespace Core
     public class TinkerData
     {
         public ChainHandles[] chainHandlesArray;
+        public int count = 1;
     }
 
     // TODO: refactor into a factory. probably
@@ -19,7 +20,7 @@ namespace Core
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        Dictionary<int, TinkerData> m_store = new Dictionary<int, TinkerData>();
+        Dictionary<int, TinkerData> m_store;
         // TODO: because this should be static
         // another possibility is to define static members separately for each Tinker class
         // and then set them in the constructor
@@ -28,6 +29,12 @@ namespace Core
         // Also we keep track of the amount of inherits rather than the amount of instances
         // (for behaviors, that is)
         public IChainDef[] m_chainDefinition;
+
+        public Tinker(IChainDef[] chainDefs)
+        {
+            m_store = new Dictionary<int, TinkerData>();
+            m_chainDefinition = chainDefs;
+        }
 
         // void AddStore(int entityId, TinkerData data)
         // {
@@ -56,10 +63,10 @@ namespace Core
 
         public virtual void Tink(Entity entity)
         {
-
             if (m_store.ContainsKey(entity.id))
             {
-                throw new System.Exception("You can't apply a tinker twice");
+                m_store[entity.id].count++;
+                return;
             }
 
             var data = MakeData();
@@ -85,6 +92,9 @@ namespace Core
 
         public void Untink(Entity entity)
         {
+            m_store[entity.id].count--;
+            if (m_store[entity.id].count > 0) return;
+
             var data = m_store[entity.id];
             foreach (var chainHandles in data.chainHandlesArray)
             {

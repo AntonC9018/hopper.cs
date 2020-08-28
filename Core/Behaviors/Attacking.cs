@@ -93,7 +93,11 @@ namespace Core
                 actor = actor,
                 action = action
             };
+
+
             chain_checkAttack.Pass(ev);
+
+
 
             if (!ev.propagate)
                 return false;

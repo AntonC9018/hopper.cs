@@ -97,7 +97,6 @@ namespace Core.Weapon
             for (int i = 0; i < this.pattern.Count; i++)
             {
                 var piece = this.pattern[i].Rotate(angle);
-                System.Console.WriteLine(piece.pos);
 
                 var pos = commonEvent.actor.m_pos + piece.pos;
                 var entity = commonEvent.actor.m_world.m_grid

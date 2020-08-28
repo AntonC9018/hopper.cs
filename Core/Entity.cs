@@ -35,11 +35,6 @@ namespace Core
             return null;
         }
 
-        public bool IsPlayer()
-        {
-            return false;
-        }
-
         /*
         although this is boilerplate, it simplifies the process of reaching out
         to these behaviors from other parts of the program
@@ -69,7 +64,7 @@ namespace Core
         public IntVector2 m_pos;
         public IntVector2 m_orientation = IntVector2.UnitX;
         public World m_world;
-        public Layer m_layer = Layer.REAL;
+        public virtual Layer Layer { get => Layer.REAL; }
 
         // TODO: we need a stat manager factory with the ability to set up 
         // default stats.
@@ -79,8 +74,7 @@ namespace Core
         // isDead is set to true when the entity needs to be filtered out 
         // and removed from the internal lists
         public bool b_isDead = false;
-
-        public bool b_isPlayer = false;
+        public virtual bool IsPlayer { get => false; }
 
         public Entity()
         { }
@@ -101,10 +95,6 @@ namespace Core
         {
             m_tinkers.Remove(tinker.id);
             tinker.Untink(this);
-        }
-        // TODO:
-        public void CreateDroppedItem(int id)
-        {
         }
         // TODO: this won't work, since other tinkers may also reference
         // this entity in their stores.
@@ -172,16 +162,19 @@ namespace Core
 
     }
 
-    public class EntityFactory
+    public interface IEntityFactory
+    {
+        public Entity Instantiate();
+    }
+
+    public class EntityFactory<T> : IEntityFactory where T : Entity, new()
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        public Type m_entityClass;
         public event System.Action<Entity> InitEvent;
 
-        public EntityFactory(System.Type entityClass)
+        public EntityFactory()
         {
-            m_entityClass = entityClass;
             m_chainTemplates.Add("tick", new ChainTemplate<CommonEvent>());
         }
 
@@ -222,7 +215,7 @@ namespace Core
 
         public Entity Instantiate()
         {
-            Entity entity = (Entity)System.Activator.CreateInstance(m_entityClass);
+            Entity entity = new T();
             // Add all the chains
             foreach (var (key, template) in m_chainTemplates)
             {
