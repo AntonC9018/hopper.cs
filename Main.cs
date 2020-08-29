@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Vector;
 using Chains;
@@ -6,6 +5,7 @@ using Core;
 using Core.Items;
 using System.Linq;
 using Core.Weapon;
+using Core.Behaviors;
 
 // Hello World! program
 namespace Hopper
@@ -237,6 +237,20 @@ namespace Hopper
             var entities = world.m_grid.GetCellAt(player.m_pos).m_entities;
             System.Console.WriteLine($"There's {entities.Count} entities in the cell where the player is standing");
 
+            System.Console.WriteLine("\n ------ History Demo ------ \n");
+            var enemyEventsByPhases = enemy.m_history.Phases;
+            var playerEventsByPhases = player.m_history.Phases;
+            for (int i = 0; i < playerEventsByPhases.Length; i++)
+            {
+                foreach (var historyEvent in enemyEventsByPhases[i])
+                {
+                    System.Console.WriteLine($"Enemy did {historyEvent.eventCode.ToString()}. Position after: {historyEvent.stateAfter.pos}");
+                }
+                foreach (var historyEvent in playerEventsByPhases[i])
+                {
+                    System.Console.WriteLine($"Player did {historyEvent.eventCode.ToString()}. Position after: {historyEvent.stateAfter.pos}");
+                }
+            }
         }
     }
 

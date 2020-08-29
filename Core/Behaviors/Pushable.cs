@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core.FS;
 using Vector;
 
-namespace Core
+namespace Core.Behaviors
 {
     public class Pushable : Behavior
     {
@@ -141,7 +141,12 @@ namespace Core
                     name = "pushed:do",
                     handlers = new EvHandler<Event>[]
                     {
-                        new EvHandler<Event>(BePushed)
+                        new EvHandler<Event>(
+                            BePushed
+                        ),
+                        new EvHandler<Event>(
+                            Utils.AddHistoryEvent(History.EventCode.pushed_do)
+                        )
                     }
                 }
             }

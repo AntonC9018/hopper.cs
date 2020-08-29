@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using Chains;
 using Vector;
+using Core.Behaviors;
 
 namespace Core
 {
@@ -64,6 +64,7 @@ namespace Core
         public IntVector2 m_pos;
         public IntVector2 m_orientation = IntVector2.UnitX;
         public World m_world;
+        public History m_history;
         public virtual Layer Layer { get => Layer.REAL; }
 
         // TODO: we need a stat manager factory with the ability to set up 
@@ -81,6 +82,7 @@ namespace Core
 
         public void Init(IntVector2 pos, World world)
         {
+            m_history = new History();
             m_pos = pos;
             m_world = world;
             StartMonitoringEvents();

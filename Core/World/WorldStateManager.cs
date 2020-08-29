@@ -6,7 +6,7 @@ namespace Core
     public class WorldStateManager
     {
         List<Entity>[] entities
-            = new List<Entity>[System.Enum.GetNames(typeof(Layer)).Length];
+            = new List<Entity>[World.s_numEntityTypes];
 
         // note that players never get into the lists from above
         public List<Entity> m_players = new List<Entity>();

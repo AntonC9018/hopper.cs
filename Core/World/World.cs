@@ -9,6 +9,9 @@ namespace Core
         public GridManager m_grid;
         public WorldStateManager m_state;
 
+        public static int s_numPhases = System.Enum.GetNames(typeof(Layer)).Length;
+        public static int s_numEntityTypes = s_numPhases;
+
         public Entity SpawnEntity(IEntityFactory entityFactory, IntVector2 pos)
         {
             var entity = entityFactory.Instantiate();

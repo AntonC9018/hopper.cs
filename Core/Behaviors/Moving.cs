@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Core.FS;
 using Chains;
 
-namespace Core
+namespace Core.Behaviors
 {
     public class Moving : Behavior
     {
@@ -74,6 +74,9 @@ namespace Core
                     {
                         new EvHandler<Event> (
                             Displace
+                        ),
+                        new EvHandler<Event>(
+                            Utils.AddHistoryEvent(History.EventCode.move_do)
                         )
                     }
                 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core.FS;
 using Vector;
 
-namespace Core
+namespace Core.Behaviors
 {
     public class Displaceable : Behavior
     {
@@ -114,6 +114,9 @@ namespace Core
                     {
                         new EvHandler<Event>(
                             Displace
+                        ),
+                        new EvHandler<Event>(
+                            Utils.AddHistoryEvent(History.EventCode.displaced_do)
                         )
                     }
                 }

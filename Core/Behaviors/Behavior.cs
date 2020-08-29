@@ -1,7 +1,7 @@
 using Chains;
 using System;
 
-namespace Core
+namespace Core.Behaviors
 {
     public abstract class IChainDef
     {

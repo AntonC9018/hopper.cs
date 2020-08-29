@@ -3,7 +3,7 @@ using System.Linq;
 using Core.FS;
 using Chains;
 
-namespace Core
+namespace Core.Behaviors
 {
     public class Attacking : Behavior
     {
@@ -94,10 +94,7 @@ namespace Core
                 action = action
             };
 
-
             chain_checkAttack.Pass(ev);
-
-
 
             if (!ev.propagate)
                 return false;
@@ -185,6 +182,9 @@ namespace Core
                     {
                         new EvHandler<Event>(
                             ApplyAttack
+                        ),
+                        new EvHandler<Event>(
+                            Utils.AddHistoryEvent(History.EventCode.attacking_do)
                         )
                     }
                 }

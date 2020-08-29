@@ -2,7 +2,7 @@ using Chains;
 using System.Collections.Generic;
 using Core.FS;
 
-namespace Core
+namespace Core.Behaviors
 {
     public enum AtkCondition
     {
@@ -86,7 +86,7 @@ namespace Core
         public override bool Activate(
             Entity actor,
             Action action,
-            ActivationParams pars = null)
+            ActivationParams pars)
         {
             var ev = new Event
             {
@@ -112,22 +112,18 @@ namespace Core
         {
             var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("attacked/source_res");
             if (sourceRes[ev.attack.source] > ev.attack.power)
-            {
                 ev.attack.damage = 0;
-            }
         }
 
         static void Armor(Event ev)
         {
-            ev.attack.damage = System.Math.Clamp(
-                ev.attack.damage - ev.resistance.armor,
-                ev.resistance.minDamage,
-                ev.resistance.maxDamage);
-
             if (ev.attack.pierce < ev.resistance.pierce)
-            {
                 ev.attack.damage = 0;
-            }
+            else
+                ev.attack.damage = System.Math.Clamp(
+                    ev.attack.damage - ev.resistance.armor,
+                    ev.resistance.minDamage,
+                    ev.resistance.maxDamage);
         }
 
         static void TakeHit(Event ev)
@@ -187,6 +183,9 @@ namespace Core
                     {
                         new EvHandler<Event>(
                             TakeHit
+                        ),
+                        new EvHandler<Event>(
+                            Utils.AddHistoryEvent(History.EventCode.attacked_do)
                         )
                     }
                 },

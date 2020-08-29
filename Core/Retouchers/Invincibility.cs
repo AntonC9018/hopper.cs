@@ -1,6 +1,7 @@
 
 using System.Linq;
 using Chains;
+using Core.Behaviors;
 
 namespace Core.Retouchers
 {

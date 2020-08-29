@@ -1,3 +1,5 @@
+using Core.Behaviors;
+
 namespace Core
 {
     public class Retoucher

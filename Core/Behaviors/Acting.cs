@@ -1,7 +1,7 @@
 using Chains;
 using System.Collections.Generic;
 
-namespace Core
+namespace Core.Behaviors
 {
     public class Acting : Behavior
     {

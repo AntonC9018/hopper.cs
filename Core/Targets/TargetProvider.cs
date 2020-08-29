@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Vector;
 using Chains;
+using Core.Behaviors;
 
 namespace Core.Weapon
 {
@@ -71,18 +72,19 @@ namespace Core.Weapon
     //     }
     // };
 
+    public class TargetEvent<T> : CommonEvent where T : Target
+    {
+        public List<T> targets;
+    }
+
     public class TargetProvider<T> where T : Target, new()
     {
-        public class Event : CommonEvent
-        {
-            public List<T> targets;
-        }
         List<Piece> pattern;
-        Chain<Event> chain;
-        System.Func<Event, bool> stopFunc;
+        Chain<TargetEvent<T>> chain;
+        System.Func<TargetEvent<T>, bool> stopFunc;
         Layer attackedLayer = Layer.REAL | Layer.MISC | Layer.WALL;
 
-        public TargetProvider(List<Piece> pattern, Chain<Event> chain, System.Func<Event, bool> stopFunc)
+        public TargetProvider(List<Piece> pattern, Chain<TargetEvent<T>> chain, System.Func<TargetEvent<T>, bool> stopFunc)
         {
             this.pattern = pattern;
             this.chain = chain;
@@ -114,7 +116,7 @@ namespace Core.Weapon
                 targets.Add(target);
             }
 
-            var ev = new Event
+            var ev = new TargetEvent<T>
             {
                 targets = targets,
                 actor = commonEvent.actor,

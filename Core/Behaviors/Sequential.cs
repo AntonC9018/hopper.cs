@@ -2,7 +2,7 @@ using Chains;
 using System.Collections.Generic;
 using Vector;
 
-namespace Core
+namespace Core.Behaviors
 {
     public class Sequential : Behavior
     {

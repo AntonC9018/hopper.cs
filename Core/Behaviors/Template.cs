@@ -1,6 +1,6 @@
 // using Chains;
 
-// namespace Core
+// namespace Core.Behaviors
 // {
 //     public class Template : Behavior
 //     {
