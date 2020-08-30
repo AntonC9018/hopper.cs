@@ -5,7 +5,7 @@ namespace Core.Items
 {
     public class DroppedItem : Entity
     {
-        public int ItemId { get; set; }
+        public Item Item { get; set; }
         public override Layer Layer { get => Layer.DROPPED; }
         public static EntityFactory<DroppedItem> s_factory
             = new EntityFactory<DroppedItem>();

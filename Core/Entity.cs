@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Chains;
 using Vector;
 using Core.Behaviors;
+using Core.Items;
 
 namespace Core
 {
@@ -66,6 +67,7 @@ namespace Core
         public World m_world;
         public History m_history;
         public virtual Layer Layer { get => Layer.REAL; }
+        public virtual IInventory Inventory { get; set; } // for now, get set. however, this should be readonly
 
         // TODO: we need a stat manager factory with the ability to set up 
         // default stats.
@@ -124,6 +126,8 @@ namespace Core
         {
             m_world.m_state.EndOfLoopEvent -= RetranslateEndOfLoopEvent;
         }
+
+        public Cell Cell => m_world.m_grid.GetCellAt(m_pos);
 
         public Entity GetClosestPlayer()
         {

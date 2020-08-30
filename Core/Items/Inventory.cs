@@ -5,7 +5,14 @@ using Vector;
 
 namespace Core.Items
 {
-    public class Inventory
+    public interface IInventory
+    {
+        public void Equip(Item item);
+        public void Unequip(Item item);
+        public void DropExcess();
+        public bool CanEquipItem(Item item);
+    }
+    public class Inventory : IInventory
     {
         Dictionary<int, IItemContainer> m_items;
         Entity m_actor;
@@ -18,16 +25,18 @@ namespace Core.Items
 
         public void Equip(Item item)
         {
-            var container = m_items[item.Slot];
+            var container = m_items[item.slot];
             container.Insert(item);
             item.BeEquipped(m_actor);
+            System.Console.WriteLine($"Picked up an item with id = {item.id}");
         }
 
         public void Unequip(Item item)
         {
-            var container = m_items[item.Slot];
+            var container = m_items[item.slot];
             container.Remove(item);
             item.BeUnequipped(m_actor);
+            System.Console.WriteLine($"Dropped item with id = {item.id}");
         }
 
         public void DropExcess()
@@ -36,18 +45,21 @@ namespace Core.Items
             {
                 var excess = container.PullOutExcess();
                 foreach (Item item in excess)
+                {
                     item.BeUnequipped(m_actor);
+                    System.Console.WriteLine($"Dropped excess item with id = {item.id}");
+                }
             }
         }
 
-        public void AddContainerInSlot(int slotId, IItemContainer container)
+        public void AddContainer(int slotId, IItemContainer container)
         {
             m_items[slotId] = container;
         }
 
         public bool CanEquipItem(Item item)
         {
-            return m_items.ContainsKey(item.Slot);
+            return m_items.ContainsKey(item.slot);
         }
     }
 

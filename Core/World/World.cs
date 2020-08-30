@@ -21,10 +21,11 @@ namespace Core
             return entity;
         }
 
-        public void CreateDroppedItem(int id, IntVector2 pos)
+        public Entity CreateDroppedItem(Item item, IntVector2 pos)
         {
             var entity = (DroppedItem)SpawnEntity(DroppedItem.s_factory, pos);
-            entity.ItemId = id;
+            entity.Item = item;
+            return entity;
         }
     }
 }

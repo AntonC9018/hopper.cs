@@ -5,7 +5,7 @@ using Core.Behaviors;
 
 namespace Core.Retouchers
 {
-    public static class Invinsibility
+    public static class Invincibility
     {
         public static Retoucher PreventsDamage = new Retoucher(
             new ChainDef<Attackable.Event>("attacked:do", new EvHandler<Attackable.Event>(PreventDamage))

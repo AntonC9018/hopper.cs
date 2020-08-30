@@ -40,6 +40,9 @@ namespace Hopper
             playerFactory.AddBehavior(Acting.s_factory, playerActingConf);
             playerFactory.AddRetoucher(Core.Retouchers.Skip.EmptyAttack);
 
+            // this one's for the equip demo
+            playerFactory.AddRetoucher(Core.Retouchers.Equip.OnDisplace);
+
 
             var enemyFactory = new EntityFactory<Entity>();
             enemyFactory.AddBehavior(Attackable.s_factory);
@@ -202,7 +205,7 @@ namespace Hopper
             var inventory = new Inventory(player);
 
             var cyclicContainer = new CyclicItemContainer(1);
-            inventory.AddContainerInSlot(0, cyclicContainer);
+            inventory.AddContainer(0, cyclicContainer);
 
             var chainDefs = new IChainDef[]
             {
@@ -215,7 +218,7 @@ namespace Hopper
                 )
             };
             var tinker = new Tinker(chainDefs);
-            var item = new TinkerItem(tinker);
+            var item = new TinkerItem(tinker, 0);
 
             // inventory.Equip(item) ->         // the starting point
             // item.BeEquipped(entity) ->       // it's interface method
@@ -251,6 +254,36 @@ namespace Hopper
                     System.Console.WriteLine($"Player did {historyEvent.eventCode.ToString()}. Position after: {historyEvent.stateAfter.pos}");
                 }
             }
+
+            System.Console.WriteLine("\n ------ Equip on Displace Demo ------ \n");
+            // we don't need the entity for the next test
+            enemy.b_isDead = true;
+            enemy.RemoveFromGrid();
+
+            var playerMoveAction = moveAction.Copy();
+            playerMoveAction.direction = IntVector2.Down;
+            player.beh_Acting.m_nextAction = playerMoveAction;
+            player.Inventory = inventory;
+
+            var cyclicContainer2 = new CyclicItemContainer(1);
+            inventory.AddContainer(1, cyclicContainer);
+
+            var chainDefs2 = new IChainDef[0];
+            var tinker2 = new Tinker(chainDefs);
+            var item2 = new TinkerItem(tinker2, 1);
+
+            var droppedItem2 = world.CreateDroppedItem(item2, player.m_pos + IntVector2.Down);
+
+            /*
+            this only works because we did
+            `playerFactory.AddRetoucher(Core.Retouchers.Equip.OnDisplace);`
+            up top.
+            */
+
+            System.Console.WriteLine($"Player's position before moving: {player.m_pos}");
+            world.m_state.Loop();
+            System.Console.WriteLine($"Player's new position: {player.m_pos}");
+            System.Console.WriteLine($"There's {world.m_grid.GetCellAt(player.m_pos).m_entities.Count} entities in the cell where the player is standing");
         }
     }
 

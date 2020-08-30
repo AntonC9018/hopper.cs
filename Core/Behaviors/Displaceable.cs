@@ -70,16 +70,17 @@ namespace Core.Behaviors
         static void ConvertFromMove(Event ev)
         {
             int i = 1;
-            for (; i < ev.move.power; i++)
+
+            do
             {
                 var cell = ev.actor.GetCellRelative(ev.action.direction * i);
 
                 if (cell == null || cell.GetEntityFromLayer(Layer.BLOCK) != null)
-                {
-                    i--;
                     break;
-                }
-            }
+                i++;
+            } while (i < ev.move.power);
+            i--;
+
             ev.newPos = ev.actor.GetRelativePos(ev.action.direction * i);
         }
 

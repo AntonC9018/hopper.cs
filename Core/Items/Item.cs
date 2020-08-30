@@ -8,16 +8,17 @@ namespace Core.Items
         public abstract void BeEquipped(Entity entity);
         public abstract void BeUnequipped(Entity entity);
         public abstract void BeDestroyed(Entity entity);
-        public virtual int Slot { get => 0; }
+        public int slot;
     }
 
     public class TinkerItem : Item
     {
         Tinker tinker;
 
-        public TinkerItem(Tinker tinker)
+        public TinkerItem(Tinker tinker, int slot = 0)
         {
             this.tinker = tinker;
+            this.slot = slot;
         }
 
         public override void BeDestroyed(Entity entity)
@@ -33,7 +34,7 @@ namespace Core.Items
         public override void BeUnequipped(Entity entity)
         {
             entity.Untink(tinker);
-            entity.m_world.CreateDroppedItem(id, entity.m_pos);
+            entity.m_world.CreateDroppedItem(this, entity.m_pos);
         }
     }
 
@@ -41,9 +42,10 @@ namespace Core.Items
     {
         Modifier modifier;
 
-        public ModifierItem(Modifier modifier)
+        public ModifierItem(Modifier modifier, int slot = 0)
         {
             this.modifier = modifier;
+            this.slot = slot;
         }
 
         public override void BeDestroyed(Entity entity)
@@ -59,7 +61,7 @@ namespace Core.Items
         public override void BeUnequipped(Entity entity)
         {
             entity.m_statManager.RemoveModifier(modifier);
-            entity.m_world.CreateDroppedItem(id, entity.m_pos);
+            entity.m_world.CreateDroppedItem(this, entity.m_pos);
         }
     }
 }
