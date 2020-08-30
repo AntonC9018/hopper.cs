@@ -59,8 +59,8 @@ namespace Core
         public Displaceable beh_Displaceable
         { get { return (Displaceable)GetBehavior(Displaceable.s_factory.id); } }
 
-        public readonly Dictionary<int, Tinker> m_tinkers =
-            new Dictionary<int, Tinker>();
+        public readonly Dictionary<int, ITinker> m_tinkers =
+            new Dictionary<int, ITinker>();
 
         public IntVector2 m_pos;
         public IntVector2 m_orientation = IntVector2.UnitX;
@@ -90,12 +90,12 @@ namespace Core
             StartMonitoringEvents();
         }
 
-        public void Tink(Tinker tinker)
+        public void Tink(ITinker tinker)
         {
             m_tinkers[tinker.id] = tinker;
             tinker.Tink(this);
         }
-        public void Untink(Tinker tinker)
+        public void Untink(ITinker tinker)
         {
             m_tinkers.Remove(tinker.id);
             tinker.Untink(this);

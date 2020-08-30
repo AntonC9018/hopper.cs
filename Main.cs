@@ -217,7 +217,7 @@ namespace Hopper
                     )
                 )
             };
-            var tinker = new Tinker(chainDefs);
+            var tinker = new Tinker<TinkerData>(chainDefs);
             var item = new TinkerItem(tinker, 0);
 
             // inventory.Equip(item) ->         // the starting point
@@ -269,7 +269,7 @@ namespace Hopper
             inventory.AddContainer(1, cyclicContainer);
 
             var chainDefs2 = new IChainDef[0];
-            var tinker2 = new Tinker(chainDefs);
+            var tinker2 = new Tinker<TinkerData>(chainDefs);
             var item2 = new TinkerItem(tinker2, 1);
 
             var droppedItem2 = world.CreateDroppedItem(item2, player.m_pos + IntVector2.Down);
@@ -284,8 +284,45 @@ namespace Hopper
             world.m_state.Loop();
             System.Console.WriteLine($"Player's new position: {player.m_pos}");
             System.Console.WriteLine($"There's {world.m_grid.GetCellAt(player.m_pos).m_entities.Count} entities in the cell where the player is standing");
+
+
+            System.Console.WriteLine("\n ------ Tinker static reference Demo ------ \n");
+
+            var tinker3 = TestTinkerStuff.tinker; // see the definition below
+            player.Tink(tinker3);
+            player.beh_Acting.m_nextAction = playerMoveAction;
+            world.m_state.Loop();
+
         }
     }
 
+
+    public class TestTinkerData : TinkerData
+    {
+        public int i;
+        public override void Init(Entity entity)
+        {
+            i = 1;
+        }
+    }
+
+    public static class TestTinkerStuff
+    {
+        static void TestMethod1(CommonEvent commonEvent)
+        {
+            var data = tinker.GetStoreByEvent(commonEvent);
+            System.Console.WriteLine($"Tinker says that i = {data.i}");
+        }
+        static IChainDef[] chainDefs = new IChainDef[]
+        {
+            new ChainDef<Displaceable.Event>
+            (
+                "displaced:do",
+                new EvHandler<Displaceable.Event>(TestMethod1)
+            )
+        };
+        public static Tinker<TestTinkerData> tinker
+            = new Tinker<TestTinkerData>(chainDefs);
+    }
 
 }

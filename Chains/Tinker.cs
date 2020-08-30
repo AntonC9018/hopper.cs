@@ -13,56 +13,26 @@ namespace Core
     {
         public ChainHandles[] chainHandlesArray;
         public int count = 1;
+        public virtual void Init(Entity entity) { }
     }
 
-    // TODO: refactor into a factory. probably
-    // TODO: refactor into an abstract class or an interface
-    public class Tinker
+    public abstract class ITinker
     {
+        protected Dictionary<int, TinkerData> m_store;
+        protected IChainDef[] m_chainDefinition;
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        Dictionary<int, TinkerData> m_store;
-        // TODO: because this should be static
-        // another possibility is to define static members separately for each Tinker class
-        // and then set them in the constructor
-        // the difference between this and the Behaviors is that there we
-        // do not know in advance what we are instanciating
-        // Also we keep track of the amount of inherits rather than the amount of instances
-        // (for behaviors, that is)
-        public IChainDef[] m_chainDefinition;
-
-        public Tinker(IChainDef[] chainDefs)
-        {
-            m_store = new Dictionary<int, TinkerData>();
-            m_chainDefinition = chainDefs;
-        }
-
-        // void AddStore(int entityId, TinkerData data)
-        // {
-        //     m_store[entityId] = data;
-        // }
 
         public void RemoveStore(int entityId)
         {
             m_store.Remove(entityId);
         }
-
-        // void GetStore(int entity)
-
         public bool IsApplied(int entityId)
         {
             return m_store.ContainsKey(entityId);
         }
-
-        protected virtual TinkerData MakeData()
-        {
-            return new TinkerData
-            {
-                chainHandlesArray = new ChainHandles[m_chainDefinition.Length]
-            };
-        }
-
-        public virtual void Tink(Entity entity)
+        protected abstract TinkerData InstantiateData();
+        public void Tink(Entity entity)
         {
             if (m_store.ContainsKey(entity.id))
             {
@@ -70,7 +40,10 @@ namespace Core
                 return;
             }
 
-            var data = MakeData();
+            var data = InstantiateData();
+            // we have to do this manually to not pass the length into the init function
+            data.chainHandlesArray = new ChainHandles[m_chainDefinition.Length];
+            data.Init(entity); // since the constructor can only be parameterless 
             m_store[entity.id] = data;
 
             for (int i = 0; i < m_chainDefinition.Length; i++)
@@ -90,7 +63,6 @@ namespace Core
                 }
             }
         }
-
         public void Untink(Entity entity)
         {
             m_store[entity.id].count--;
@@ -107,6 +79,17 @@ namespace Core
             }
             m_store.Remove(entity.id);
         }
+    }
 
+    public class Tinker<T> : ITinker where T : TinkerData, new()
+    {
+        public Tinker(IChainDef[] chainDefs)
+        {
+            m_store = new Dictionary<int, TinkerData>();
+            m_chainDefinition = chainDefs;
+        }
+        protected override TinkerData InstantiateData() => new T();
+        public T GetStore(int entityId) => (T)m_store[entityId];
+        public T GetStoreByEvent(CommonEvent ev) => (T)m_store[ev.actor.id];
     }
 }

@@ -13,9 +13,9 @@ namespace Core.Items
 
     public class TinkerItem : Item
     {
-        Tinker tinker;
+        ITinker tinker;
 
-        public TinkerItem(Tinker tinker, int slot = 0)
+        public TinkerItem(ITinker tinker, int slot = 0)
         {
             this.tinker = tinker;
             this.slot = slot;
