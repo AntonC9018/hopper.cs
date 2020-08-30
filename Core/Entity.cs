@@ -26,10 +26,10 @@ namespace Core
         // entity.behaviors[Attackable.s_factory.id]
         // Don't add stuff here. The contents of this are determined 
         // by the EntityFactory
-        public readonly Dictionary<int, Behavior> m_behaviors =
-            new Dictionary<int, Behavior>();
+        public readonly Dictionary<int, IBehavior> m_behaviors =
+            new Dictionary<int, IBehavior>();
 
-        public Behavior GetBehavior(int id)
+        public IBehavior GetBehavior(int id)
         {
             if (m_behaviors.ContainsKey(id))
                 return m_behaviors[id];

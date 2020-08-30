@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core.Behaviors
 {
-    public class Acting : Behavior
+    public class Acting : IBehavior
     {
         public class Config : BehaviorConfig
         {
@@ -44,10 +44,7 @@ namespace Core.Behaviors
             public bool success = false;
         }
 
-        public override bool Activate(
-            Entity actor,
-            Action action,
-            ActivationParams pars)
+        public bool Activate(Entity actor, Action action, ActivationParams pars)
         {
             throw new System.Exception("Acting decorator cannot be activated using the usual parameters: Entity actor, Action action, BehaviorActivationParams pars.");
         }

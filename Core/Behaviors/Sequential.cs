@@ -4,7 +4,7 @@ using Vector;
 
 namespace Core.Behaviors
 {
-    public class Sequential : Behavior
+    public class Sequential : IBehavior
     {
         public class Config : BehaviorConfig
         {

@@ -11,7 +11,7 @@ namespace Core.Behaviors
         SKIP,
         IF_NEXT_TO
     }
-    public class Attackable : Behavior
+    public class Attackable : IBehavior
     {
 
         // this makes more sense on stats. Think about moving it there via some
@@ -83,10 +83,7 @@ namespace Core.Behaviors
             m_entity = entity;
         }
 
-        public override bool Activate(
-            Entity actor,
-            Action action,
-            ActivationParams pars)
+        public bool Activate(Entity actor, Action action, ActivationParams pars)
         {
             var ev = new Event
             {

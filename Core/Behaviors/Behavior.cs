@@ -7,19 +7,21 @@ namespace Core.Behaviors
     {
         public string name;
         public IEvHandler[] handlers;
-
-        public IChainDef() { }
-        public IChainDef(string name, IEvHandler handler)
-        {
-            this.name = name;
-            this.handlers = new IEvHandler[] { handler };
-        }
         public abstract IChainTemplate CreateChainTemplate();
     }
     public class ChainDef<Event> : IChainDef where Event : EventBase
     {
-        public ChainDef() : base() { }
-        public ChainDef(string name, IEvHandler handler) : base(name, handler) { }
+        public ChainDef() { }
+        public ChainDef(string name, IEvHandler handler)
+        {
+            this.name = name;
+            this.handlers = new IEvHandler[] { handler };
+        }
+        public ChainDef(string name, IEvHandler[] handlers)
+        {
+            this.name = name;
+            this.handlers = handlers;
+        }
         public override IChainTemplate CreateChainTemplate()
         {
             return new ChainTemplate<Event>();
@@ -43,21 +45,6 @@ namespace Core.Behaviors
         public readonly int id = s_idGenerator.GetNextId();
         public ChainTemplateDefinition[] m_chainTemplateDefinitions;
 
-        public IBehaviorFactory(IChainDef[] chainDefinitions)
-        {
-            SetupTemplates(chainDefinitions);
-        }
-
-        public IBehaviorFactory(IChainDef chainDefinitions)
-        {
-            SetupTemplates(new IChainDef[] { chainDefinitions });
-        }
-
-        public IBehaviorFactory()
-        {
-            m_chainTemplateDefinitions = new ChainTemplateDefinition[0];
-        }
-
         protected void SetupTemplates(IChainDef[] chainDefinitions)
         {
             m_chainTemplateDefinitions = new ChainTemplateDefinition[chainDefinitions.Length];
@@ -79,35 +66,39 @@ namespace Core.Behaviors
             }
         }
 
-        public abstract Behavior Instantiate(Entity entity, BehaviorConfig conf);
+        public abstract IBehavior Instantiate(Entity entity, BehaviorConfig conf);
     }
 
     public class BehaviorFactory<Beh> : IBehaviorFactory
-        where Beh : Behavior
+        where Beh : IBehavior
     {
-        public BehaviorFactory(IChainDef[] chainDefinitions)
-            : base(chainDefinitions)
-        { }
 
-        public BehaviorFactory(IChainDef chainDefinition)
-            : base(chainDefinition)
-        { }
+        public BehaviorFactory(IChainDef[] chainDefinitions)
+        {
+            SetupTemplates(chainDefinitions);
+        }
+
+        public BehaviorFactory(IChainDef chainDefinitions)
+        {
+            SetupTemplates(new IChainDef[] { chainDefinitions });
+        }
 
         public BehaviorFactory()
-            : base()
-        { }
+        {
+            m_chainTemplateDefinitions = new ChainTemplateDefinition[0];
+        }
 
-        public override Behavior Instantiate(Entity entity, BehaviorConfig conf)
+        public override IBehavior Instantiate(Entity entity, BehaviorConfig conf)
         {
             if (conf == null)
             {
-                return (Behavior)Activator.CreateInstance(typeof(Beh), entity);
+                return (IBehavior)Activator.CreateInstance(typeof(Beh), entity);
             }
-            return (Behavior)Activator.CreateInstance(typeof(Beh), entity, conf);
+            return (IBehavior)Activator.CreateInstance(typeof(Beh), entity, conf);
         }
     }
 
-    public abstract class Behavior
+    public interface IBehavior
     {
         // initialized chains
         // added handlers to existing chains (probably in form of behavior modifiers of some sort)
@@ -115,10 +106,7 @@ namespace Core.Behaviors
         // The question is whether I want to differentiate between the basic behaviors that simply add chains and handlers and e.g. the stats behavior
         // I probably don't and have them all inherit from this
         // abstract public Behavior(Entity entity) { }
-        public virtual bool Activate(
-            Entity actor,
-            Action action,
-            ActivationParams conf = null)
+        public bool Activate(Entity actor, Action action, ActivationParams pars = null)
         {
             return true;
         }

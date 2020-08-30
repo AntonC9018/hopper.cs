@@ -5,7 +5,7 @@ using Chains;
 
 namespace Core.Behaviors
 {
-    public class Attacking : Behavior
+    public class Attacking : IBehavior
     {
 
         static Attacking()
@@ -85,7 +85,7 @@ namespace Core.Behaviors
             };
         }
 
-        public override bool Activate(Entity actor, Action action, ActivationParams pars)
+        public bool Activate(Entity actor, Action action, ActivationParams pars)
         {
             var ev = new Event
             {

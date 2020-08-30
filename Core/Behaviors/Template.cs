@@ -47,7 +47,7 @@
 //             chain_beDisplaced = (Chain<Event>)entity.m_chains["displaced:do"];
 //         }
 
-//         public override bool Activate(
+//         public bool Activate(
 //             Entity actor,
 //             Action action,
 //             ActivationParams pars = null)

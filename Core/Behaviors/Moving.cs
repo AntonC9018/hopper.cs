@@ -4,7 +4,7 @@ using Chains;
 
 namespace Core.Behaviors
 {
-    public class Moving : Behavior
+    public class Moving : IBehavior
     {
 
         public class Event : CommonEvent
@@ -21,7 +21,7 @@ namespace Core.Behaviors
             chain_doMove = (Chain<Event>)entity.m_chains["move:do"];
         }
 
-        public override bool Activate(Entity actor, Action action, ActivationParams pars)
+        public bool Activate(Entity actor, Action action, ActivationParams pars)
         {
             var ev = new Event
             {

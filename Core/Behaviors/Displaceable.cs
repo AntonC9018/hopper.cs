@@ -5,7 +5,7 @@ using Vector;
 
 namespace Core.Behaviors
 {
-    public class Displaceable : Behavior
+    public class Displaceable : IBehavior
     {
         static Displaceable()
         {
@@ -47,10 +47,7 @@ namespace Core.Behaviors
             chain_beDisplaced = (Chain<Event>)entity.m_chains["displaced:do"];
         }
 
-        public override bool Activate(
-            Entity actor,
-            Action action,
-            ActivationParams pars = null)
+        public bool Activate(Entity actor, Action action, ActivationParams pars = null)
         {
             var ev = new Event
             {

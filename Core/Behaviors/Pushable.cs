@@ -5,7 +5,7 @@ using Vector;
 
 namespace Core.Behaviors
 {
-    public class Pushable : Behavior
+    public class Pushable : IBehavior
     {
         public static List<string> s_indexSourceNameMap = new List<string>();
 
@@ -62,10 +62,7 @@ namespace Core.Behaviors
             chain_bePushed = (Chain<Event>)entity.m_chains["pushed:do"];
         }
 
-        public override bool Activate(
-            Entity actor,
-            Action action,
-            ActivationParams pars = null)
+        public bool Activate(Entity actor, Action action, ActivationParams pars = null)
         {
             var ev = new Event
             {
