@@ -41,18 +41,20 @@ namespace Core.Behaviors
             public Flavor[] flavors;
         }
 
+        public static string s_checkChainName = "statused:check";
+        public static string s_doChainName = "statused:do";
         Chain<Event> chain_checkStatused;
         Chain<Event> chain_beStatused;
         Entity m_entity;
 
         public Statused(Entity entity)
         {
-            chain_checkStatused = (Chain<Event>)entity.m_chains["statused:check"];
-            chain_beStatused = (Chain<Event>)entity.m_chains["statused:do"];
+            chain_checkStatused = (Chain<Event>)entity.m_chains[s_checkChainName];
+            chain_beStatused = (Chain<Event>)entity.m_chains[s_doChainName];
             m_entity = entity;
 
             // this should be refactored into a retoucher
-            entity.m_chains["tick"].AddHandler<CommonEvent>(e =>
+            entity.m_chains[Tick.m_chainName].AddHandler<CommonEvent>(e =>
             {
                 foreach (var status in s_indexStatusMap)
                 {
@@ -102,13 +104,13 @@ namespace Core.Behaviors
         {
             var fact = new BehaviorFactory<Statused>();
 
-            var check = fact.AddTemplate<Event>("statused:check");
+            var check = fact.AddTemplate<Event>(s_checkChainName);
             var setBaseHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
             var getTargetsHandler = new EvHandler<Event>(ResistSomeStatuses, PRIORITY_RANKS.LOW);
             check.AddHandler(setBaseHandler);
             check.AddHandler(getTargetsHandler);
 
-            var _do = fact.AddTemplate<Event>("statused:do");
+            var _do = fact.AddTemplate<Event>(s_doChainName);
             var applyHandler = new EvHandler<Event>(Apply);
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacking_do));
             _do.AddHandler(applyHandler);

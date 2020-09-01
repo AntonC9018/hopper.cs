@@ -8,13 +8,13 @@ namespace Core.Retouchers
     public static class Reorient
     {
         public static Retoucher OnMove = Retoucher
-            .SingleHandlered<CommonEvent>("move:do", AnyReorient);
+            .SingleHandlered<CommonEvent>(Moving.s_doChainName, AnyReorient);
         public static Retoucher OnDisplace = Retoucher
-            .SingleHandlered<CommonEvent>("displaced:do", AnyReorient);
+            .SingleHandlered<CommonEvent>(Displaceable.s_doChainName, AnyReorient);
         public static Retoucher OnActionSuccess = Retoucher
-            .SingleHandlered<CommonEvent>("displaced:do", AnyReorient);
+            .SingleHandlered<CommonEvent>(Displaceable.s_doChainName, AnyReorient);
         public static Retoucher OnAttack = Retoucher
-            .SingleHandlered<CommonEvent>("displaced:do", AnyReorient);
+            .SingleHandlered<CommonEvent>(Displaceable.s_doChainName, AnyReorient);
 
         static void AnyReorient(CommonEvent ev)
         {

@@ -37,14 +37,15 @@ namespace Core.Behaviors
         {
             public Move move;
         }
-
+        public static string s_checkChainName = "displaced:check";
+        public static string s_doChainName = "displaced:do";
         Chain<Event> chain_checkDisplaced;
         Chain<Event> chain_beDisplaced;
 
         public Displaceable(Entity entity)
         {
-            chain_checkDisplaced = (Chain<Event>)entity.m_chains["displaced:check"];
-            chain_beDisplaced = (Chain<Event>)entity.m_chains["displaced:do"];
+            chain_checkDisplaced = (Chain<Event>)entity.m_chains[s_checkChainName];
+            chain_beDisplaced = (Chain<Event>)entity.m_chains[s_doChainName];
         }
 
         public bool Activate(Entity actor, Action action, ActivationParams pars = null)
@@ -92,11 +93,11 @@ namespace Core.Behaviors
         {
             var fact = new BehaviorFactory<Displaceable>();
 
-            var check = fact.AddTemplate<Event>("displaced:check");
+            var check = fact.AddTemplate<Event>(s_checkChainName);
             var convertFromMove = new EvHandler<Event>(ConvertFromMove, PRIORITY_RANKS.HIGH);
             check.AddHandler(convertFromMove);
 
-            var _do = fact.AddTemplate<Event>("displaced:do");
+            var _do = fact.AddTemplate<Event>(s_doChainName);
             var displaceHandler = new EvHandler<Event>(Displace);
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.displaced_do));
             _do.AddHandler(displaceHandler);

@@ -70,6 +70,9 @@ namespace Core.Behaviors
             public Attacking.Attack attack;
         }
 
+        public static string s_checkChainName = "attacked:check";
+        public static string s_doChainName = "attacked:do";
+        public static string s_conditionChainName = "attacked:condition";
         Chain<Event> chain_checkAttacked;
         Chain<Event> chain_beAttacked;
         Chain<AttackablenessEvent> chain_getAttackableness;
@@ -77,9 +80,9 @@ namespace Core.Behaviors
 
         public Attackable(Entity entity)
         {
-            chain_checkAttacked = (Chain<Event>)entity.m_chains["attacked:check"];
-            chain_beAttacked = (Chain<Event>)entity.m_chains["attacked:do"];
-            chain_getAttackableness = (Chain<AttackablenessEvent>)entity.m_chains["attacked:condition"];
+            chain_checkAttacked = (Chain<Event>)entity.m_chains[s_checkChainName];
+            chain_beAttacked = (Chain<Event>)entity.m_chains[s_doChainName];
+            chain_getAttackableness = (Chain<AttackablenessEvent>)entity.m_chains[s_conditionChainName];
             m_entity = entity;
         }
 
@@ -152,7 +155,7 @@ namespace Core.Behaviors
         {
             var fact = new BehaviorFactory<Attackable>();
 
-            var check = fact.AddTemplate<Event>("attacked:check");
+            var check = fact.AddTemplate<Event>(s_checkChainName);
             var setResitanceHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
             var resistRourceHandler = new EvHandler<Event>(ResistSource, PRIORITY_RANKS.LOW);
             var armorHandler = new EvHandler<Event>(Armor, PRIORITY_RANKS.LOW);
@@ -165,13 +168,13 @@ namespace Core.Behaviors
             check.AddHandler(resistRourceHandler);
             check.AddHandler(armorHandler);
 
-            var _do = fact.AddTemplate<Event>("attacked:do");
+            var _do = fact.AddTemplate<Event>(s_checkChainName);
             var takeHitHandler = new EvHandler<Event>(TakeHit);
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacked_do));
             _do.AddHandler(takeHitHandler);
             _do.AddHandler(addEventHandler);
 
-            var condition = fact.AddTemplate<AttackablenessEvent>("attacked:condition");
+            var condition = fact.AddTemplate<AttackablenessEvent>(s_conditionChainName);
 
             return fact;
         }

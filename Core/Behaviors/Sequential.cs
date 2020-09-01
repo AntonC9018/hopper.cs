@@ -33,7 +33,7 @@ namespace Core.Behaviors
                 stepData = conf.stepData,
                 actor = entity
             };
-            entity.m_chains["tick"].AddHandler<EventBase>(e =>
+            entity.m_chains[Tick.m_chainName].AddHandler<EventBase>(e =>
             {
                 m_sequence.TickAction();
             });

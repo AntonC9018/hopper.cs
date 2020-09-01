@@ -8,20 +8,20 @@ namespace Core.Retouchers
     public static class Skip
     {
         public static Retoucher EmptyAttack = Retoucher
-            .SingleHandlered<Attacking.Event>("attack:check", SkipEmptyAttack);
+            .SingleHandlered<Attacking.Event>(Attacking.s_checkChainName, SkipEmptyAttack);
         public static Retoucher BlockedMove = Retoucher
-            .SingleHandlered<Moving.Event>("move:check", SkipBlocked);
+            .SingleHandlered<Moving.Event>(Moving.s_checkChainName, SkipBlocked);
         public static Retoucher NoPlayer = Retoucher
-            .SingleHandlered<Attacking.Event>("attack:check", SkipNoPlayer);
+            .SingleHandlered<Attacking.Event>(Attacking.s_checkChainName, SkipNoPlayer);
         public static Retoucher Self = Retoucher
-            .SingleHandlered<Attacking.Event>("attack:check", SkipSelf);
+            .SingleHandlered<Attacking.Event>(Attacking.s_checkChainName, SkipSelf);
 
         // public static void Setup()
         // {
-        //     var emptyAttack = new ChainDefBuilder<Attacking.Event>("attack:check");
-        //     var blockedMove = new ChainDefBuilder<Moving.Event>("move:check");
-        //     var noPlayer = new ChainDefBuilder<Attacking.Event>("attack:check");
-        //     var self = new ChainDefBuilder<Attacking.Event>("attack:check");
+        //     var emptyAttack = new ChainDefBuilder<Attacking.Event>(s_checkChainName);
+        //     var blockedMove = new ChainDefBuilder<Moving.Event>(Moving.s_checkChainName);
+        //     var noPlayer = new ChainDefBuilder<Attacking.Event>(s_checkChainName);
+        //     var self = new ChainDefBuilder<Attacking.Event>(s_checkChainName);
 
         //     var attackHandler = new EvHandler<Attacking.Event>(SkipEmptyAttack);
         //     var blockedHandler = new EvHandler<Moving.Event>(SkipBlocked);

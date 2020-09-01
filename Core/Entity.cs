@@ -118,7 +118,7 @@ namespace Core
 
         void RetranslateEndOfLoopEvent()
         {
-            ((Chain<CommonEvent>)m_chains["tick"]).Pass(new CommonEvent { actor = this });
+            ((Chain<CommonEvent>)m_chains[Tick.m_chainName]).Pass(new CommonEvent { actor = this });
         }
         void StartMonitoringEvents()
         {
@@ -183,7 +183,7 @@ namespace Core
 
         public EntityFactory()
         {
-            m_chainTemplates.Add("tick", new ChainTemplate<CommonEvent>());
+            m_chainTemplates.Add(Tick.m_chainName, new ChainTemplate<CommonEvent>());
         }
 
         protected Dictionary<string, IChainTemplate> m_chainTemplates =

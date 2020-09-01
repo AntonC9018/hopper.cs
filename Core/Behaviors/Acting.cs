@@ -10,28 +10,31 @@ namespace Core.Behaviors
             public System.Func<Entity, Action> calculateAction;
             public System.Action<EventBase> doAction;
         }
-        Chain<Event> chain_checkAction;
-        Chain<Event> chain_failAction;
-        Chain<Event> chain_succeedAction;
-        Entity m_entity;
+        public static string s_checkChainName = "action:check";
+        public static string s_failChainName = "action:fail";
+        public static string s_succeedChainName = "action:succeed";
         public bool b_didAction = false;
         public bool b_doingAction = false;
         public bool b_didActionSucceed = false;
         public Action m_nextAction;
-        System.Func<Entity, Action> conf_calculateAction;
-        System.Action<Event> conf_doActionFunc;
+        Chain<Event> chain_checkAction;
+        Chain<Event> chain_failAction;
+        Chain<Event> chain_succeedAction;
+        Entity m_entity;
+        System.Func<Entity, Action> config_calculateAction;
+        System.Action<Event> config_doActionFunc;
 
 
         public Acting(Entity entity, Config conf)
         {
             m_entity = entity;
-            chain_checkAction = (Chain<Event>)entity.m_chains["action:check"];
-            chain_failAction = (Chain<Event>)entity.m_chains["action:fail"];
-            chain_succeedAction = (Chain<Event>)entity.m_chains["action:succeed"];
-            conf_calculateAction = conf.calculateAction;
-            conf_doActionFunc = conf.doAction;
+            chain_checkAction = (Chain<Event>)entity.m_chains[s_checkChainName];
+            chain_failAction = (Chain<Event>)entity.m_chains[s_failChainName];
+            chain_succeedAction = (Chain<Event>)entity.m_chains[s_succeedChainName];
+            config_calculateAction = conf.calculateAction;
+            config_doActionFunc = conf.doAction;
 
-            entity.m_chains["tick"].AddHandler<CommonEvent>(e =>
+            entity.m_chains[Tick.m_chainName].AddHandler<CommonEvent>(e =>
             {
                 b_didAction = false;
                 b_doingAction = false;
@@ -71,7 +74,7 @@ namespace Core.Behaviors
             if (ev.propagate)
             {
                 ev.success = true;
-                conf_doActionFunc(ev);
+                config_doActionFunc(ev);
             }
 
             ev.propagate = true;
@@ -93,8 +96,8 @@ namespace Core.Behaviors
             if (m_nextAction != null)
                 return;
 
-            if (conf_calculateAction != null)
-                m_nextAction = conf_calculateAction(m_entity);
+            if (config_calculateAction != null)
+                m_nextAction = config_calculateAction(m_entity);
             else
             {
                 var sequenced = m_entity.beh_Sequenced;
@@ -105,9 +108,9 @@ namespace Core.Behaviors
         static BehaviorFactory<Acting> CreateFactory()
         {
             var fact = new BehaviorFactory<Acting>();
-            var check = fact.AddTemplate<Event>("action:check");
-            var fail = fact.AddTemplate<Event>("action:fail");
-            var succeed = fact.AddTemplate<Event>("action:succeed");
+            var check = fact.AddTemplate<Event>(s_checkChainName);
+            var fail = fact.AddTemplate<Event>(s_failChainName);
+            var succeed = fact.AddTemplate<Event>(s_succeedChainName);
             return fact;
         }
 

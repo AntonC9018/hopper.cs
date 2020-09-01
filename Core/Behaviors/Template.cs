@@ -43,8 +43,8 @@
 
 //         public Displaceable(Entity entity)
 //         {
-//             chain_checkDisplaced = (Chain<Event>)entity.m_chains["displaced:check"];
-//             chain_beDisplaced = (Chain<Event>)entity.m_chains["displaced:do"];
+//             chain_checkDisplaced = (Chain<Event>)entity.m_chains[Displaceable.s_checkChainName];
+//             chain_beDisplaced = (Chain<Event>)entity.m_chains[Displaceable.s_doChainName];
 //         }
 
 //         public bool Activate(
@@ -98,7 +98,7 @@
 //             {
 //                 new ChainDef<Event>
 //                 {
-//                     name = "displaced:check",
+//                     name = Displaceable.s_checkChainName,
 //                     handlers = new EvHandler<Event>[]
 //                     {
 //                         new EvHandler<Event>(
@@ -109,7 +109,7 @@
 //                 },
 //                 new ChainDef<Event>
 //                 {
-//                     name = "displaced:do",
+//                     name = Displaceable.s_doChainName,
 //                     handlers = new EvHandler<Event>[]
 //                     {
 //                         new EvHandler<Event>(

@@ -58,14 +58,15 @@ namespace Core.Behaviors
         {
             public List<Target> targets;
         }
-
+        public static string s_checkChainName = "attack:check";
+        public static string s_doChainName = "attack:do";
         Chain<Event> chain_checkAttack;
         Chain<Event> chain_doAttack;
 
         public Attacking(Entity entity)
         {
-            chain_checkAttack = (Chain<Event>)entity.m_chains["attack:check"];
-            chain_doAttack = (Chain<Event>)entity.m_chains["attack:do"];
+            chain_checkAttack = (Chain<Event>)entity.m_chains[s_checkChainName];
+            chain_doAttack = (Chain<Event>)entity.m_chains[s_doChainName];
         }
 
         public List<Target> GenerateTargets(Event e)
@@ -162,13 +163,13 @@ namespace Core.Behaviors
         {
             var fact = new BehaviorFactory<Attacking>();
 
-            var check = fact.AddTemplate<Event>("attack:check");
+            var check = fact.AddTemplate<Event>(s_checkChainName);
             var setBaseHandler = new EvHandler<Event>(SetBase, PRIORITY_RANKS.HIGH);
             var getTargetsHandler = new EvHandler<Event>(GetTargets, PRIORITY_RANKS.MEDIUM);
             check.AddHandler(setBaseHandler);
             check.AddHandler(getTargetsHandler);
 
-            var _do = fact.AddTemplate<Event>("attack:do");
+            var _do = fact.AddTemplate<Event>(s_doChainName);
             var applyAttackHandler = new EvHandler<Event>(ApplyAttack);
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacking_do));
             _do.AddHandler(applyAttackHandler);

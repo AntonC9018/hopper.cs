@@ -53,13 +53,15 @@ namespace Core.Behaviors
             public Attacking.Push push;
         }
 
+        public static string s_checkChainName = "pushed:check";
+        public static string s_doChainName = "pushed:do";
         Chain<Event> chain_checkPushed;
         Chain<Event> chain_bePushed;
 
         public Pushable(Entity entity)
         {
-            chain_checkPushed = (Chain<Event>)entity.m_chains["pushed:check"];
-            chain_bePushed = (Chain<Event>)entity.m_chains["pushed:do"];
+            chain_checkPushed = (Chain<Event>)entity.m_chains[s_checkChainName];
+            chain_bePushed = (Chain<Event>)entity.m_chains[s_doChainName];
         }
 
         public bool Activate(Entity actor, Action action, ActivationParams pars = null)
@@ -113,7 +115,7 @@ namespace Core.Behaviors
         {
             var fact = new BehaviorFactory<Pushable>();
 
-            var check = fact.AddTemplate<Event>("pushed:check");
+            var check = fact.AddTemplate<Event>(s_checkChainName);
             var setBaseHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
             var resistSourceHandler = new EvHandler<Event>(ResistSource, PRIORITY_RANKS.HIGH);
             var armorHandler = new EvHandler<Event>(Armor, PRIORITY_RANKS.HIGH);
@@ -121,7 +123,7 @@ namespace Core.Behaviors
             check.AddHandler(resistSourceHandler);
             check.AddHandler(armorHandler);
 
-            var _do = fact.AddTemplate<Event>("pushed:do");
+            var _do = fact.AddTemplate<Event>(s_doChainName);
             var pushedHandler = new EvHandler<Event>(BePushed);
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.pushed_do));
             _do.AddHandler(pushedHandler);
