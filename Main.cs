@@ -207,17 +207,10 @@ namespace Hopper
             var cyclicContainer = new CyclicItemContainer(1);
             inventory.AddContainer(0, cyclicContainer);
 
-            var chainDefs = new IChainDef[]
-            {
-                new ChainDef<Attacking.Event>
-                (
-                    "attack:check",
-                    new EvHandler<Attacking.Event>(
-                        e => System.Console.WriteLine("Hello from tinker applied by item")
-                    )
-                )
-            };
-            var tinker = new Tinker<TinkerData>(chainDefs);
+            var tinker = Tinker<TinkerData>.SingleHandlered<Attacking.Event>(
+                "attack:check",
+                e => System.Console.WriteLine("Hello from tinker applied by item")
+            );
             var item = new TinkerItem(tinker, 0);
 
             // inventory.Equip(item) ->         // the starting point
@@ -268,8 +261,8 @@ namespace Hopper
             var cyclicContainer2 = new CyclicItemContainer(1);
             inventory.AddContainer(1, cyclicContainer);
 
-            var chainDefs2 = new IChainDef[0];
-            var tinker2 = new Tinker<TinkerData>(chainDefs);
+            var chainDefs2 = new ChainDef[0];
+            var tinker2 = new Tinker<TinkerData>(chainDefs2);
             var item2 = new TinkerItem(tinker2, 1);
 
             var droppedItem2 = world.CreateDroppedItem(item2, player.m_pos + IntVector2.Down);
@@ -315,27 +308,19 @@ namespace Hopper
             var data = tinker.GetStoreByEvent(commonEvent);
             System.Console.WriteLine($"Tinker says that i = {data.i}");
         }
-        static IChainDef[] chainDefs = new IChainDef[]
-        {
-            new ChainDef<Displaceable.Event>
-            (
-                "displaced:do",
-                new EvHandler<Displaceable.Event>(TestMethod1)
-            )
-        };
-        public static Tinker<TestTinkerData> tinker
-            = new Tinker<TestTinkerData>(chainDefs);
+        public static Tinker<TestTinkerData> tinker = Tinker<TestTinkerData>
+            .SingleHandlered<Displaceable.Event>("displaced:do", TestMethod1);
     }
-
-
-    public class CountTinkerData : TinkerData, IFlavorTinkerData
-    {
-        public Flavor Flavor { get; set; }
-    }
-
 
     public static class TestStatusTinkerStuff
     {
-
+        static void TestMethod1(CommonEvent commonEvent)
+        {
+            var flavor = tinker.GetStoreByEvent(commonEvent).flavor;
+            System.Console.WriteLine($"Tinker says that amount = {flavor.amount}");
+        }
+        public static Tinker<FlavorTinkerData> tinker = Tinker<FlavorTinkerData>
+            .SingleHandlered<Displaceable.Event>("displaced:do", TestMethod1);
+        public static Status<FlavorTinkerData> status = new Status<FlavorTinkerData>(tinker);
     }
 }

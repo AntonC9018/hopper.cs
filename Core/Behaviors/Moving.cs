@@ -54,7 +54,7 @@ namespace Core.Behaviors
         }
 
 
-        public static BehaviorFactory<Moving> CreateFactory()
+        static BehaviorFactory<Moving> CreateFactory()
         {
             var fact = new BehaviorFactory<Moving>();
 

@@ -158,7 +158,7 @@ namespace Core.Behaviors
             }
         }
 
-        public static BehaviorFactory<Attacking> CreateFactory()
+        static BehaviorFactory<Attacking> CreateFactory()
         {
             var fact = new BehaviorFactory<Attacking>();
 

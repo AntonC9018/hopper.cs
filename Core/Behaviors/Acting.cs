@@ -102,7 +102,7 @@ namespace Core.Behaviors
             }
         }
 
-        public static BehaviorFactory<Acting> CreateFactory()
+        static BehaviorFactory<Acting> CreateFactory()
         {
             var fact = new BehaviorFactory<Acting>();
             var check = fact.AddTemplate<Event>("action:check");

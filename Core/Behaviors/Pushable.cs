@@ -109,7 +109,7 @@ namespace Core.Behaviors
             var pars = new Displaceable.Params { move = move };
             ev.entity.beh_Displaceable.Activate(ev.actor, ev.action, pars);
         }
-        public static BehaviorFactory<Pushable> CreateFactory()
+        static BehaviorFactory<Pushable> CreateFactory()
         {
             var fact = new BehaviorFactory<Pushable>();
 

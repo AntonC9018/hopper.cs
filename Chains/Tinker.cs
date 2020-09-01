@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Core.Behaviors;
+using Chains;
 using Handle = MyLinkedList.MyListNode<Chains.IEvHandler>;
 
 namespace Core
@@ -20,7 +20,7 @@ namespace Core
     public abstract class ITinker
     {
         protected Dictionary<int, TinkerData> m_store;
-        protected IChainDef[] m_chainDefinition;
+        protected ChainDef[] m_chainDefinition;
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
 
@@ -80,11 +80,13 @@ namespace Core
             }
             m_store.Remove(entity.id);
         }
+
+
     }
 
     public class Tinker<T> : ITinker where T : TinkerData, new()
     {
-        public Tinker(IChainDef[] chainDefs)
+        public Tinker(ChainDef[] chainDefs)
         {
             m_store = new Dictionary<int, TinkerData>();
             m_chainDefinition = chainDefs;
@@ -92,5 +94,27 @@ namespace Core
         protected override TinkerData InstantiateData() => new T();
         public T GetStore(int entityId) => (T)m_store[entityId];
         public T GetStoreByEvent(CommonEvent ev) => (T)m_store[ev.actor.id];
+
+        // beacuse I'm sick of boilerplate for simple stuff
+        public static Tinker<T> SingleHandlered<Event>(
+            string name,
+            System.Action<Event> handler,
+            PRIORITY_RANKS priority = PRIORITY_RANKS.MEDIUM)
+            where Event : EventBase
+        {
+            return new Tinker<T>(
+                new ChainDef[]
+                {
+                    new ChainDef
+                    {
+                        name = name,
+                        handlers = new IEvHandler[]
+                        {
+                            new EvHandler<Event>(handler, priority)
+                        }
+                    }
+                }
+            );
+        }
     }
 }

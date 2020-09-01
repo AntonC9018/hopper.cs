@@ -7,18 +7,37 @@ namespace Core.Retouchers
 {
     public static class Skip
     {
-        public static Retoucher EmptyAttack = new Retoucher(
-            new ChainDef<Attacking.Event>("attack:check", new EvHandler<Attacking.Event>(SkipEmptyAttack))
-        );
-        public static Retoucher BlockedMove = new Retoucher(
-            new ChainDef<Moving.Event>("move:check", new EvHandler<Moving.Event>(SkipBlocked))
-        );
-        public static Retoucher NoPlayer = new Retoucher(
-            new ChainDef<Attacking.Event>("attack:check", new EvHandler<Attacking.Event>(SkipEmptyAttack))
-        );
-        public static Retoucher Self = new Retoucher(
-            new ChainDef<Attacking.Event>("attack:check", new EvHandler<Attacking.Event>(SkipEmptyAttack))
-        );
+        public static Retoucher EmptyAttack = Retoucher
+            .SingleHandlered<Attacking.Event>("attack:check", SkipEmptyAttack);
+        public static Retoucher BlockedMove = Retoucher
+            .SingleHandlered<Moving.Event>("move:check", SkipBlocked);
+        public static Retoucher NoPlayer = Retoucher
+            .SingleHandlered<Attacking.Event>("attack:check", SkipNoPlayer);
+        public static Retoucher Self = Retoucher
+            .SingleHandlered<Attacking.Event>("attack:check", SkipSelf);
+
+        // public static void Setup()
+        // {
+        //     var emptyAttack = new ChainDefBuilder<Attacking.Event>("attack:check");
+        //     var blockedMove = new ChainDefBuilder<Moving.Event>("move:check");
+        //     var noPlayer = new ChainDefBuilder<Attacking.Event>("attack:check");
+        //     var self = new ChainDefBuilder<Attacking.Event>("attack:check");
+
+        //     var attackHandler = new EvHandler<Attacking.Event>(SkipEmptyAttack);
+        //     var blockedHandler = new EvHandler<Moving.Event>(SkipBlocked);
+        //     var noPlayerHandler = new EvHandler<Attacking.Event>(SkipNoPlayer);
+        //     var selfHandler = new EvHandler<Attacking.Event>(SkipSelf);
+
+        //     emptyAttack.AddHandler(attackHandler);
+        //     blockedMove.AddHandler(blockedHandler);
+        //     noPlayer.AddHandler(noPlayerHandler);
+        //     self.AddHandler(selfHandler);
+
+        //     EmptyAttack = new Retoucher(emptyAttack.ToStatic());
+        //     BlockedMove = new Retoucher(blockedMove.ToStatic());
+        //     NoPlayer = new Retoucher(noPlayer.ToStatic());
+        //     Self = new Retoucher(self.ToStatic());
+        // }
 
         static void SkipEmptyAttack(Attacking.Event ev)
         {

@@ -44,23 +44,19 @@ namespace Core.Behaviors
         Chain<Event> chain_checkStatused;
         Chain<Event> chain_beStatused;
         Entity m_entity;
-        public Dictionary<int, IStatus> m_activeStatuses;
 
         public Statused(Entity entity)
         {
             chain_checkStatused = (Chain<Event>)entity.m_chains["statused:check"];
             chain_beStatused = (Chain<Event>)entity.m_chains["statused:do"];
-            m_activeStatuses = new Dictionary<int, IStatus>();
             m_entity = entity;
+
+            // this should be refactored into a retoucher
             entity.m_chains["tick"].AddHandler<CommonEvent>(e =>
             {
-                foreach (var (id, status) in m_activeStatuses)
+                foreach (var status in s_indexStatusMap)
                 {
-                    var currentAmount = status.Decrement(m_entity);
-                    if (currentAmount == 0)
-                    {
-                        m_activeStatuses.Remove(id);
-                    }
+                    status.Tick(e.actor);
                 }
             });
         }
@@ -89,10 +85,8 @@ namespace Core.Behaviors
 
         static void ResistSomeStatuses(Event ev)
         {
-            var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("status_res");
-
             ev.flavors = (Flavor[])ev.flavors.Where(
-                f => sourceRes[f.source] <= f.power);
+                f => ev.resistance[f.source] <= f.power);
         }
 
         static void Apply(Event ev)
@@ -101,11 +95,10 @@ namespace Core.Behaviors
             {
                 var status = s_indexStatusMap[f.source];
                 status.Apply(ev.entity, f);
-                ev.actor.beh_Statused.m_activeStatuses[f.source] = status;
             }
         }
 
-        public static BehaviorFactory<Statused> CreateFactory()
+        static BehaviorFactory<Statused> CreateFactory()
         {
             var fact = new BehaviorFactory<Statused>();
 

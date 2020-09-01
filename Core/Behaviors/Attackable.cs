@@ -148,7 +148,7 @@ namespace Core.Behaviors
             return ev.attackableness;
         }
 
-        public static BehaviorFactory<Attackable> CreateFactory()
+        static BehaviorFactory<Attackable> CreateFactory()
         {
             var fact = new BehaviorFactory<Attackable>();
 
@@ -156,6 +156,11 @@ namespace Core.Behaviors
             var setResitanceHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
             var resistRourceHandler = new EvHandler<Event>(ResistSource, PRIORITY_RANKS.LOW);
             var armorHandler = new EvHandler<Event>(Armor, PRIORITY_RANKS.LOW);
+            // this can be cleaned up by using lambdas
+            // this way we would eliminate the need of static methods
+            // i.e. e => e.actor.beh_Attackable.MethodName(e)
+            // or, even better, wrap it in a method Wrap(func, id) and call it as
+            // Wrap(func, s_factory.id)
             check.AddHandler(setResitanceHandler);
             check.AddHandler(resistRourceHandler);
             check.AddHandler(armorHandler);

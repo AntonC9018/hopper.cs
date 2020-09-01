@@ -88,7 +88,7 @@ namespace Core.Behaviors
             ev.actor.ResetInGrid();
         }
 
-        public static BehaviorFactory<Displaceable> CreateFactory()
+        static BehaviorFactory<Displaceable> CreateFactory()
         {
             var fact = new BehaviorFactory<Displaceable>();
 

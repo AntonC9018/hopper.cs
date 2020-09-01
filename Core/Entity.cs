@@ -60,8 +60,6 @@ namespace Core
         { get { return (Displaceable)GetBehavior(Displaceable.s_factory.id); } }
         public Statused beh_Statused
         { get { return (Statused)GetBehavior(Statused.s_factory.id); } }
-        public Dictionary<int, IStatus> AppliedStatuses
-        { get { return beh_Statused?.m_activeStatuses; } }
 
         public readonly Dictionary<int, ITinker> m_tinkers =
             new Dictionary<int, ITinker>();
@@ -207,10 +205,10 @@ namespace Core
         public void AddRetoucher(Retoucher retoucher)
         {
             m_retouchers.Add(retoucher.id, retoucher);
-            foreach (IChainDef cd in retoucher.chainDefinitions)
+            foreach (var cd in retoucher.chainDefinitions)
             {
                 foreach (var handler in cd.handlers)
-                    m_chainTemplates[cd.name].AddHandler(handler);
+                    m_chainTemplates[cd.name].AddHandler(handler.Clone());
             }
         }
 

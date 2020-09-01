@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MyLinkedList;
 
@@ -21,6 +22,11 @@ namespace Chains
         public int priority = (int)PRIORITY_RANKS.MEDIUM;
 
         public abstract void Call(EventBase ev);
+
+        public IEvHandler Clone()
+        {
+            return (IEvHandler)this.MemberwiseClone();
+        }
     }
 
     public class EvHandler<Event> : IEvHandler where Event : EventBase

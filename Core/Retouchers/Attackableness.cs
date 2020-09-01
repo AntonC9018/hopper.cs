@@ -23,11 +23,10 @@ namespace Core.Retouchers
             int index = (int)attackableness;
             if (ConstantRetouchers[index] == null)
             {
-                ConstantRetouchers[index] = new Retoucher(
-                    new ChainDef<Attackable.AttackablenessEvent>(
-                        "attacked:condition",
-                        new EvHandler<Attackable.AttackablenessEvent>(_Constant(attackableness)))
-                );
+                ConstantRetouchers[index] = Retoucher
+                    .SingleHandlered<Attackable.AttackablenessEvent>(
+                        "attacked:condition", _Constant(attackableness)
+                    );
             }
             return ConstantRetouchers[index];
         }

@@ -3,44 +3,79 @@ using Core.Behaviors;
 
 namespace Core
 {
+    // Statused -> status.Apply(entity, flavor)
+    // -> entity.TinkAndSave(tinker)
+    // +  tinkerData.flavor = flavor
+    // now to see if a status is active one needs to
+    // 1. get the tinker's id
     public class Flavor
     {
         public int amount;
         public int power;
         public int source;
-
-        public virtual int Decrement()
-        {
-            amount--;
-            return amount;
-        }
     }
 
-    public interface IFlavorTinkerData
+
+    // such tinker data is used just to hand out flavor
+    public class FlavorTinkerData : TinkerData
     {
-        public Flavor Flavor { get; set; }
+        public Flavor flavor;
     }
+
+    // ( Status -> tinker (-> data) -> flavor )
 
     public interface IStatus
     {
+        // sets up the tinker + flavor on the tinker data
         public void Apply(Entity entity, Flavor f);
-        public int Decrement(Entity entity);
+        // ticks the tinker and removes status if necessary
+        public void Tick(Entity entity);
+        public bool IsApplied(Entity entity);
     }
 
     public class Status<T> : IStatus
-        where T : TinkerData, IFlavorTinkerData, new()
+        where T : FlavorTinkerData, new()
     {
-        Tinker<T> tinker;
+        Tinker<T> m_tinker;
+        public Status(Tinker<T> tinker)
+        {
+            m_tinker = tinker;
+        }
         public void Apply(Entity entity, Flavor f)
         {
-            entity.TinkAndSave(tinker);
-            var store = tinker.GetStore(entity.id);
-            store.Flavor = f;
+            entity.TinkAndSave(m_tinker);
+            var store = m_tinker.GetStore(entity.id);
+            store.flavor = f;
         }
-        public int Decrement(Entity entity)
+
+        public void Tick(Entity entity)
         {
-            var store = tinker.GetStore(entity.id);
-            return store.Flavor.Decrement();
+            var store = m_tinker.GetStore(entity.id);
+            if (store != null && --store.flavor.amount <= 0)
+            {
+                entity.Untink(m_tinker);
+            }
         }
+
+        public bool IsApplied(Entity entity)
+        {
+            return m_tinker.IsApplied(entity.id);
+        }
+    }
+
+    // this is questionable
+    public class StatusContext
+    {
+        IStatus status;
+        Entity entity;
+
+        public StatusContext(IStatus status, Entity entity)
+        {
+            this.status = status;
+            this.entity = entity;
+        }
+
+        public void Apply(Flavor flavor) => status.Apply(entity, flavor);
+        public void Tick() => status.Tick(entity);
     }
 }

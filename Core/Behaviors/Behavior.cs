@@ -6,41 +6,6 @@ using System.Linq;
 
 namespace Core.Behaviors
 {
-    public abstract class IChainDef
-    {
-        public string name;
-        public IEvHandler[] handlers;
-        public abstract IChainTemplate CreateChainTemplate();
-    }
-    public class ChainDef<Event> : IChainDef where Event : EventBase
-    {
-        public ChainDef() { }
-        public ChainDef(string name, IEvHandler handler)
-        {
-            this.name = name;
-            this.handlers = new IEvHandler[] { handler };
-        }
-        public ChainDef(string name, IEvHandler[] handlers)
-        {
-            this.name = name;
-            this.handlers = handlers;
-        }
-        public override IChainTemplate CreateChainTemplate()
-        {
-            return new ChainTemplate<Event>();
-        }
-    }
-
-    public class ChainTemplateDefinition
-    {
-        public string name;
-        IChainTemplate template;
-        public IChainTemplate Template
-        {
-            get { return template.Clone(); }
-            set { template = value; }
-        }
-    }
 
     public abstract class IBehaviorFactory
     {

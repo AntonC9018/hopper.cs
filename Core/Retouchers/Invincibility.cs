@@ -7,12 +7,11 @@ namespace Core.Retouchers
 {
     public static class Invincibility
     {
-        public static Retoucher PreventsDamage = new Retoucher(
-            new ChainDef<Attackable.Event>("attacked:do", new EvHandler<Attackable.Event>(PreventDamage))
-        );
-        public static Retoucher Decreases = new Retoucher(
-            new ChainDef<CommonEvent>("tick", new EvHandler<CommonEvent>(Decrease))
-        );
+        public static Retoucher PreventsDamage = Retoucher
+            .SingleHandlered<Attackable.Event>("attacked:do", PreventDamage);
+        public static Retoucher Decreases = Retoucher
+            .SingleHandlered<CommonEvent>("tick", Decrease);
+
 
         // TODO:
         static void PreventDamage(Attackable.Event ev)
