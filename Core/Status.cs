@@ -50,6 +50,8 @@ namespace Core
 
         public void Tick(Entity entity)
         {
+            if (!IsApplied(entity))
+                return;
             var store = m_tinker.GetStore(entity.id);
             if (store != null && --store.flavor.amount <= 0)
             {

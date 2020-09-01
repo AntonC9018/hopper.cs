@@ -16,7 +16,7 @@ namespace Core.Behaviors
         public bool b_didAction = false;
         public bool b_doingAction = false;
         public bool b_didActionSucceed = false;
-        public Action m_nextAction;
+        public Action NextAction { get; set; }
         Chain<Event> chain_checkAction;
         Chain<Event> chain_failAction;
         Chain<Event> chain_succeedAction;
@@ -38,7 +38,7 @@ namespace Core.Behaviors
             {
                 b_didAction = false;
                 b_doingAction = false;
-                m_nextAction = null;
+                NextAction = null;
             });
         }
 
@@ -57,10 +57,10 @@ namespace Core.Behaviors
             var ev = new Event
             {
                 actor = m_entity,
-                action = m_nextAction
+                action = NextAction
             };
 
-            if (m_nextAction == null)
+            if (NextAction == null)
             {
                 b_didAction = true;
                 b_didActionSucceed = true;
@@ -93,15 +93,15 @@ namespace Core.Behaviors
 
         public void CalculateNextAction()
         {
-            if (m_nextAction != null)
+            if (NextAction != null)
                 return;
 
             if (config_calculateAction != null)
-                m_nextAction = config_calculateAction(m_entity);
+                NextAction = config_calculateAction(m_entity);
             else
             {
                 var sequenced = m_entity.beh_Sequenced;
-                m_nextAction = sequenced.CurrentAction;
+                NextAction = sequenced.CurrentAction;
             }
         }
 

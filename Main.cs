@@ -24,12 +24,15 @@ namespace Hopper
             };
             System.Console.WriteLine("Created world");
 
+            int testStatusId = Statused.RegisterStatus("test", TestStatusTinkerStuff.status, 1);
+
             var playerFactory = new EntityFactory<Entity>();
             playerFactory.AddBehavior(Attackable.s_factory);
             playerFactory.AddBehavior(Attacking.s_factory);
             playerFactory.AddBehavior(Displaceable.s_factory);
             playerFactory.AddBehavior(Moving.s_factory);
             playerFactory.AddBehavior(Pushable.s_factory);
+            playerFactory.AddBehavior(Statused.s_factory);
             System.Console.WriteLine("Set up playerFactory");
 
             Acting.Config playerActingConf = new Acting.Config
@@ -95,7 +98,7 @@ namespace Hopper
 
             var playerNextAction = attackMoveAction.Copy();
             playerNextAction.direction = new IntVector2(0, 1);
-            player.beh_Acting.m_nextAction = playerNextAction;
+            player.beh_Acting.NextAction = playerNextAction;
             System.Console.WriteLine("Set player action");
             System.Console.WriteLine("\n ------ Modifier Demo ------ \n");
 
@@ -255,7 +258,7 @@ namespace Hopper
 
             var playerMoveAction = moveAction.Copy();
             playerMoveAction.direction = IntVector2.Down;
-            player.beh_Acting.m_nextAction = playerMoveAction;
+            player.beh_Acting.NextAction = playerMoveAction;
             player.Inventory = inventory;
 
             var cyclicContainer2 = new CyclicItemContainer(1);
@@ -283,11 +286,29 @@ namespace Hopper
 
             var tinker3 = TestTinkerStuff.tinker; // see the definition below
             player.TinkAndSave(tinker3);
-            player.beh_Acting.m_nextAction = playerMoveAction;
+            player.beh_Acting.NextAction = playerMoveAction;
             world.m_state.Loop();
+            player.Untink(tinker3);
 
 
-            // var statusTinker =;
+            System.Console.WriteLine("\n ------ Status Demo ------ \n");
+
+            // this has to be rethought for sure
+            var status = TestStatusTinkerStuff.status;
+            var flavor = new Flavor
+            {
+                power = 1,
+                amount = 2,
+                source = testStatusId
+            };
+            var statusedParams = new Statused.Params { flavors = new Flavor[] { flavor } };
+            player.beh_Statused.Activate(player, null, statusedParams);
+            player.beh_Acting.NextAction = playerMoveAction;
+            world.m_state.Loop();
+            player.beh_Acting.NextAction = playerMoveAction;
+            world.m_state.Loop();
+            player.beh_Acting.NextAction = playerMoveAction;
+            world.m_state.Loop();
 
         }
     }
@@ -320,7 +341,8 @@ namespace Hopper
             System.Console.WriteLine($"Tinker says that amount = {flavor.amount}");
         }
         public static Tinker<FlavorTinkerData> tinker = Tinker<FlavorTinkerData>
-            .SingleHandlered<Displaceable.Event>(Displaceable.s_doChainName, TestMethod1);
-        public static Status<FlavorTinkerData> status = new Status<FlavorTinkerData>(tinker);
+            .SingleHandlered<Acting.Event>(Acting.s_checkChainName, TestMethod1);
+        public static Status<FlavorTinkerData> status =
+            new Status<FlavorTinkerData>(tinker);
     }
 }

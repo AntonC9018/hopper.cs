@@ -30,7 +30,6 @@ namespace Core.Behaviors
 
         public class Event : CommonEvent
         {
-            public Entity entity;
             public Attacking.Attack attack;
             public ArrayFile resistance;
             public Flavor[] flavors;
@@ -87,8 +86,9 @@ namespace Core.Behaviors
 
         static void ResistSomeStatuses(Event ev)
         {
-            ev.flavors = (Flavor[])ev.flavors.Where(
-                f => ev.resistance[f.source] <= f.power);
+            ev.flavors = ev.flavors
+                .Where(f => ev.resistance[f.source] <= f.power)
+                .ToArray();
         }
 
         static void Apply(Event ev)
@@ -96,7 +96,7 @@ namespace Core.Behaviors
             foreach (var f in ev.flavors)
             {
                 var status = s_indexStatusMap[f.source];
-                status.Apply(ev.entity, f);
+                status.Apply(ev.actor, f);
             }
         }
 

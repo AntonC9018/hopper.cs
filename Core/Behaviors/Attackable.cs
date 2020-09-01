@@ -168,7 +168,7 @@ namespace Core.Behaviors
             check.AddHandler(resistRourceHandler);
             check.AddHandler(armorHandler);
 
-            var _do = fact.AddTemplate<Event>(s_checkChainName);
+            var _do = fact.AddTemplate<Event>(s_doChainName);
             var takeHitHandler = new EvHandler<Event>(TakeHit);
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacked_do));
             _do.AddHandler(takeHitHandler);
