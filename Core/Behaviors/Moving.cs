@@ -53,34 +53,23 @@ namespace Core.Behaviors
             ev.actor.beh_Displaceable.Activate(ev.actor, ev.action, pars);
         }
 
-        public static BehaviorFactory<Moving> s_factory = new BehaviorFactory<Moving>(
-            new IChainDef[]
-            {
-                new ChainDef<Event>
-                {
-                    name = "move:check",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event> (
-                            SetBase,
-                            PRIORITY_RANKS.HIGH
-                        )
-                    }
-                },
-                new ChainDef<Event>
-                {
-                    name = "move:do",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event> (
-                            Displace
-                        ),
-                        new EvHandler<Event>(
-                            Utils.AddHistoryEvent(History.EventCode.move_do)
-                        )
-                    }
-                }
-            }
-        );
+
+        public static BehaviorFactory<Moving> CreateFactory()
+        {
+            var fact = new BehaviorFactory<Moving>();
+
+            var check = fact.AddTemplate<Event>("move:check");
+            var setBaseHandler = new EvHandler<Event>(SetBase, PRIORITY_RANKS.HIGH);
+            check.AddHandler(setBaseHandler);
+
+            var _do = fact.AddTemplate<Event>("move:do");
+            var displaceHandler = new EvHandler<Event>(Displace);
+            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.move_do));
+            _do.AddHandler(displaceHandler);
+            _do.AddHandler(addEventHandler);
+
+            return fact;
+        }
+        public static BehaviorFactory<Moving> s_factory = CreateFactory();
     }
 }

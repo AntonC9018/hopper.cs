@@ -200,12 +200,8 @@ namespace Core
         public void AddBehavior(IBehaviorFactory factory, BehaviorConfig conf = null)
         {
             m_behaviorSettings.Add((factory, conf));
-            foreach (var chainTemplateDefinition in factory.m_chainTemplateDefinitions)
-            {
-                m_chainTemplates.Add(
-                    chainTemplateDefinition.name,
-                    chainTemplateDefinition.Template);
-            }
+            foreach (var (name, template) in factory.Templates)
+                m_chainTemplates.Add(name, template);
         }
 
         public void AddRetoucher(Retoucher retoucher)

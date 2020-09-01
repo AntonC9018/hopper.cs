@@ -96,7 +96,6 @@ namespace Core.Behaviors
 
         static void Armor(Event ev)
         {
-
             if (ev.push.pierce <= ev.resistance.pierce)
             {
                 ev.propagate = false;
@@ -110,43 +109,26 @@ namespace Core.Behaviors
             var pars = new Displaceable.Params { move = move };
             ev.entity.beh_Displaceable.Activate(ev.actor, ev.action, pars);
         }
+        public static BehaviorFactory<Pushable> CreateFactory()
+        {
+            var fact = new BehaviorFactory<Pushable>();
 
-        public static BehaviorFactory<Pushable> s_factory = new BehaviorFactory<Pushable>(
-            new IChainDef[]
-            {
-                new ChainDef<Event>
-                {
-                    name = "pushed:check",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event> (
-                            SetResistance,
-                            PRIORITY_RANKS.HIGH
-                        ),
-                        new EvHandler<Event> (
-                            ResistSource,
-                            PRIORITY_RANKS.LOW
-                        ),
-                        new EvHandler<Event> (
-                            Armor,
-                            PRIORITY_RANKS.LOW
-                        )
-                    }
-                },
-                new ChainDef<Event>
-                {
-                    name = "pushed:do",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event>(
-                            BePushed
-                        ),
-                        new EvHandler<Event>(
-                            Utils.AddHistoryEvent(History.EventCode.pushed_do)
-                        )
-                    }
-                }
-            }
-        );
+            var check = fact.AddTemplate<Event>("pushed:check");
+            var setBaseHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
+            var resistSourceHandler = new EvHandler<Event>(ResistSource, PRIORITY_RANKS.HIGH);
+            var armorHandler = new EvHandler<Event>(Armor, PRIORITY_RANKS.HIGH);
+            check.AddHandler(setBaseHandler);
+            check.AddHandler(resistSourceHandler);
+            check.AddHandler(armorHandler);
+
+            var _do = fact.AddTemplate<Event>("pushed:do");
+            var pushedHandler = new EvHandler<Event>(BePushed);
+            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.pushed_do));
+            _do.AddHandler(pushedHandler);
+            _do.AddHandler(addEventHandler);
+
+            return fact;
+        }
+        public static BehaviorFactory<Pushable> s_factory = CreateFactory();
     }
 }

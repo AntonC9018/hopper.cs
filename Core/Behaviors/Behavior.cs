@@ -1,5 +1,8 @@
 using Chains;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
 
 namespace Core.Behaviors
 {
@@ -43,51 +46,30 @@ namespace Core.Behaviors
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        public ChainTemplateDefinition[] m_chainTemplateDefinitions;
-
-        protected void SetupTemplates(IChainDef[] chainDefinitions)
+        Dictionary<string, IChainTemplate> templates = new Dictionary<string, IChainTemplate>();
+        public List<(string, IChainTemplate)> Templates
         {
-            m_chainTemplateDefinitions = new ChainTemplateDefinition[chainDefinitions.Length];
-            for (int i = 0; i < chainDefinitions.Length; i++)
+            get
             {
-                var chainDef = chainDefinitions[i];
-                var template = chainDef.CreateChainTemplate();
-
-                foreach (var func in chainDef.handlers)
-                {
-                    template.AddHandler(func);
-                }
-
-                m_chainTemplateDefinitions[i] = new ChainTemplateDefinition
-                {
-                    name = chainDef.name,
-                    Template = template
-                };
+                var arr = new List<(string, IChainTemplate)>();
+                foreach (var (name, template) in templates)
+                    arr.Add((name, template.Clone()));
+                return arr;
             }
         }
-
         public abstract IBehavior Instantiate(Entity entity, BehaviorConfig conf);
+
+        public ChainTemplate<T> AddTemplate<T>(string name) where T : EventBase
+        {
+            var ct = new ChainTemplate<T>();
+            templates[name] = ct;
+            return ct;
+        }
     }
 
     public class BehaviorFactory<Beh> : IBehaviorFactory
         where Beh : IBehavior
     {
-
-        public BehaviorFactory(IChainDef[] chainDefinitions)
-        {
-            SetupTemplates(chainDefinitions);
-        }
-
-        public BehaviorFactory(IChainDef chainDefinitions)
-        {
-            SetupTemplates(new IChainDef[] { chainDefinitions });
-        }
-
-        public BehaviorFactory()
-        {
-            m_chainTemplateDefinitions = new ChainTemplateDefinition[0];
-        }
-
         public override IBehavior Instantiate(Entity entity, BehaviorConfig conf)
         {
             if (conf == null)

@@ -105,38 +105,26 @@ namespace Core.Behaviors
             }
         }
 
-        public static BehaviorFactory<Statused> s_factory = new BehaviorFactory<Statused>(
-            new IChainDef[]
-            {
-                new ChainDef<Event>
-                {
-                    name = "statused:check",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event>(
-                            SetResistance,
-                            PRIORITY_RANKS.HIGH
-                        ),
-                        new EvHandler<Event>(
-                            ResistSomeStatuses,
-                            PRIORITY_RANKS.LOW
-                        )
-                    }
-                },
-                new ChainDef<Event>
-                {
-                    name = "statused:do",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event>(
-                            Apply
-                        ),
-                        new EvHandler<Event>(
-                            Utils.AddHistoryEvent(History.EventCode.statused_do)
-                        )
-                    }
-                }
-            }
-        );
+        public static BehaviorFactory<Statused> CreateFactory()
+        {
+            var fact = new BehaviorFactory<Statused>();
+
+            var check = fact.AddTemplate<Event>("statused:check");
+            var setBaseHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
+            var getTargetsHandler = new EvHandler<Event>(ResistSomeStatuses, PRIORITY_RANKS.LOW);
+            check.AddHandler(setBaseHandler);
+            check.AddHandler(getTargetsHandler);
+
+            var _do = fact.AddTemplate<Event>("statused:do");
+            var applyHandler = new EvHandler<Event>(Apply);
+            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacking_do));
+            _do.AddHandler(applyHandler);
+            _do.AddHandler(addEventHandler);
+
+            return fact;
+        }
+
+        public static BehaviorFactory<Statused> s_factory = CreateFactory();
+
     }
 }

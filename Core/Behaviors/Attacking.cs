@@ -158,37 +158,25 @@ namespace Core.Behaviors
             }
         }
 
-        public static BehaviorFactory<Attacking> s_factory = new BehaviorFactory<Attacking>(
-            new IChainDef[]
-            {
-                new ChainDef<Event>
-                {
-                    name = "attack:check",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event>(
-                            SetBase,
-                            PRIORITY_RANKS.HIGH
-                        ),
-                        new EvHandler<Event>(
-                            GetTargets
-                        )
-                    }
-                },
-                new ChainDef<Event>
-                {
-                    name = "attack:do",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event>(
-                            ApplyAttack
-                        ),
-                        new EvHandler<Event>(
-                            Utils.AddHistoryEvent(History.EventCode.attacking_do)
-                        )
-                    }
-                }
-            }
-        );
+        public static BehaviorFactory<Attacking> CreateFactory()
+        {
+            var fact = new BehaviorFactory<Attacking>();
+
+            var check = fact.AddTemplate<Event>("attack:check");
+            var setBaseHandler = new EvHandler<Event>(SetBase, PRIORITY_RANKS.HIGH);
+            var getTargetsHandler = new EvHandler<Event>(GetTargets, PRIORITY_RANKS.MEDIUM);
+            check.AddHandler(setBaseHandler);
+            check.AddHandler(getTargetsHandler);
+
+            var _do = fact.AddTemplate<Event>("attack:do");
+            var applyAttackHandler = new EvHandler<Event>(ApplyAttack);
+            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacking_do));
+            _do.AddHandler(applyAttackHandler);
+            _do.AddHandler(addEventHandler);
+
+            return fact;
+        }
+
+        public static BehaviorFactory<Attacking> s_factory = CreateFactory();
     }
 }

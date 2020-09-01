@@ -88,37 +88,23 @@ namespace Core.Behaviors
             ev.actor.ResetInGrid();
         }
 
-        // I do hate the amount of boilerplate here
-        // Since we want to have just one copy of this factory per class
-        // I don't want to bloat my instances with copies of this
-        public static BehaviorFactory<Displaceable> s_factory = new BehaviorFactory<Displaceable>(
-            new IChainDef[]
-            {
-                new ChainDef<Event>
-                {
-                    name = "displaced:check",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event>(
-                            ConvertFromMove,
-                            PRIORITY_RANKS.HIGH
-                        )
-                    }
-                },
-                new ChainDef<Event>
-                {
-                    name = "displaced:do",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event>(
-                            Displace
-                        ),
-                        new EvHandler<Event>(
-                            Utils.AddHistoryEvent(History.EventCode.displaced_do)
-                        )
-                    }
-                }
-            }
-        );
+        public static BehaviorFactory<Displaceable> CreateFactory()
+        {
+            var fact = new BehaviorFactory<Displaceable>();
+
+            var check = fact.AddTemplate<Event>("displaced:check");
+            var convertFromMove = new EvHandler<Event>(ConvertFromMove, PRIORITY_RANKS.HIGH);
+            check.AddHandler(convertFromMove);
+
+            var _do = fact.AddTemplate<Event>("displaced:do");
+            var displaceHandler = new EvHandler<Event>(Displace);
+            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.displaced_do));
+            _do.AddHandler(displaceHandler);
+            _do.AddHandler(addEventHandler);
+
+            return fact;
+        }
+
+        public static BehaviorFactory<Displaceable> s_factory = CreateFactory();
     }
 }

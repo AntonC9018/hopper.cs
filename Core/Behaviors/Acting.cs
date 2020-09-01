@@ -102,34 +102,15 @@ namespace Core.Behaviors
             }
         }
 
-        // I do hate the amount of boilerplate here
-        // Since we want to have just one copy of this factory per class
-        // I don't want to bloat my instances with copies of this
-        public static BehaviorFactory<Acting> s_factory = new BehaviorFactory<Acting>(
-            new IChainDef[]
-            {
-                new ChainDef<Event>
-                {
-                    name = "action:check",
-                    handlers = new EvHandler<Event>[]
-                    {
-                    }
-                },
-                new ChainDef<Event>
-                {
-                    name = "action:fail",
-                    handlers = new EvHandler<Event>[]
-                    {
-                    }
-                },
-                new ChainDef<Event>
-                {
-                    name = "action:succeed",
-                    handlers = new EvHandler<Event>[]
-                    {
-                    }
-                }
-            }
-        );
+        public static BehaviorFactory<Acting> CreateFactory()
+        {
+            var fact = new BehaviorFactory<Acting>();
+            var check = fact.AddTemplate<Event>("action:check");
+            var fail = fact.AddTemplate<Event>("action:fail");
+            var succeed = fact.AddTemplate<Event>("action:succeed");
+            return fact;
+        }
+
+        public static BehaviorFactory<Acting> s_factory = CreateFactory();
     }
 }

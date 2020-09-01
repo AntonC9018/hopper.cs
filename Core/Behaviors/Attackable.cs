@@ -148,52 +148,28 @@ namespace Core.Behaviors
             return ev.attackableness;
         }
 
-        // I do hate the amount of boilerplate here
-        // Since we want to have just one copy of this factory per class
-        // I don't want to bloat my instances with copies of this
-        public static BehaviorFactory<Attackable> s_factory = new BehaviorFactory<Attackable>(
-            new IChainDef[]
-            {
-                new ChainDef<Event>
-                {
-                    name = "attacked:check",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event>(
-                            SetResistance,
-                            PRIORITY_RANKS.HIGH
-                        ),
-                        new EvHandler<Event>(
-                            ResistSource,
-                            PRIORITY_RANKS.LOW
-                        ),
-                        new EvHandler<Event>(
-                            Armor,
-                            PRIORITY_RANKS.LOW
-                        )
-                    }
-                },
-                new ChainDef<Event>
-                {
-                    name = "attacked:do",
-                    handlers = new EvHandler<Event>[]
-                    {
-                        new EvHandler<Event>(
-                            TakeHit
-                        ),
-                        new EvHandler<Event>(
-                            Utils.AddHistoryEvent(History.EventCode.attacked_do)
-                        )
-                    }
-                },
-                new ChainDef<AttackablenessEvent>
-                {
-                    name = "attacked:condition",
-                    handlers = new EvHandler<AttackablenessEvent>[]
-                    {
-                    }
-                }
-            }
-        );
+        public static BehaviorFactory<Attackable> CreateFactory()
+        {
+            var fact = new BehaviorFactory<Attackable>();
+
+            var check = fact.AddTemplate<Event>("attacked:check");
+            var setResitanceHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
+            var resistRourceHandler = new EvHandler<Event>(ResistSource, PRIORITY_RANKS.LOW);
+            var armorHandler = new EvHandler<Event>(Armor, PRIORITY_RANKS.LOW);
+            check.AddHandler(setResitanceHandler);
+            check.AddHandler(resistRourceHandler);
+            check.AddHandler(armorHandler);
+
+            var _do = fact.AddTemplate<Event>("attacked:do");
+            var takeHitHandler = new EvHandler<Event>(TakeHit);
+            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacked_do));
+            _do.AddHandler(takeHitHandler);
+            _do.AddHandler(addEventHandler);
+
+            var condition = fact.AddTemplate<AttackablenessEvent>("attacked:condition");
+
+            return fact;
+        }
+        public static BehaviorFactory<Attackable> s_factory = CreateFactory();
     }
 }
