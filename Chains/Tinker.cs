@@ -13,6 +13,7 @@ namespace Core
     {
         public ChainHandles[] chainHandlesArray;
         public int count = 1;
+
         public virtual void Init(Entity entity) { }
     }
 

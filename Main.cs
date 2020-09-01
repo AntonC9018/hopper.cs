@@ -289,13 +289,15 @@ namespace Hopper
             System.Console.WriteLine("\n ------ Tinker static reference Demo ------ \n");
 
             var tinker3 = TestTinkerStuff.tinker; // see the definition below
-            player.Tink(tinker3);
+            player.TinkAndSave(tinker3);
             player.beh_Acting.m_nextAction = playerMoveAction;
             world.m_state.Loop();
 
+
+            // var statusTinker =;
+
         }
     }
-
 
     public class TestTinkerData : TinkerData
     {
@@ -325,4 +327,15 @@ namespace Hopper
             = new Tinker<TestTinkerData>(chainDefs);
     }
 
+
+    public class CountTinkerData : TinkerData, IFlavorTinkerData
+    {
+        public Flavor Flavor { get; set; }
+    }
+
+
+    public static class TestStatusTinkerStuff
+    {
+
+    }
 }

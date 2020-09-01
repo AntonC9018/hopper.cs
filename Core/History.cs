@@ -27,6 +27,7 @@ namespace Core
             displaced_do,
             move_do,
             pushed_do,
+            statused_do,
             Hurt,
             Dead
         }

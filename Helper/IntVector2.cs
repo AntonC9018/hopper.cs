@@ -118,15 +118,9 @@ namespace Vector
             };
         }
 
-        public int SqMag()
-        {
-            return x * x + y * y;
-        }
+        public int SqMag => x * x + y * y;
 
-        public float Mag()
-        {
-            return (float)Math.Sqrt(SqMag());
-        }
+        public float Mag => (float)Math.Sqrt(SqMag);
 
         public double AngleTo(IntVector2 v)
         {
@@ -147,6 +141,15 @@ namespace Vector
                     y = (int)Math.Cos(angle_in_rads)
                 }
             );
+        }
+
+        internal IntVector2 Sign()
+        {
+            return new IntVector2
+            {
+                x = x == 0 ? 0 : (x > 0 ? 1 : -1),
+                y = y == 0 ? 0 : (y > 0 ? 1 : -1)
+            };
         }
 
         public override string ToString()

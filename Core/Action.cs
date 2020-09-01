@@ -85,6 +85,7 @@ namespace Core
             bool success = false;
             foreach (var a in m_actions)
             {
+                a.direction = direction;
                 success = a.Do(e) || success;
             }
             return success;

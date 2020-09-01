@@ -58,6 +58,10 @@ namespace Core
         { get { return (Pushable)GetBehavior(Pushable.s_factory.id); } }
         public Displaceable beh_Displaceable
         { get { return (Displaceable)GetBehavior(Displaceable.s_factory.id); } }
+        public Statused beh_Statused
+        { get { return (Statused)GetBehavior(Statused.s_factory.id); } }
+        public Dictionary<int, IStatus> AppliedStatuses
+        { get { return beh_Statused?.m_activeStatuses; } }
 
         public readonly Dictionary<int, ITinker> m_tinkers =
             new Dictionary<int, ITinker>();
@@ -90,7 +94,7 @@ namespace Core
             StartMonitoringEvents();
         }
 
-        public void Tink(ITinker tinker)
+        public void TinkAndSave(ITinker tinker)
         {
             m_tinkers[tinker.id] = tinker;
             tinker.Tink(this);
@@ -135,7 +139,7 @@ namespace Core
             Entity closestPlayer = null;
             foreach (var player in m_world.m_state.m_players)
             {
-                float curDist = (m_pos - player.m_pos).SqMag();
+                float curDist = (m_pos - player.m_pos).SqMag;
 
                 if (closestPlayer == null || curDist < minDist)
                 {

@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using Vector;
 
-namespace Core
+namespace Core.Old
 {
     public class Generator
     {
 
+        enum Mark
+        {
+            WALL, TILE, HALLWAY, RESTRICTED, ENEMY, EMPTY
+        }
         public int Width
         {
             get => dim.x;
@@ -18,7 +22,11 @@ namespace Core
             set => dim.y = value;
         }
         public IntVector2 dim;
-        public Options options;
+        Options options;
+        Mark[,] grid;
+        List<Room> rooms;
+        int generateCount;
+        Node rootNode;
 
         public Generator(int w, int h, Options ops)
         {
@@ -26,16 +34,9 @@ namespace Core
             Height = h;
             options = ops;
             grid = new Mark[w, h];
+            rooms = new List<Room>();
         }
 
-        enum Mark
-        {
-            WALL, TILE, HALLWAY, RESTRICTED, ENEMY, EMPTY
-        }
-
-        Mark[,] grid;
-        int generateCount;
-        Node rootNode;
         public bool Generate()
         {
             generateCount++;
@@ -44,11 +45,32 @@ namespace Core
                 return false;
             }
             ResetGrid();
+            rooms.Clear();
 
             IntVector2 startPos = (dim - rootNode.dim) / 2;
             Room startRoom = new Room(startPos, rootNode.dim);
-            // TODO: complete
+            Write(startRoom);
+            rooms.Add(startRoom);
+            rootNode.room = startRoom;
+
+            if (!Iterate(rootNode, null))
+                Generate();
+
             return true;
+        }
+
+        bool Iterate(Node parentNode, Room ignoreRoom)
+        {
+            // foreach (IntVector2 dir in parentNode.GetOccupiedDirections())
+            // {
+
+            // }
+            return true;
+        }
+
+        void Write(Room room)
+        {
+
         }
 
         private void ResetGrid()

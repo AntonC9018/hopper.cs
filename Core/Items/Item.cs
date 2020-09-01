@@ -28,7 +28,7 @@ namespace Core.Items
 
         public override void BeEquipped(Entity entity)
         {
-            entity.Tink(tinker);
+            entity.TinkAndSave(tinker);
         }
 
         public override void BeUnequipped(Entity entity)
