@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core.Behaviors;
 using Vector;
 
 namespace Core
@@ -40,13 +41,13 @@ namespace Core
 
         void CalculateNextAction(Entity entity)
         {
-            entity.beh_Acting?.CalculateNextAction();
+            entity.GetBehavior<Acting>()?.CalculateNextAction();
         }
 
         void Activate(Entity entity)
         {
             if (entity.b_isDead) return;
-            var acting = entity.beh_Acting;
+            var acting = entity.GetBehavior<Acting>();
             if (acting != null && !acting.b_didAction)
             {
                 // I've overloaded the Activate method here so that it is not as clunky

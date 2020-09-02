@@ -5,7 +5,7 @@ using Vector;
 
 namespace Core.Behaviors
 {
-    public class Pushable : IBehavior
+    public class Pushable : Behavior
     {
         public static List<string> s_indexSourceNameMap = new List<string>();
 
@@ -109,7 +109,7 @@ namespace Core.Behaviors
             // TODO: set up properly
             var move = new Displaceable.Move();
             var pars = new Displaceable.Params { move = move };
-            ev.entity.beh_Displaceable.Activate(ev.actor, ev.action, pars);
+            ev.entity.GetBehavior<Displaceable>().Activate(ev.actor, ev.action, pars);
         }
         public static void SetupChainTemplates(BehaviorFactory<Pushable> fact)
         {
@@ -127,6 +127,6 @@ namespace Core.Behaviors
             _do.AddHandler(pushedHandler);
             _do.AddHandler(addEventHandler);
         }
-        public static int id = BehaviorFactory<Pushable>.ClassSetup(SetupChainTemplates);
+
     }
 }

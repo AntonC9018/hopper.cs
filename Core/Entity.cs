@@ -26,40 +26,16 @@ namespace Core
         // entity.behaviors[Attackable.s_factory.id]
         // Don't add stuff here. The contents of this are determined 
         // by the EntityFactory
-        public readonly Dictionary<int, IBehavior> m_behaviors =
-            new Dictionary<int, IBehavior>();
+        public readonly Dictionary<int, Behavior> m_behaviors =
+            new Dictionary<int, Behavior>();
 
-        public IBehavior GetBehavior(int id)
+        public T GetBehavior<T>() where T : Behavior
         {
+            var id = BehaviorFactory.s_idMap[typeof(T)];
             if (m_behaviors.ContainsKey(id))
-                return m_behaviors[id];
+                return (T)m_behaviors[id];
             return null;
         }
-
-        /*
-        although this is boilerplate, it simplifies the process of reaching out
-        to these behaviors from other parts of the program
-        now obviously this is just shortcuts for all the predefined behaviors
-        and isn't scalable. For other decorators one has to use
-        `(*Behavior*)GetBehavior(*Behavior*.s_factory.id)`
-        since s_factory is a different static property for each of the classes,
-        inheriting Behavior, this cannot be easily automated. If it weren't, I'd do
-        `GetBehavior<*Behavior*>` which would return the desired behavior, which would be sweet
-        */
-        public Acting beh_Acting
-        { get { return (Acting)GetBehavior(Acting.id); } }
-        public Sequential beh_Sequenced
-        { get { return (Sequential)GetBehavior(Sequential.id); } }
-        public Attackable beh_Attackable
-        { get { return (Attackable)GetBehavior(Attackable.id); } }
-        public Attacking beh_Attacking
-        { get { return (Attacking)GetBehavior(Attacking.id); } }
-        public Pushable beh_Pushable
-        { get { return (Pushable)GetBehavior(Pushable.id); } }
-        public Displaceable beh_Displaceable
-        { get { return (Displaceable)GetBehavior(Displaceable.id); } }
-        public Statused beh_Statused
-        { get { return (Statused)GetBehavior(Statused.id); } }
 
         public readonly Dictionary<int, ITinker> m_tinkers =
             new Dictionary<int, ITinker>();
@@ -175,7 +151,7 @@ namespace Core
     {
         public Entity Instantiate();
         public void AddBehavior<Beh>(BehaviorConfig conf)
-            where Beh : IBehavior;
+            where Beh : Behavior;
         public void AddRetoucher(Retoucher retoucher);
         public bool IsRetouched(Retoucher retoucher);
     }
@@ -189,20 +165,20 @@ namespace Core
 
         public EntityFactory()
         {
-            m_chainTemplates.Add(Tick.s_chainName, new ChainTemplate<CommonEvent>());
+            m_chainTemplates.Add(Tick.s_chainName, new ChainTemplate<Tick.Event>());
         }
 
         protected Dictionary<string, IChainTemplate> m_chainTemplates =
             new Dictionary<string, IChainTemplate>();
 
-        protected List<(IBehaviorFactory, BehaviorConfig)> m_behaviorSettings =
-            new List<(IBehaviorFactory, BehaviorConfig)>();
+        protected List<(BehaviorFactory, BehaviorConfig)> m_behaviorSettings =
+            new List<(BehaviorFactory, BehaviorConfig)>();
 
         protected Dictionary<int, Retoucher> m_retouchers =
             new Dictionary<int, Retoucher>();
 
         public void AddBehavior<Beh>(BehaviorConfig conf = null)
-            where Beh : IBehavior
+            where Beh : Behavior
         {
             var factory = new BehaviorFactory<Beh>();
             m_behaviorSettings.Add((factory, conf));

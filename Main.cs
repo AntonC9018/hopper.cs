@@ -63,10 +63,10 @@ namespace Hopper
             enemyFactory.AddBehavior<Acting>(enemyActingConf);
 
 
-            SimpleAction attackAction = new SimpleAction(Attacking.id);
-            SimpleAction moveAction = new SimpleAction(Moving.id);
+            var attackAction = new BehaviorAction<Attacking>();
+            var moveAction = new BehaviorAction<Moving>();
             CompositeAction attackMoveAction = new CompositeAction(
-                new SimpleAction[] { attackAction, moveAction }
+                new Action[] { attackAction, moveAction }
             );
 
             StepData[] stepData =
@@ -98,7 +98,7 @@ namespace Hopper
 
             var playerNextAction = attackMoveAction.Copy();
             playerNextAction.direction = new IntVector2(0, 1);
-            player.beh_Acting.NextAction = playerNextAction;
+            player.GetBehavior<Acting>().NextAction = playerNextAction;
             System.Console.WriteLine("Set player action");
             System.Console.WriteLine("\n ------ Modifier Demo ------ \n");
 
@@ -258,7 +258,7 @@ namespace Hopper
 
             var playerMoveAction = moveAction.Copy();
             playerMoveAction.direction = IntVector2.Down;
-            player.beh_Acting.NextAction = playerMoveAction;
+            player.GetBehavior<Acting>().NextAction = playerMoveAction;
             player.Inventory = inventory;
 
             var cyclicContainer2 = new CyclicItemContainer(1);
@@ -286,7 +286,7 @@ namespace Hopper
 
             var tinker3 = TestTinkerStuff.tinker; // see the definition below
             player.TinkAndSave(tinker3);
-            player.beh_Acting.NextAction = playerMoveAction;
+            player.GetBehavior<Acting>().NextAction = playerMoveAction;
             world.m_state.Loop();
             player.Untink(tinker3);
 
@@ -302,12 +302,12 @@ namespace Hopper
                 source = testStatusId
             };
             var statusedParams = new Statused.Params { flavors = new Flavor[] { flavor } };
-            player.beh_Statused.Activate(player, null, statusedParams);
-            player.beh_Acting.NextAction = playerMoveAction;
+            player.GetBehavior<Statused>().Activate(player, null, statusedParams);
+            player.GetBehavior<Acting>().NextAction = playerMoveAction;
             world.m_state.Loop();
-            player.beh_Acting.NextAction = playerMoveAction;
+            player.GetBehavior<Acting>().NextAction = playerMoveAction;
             world.m_state.Loop();
-            player.beh_Acting.NextAction = playerMoveAction;
+            player.GetBehavior<Acting>().NextAction = playerMoveAction;
             world.m_state.Loop();
 
         }

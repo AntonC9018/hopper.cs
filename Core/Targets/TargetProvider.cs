@@ -45,7 +45,7 @@ namespace Core.Weapon
             }
             if (entity != null)
             {
-                var attackable = entity.beh_Attackable;
+                var attackable = entity.GetBehavior<Attackable>();
 
                 atkCondition =
                     attackable == null

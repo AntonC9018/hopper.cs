@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Core.Behaviors
 {
-    public class Statused : IBehavior
+    public class Statused : Behavior
     {
         public static List<string> s_indexStatusNameMap = new List<string>();
         public static List<IStatus> s_indexStatusMap = new List<IStatus>();
@@ -114,8 +114,6 @@ namespace Core.Behaviors
             _do.AddHandler(applyHandler);
             _do.AddHandler(addEventHandler);
         }
-
-        public static int id = BehaviorFactory<Statused>.ClassSetup(SetupChainTemplates);
 
     }
 }

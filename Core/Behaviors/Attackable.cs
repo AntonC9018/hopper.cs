@@ -11,7 +11,7 @@ namespace Core.Behaviors
         SKIP,
         IF_NEXT_TO
     }
-    public class Attackable : IBehavior
+    public class Attackable : Behavior
     {
 
         // this makes more sense on stats. Think about moving it there via some
@@ -174,7 +174,7 @@ namespace Core.Behaviors
 
             var condition = fact.AddTemplate<AttackablenessEvent>(s_conditionChainName);
         }
-        public static int id = BehaviorFactory<Attackable>.ClassSetup(SetupChainTemplates);
+
 
     }
 }

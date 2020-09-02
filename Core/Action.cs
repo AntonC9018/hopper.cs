@@ -1,3 +1,4 @@
+using Core.Behaviors;
 using Vector;
 
 namespace Core
@@ -9,16 +10,24 @@ namespace Core
         public IntVector2 direction;
 
     }
+    public class BehaviorAction<T> : Action
+        where T : Behavior, IStandartActivateable
+    {
+        public override Action Copy()
+        {
+            return new BehaviorAction<T>();
+        }
+        public override bool Do(Entity e)
+        {
+            return ((T)e.GetBehavior<T>()).Activate(e, this);
+        }
+    }
     public class SimpleAction : Action
     {
         System.Func<Entity, Action, bool> Try;
 
         public SimpleAction()
         {
-        }
-        public SimpleAction(int behaviorId)
-        {
-            Try = (Entity e, Action a) => e.GetBehavior(behaviorId).Activate(e, a, null);
         }
         public SimpleAction(System.Func<Entity, Action, bool> func)
         {

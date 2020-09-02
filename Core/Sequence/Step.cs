@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core.Behaviors;
 using Vector;
 
 namespace Core
@@ -43,7 +44,7 @@ namespace Core
                 return relativeStepIndexFail;
             }
 
-            var acting = e.beh_Acting;
+            var acting = e.GetBehavior<Acting>();
 
             if (acting != null)
             {

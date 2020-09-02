@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core.Behaviors
 {
-    public class Acting : IBehavior
+    public class Acting : Behavior
     {
         public class Config : BehaviorConfig
         {
@@ -100,7 +100,7 @@ namespace Core.Behaviors
                 NextAction = config_calculateAction(m_entity);
             else
             {
-                var sequenced = m_entity.beh_Sequenced;
+                var sequenced = m_entity.GetBehavior<Sequential>();
                 NextAction = sequenced.CurrentAction;
             }
         }
@@ -112,6 +112,6 @@ namespace Core.Behaviors
             var succeed = fact.AddTemplate<Event>(s_succeedChainName);
         }
 
-        public static int id = BehaviorFactory<Acting>.ClassSetup(SetupChainTemplates);
+
     }
 }

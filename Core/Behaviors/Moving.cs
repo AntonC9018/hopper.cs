@@ -4,7 +4,7 @@ using Chains;
 
 namespace Core.Behaviors
 {
-    public class Moving : IBehavior
+    public class Moving : Behavior, IStandartActivateable
     {
 
         public class Event : CommonEvent
@@ -22,7 +22,7 @@ namespace Core.Behaviors
             chain_doMove = (Chain<Event>)entity.m_chains[s_doChainName];
         }
 
-        public bool Activate(Entity actor, Action action, ActivationParams pars)
+        public bool Activate(Entity actor, Action action)
         {
             var ev = new Event
             {
@@ -51,7 +51,7 @@ namespace Core.Behaviors
         static void Displace(Event ev)
         {
             var pars = new Displaceable.Params { move = ev.move };
-            ev.actor.beh_Displaceable.Activate(ev.actor, ev.action, pars);
+            ev.actor.GetBehavior<Displaceable>().Activate(ev.actor, ev.action, pars);
         }
 
 
@@ -67,6 +67,6 @@ namespace Core.Behaviors
             _do.AddHandler(displaceHandler);
             _do.AddHandler(addEventHandler);
         }
-        public static int id = BehaviorFactory<Moving>.ClassSetup(SetupChainTemplates);
+
     }
 }

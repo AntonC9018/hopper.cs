@@ -5,7 +5,7 @@ using Vector;
 
 namespace Core.Behaviors
 {
-    public class Displaceable : IBehavior
+    public class Displaceable : Behavior
     {
         static Displaceable()
         {
@@ -102,7 +102,7 @@ namespace Core.Behaviors
             _do.AddHandler(addEventHandler);
         }
 
-        public static int id = BehaviorFactory<Displaceable>.ClassSetup(SetupChainTemplates);
+
 
     }
 }

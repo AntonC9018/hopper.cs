@@ -4,7 +4,7 @@ using Vector;
 
 namespace Core.Behaviors
 {
-    public class Sequential : IBehavior
+    public class Sequential : Behavior
     {
         public class Config : BehaviorConfig
         {
@@ -43,7 +43,7 @@ namespace Core.Behaviors
         {
             return m_sequence.GetMovs();
         }
-        public static int id = BehaviorFactory<Sequential>.ClassSetup(f => { });
+
 
     }
 }

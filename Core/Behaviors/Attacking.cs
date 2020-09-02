@@ -5,7 +5,7 @@ using Chains;
 
 namespace Core.Behaviors
 {
-    public class Attacking : IBehavior
+    public class Attacking : Behavior, IStandartActivateable
     {
 
         static Attacking()
@@ -85,7 +85,7 @@ namespace Core.Behaviors
                 new Target { entity = entity, direction = e.action.direction }
             };
         }
-
+        public bool Activate(Entity actor, Action action) => Activate(actor, action, null);
         public bool Activate(Entity actor, Action action, ActivationParams pars)
         {
             var ev = new Event
@@ -121,7 +121,7 @@ namespace Core.Behaviors
         {
             if (ev.targets == null)
             {
-                ev.targets = ev.actor.beh_Attacking.GenerateTargets(ev);
+                ev.targets = ev.actor.GetBehavior<Attacking>().GenerateTargets(ev);
             }
         }
 
@@ -131,7 +131,7 @@ namespace Core.Behaviors
             {
                 var action = ev.action.Copy();
                 action.direction = target.direction;
-                var attackable = target.entity.beh_Attackable;
+                var attackable = target.entity.GetBehavior<Attackable>();
                 var pars = new Attackable.Params
                 {
                     attack = (Attack)ev.attack.Copy()
@@ -147,7 +147,7 @@ namespace Core.Behaviors
             {
                 var action = ev.action.Copy();
                 action.direction = target.direction;
-                Pushable pushable = target.entity.beh_Pushable;
+                Pushable pushable = target.entity.GetBehavior<Pushable>();
                 if (pushable != null)
                 {
                     var pars = new Pushable.Params
@@ -174,7 +174,7 @@ namespace Core.Behaviors
             _do.AddHandler(addEventHandler);
         }
 
-        public static int id = BehaviorFactory<Attacking>.ClassSetup(SetupChainTemplates);
+
 
     }
 }
