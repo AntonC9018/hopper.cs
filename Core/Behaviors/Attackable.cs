@@ -151,10 +151,8 @@ namespace Core.Behaviors
             return ev.attackableness;
         }
 
-        static BehaviorFactory<Attackable> CreateFactory()
+        public static void SetupChainTemplates(BehaviorFactory<Attackable> fact)
         {
-            var fact = new BehaviorFactory<Attackable>();
-
             var check = fact.AddTemplate<Event>(s_checkChainName);
             var setResitanceHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
             var resistRourceHandler = new EvHandler<Event>(ResistSource, PRIORITY_RANKS.LOW);
@@ -175,9 +173,8 @@ namespace Core.Behaviors
             _do.AddHandler(addEventHandler);
 
             var condition = fact.AddTemplate<AttackablenessEvent>(s_conditionChainName);
-
-            return fact;
         }
-        public static BehaviorFactory<Attackable> s_factory = CreateFactory();
+        public static int id = BehaviorFactory<Attackable>.ClassSetup(SetupChainTemplates);
+
     }
 }

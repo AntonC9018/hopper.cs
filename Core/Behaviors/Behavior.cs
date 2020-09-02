@@ -9,19 +9,11 @@ namespace Core.Behaviors
 
     public abstract class IBehaviorFactory
     {
-        static IdGenerator s_idGenerator = new IdGenerator();
-        public readonly int id = s_idGenerator.GetNextId();
-        Dictionary<string, IChainTemplate> templates = new Dictionary<string, IChainTemplate>();
-        public List<(string, IChainTemplate)> Templates
-        {
-            get
-            {
-                var arr = new List<(string, IChainTemplate)>();
-                foreach (var (name, template) in templates)
-                    arr.Add((name, template.Clone()));
-                return arr;
-            }
-        }
+        protected static IdGenerator s_idGenerator = new IdGenerator();
+        public int id;
+
+        public Dictionary<string, IChainTemplate> templates =
+            new Dictionary<string, IChainTemplate>();
         public abstract IBehavior Instantiate(Entity entity, BehaviorConfig conf);
 
         public ChainTemplate<T> AddTemplate<T>(string name) where T : EventBase
@@ -35,6 +27,19 @@ namespace Core.Behaviors
     public class BehaviorFactory<Beh> : IBehaviorFactory
         where Beh : IBehavior
     {
+        new public static int id;
+        static Action<BehaviorFactory<Beh>> s_setupFunction;
+        public static int ClassSetup(Action<BehaviorFactory<Beh>> setupFunction)
+        {
+            id = IBehaviorFactory.s_idGenerator.GetNextId();
+            s_setupFunction = setupFunction;
+            return id;
+        }
+        public BehaviorFactory()
+        {
+            base.id = BehaviorFactory<Beh>.id;
+            s_setupFunction(this);
+        }
         public override IBehavior Instantiate(Entity entity, BehaviorConfig conf)
         {
             if (conf == null)

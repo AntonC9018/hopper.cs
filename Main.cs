@@ -27,12 +27,12 @@ namespace Hopper
             int testStatusId = Statused.RegisterStatus("test", TestStatusTinkerStuff.status, 1);
 
             var playerFactory = new EntityFactory<Entity>();
-            playerFactory.AddBehavior(Attackable.s_factory);
-            playerFactory.AddBehavior(Attacking.s_factory);
-            playerFactory.AddBehavior(Displaceable.s_factory);
-            playerFactory.AddBehavior(Moving.s_factory);
-            playerFactory.AddBehavior(Pushable.s_factory);
-            playerFactory.AddBehavior(Statused.s_factory);
+            playerFactory.AddBehavior<Attackable>();
+            playerFactory.AddBehavior<Attacking>();
+            playerFactory.AddBehavior<Displaceable>();
+            playerFactory.AddBehavior<Moving>();
+            playerFactory.AddBehavior<Pushable>();
+            playerFactory.AddBehavior<Statused>();
             System.Console.WriteLine("Set up playerFactory");
 
             Acting.Config playerActingConf = new Acting.Config
@@ -40,7 +40,7 @@ namespace Hopper
                 doAction = Algos.SimpleAlgo
             };
 
-            playerFactory.AddBehavior(Acting.s_factory, playerActingConf);
+            playerFactory.AddBehavior<Acting>(playerActingConf);
             playerFactory.AddRetoucher(Core.Retouchers.Skip.EmptyAttack);
 
             // this one's for the equip demo
@@ -48,11 +48,11 @@ namespace Hopper
 
 
             var enemyFactory = new EntityFactory<Entity>();
-            enemyFactory.AddBehavior(Attackable.s_factory);
-            enemyFactory.AddBehavior(Attacking.s_factory);
-            enemyFactory.AddBehavior(Displaceable.s_factory);
-            enemyFactory.AddBehavior(Moving.s_factory);
-            enemyFactory.AddBehavior(Pushable.s_factory);
+            enemyFactory.AddBehavior<Attackable>();
+            enemyFactory.AddBehavior<Attacking>();
+            enemyFactory.AddBehavior<Displaceable>();
+            enemyFactory.AddBehavior<Moving>();
+            enemyFactory.AddBehavior<Pushable>();
 
 
             Acting.Config enemyActingConf = new Acting.Config
@@ -60,11 +60,11 @@ namespace Hopper
                 doAction = Algos.EnemyAlgo
             };
 
-            enemyFactory.AddBehavior(Acting.s_factory, enemyActingConf);
+            enemyFactory.AddBehavior<Acting>(enemyActingConf);
 
 
-            SimpleAction attackAction = new SimpleAction(Attacking.s_factory.id);
-            SimpleAction moveAction = new SimpleAction(Moving.s_factory.id);
+            SimpleAction attackAction = new SimpleAction(Attacking.id);
+            SimpleAction moveAction = new SimpleAction(Moving.id);
             CompositeAction attackMoveAction = new CompositeAction(
                 new SimpleAction[] { attackAction, moveAction }
             );
@@ -77,7 +77,7 @@ namespace Hopper
 
             var sequenceConfig = new Sequential.Config(stepData);
 
-            enemyFactory.AddBehavior(Sequential.s_factory, sequenceConfig);
+            enemyFactory.AddBehavior<Sequential>(sequenceConfig);
             System.Console.WriteLine("Set up enemyFactory");
 
             Entity player = playerFactory.Instantiate();

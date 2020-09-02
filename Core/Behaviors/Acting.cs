@@ -34,7 +34,7 @@ namespace Core.Behaviors
             config_calculateAction = conf.calculateAction;
             config_doActionFunc = conf.doAction;
 
-            entity.m_chains[Tick.m_chainName].AddHandler<Tick.Event>(e =>
+            entity.m_chains[Tick.s_chainName].AddHandler<Tick.Event>(e =>
             {
                 b_didAction = false;
                 b_doingAction = false;
@@ -105,15 +105,13 @@ namespace Core.Behaviors
             }
         }
 
-        static BehaviorFactory<Acting> CreateFactory()
+        public static void SetupChainTemplates(BehaviorFactory<Acting> fact)
         {
-            var fact = new BehaviorFactory<Acting>();
             var check = fact.AddTemplate<Event>(s_checkChainName);
             var fail = fact.AddTemplate<Event>(s_failChainName);
             var succeed = fact.AddTemplate<Event>(s_succeedChainName);
-            return fact;
         }
 
-        public static BehaviorFactory<Acting> s_factory = CreateFactory();
+        public static int id = BehaviorFactory<Acting>.ClassSetup(SetupChainTemplates);
     }
 }

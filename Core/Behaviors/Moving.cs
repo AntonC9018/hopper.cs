@@ -55,10 +55,8 @@ namespace Core.Behaviors
         }
 
 
-        static BehaviorFactory<Moving> CreateFactory()
+        public static void SetupChainTemplates(BehaviorFactory<Moving> fact)
         {
-            var fact = new BehaviorFactory<Moving>();
-
             var check = fact.AddTemplate<Event>(s_checkChainName);
             var setBaseHandler = new EvHandler<Event>(SetBase, PRIORITY_RANKS.HIGH);
             check.AddHandler(setBaseHandler);
@@ -68,9 +66,7 @@ namespace Core.Behaviors
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.move_do));
             _do.AddHandler(displaceHandler);
             _do.AddHandler(addEventHandler);
-
-            return fact;
         }
-        public static BehaviorFactory<Moving> s_factory = CreateFactory();
+        public static int id = BehaviorFactory<Moving>.ClassSetup(SetupChainTemplates);
     }
 }

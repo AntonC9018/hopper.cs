@@ -93,7 +93,7 @@
 //         // I do hate the amount of boilerplate here
 //         // Since we want to have just one copy of this factory per class
 //         // I don't want to bloat my instances with copies of this
-//         public static BehaviorFactory<Displaceable> s_factory = new BehaviorFactory<Displaceable>(
+//         public public static BehaviorFactory<Displaceable> s_factory = new BehaviorFactory<Displaceable>(
 //             new IChainDef[]
 //             {
 //                 new ChainDef<Event>

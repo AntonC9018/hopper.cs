@@ -53,7 +53,7 @@ namespace Core.Behaviors
             m_entity = entity;
 
             // this should be refactored into a retoucher
-            entity.m_chains[Tick.m_chainName].AddHandler<Tick.Event>(e =>
+            entity.m_chains[Tick.s_chainName].AddHandler<Tick.Event>(e =>
             {
                 foreach (var status in s_indexStatusMap)
                 {
@@ -100,10 +100,8 @@ namespace Core.Behaviors
             }
         }
 
-        static BehaviorFactory<Statused> CreateFactory()
+        public static void SetupChainTemplates(BehaviorFactory<Statused> fact)
         {
-            var fact = new BehaviorFactory<Statused>();
-
             var check = fact.AddTemplate<Event>(s_checkChainName);
             var setBaseHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
             var getTargetsHandler = new EvHandler<Event>(ResistSomeStatuses, PRIORITY_RANKS.LOW);
@@ -115,11 +113,9 @@ namespace Core.Behaviors
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacking_do));
             _do.AddHandler(applyHandler);
             _do.AddHandler(addEventHandler);
-
-            return fact;
         }
 
-        public static BehaviorFactory<Statused> s_factory = CreateFactory();
+        public static int id = BehaviorFactory<Statused>.ClassSetup(SetupChainTemplates);
 
     }
 }

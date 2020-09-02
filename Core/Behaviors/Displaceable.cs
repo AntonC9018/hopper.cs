@@ -89,10 +89,8 @@ namespace Core.Behaviors
             ev.actor.ResetInGrid();
         }
 
-        static BehaviorFactory<Displaceable> CreateFactory()
+        public static void SetupChainTemplates(BehaviorFactory<Displaceable> fact)
         {
-            var fact = new BehaviorFactory<Displaceable>();
-
             var check = fact.AddTemplate<Event>(s_checkChainName);
             var convertFromMove = new EvHandler<Event>(ConvertFromMove, PRIORITY_RANKS.HIGH);
             check.AddHandler(convertFromMove);
@@ -102,10 +100,9 @@ namespace Core.Behaviors
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.displaced_do));
             _do.AddHandler(displaceHandler);
             _do.AddHandler(addEventHandler);
-
-            return fact;
         }
 
-        public static BehaviorFactory<Displaceable> s_factory = CreateFactory();
+        public static int id = BehaviorFactory<Displaceable>.ClassSetup(SetupChainTemplates);
+
     }
 }

@@ -159,10 +159,8 @@ namespace Core.Behaviors
             }
         }
 
-        static BehaviorFactory<Attacking> CreateFactory()
+        public static void SetupChainTemplates(BehaviorFactory<Attacking> fact)
         {
-            var fact = new BehaviorFactory<Attacking>();
-
             var check = fact.AddTemplate<Event>(s_checkChainName);
             var setBaseHandler = new EvHandler<Event>(SetBase, PRIORITY_RANKS.HIGH);
             var getTargetsHandler = new EvHandler<Event>(GetTargets, PRIORITY_RANKS.MEDIUM);
@@ -174,10 +172,9 @@ namespace Core.Behaviors
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacking_do));
             _do.AddHandler(applyAttackHandler);
             _do.AddHandler(addEventHandler);
-
-            return fact;
         }
 
-        public static BehaviorFactory<Attacking> s_factory = CreateFactory();
+        public static int id = BehaviorFactory<Attacking>.ClassSetup(SetupChainTemplates);
+
     }
 }

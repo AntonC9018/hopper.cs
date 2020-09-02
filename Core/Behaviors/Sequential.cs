@@ -33,7 +33,7 @@ namespace Core.Behaviors
                 stepData = conf.stepData,
                 actor = entity
             };
-            entity.m_chains[Tick.m_chainName].AddHandler<EventBase>(e =>
+            entity.m_chains[Tick.s_chainName].AddHandler<EventBase>(e =>
             {
                 m_sequence.TickAction();
             });
@@ -43,9 +43,7 @@ namespace Core.Behaviors
         {
             return m_sequence.GetMovs();
         }
-
-        public static BehaviorFactory<Sequential> s_factory =
-            new BehaviorFactory<Sequential>();
+        public static int id = BehaviorFactory<Sequential>.ClassSetup(f => { });
 
     }
 }

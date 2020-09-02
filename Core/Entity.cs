@@ -47,19 +47,19 @@ namespace Core
         `GetBehavior<*Behavior*>` which would return the desired behavior, which would be sweet
         */
         public Acting beh_Acting
-        { get { return (Acting)GetBehavior(Acting.s_factory.id); } }
+        { get { return (Acting)GetBehavior(Acting.id); } }
         public Sequential beh_Sequenced
-        { get { return (Sequential)GetBehavior(Sequential.s_factory.id); } }
+        { get { return (Sequential)GetBehavior(Sequential.id); } }
         public Attackable beh_Attackable
-        { get { return (Attackable)GetBehavior(Attackable.s_factory.id); } }
+        { get { return (Attackable)GetBehavior(Attackable.id); } }
         public Attacking beh_Attacking
-        { get { return (Attacking)GetBehavior(Attacking.s_factory.id); } }
+        { get { return (Attacking)GetBehavior(Attacking.id); } }
         public Pushable beh_Pushable
-        { get { return (Pushable)GetBehavior(Pushable.s_factory.id); } }
+        { get { return (Pushable)GetBehavior(Pushable.id); } }
         public Displaceable beh_Displaceable
-        { get { return (Displaceable)GetBehavior(Displaceable.s_factory.id); } }
+        { get { return (Displaceable)GetBehavior(Displaceable.id); } }
         public Statused beh_Statused
-        { get { return (Statused)GetBehavior(Statused.s_factory.id); } }
+        { get { return (Statused)GetBehavior(Statused.id); } }
 
         public readonly Dictionary<int, ITinker> m_tinkers =
             new Dictionary<int, ITinker>();
@@ -118,7 +118,7 @@ namespace Core
 
         void RetranslateEndOfLoopEvent()
         {
-            ((Chain<Tick.Event>)m_chains[Tick.m_chainName])
+            ((Chain<Tick.Event>)m_chains[Tick.s_chainName])
                 .Pass(new Tick.Event { actor = this });
         }
         void StartMonitoringEvents()
@@ -174,7 +174,8 @@ namespace Core
     public interface IEntityFactory
     {
         public Entity Instantiate();
-        public void AddBehavior(IBehaviorFactory factory, BehaviorConfig conf);
+        public void AddBehavior<Beh>(BehaviorConfig conf)
+            where Beh : IBehavior;
         public void AddRetoucher(Retoucher retoucher);
         public bool IsRetouched(Retoucher retoucher);
     }
@@ -188,7 +189,7 @@ namespace Core
 
         public EntityFactory()
         {
-            m_chainTemplates.Add(Tick.m_chainName, new ChainTemplate<CommonEvent>());
+            m_chainTemplates.Add(Tick.s_chainName, new ChainTemplate<CommonEvent>());
         }
 
         protected Dictionary<string, IChainTemplate> m_chainTemplates =
@@ -200,10 +201,12 @@ namespace Core
         protected Dictionary<int, Retoucher> m_retouchers =
             new Dictionary<int, Retoucher>();
 
-        public void AddBehavior(IBehaviorFactory factory, BehaviorConfig conf = null)
+        public void AddBehavior<Beh>(BehaviorConfig conf = null)
+            where Beh : IBehavior
         {
+            var factory = new BehaviorFactory<Beh>();
             m_behaviorSettings.Add((factory, conf));
-            foreach (var (name, template) in factory.Templates)
+            foreach (var (name, template) in factory.templates)
                 m_chainTemplates.Add(name, template);
         }
 

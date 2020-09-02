@@ -111,10 +111,8 @@ namespace Core.Behaviors
             var pars = new Displaceable.Params { move = move };
             ev.entity.beh_Displaceable.Activate(ev.actor, ev.action, pars);
         }
-        static BehaviorFactory<Pushable> CreateFactory()
+        public static void SetupChainTemplates(BehaviorFactory<Pushable> fact)
         {
-            var fact = new BehaviorFactory<Pushable>();
-
             var check = fact.AddTemplate<Event>(s_checkChainName);
             var setBaseHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
             var resistSourceHandler = new EvHandler<Event>(ResistSource, PRIORITY_RANKS.HIGH);
@@ -128,9 +126,7 @@ namespace Core.Behaviors
             var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.pushed_do));
             _do.AddHandler(pushedHandler);
             _do.AddHandler(addEventHandler);
-
-            return fact;
         }
-        public static BehaviorFactory<Pushable> s_factory = CreateFactory();
+        public static int id = BehaviorFactory<Pushable>.ClassSetup(SetupChainTemplates);
     }
 }
