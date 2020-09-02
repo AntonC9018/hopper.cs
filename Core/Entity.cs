@@ -118,7 +118,8 @@ namespace Core
 
         void RetranslateEndOfLoopEvent()
         {
-            ((Chain<CommonEvent>)m_chains[Tick.m_chainName]).Pass(new CommonEvent { actor = this });
+            ((Chain<Tick.Event>)m_chains[Tick.m_chainName])
+                .Pass(new Tick.Event { actor = this });
         }
         void StartMonitoringEvents()
         {
@@ -173,9 +174,13 @@ namespace Core
     public interface IEntityFactory
     {
         public Entity Instantiate();
+        public void AddBehavior(IBehaviorFactory factory, BehaviorConfig conf);
+        public void AddRetoucher(Retoucher retoucher);
+        public bool IsRetouched(Retoucher retoucher);
     }
 
-    public class EntityFactory<T> : IEntityFactory where T : Entity, new()
+    public class EntityFactory<T> : IEntityFactory
+        where T : Entity, new()
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();

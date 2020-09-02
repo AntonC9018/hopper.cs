@@ -34,7 +34,7 @@ namespace Core.Behaviors
             config_calculateAction = conf.calculateAction;
             config_doActionFunc = conf.doAction;
 
-            entity.m_chains[Tick.m_chainName].AddHandler<CommonEvent>(e =>
+            entity.m_chains[Tick.m_chainName].AddHandler<Tick.Event>(e =>
             {
                 b_didAction = false;
                 b_doingAction = false;

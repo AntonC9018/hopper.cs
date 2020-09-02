@@ -53,7 +53,7 @@ namespace Core.Behaviors
             m_entity = entity;
 
             // this should be refactored into a retoucher
-            entity.m_chains[Tick.m_chainName].AddHandler<CommonEvent>(e =>
+            entity.m_chains[Tick.m_chainName].AddHandler<Tick.Event>(e =>
             {
                 foreach (var status in s_indexStatusMap)
                 {
