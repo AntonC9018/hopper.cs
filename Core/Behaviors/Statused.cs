@@ -49,18 +49,13 @@ namespace Core.Behaviors
             m_entity = entity;
 
             // this should be refactored into a retoucher
-            entity
-                .GetBehavior<Tick>()
-                .GetChain<Tick.Event>(Tick.s_chainName)
-                .AddHandler<Tick.Event>(
-                    e =>
-                    {
-                        foreach (var status in s_indexStatusMap)
-                        {
-                            status.Tick(e.actor);
-                        }
-                    }
-                );
+            Tick.chain.ChainPath(entity).AddHandler(
+                e =>
+                {
+                    foreach (var status in s_indexStatusMap)
+                        status.Tick(e.actor);
+                }
+            );
         }
 
         public bool Activate(Entity actor, Action action, ActivationParams pars)

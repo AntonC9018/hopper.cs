@@ -53,9 +53,6 @@ namespace Chains
             m_handlers.Add(handler);
         }
         public abstract ChainTemplate Clone();
-
-
-
     }
     public class ChainTemplate<Event> : ChainTemplate
         where Event : EventBase

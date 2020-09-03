@@ -10,6 +10,7 @@ namespace Core.Behaviors
             public System.Func<Entity, Action> calculateAction;
             public System.Action<EventBase> doAction;
         }
+        // TODO: refactor into integers. Map integers to strings if needed
         public static string s_checkChainName = "action:check";
         public static string s_failChainName = "action:fail";
         public static string s_succeedChainName = "action:succeed";
@@ -22,12 +23,14 @@ namespace Core.Behaviors
         System.Action<Event> config_doActionFunc;
 
 
+        // this constructor shouldn't be enforced
+        // TODO: refactor in an init method
         public Acting(Entity entity, Config conf)
         {
             m_entity = entity;
             config_calculateAction = conf.calculateAction;
             config_doActionFunc = conf.doAction;
-            Tick.chain.ChainPath(entity).AddHandler<Tick.Event>(
+            Tick.chain.ChainPath(entity).AddHandler(
                 e =>
                 {
                     b_didAction = false;
@@ -40,11 +43,6 @@ namespace Core.Behaviors
         public class Event : CommonEvent
         {
             public bool success = false;
-        }
-
-        public bool Activate(Entity actor, Action action, ActivationParams pars)
-        {
-            throw new System.Exception("Acting decorator cannot be activated using the usual parameters: Entity actor, Action action, BehaviorActivationParams pars.");
         }
 
         public bool Activate()
@@ -93,6 +91,8 @@ namespace Core.Behaviors
 
             if (config_calculateAction != null)
                 NextAction = config_calculateAction(m_entity);
+
+            // TODO: this should be e.g. the default value of this function
             else
             {
                 var sequenced = m_entity.GetBehavior<Sequential>();
@@ -100,6 +100,8 @@ namespace Core.Behaviors
             }
         }
 
+
+        // initialize here
         public static ChainPaths<Acting, Event> Check;
         public static ChainPaths<Acting, Event> fail_chain;
         public static ChainPaths<Acting, Event> succeed_chain;

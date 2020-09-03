@@ -33,12 +33,9 @@ namespace Core.Behaviors
                 stepData = conf.stepData,
                 actor = entity
             };
-            entity
-                .GetBehavior<Tick>()
-                .GetChain<Tick.Event>(Tick.s_chainName)
-                .AddHandler<Tick.Event>(
-                    e => m_sequence.TickAction()
-                );
+            Tick.chain.ChainPath(entity).AddHandler(
+                e => m_sequence.TickAction()
+            );
         }
 
         public List<IntVector2> GetMovs()

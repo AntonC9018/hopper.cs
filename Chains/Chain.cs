@@ -69,12 +69,12 @@ namespace Chains
 
         protected bool b_dirty;
 
-        public MyListNode<IEvHandler> AddHandler<T>(
-            System.Action<T> handlerFunction) where T : EventBase
-        {
-            return AddHandler(
-                new EvHandler<T>(handlerFunction));
-        }
+        // public MyListNode<IEvHandler> AddHandler<T>(
+        //     System.Action<T> handlerFunction) where T : EventBase
+        // {
+        //     return AddHandler(
+        //         new EvHandler<T>(handlerFunction));
+        // }
 
         public MyListNode<IEvHandler> AddHandler(IEvHandler handler)
         {
@@ -135,6 +135,13 @@ namespace Chains
         {
             m_handlers = list;
             b_dirty = false;
+        }
+
+        public MyListNode<IEvHandler> AddHandler(
+            System.Action<Event> handlerFunction,
+            PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
+        {
+            return AddHandler(new EvHandler<Event>(handlerFunction, priority));
         }
 
         public void Pass(Event ev)
