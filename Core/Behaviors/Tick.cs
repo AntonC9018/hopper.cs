@@ -11,7 +11,7 @@ namespace Core.Behaviors
             public Entity actor;
         }
 
-        public static ChainPath<Tick, Event> chain;
+        public static ChainPaths<Tick, Event> chain;
         public Tick(Entity entity)
         {
 
@@ -20,7 +20,7 @@ namespace Core.Behaviors
         {
             var builder = new ChainTemplateBuilder();
             var tick = builder.AddTemplate<Event>(s_chainName);
-            chain = new ChainPath<Tick, Event>(s_chainName);
+            chain = new ChainPaths<Tick, Event>(s_chainName);
             BehaviorFactory<Tick>.s_builder = builder;
         }
     }

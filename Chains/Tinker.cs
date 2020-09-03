@@ -45,7 +45,7 @@ namespace Core
             for (int i = 0; i < m_chainDefinition.Length; i++)
             {
                 var chainDef = m_chainDefinition[i];
-                var handles = chainDef.AddHandlersWithHandlesTo(entity);
+                var handles = chainDef.AddHandlers(entity);
                 data.chainHandlesArray[i] = handles;
             }
         }
@@ -58,7 +58,7 @@ namespace Core
             for (int i = 0; i < data.chainHandlesArray.Length; i++)
             {
                 var chainDef = m_chainDefinition[i];
-                chainDef.RemoveHandlersWithHandles(data.chainHandlesArray[i], entity);
+                chainDef.RemoveHandlers(data.chainHandlesArray[i], entity);
             }
         }
     }
@@ -76,7 +76,7 @@ namespace Core
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Tinker<T> SingleHandlered<Event>(
-            System.Func<IProvideBehavior, ICanAddHandlers<Event>> path,
+            System.Func<IProvideBehavior, Chain<Event>> path,
             System.Action<Event> handler,
             PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
             where Event : EventBase
@@ -84,7 +84,7 @@ namespace Core
             return new Tinker<T>(
                 new IChainDef[]
                 {
-                    new IChainDef<Event>
+                    new ChainDef<Event>
                     {
                         path = path,
                         handlers = new EvHandler<Event>[]

@@ -80,19 +80,19 @@ namespace Core.Behaviors
             ev.actor.ResetInGrid();
         }
 
-        public static ChainPath<Displaceable, Event> check_chain;
-        public static ChainPath<Displaceable, Event> do_chain;
+        public static ChainPaths<Displaceable, Event> Check;
+        public static ChainPaths<Displaceable, Event> Do;
 
         static Displaceable()
         {
             var builder = new ChainTemplateBuilder();
 
             var check = builder.AddTemplate<Event>(s_checkChainName);
-            check_chain = new ChainPath<Displaceable, Event>(s_checkChainName);
+            Check = new ChainPaths<Displaceable, Event>(s_checkChainName);
             check.AddHandler(ConvertFromMove, PRIORITY_RANKS.HIGH);
 
             var _do = builder.AddTemplate<Event>(s_doChainName);
-            do_chain = new ChainPath<Displaceable, Event>(s_doChainName);
+            Do = new ChainPaths<Displaceable, Event>(s_doChainName);
             _do.AddHandler(Displace);
             _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.displaced_do));
 

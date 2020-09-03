@@ -149,20 +149,20 @@ namespace Core.Behaviors
         }
 
 
-        public static ChainPath<Attacking, Event> check_chain;
-        public static ChainPath<Attacking, Event> do_chain;
+        public static ChainPaths<Attacking, Event> Check;
+        public static ChainPaths<Attacking, Event> Do;
 
         static Attacking()
         {
             var builder = new ChainTemplateBuilder();
 
             var check = builder.AddTemplate<Event>(s_checkChainName);
-            check_chain = new ChainPath<Attacking, Event>(s_checkChainName);
+            Check = new ChainPaths<Attacking, Event>(s_checkChainName);
             check.AddHandler(SetBase, PRIORITY_RANKS.HIGH);
             check.AddHandler(GetTargets, PRIORITY_RANKS.MEDIUM);
 
             var _do = builder.AddTemplate<Event>(s_doChainName);
-            do_chain = new ChainPath<Attacking, Event>(s_checkChainName);
+            Do = new ChainPaths<Attacking, Event>(s_checkChainName);
             _do.AddHandler(ApplyAttack);
             _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do));
 

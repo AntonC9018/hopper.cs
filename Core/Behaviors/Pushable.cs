@@ -102,20 +102,20 @@ namespace Core.Behaviors
             ev.entity.GetBehavior<Displaceable>().Activate(ev.actor, ev.action, pars);
         }
 
-        public static ChainPath<Pushable, Event> check_chain;
-        public static ChainPath<Pushable, Event> do_chain;
+        public static ChainPaths<Pushable, Event> Check;
+        public static ChainPaths<Pushable, Event> Do;
         static Pushable()
         {
             var builder = new ChainTemplateBuilder();
 
             var check = builder.AddTemplate<Event>(s_checkChainName);
-            check_chain = new ChainPath<Pushable, Event>(s_checkChainName);
+            Check = new ChainPaths<Pushable, Event>(s_checkChainName);
             check.AddHandler(SetResistance, PRIORITY_RANKS.HIGH);
             check.AddHandler(ResistSource, PRIORITY_RANKS.HIGH);
             check.AddHandler(Armor, PRIORITY_RANKS.HIGH);
 
             var _do = builder.AddTemplate<Event>(s_doChainName);
-            do_chain = new ChainPath<Pushable, Event>(s_checkChainName);
+            Do = new ChainPaths<Pushable, Event>(s_checkChainName);
             _do.AddHandler(BePushed);
             _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
 

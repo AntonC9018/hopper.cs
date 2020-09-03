@@ -5,30 +5,37 @@ namespace Core
 {
     public interface IProvideBehavior
     {
-        public IProvidesChain GetBehavior<T>() where T : Behavior;
+        public T GetBehavior<T>() where T : Behavior;
+    }
+    public interface IProvideBehaviorFactory
+    {
+        public BehaviorFactory<T> GetBehaviorFactory<T>() where T : Behavior;
     }
     public interface IProvidesChain
     {
-        public ICanAddHandlers<Event> GetChainLike<Event>(string name) where Event : EventBase;
+        public Chain<Event> GetChain<Event>(string name) where Event : EventBase;
     }
-    public interface I_defines_path_to_chain<Event>
-        where Event : EventBase
+    public interface IProvidesChainTemplate
     {
-        public ICanAddHandlers<Event> Path(IProvideBehavior entity);
+        public ChainTemplate<Event> GetTemplate<Event>(string name) where Event : EventBase;
     }
-    public class ChainPath<Beh, Event>
-        : I_defines_path_to_chain<Event>
+    public class ChainPaths<Beh, Event>
         where Beh : Behavior
         where Event : EventBase
     {
         public string name;
-        public ChainPath(string _name)
+        public ChainPaths(string _name)
         {
             name = _name;
         }
-        public ICanAddHandlers<Event> Path(IProvideBehavior entity)
+        public Chain<Event> ChainPath(IProvideBehavior startingFrom)
         {
-            return (ICanAddHandlers<Event>)entity.GetBehavior<Beh>().GetChainLike<Event>(name);
+            return startingFrom.GetBehavior<Beh>().GetChain<Event>(name);
+        }
+
+        public ChainTemplate<Event> TemplatePath(IProvideBehaviorFactory startingFrom)
+        {
+            return startingFrom.GetBehaviorFactory<Beh>().GetTemplate<Event>(name);
         }
     }
 

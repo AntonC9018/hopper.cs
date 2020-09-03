@@ -18,7 +18,7 @@ namespace Core.Behaviors
         public abstract Behavior Instantiate(Entity entity, BehaviorConfig conf);
     }
 
-    public class BehaviorFactory<Beh> : BehaviorFactory, IProvidesChain
+    public class BehaviorFactory<Beh> : BehaviorFactory, IProvidesChainTemplate
         where Beh : Behavior
     {
         public static ChainTemplateBuilder s_builder;
@@ -36,9 +36,9 @@ namespace Core.Behaviors
             m_templates = s_builder?.Templates;
         }
 
-        public ICanAddHandlers<Event> GetChainLike<Event>(string name) where Event : EventBase
+        public ChainTemplate<Event> GetTemplate<Event>(string name) where Event : EventBase
         {
-            return (ICanAddHandlers<Event>)m_templates[name];
+            return (ChainTemplate<Event>)m_templates[name];
         }
 
         public override Behavior Instantiate(Entity entity, BehaviorConfig conf)
@@ -71,11 +71,6 @@ namespace Core.Behaviors
             {
                 chains[key] = template.Init();
             }
-        }
-
-        public ICanAddHandlers<Event> GetChainLike<Event>(string name) where Event : EventBase
-        {
-            return (ICanAddHandlers<Event>)chains[name];
         }
 
         public Chain<Event> GetChain<Event>(string name) where Event : EventBase

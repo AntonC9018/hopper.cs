@@ -7,7 +7,8 @@ namespace Chains
     public class ChainDefsBuilder
     {
         List<IChainDefBuilder> defs;
-        public ChainDefBuilder<T> AddDef<T>(System.Func<IProvideBehavior, ICanAddHandlers<T>> path) where T : EventBase
+        public ChainDefBuilder<T> AddDef<T>(System.Func<IProvideBehavior, Chain<T>> path)
+            where T : EventBase
         {
             var def = new ChainDefBuilder<T>(path);
             defs.Add(def);

@@ -72,11 +72,11 @@ namespace Chains
         public MyListNode<IEvHandler> AddHandler<T>(
             System.Action<T> handlerFunction) where T : EventBase
         {
-            return Add(
+            return AddHandler(
                 new EvHandler<T>(handlerFunction));
         }
 
-        public MyListNode<IEvHandler> Add(IEvHandler handler)
+        public MyListNode<IEvHandler> AddHandler(IEvHandler handler)
         {
             b_dirty = true;
             m_handlers.AddFront(handler);
@@ -123,7 +123,7 @@ namespace Chains
         }
     }
 
-    public class Chain<Event> : Chain, ICanAddHandlers<Event> where Event : EventBase
+    public class Chain<Event> : Chain where Event : EventBase
     {
         public Chain()
         {
@@ -135,16 +135,6 @@ namespace Chains
         {
             m_handlers = list;
             b_dirty = false;
-        }
-
-        public MyListNode<IEvHandler> AddWithHandle(EvHandler<Event> handler)
-        {
-            return base.Add(handler);
-        }
-
-        public void AddHandler(EvHandler<Event> handler)
-        {
-            base.Add(handler);
         }
 
         public void Pass(Event ev)

@@ -10,10 +10,10 @@ namespace Chains
 
     public class ChainDefBuilder<Event> : IChainDefBuilder where Event : EventBase
     {
-        public System.Func<IProvideBehavior, ICanAddHandlers<Event>> path;
+        public System.Func<IProvideBehavior, Chain<Event>> path;
         public List<EvHandler<Event>> handlers;
 
-        public ChainDefBuilder(System.Func<IProvideBehavior, ICanAddHandlers<Event>> path)
+        public ChainDefBuilder(System.Func<IProvideBehavior, Chain<Event>> path)
         {
             this.path = path;
             handlers = new List<EvHandler<Event>>();
@@ -26,7 +26,7 @@ namespace Chains
 
         public IChainDef ToStatic()
         {
-            return new IChainDef<Event> { path = path, handlers = handlers.ToArray() };
+            return new ChainDef<Event> { path = path, handlers = handlers.ToArray() };
         }
     }
 }

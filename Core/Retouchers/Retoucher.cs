@@ -7,29 +7,29 @@ namespace Core
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        IChainDef[] m_chainDefinitions;
+        ITemplateChainDef[] m_chainDefinitions;
 
-        public Retoucher(IChainDef[] chainDefinitions)
+        public Retoucher(ITemplateChainDef[] chainDefinitions)
         {
             this.m_chainDefinitions = chainDefinitions;
         }
 
-        public Retoucher(IChainDef chainDefinitions)
+        public Retoucher(ITemplateChainDef chainDefinitions)
         {
-            this.m_chainDefinitions = new IChainDef[] { chainDefinitions };
+            this.m_chainDefinitions = new ITemplateChainDef[] { chainDefinitions };
         }
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Retoucher SingleHandlered<T>(
-            System.Func<IProvideBehavior, ICanAddHandlers<T>> path,
+            System.Func<IProvideBehaviorFactory, ChainTemplate<T>> path,
             System.Action<T> handler,
             PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
             where T : EventBase
         {
             return new Retoucher(
-                new IChainDef[]
+                new ITemplateChainDef[]
                 {
-                    new IChainDef<T>
+                    new TemplateChainDef<T>
                     {
                         path = path,
                         handlers = new EvHandler<T>[]
@@ -41,7 +41,7 @@ namespace Core
             );
         }
 
-        internal void Retouch(IProvideBehavior entityFactory)
+        internal void Retouch(IProvideBehaviorFactory entityFactory)
         {
             foreach (var def in m_chainDefinitions)
             {

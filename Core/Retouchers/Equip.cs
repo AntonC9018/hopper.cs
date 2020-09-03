@@ -8,7 +8,7 @@ namespace Core.Retouchers
     public static class Equip
     {
         public static Retoucher OnDisplace = Retoucher
-            .SingleHandlered<Displaceable.Event>(Displaceable.do_chain.Path, PickUp);
+            .SingleHandlered<Displaceable.Event>(Displaceable.Do.TemplatePath, PickUp);
 
         static void PickUp(CommonEvent commonEvent)
         {

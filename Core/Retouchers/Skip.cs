@@ -8,13 +8,13 @@ namespace Core.Retouchers
     public static class Skip
     {
         public static Retoucher EmptyAttack = Retoucher
-            .SingleHandlered<Attacking.Event>(Attacking.check_chain.Path, SkipEmptyAttack);
+            .SingleHandlered<Attacking.Event>(Attacking.Check.TemplatePath, SkipEmptyAttack);
         public static Retoucher BlockedMove = Retoucher
-            .SingleHandlered<Moving.Event>(Moving.check_chain.Path, SkipBlocked);
+            .SingleHandlered<Moving.Event>(Moving.Check.TemplatePath, SkipBlocked);
         public static Retoucher NoPlayer = Retoucher
-            .SingleHandlered<Attacking.Event>(Attacking.check_chain.Path, SkipNoPlayer);
+            .SingleHandlered<Attacking.Event>(Attacking.Check.TemplatePath, SkipNoPlayer);
         public static Retoucher Self = Retoucher
-            .SingleHandlered<Attacking.Event>(Attacking.check_chain.Path, SkipSelf);
+            .SingleHandlered<Attacking.Event>(Attacking.Check.TemplatePath, SkipSelf);
 
         // public static void Setup()
         // {

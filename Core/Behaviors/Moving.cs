@@ -44,19 +44,19 @@ namespace Core.Behaviors
             ev.actor.GetBehavior<Displaceable>().Activate(ev.actor, ev.action, pars);
         }
 
-        public static ChainPath<Moving, Event> check_chain;
-        public static ChainPath<Moving, Event> do_chain;
+        public static ChainPaths<Moving, Event> Check;
+        public static ChainPaths<Moving, Event> Do;
 
         static Moving()
         {
             var builder = new ChainTemplateBuilder();
 
             var check = builder.AddTemplate<Event>(s_checkChainName);
-            check_chain = new ChainPath<Moving, Event>(s_checkChainName);
+            Check = new ChainPaths<Moving, Event>(s_checkChainName);
             check.AddHandler(SetBase, PRIORITY_RANKS.HIGH);
 
             var _do = builder.AddTemplate<Event>(s_doChainName);
-            do_chain = new ChainPath<Moving, Event>(s_doChainName);
+            Do = new ChainPaths<Moving, Event>(s_doChainName);
             _do.AddHandler(Displace);
             _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.move_do));
 

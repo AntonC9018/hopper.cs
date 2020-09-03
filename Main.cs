@@ -211,7 +211,7 @@ namespace Hopper
             inventory.AddContainer(0, cyclicContainer);
 
             var tinker = Tinker<TinkerData>.SingleHandlered<Attacking.Event>(
-                Attacking.check_chain.Path,
+                Attacking.Check.ChainPath,
                 e => System.Console.WriteLine("Hello from tinker applied by item")
             );
             var item = new TinkerItem(tinker, 0);
@@ -330,7 +330,7 @@ namespace Hopper
             System.Console.WriteLine($"Tinker says that i = {data.i}");
         }
         public static Tinker<TestTinkerData> tinker = Tinker<TestTinkerData>
-            .SingleHandlered<Displaceable.Event>(Displaceable.do_chain.Path, TestMethod1);
+            .SingleHandlered<Displaceable.Event>(Displaceable.Do.ChainPath, TestMethod1);
     }
 
     public static class TestStatusTinkerStuff
@@ -341,7 +341,7 @@ namespace Hopper
             System.Console.WriteLine($"Tinker says that amount = {flavor.amount}");
         }
         public static Tinker<FlavorTinkerData> tinker = Tinker<FlavorTinkerData>
-            .SingleHandlered<Acting.Event>(Acting.check_chain.Path, TestMethod1);
+            .SingleHandlered<Acting.Event>(Acting.Check.ChainPath, TestMethod1);
         public static Status<FlavorTinkerData> status =
             new Status<FlavorTinkerData>(tinker);
     }

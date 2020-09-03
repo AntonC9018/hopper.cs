@@ -30,7 +30,7 @@ namespace Chains
         {
             foreach (var handler in m_handlers)
             {
-                chain.Add(handler);
+                chain.AddHandler(handler);
             }
 
             m_handlers.TrimExcess();
@@ -47,7 +47,6 @@ namespace Chains
         }
         protected abstract Chain InitFromCache();
         protected abstract Chain InitAndCache();
-        public abstract void AddHandler(System.Action<EventBase> handlerFunc);
         public void AddHandler(IEvHandler handler)
         {
             b_areHandlersCached = false;
@@ -58,7 +57,7 @@ namespace Chains
 
 
     }
-    public class ChainTemplate<Event> : ChainTemplate, ICanAddHandlers<Event>
+    public class ChainTemplate<Event> : ChainTemplate
         where Event : EventBase
     {
         public ChainTemplate()
@@ -71,9 +70,9 @@ namespace Chains
         {
         }
 
-        public override void AddHandler(System.Action<EventBase> handlerFunc)
+        public void AddHandler(System.Action<Event> handlerFunc, PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
         {
-            AddHandler(new EvHandler<Event>(handlerFunc));
+            AddHandler(new EvHandler<Event>(handlerFunc, priority));
         }
 
         protected override Chain InitAndCache()
@@ -95,19 +94,6 @@ namespace Chains
         public override ChainTemplate Clone()
         {
             return new ChainTemplate<Event>(m_handlers, b_areHandlersCached);
-        }
-
-        public void AddHandler(EvHandler<Event> handler)
-        {
-            base.AddHandler(handler);
-        }
-
-        // utility method. this one's bad because it duplicates logic, but it is so nice to have
-        public void AddHandler(
-            System.Action<Event> handlerFunction,
-            PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
-        {
-            base.AddHandler(new EvHandler<Event>(handlerFunction, priority));
         }
     }
 

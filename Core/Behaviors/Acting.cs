@@ -27,17 +27,14 @@ namespace Core.Behaviors
             m_entity = entity;
             config_calculateAction = conf.calculateAction;
             config_doActionFunc = conf.doAction;
-            entity
-                .GetBehavior<Tick>()
-                .GetChain<Tick.Event>(Tick.s_chainName)
-                .AddHandler<Tick.Event>(
-                    e =>
-                    {
-                        b_didAction = false;
-                        b_doingAction = false;
-                        NextAction = null;
-                    }
-                );
+            Tick.chain.ChainPath(entity).AddHandler<Tick.Event>(
+                e =>
+                {
+                    b_didAction = false;
+                    b_doingAction = false;
+                    NextAction = null;
+                }
+            );
         }
 
         public class Event : CommonEvent
@@ -103,22 +100,22 @@ namespace Core.Behaviors
             }
         }
 
-        public static ChainPath<Acting, Event> check_chain;
-        public static ChainPath<Acting, Event> fail_chain;
-        public static ChainPath<Acting, Event> succeed_chain;
+        public static ChainPaths<Acting, Event> Check;
+        public static ChainPaths<Acting, Event> fail_chain;
+        public static ChainPaths<Acting, Event> succeed_chain;
 
         static Acting()
         {
             var builder = new ChainTemplateBuilder();
 
             var check = builder.AddTemplate<Event>(s_checkChainName);
-            check_chain = new ChainPath<Acting, Event>(s_checkChainName);
+            Check = new ChainPaths<Acting, Event>(s_checkChainName);
 
             var fail = builder.AddTemplate<Event>(s_failChainName);
-            fail_chain = new ChainPath<Acting, Event>(s_failChainName);
+            fail_chain = new ChainPaths<Acting, Event>(s_failChainName);
 
             var succeed = builder.AddTemplate<Event>(s_succeedChainName);
-            succeed_chain = new ChainPath<Acting, Event>(s_succeedChainName);
+            succeed_chain = new ChainPaths<Acting, Event>(s_succeedChainName);
 
             BehaviorFactory<Acting>.s_builder = builder;
         }

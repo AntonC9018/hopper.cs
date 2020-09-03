@@ -88,7 +88,7 @@ namespace Core
 
         void RetranslateEndOfLoopEvent()
         {
-            ((Chain<Tick.Event>)Tick.chain.Path(this))
+            Tick.chain.ChainPath(this)
                 .Pass(new Tick.Event { actor = this });
         }
         void StartMonitoringEvents()
@@ -138,11 +138,6 @@ namespace Core
         {
             m_world.m_grid.Reset(this);
         }
-
-        IProvidesChain IProvideBehavior.GetBehavior<T>()
-        {
-            return GetBehavior<T>();
-        }
     }
 
     public interface IEntityFactory
@@ -154,7 +149,7 @@ namespace Core
         public bool IsRetouched(Retoucher retoucher);
     }
 
-    public class EntityFactory<T> : IEntityFactory, IProvideBehavior
+    public class EntityFactory<T> : IEntityFactory, IProvideBehaviorFactory
         where T : Entity, new()
     {
         static IdGenerator s_idGenerator = new IdGenerator();
@@ -204,9 +199,9 @@ namespace Core
             return entity;
         }
 
-        public IProvidesChain GetBehavior<T1>() where T1 : Behavior
+        public BehaviorFactory<U> GetBehaviorFactory<U>() where U : Behavior
         {
-            return (IProvidesChain)m_behaviorSettings[typeof(T1)].Item1;
+            return (BehaviorFactory<U>)m_behaviorSettings[typeof(U)].Item1;
         }
     }
 }
