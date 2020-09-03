@@ -17,9 +17,6 @@ namespace Core.Behaviors
         public bool b_doingAction = false;
         public bool b_didActionSucceed = false;
         public Action NextAction { get; set; }
-        Chain<Event> chain_checkAction;
-        Chain<Event> chain_failAction;
-        Chain<Event> chain_succeedAction;
         Entity m_entity;
         System.Func<Entity, Action> config_calculateAction;
         System.Action<Event> config_doActionFunc;
@@ -28,18 +25,19 @@ namespace Core.Behaviors
         public Acting(Entity entity, Config conf)
         {
             m_entity = entity;
-            chain_checkAction = (Chain<Event>)entity.m_chains[s_checkChainName];
-            chain_failAction = (Chain<Event>)entity.m_chains[s_failChainName];
-            chain_succeedAction = (Chain<Event>)entity.m_chains[s_succeedChainName];
             config_calculateAction = conf.calculateAction;
             config_doActionFunc = conf.doAction;
-
-            entity.m_chains[Tick.s_chainName].AddHandler<Tick.Event>(e =>
-            {
-                b_didAction = false;
-                b_doingAction = false;
-                NextAction = null;
-            });
+            entity
+                .GetBehavior<Tick>()
+                .GetChain<Tick.Event>(Tick.s_chainName)
+                .AddHandler<Tick.Event>(
+                    e =>
+                    {
+                        b_didAction = false;
+                        b_doingAction = false;
+                        NextAction = null;
+                    }
+                );
         }
 
         public class Event : CommonEvent
@@ -64,12 +62,12 @@ namespace Core.Behaviors
             {
                 b_didAction = true;
                 b_didActionSucceed = true;
-                chain_succeedAction.Pass(ev);
+                GetChain<Event>(s_succeedChainName).Pass(ev);
                 return true;
             }
 
             b_doingAction = true;
-            chain_checkAction.Pass(ev);
+            GetChain<Event>(s_checkChainName).Pass(ev);
 
             if (ev.propagate)
             {
@@ -80,9 +78,9 @@ namespace Core.Behaviors
             ev.propagate = true;
 
             if (ev.success)
-                chain_succeedAction.Pass(ev);
+                GetChain<Event>(s_succeedChainName).Pass(ev);
             else
-                chain_failAction.Pass(ev);
+                GetChain<Event>(s_failChainName).Pass(ev);
 
             b_doingAction = false;
             b_didAction = false;
@@ -105,13 +103,25 @@ namespace Core.Behaviors
             }
         }
 
-        public static void SetupChainTemplates(BehaviorFactory<Acting> fact)
-        {
-            var check = fact.AddTemplate<Event>(s_checkChainName);
-            var fail = fact.AddTemplate<Event>(s_failChainName);
-            var succeed = fact.AddTemplate<Event>(s_succeedChainName);
-        }
+        public static ChainPath<Acting, Event> check_chain;
+        public static ChainPath<Acting, Event> fail_chain;
+        public static ChainPath<Acting, Event> succeed_chain;
 
+        static Acting()
+        {
+            var builder = new ChainTemplateBuilder();
+
+            var check = builder.AddTemplate<Event>(s_checkChainName);
+            check_chain = new ChainPath<Acting, Event>(s_checkChainName);
+
+            var fail = builder.AddTemplate<Event>(s_failChainName);
+            fail_chain = new ChainPath<Acting, Event>(s_failChainName);
+
+            var succeed = builder.AddTemplate<Event>(s_succeedChainName);
+            succeed_chain = new ChainPath<Acting, Event>(s_succeedChainName);
+
+            BehaviorFactory<Acting>.s_builder = builder;
+        }
 
     }
 }

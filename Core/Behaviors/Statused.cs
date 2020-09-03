@@ -21,7 +21,7 @@ namespace Core.Behaviors
             return s_indexStatusNameMap.Count - 1;
         }
 
-        static Statused()
+        static void SetupStats()
         {
             Directory baseDir = StatManager.s_defaultFS.BaseDir;
             StatFile resFile = new ArrayFile();
@@ -42,24 +42,25 @@ namespace Core.Behaviors
 
         public static string s_checkChainName = "statused:check";
         public static string s_doChainName = "statused:do";
-        Chain<Event> chain_checkStatused;
-        Chain<Event> chain_beStatused;
         Entity m_entity;
 
         public Statused(Entity entity)
         {
-            chain_checkStatused = (Chain<Event>)entity.m_chains[s_checkChainName];
-            chain_beStatused = (Chain<Event>)entity.m_chains[s_doChainName];
             m_entity = entity;
 
             // this should be refactored into a retoucher
-            entity.m_chains[Tick.s_chainName].AddHandler<Tick.Event>(e =>
-            {
-                foreach (var status in s_indexStatusMap)
-                {
-                    status.Tick(e.actor);
-                }
-            });
+            entity
+                .GetBehavior<Tick>()
+                .GetChain<Tick.Event>(Tick.s_chainName)
+                .AddHandler<Tick.Event>(
+                    e =>
+                    {
+                        foreach (var status in s_indexStatusMap)
+                        {
+                            status.Tick(e.actor);
+                        }
+                    }
+                );
         }
 
         public bool Activate(Entity actor, Action action, ActivationParams pars)
@@ -70,13 +71,7 @@ namespace Core.Behaviors
                 action = action,
                 flavors = ((Params)pars).flavors
             };
-            chain_checkStatused.Pass(ev);
-
-            if (!ev.propagate)
-                return false;
-
-            chain_beStatused.Pass(ev);
-            return true;
+            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
         }
 
         static void SetResistance(Event ev)
@@ -100,19 +95,21 @@ namespace Core.Behaviors
             }
         }
 
-        public static void SetupChainTemplates(BehaviorFactory<Statused> fact)
+        static Statused()
         {
-            var check = fact.AddTemplate<Event>(s_checkChainName);
-            var setBaseHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
-            var getTargetsHandler = new EvHandler<Event>(ResistSomeStatuses, PRIORITY_RANKS.LOW);
-            check.AddHandler(setBaseHandler);
-            check.AddHandler(getTargetsHandler);
+            var builder = new ChainTemplateBuilder();
 
-            var _do = fact.AddTemplate<Event>(s_doChainName);
-            var applyHandler = new EvHandler<Event>(Apply);
-            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacking_do));
-            _do.AddHandler(applyHandler);
-            _do.AddHandler(addEventHandler);
+            var check = builder.AddTemplate<Event>(s_checkChainName);
+            check.AddHandler(SetResistance, PRIORITY_RANKS.HIGH);
+            check.AddHandler(ResistSomeStatuses, PRIORITY_RANKS.LOW);
+
+            var _do = builder.AddTemplate<Event>(s_doChainName);
+            _do.AddHandler(Apply);
+            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do));
+
+            BehaviorFactory<Statused>.s_builder = builder;
+
+            SetupStats();
         }
 
     }

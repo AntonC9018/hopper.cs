@@ -7,7 +7,7 @@ namespace Core.Behaviors
 {
     public class Displaceable : Behavior
     {
-        static Displaceable()
+        static void SetupStats()
         {
             var baseDir = StatManager.s_defaultFS.BaseDir;
 
@@ -39,13 +39,9 @@ namespace Core.Behaviors
         }
         public static string s_checkChainName = "displaced:check";
         public static string s_doChainName = "displaced:do";
-        Chain<Event> chain_checkDisplaced;
-        Chain<Event> chain_beDisplaced;
 
         public Displaceable(Entity entity)
         {
-            chain_checkDisplaced = (Chain<Event>)entity.m_chains[s_checkChainName];
-            chain_beDisplaced = (Chain<Event>)entity.m_chains[s_doChainName];
         }
 
         public bool Activate(Entity actor, Action action, ActivationParams pars = null)
@@ -56,13 +52,8 @@ namespace Core.Behaviors
                 action = action,
                 move = ((Params)pars).move
             };
-            chain_checkDisplaced.Pass(ev);
+            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
 
-            if (!ev.propagate)
-                return false;
-
-            chain_beDisplaced.Pass(ev);
-            return true;
         }
 
         static void ConvertFromMove(Event ev)
@@ -89,20 +80,26 @@ namespace Core.Behaviors
             ev.actor.ResetInGrid();
         }
 
-        public static void SetupChainTemplates(BehaviorFactory<Displaceable> fact)
+        public static ChainPath<Displaceable, Event> check_chain;
+        public static ChainPath<Displaceable, Event> do_chain;
+
+        static Displaceable()
         {
-            var check = fact.AddTemplate<Event>(s_checkChainName);
-            var convertFromMove = new EvHandler<Event>(ConvertFromMove, PRIORITY_RANKS.HIGH);
-            check.AddHandler(convertFromMove);
+            var builder = new ChainTemplateBuilder();
 
-            var _do = fact.AddTemplate<Event>(s_doChainName);
-            var displaceHandler = new EvHandler<Event>(Displace);
-            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.displaced_do));
-            _do.AddHandler(displaceHandler);
-            _do.AddHandler(addEventHandler);
+            var check = builder.AddTemplate<Event>(s_checkChainName);
+            check_chain = new ChainPath<Displaceable, Event>(s_checkChainName);
+            check.AddHandler(ConvertFromMove, PRIORITY_RANKS.HIGH);
+
+            var _do = builder.AddTemplate<Event>(s_doChainName);
+            do_chain = new ChainPath<Displaceable, Event>(s_doChainName);
+            _do.AddHandler(Displace);
+            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.displaced_do));
+
+            BehaviorFactory<Displaceable>.s_builder = builder;
+
+            SetupStats();
         }
-
-
 
     }
 }

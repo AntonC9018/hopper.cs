@@ -6,7 +6,7 @@ using Core.Items;
 
 namespace Core
 {
-    public class Entity
+    public class Entity : IProvideBehavior
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
@@ -17,23 +17,17 @@ namespace Core
             this.m_orientation = direction;
         }
 
-        // Don't add stuff here. The ontents of this are determined 
-        // by the EntityFactory
-        public readonly Dictionary<string, IChain> m_chains =
-            new Dictionary<string, IChain>();
-
         // the idea is to get the behavior instances like this:
         // entity.behaviors[Attackable.s_factory.id]
         // Don't add stuff here. The contents of this are determined 
         // by the EntityFactory
-        public readonly Dictionary<int, Behavior> m_behaviors =
-            new Dictionary<int, Behavior>();
+        public readonly Dictionary<System.Type, Behavior> m_behaviors =
+            new Dictionary<System.Type, Behavior>();
 
         public T GetBehavior<T>() where T : Behavior
         {
-            var id = BehaviorFactory.s_idMap[typeof(T)];
-            if (m_behaviors.ContainsKey(id))
-                return (T)m_behaviors[id];
+            if (m_behaviors.ContainsKey(typeof(T)))
+                return (T)m_behaviors[typeof(T)];
             return null;
         }
 
@@ -94,7 +88,7 @@ namespace Core
 
         void RetranslateEndOfLoopEvent()
         {
-            ((Chain<Tick.Event>)m_chains[Tick.s_chainName])
+            ((Chain<Tick.Event>)Tick.chain.Path(this))
                 .Pass(new Tick.Event { actor = this });
         }
         void StartMonitoringEvents()
@@ -145,6 +139,10 @@ namespace Core
             m_world.m_grid.Reset(this);
         }
 
+        IProvidesChain IProvideBehavior.GetBehavior<T>()
+        {
+            return GetBehavior<T>();
+        }
     }
 
     public interface IEntityFactory
@@ -152,11 +150,11 @@ namespace Core
         public Entity Instantiate();
         public void AddBehavior<Beh>(BehaviorConfig conf)
             where Beh : Behavior;
-        public void AddRetoucher(Retoucher retoucher);
+        public void RetouchAndSave(Retoucher retoucher);
         public bool IsRetouched(Retoucher retoucher);
     }
 
-    public class EntityFactory<T> : IEntityFactory
+    public class EntityFactory<T> : IEntityFactory, IProvideBehavior
         where T : Entity, new()
     {
         static IdGenerator s_idGenerator = new IdGenerator();
@@ -165,14 +163,11 @@ namespace Core
 
         public EntityFactory()
         {
-            m_chainTemplates.Add(Tick.s_chainName, new ChainTemplate<Tick.Event>());
+            AddBehavior<Tick>();
         }
 
-        protected Dictionary<string, IChainTemplate> m_chainTemplates =
-            new Dictionary<string, IChainTemplate>();
-
-        protected List<(BehaviorFactory, BehaviorConfig)> m_behaviorSettings =
-            new List<(BehaviorFactory, BehaviorConfig)>();
+        protected Dictionary<System.Type, (BehaviorFactory, BehaviorConfig)> m_behaviorSettings =
+            new Dictionary<System.Type, (BehaviorFactory, BehaviorConfig)>();
 
         protected Dictionary<int, Retoucher> m_retouchers =
             new Dictionary<int, Retoucher>();
@@ -180,20 +175,15 @@ namespace Core
         public void AddBehavior<Beh>(BehaviorConfig conf = null)
             where Beh : Behavior
         {
+            System.Console.WriteLine($"Adding behavior of type: {typeof(Beh).Name}");
             var factory = new BehaviorFactory<Beh>();
-            m_behaviorSettings.Add((factory, conf));
-            foreach (var (name, template) in factory.templates)
-                m_chainTemplates.Add(name, template);
+            m_behaviorSettings.Add(typeof(Beh), (factory, conf));
         }
 
-        public void AddRetoucher(Retoucher retoucher)
+        public void RetouchAndSave(Retoucher retoucher)
         {
             m_retouchers.Add(retoucher.id, retoucher);
-            foreach (var cd in retoucher.chainDefinitions)
-            {
-                foreach (var handler in cd.handlers)
-                    m_chainTemplates[cd.name].AddHandler(handler.Clone());
-            }
+            retoucher.Retouch(this);
         }
 
         public bool IsRetouched(Retoucher retoucher)
@@ -204,19 +194,19 @@ namespace Core
         public Entity Instantiate()
         {
             Entity entity = new T();
-            // Add all the chains
-            foreach (var (key, template) in m_chainTemplates)
-            {
-                entity.m_chains[key] = template.Init();
-            }
             // Instantiate and save behaviors
-            foreach (var (behaviorFactory, conf) in m_behaviorSettings)
+            foreach (var (t, (behaviorFactory, conf)) in m_behaviorSettings)
             {
                 var behavior = behaviorFactory.Instantiate(entity, conf);
-                entity.m_behaviors[behaviorFactory.id] = behavior;
+                entity.m_behaviors[t] = behavior;
             }
             InitEvent?.Invoke(entity);
             return entity;
+        }
+
+        public IProvidesChain GetBehavior<T1>() where T1 : Behavior
+        {
+            return (IProvidesChain)m_behaviorSettings[typeof(T1)].Item1;
         }
     }
 }

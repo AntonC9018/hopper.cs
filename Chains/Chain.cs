@@ -4,13 +4,19 @@ using MyLinkedList;
 
 namespace Chains
 {
+    public interface ICanAddHandlers<Event> where Event : EventBase
+    {
+        public void AddHandler(EvHandler<Event> handler);
+    }
+
     public enum PRIORITY_RANKS
     {
         HIGHEST = 4,
         HIGH = 3,
         MEDIUM = 2,
         LOW = 1,
-        LOWEST = 0
+        LOWEST = 0,
+        DEFAULT = MEDIUM
     }
     public class EventBase
     {
@@ -37,7 +43,7 @@ namespace Chains
         {
         }
 
-        public EvHandler(System.Action<Event> handlerFunc, PRIORITY_RANKS priority = PRIORITY_RANKS.MEDIUM)
+        public EvHandler(System.Action<Event> handlerFunc, PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
         {
             handlerFunction = handlerFunc;
             this.priority = (int)priority;
@@ -49,7 +55,7 @@ namespace Chains
         }
     }
 
-    public abstract class IChain
+    public abstract class Chain
     {
         const int NUM_PRIORITY_RANKS = (int)PRIORITY_RANKS.HIGHEST + 1;
         const int PRIORITY_STEP = 5;
@@ -66,11 +72,11 @@ namespace Chains
         public MyListNode<IEvHandler> AddHandler<T>(
             System.Action<T> handlerFunction) where T : EventBase
         {
-            return AddHandler(
+            return Add(
                 new EvHandler<T>(handlerFunction));
         }
 
-        public MyListNode<IEvHandler> AddHandler(IEvHandler handler)
+        public MyListNode<IEvHandler> Add(IEvHandler handler)
         {
             b_dirty = true;
             m_handlers.AddFront(handler);
@@ -117,7 +123,7 @@ namespace Chains
         }
     }
 
-    public class Chain<Event> : IChain where Event : EventBase
+    public class Chain<Event> : Chain, ICanAddHandlers<Event> where Event : EventBase
     {
         public Chain()
         {
@@ -129,6 +135,16 @@ namespace Chains
         {
             m_handlers = list;
             b_dirty = false;
+        }
+
+        public MyListNode<IEvHandler> AddWithHandle(EvHandler<Event> handler)
+        {
+            return base.Add(handler);
+        }
+
+        public void AddHandler(EvHandler<Event> handler)
+        {
+            base.Add(handler);
         }
 
         public void Pass(Event ev)

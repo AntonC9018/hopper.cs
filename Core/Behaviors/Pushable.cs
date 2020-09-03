@@ -18,7 +18,7 @@ namespace Core.Behaviors
             return s_indexSourceNameMap.Count - 1;
         }
 
-        static Pushable()
+        static void SetupStats()
         {
             Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
@@ -55,13 +55,9 @@ namespace Core.Behaviors
 
         public static string s_checkChainName = "pushed:check";
         public static string s_doChainName = "pushed:do";
-        Chain<Event> chain_checkPushed;
-        Chain<Event> chain_bePushed;
 
         public Pushable(Entity entity)
         {
-            chain_checkPushed = (Chain<Event>)entity.m_chains[s_checkChainName];
-            chain_bePushed = (Chain<Event>)entity.m_chains[s_doChainName];
         }
 
         public bool Activate(Entity actor, Action action, ActivationParams pars = null)
@@ -72,14 +68,8 @@ namespace Core.Behaviors
                 action = action,
                 push = ((Params)pars).push
             };
+            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
 
-            chain_checkPushed.Pass(ev);
-
-            if (!ev.propagate)
-                return false;
-
-            chain_bePushed.Pass(ev);
-            return true;
         }
 
         static void SetResistance(Event ev)
@@ -111,22 +101,27 @@ namespace Core.Behaviors
             var pars = new Displaceable.Params { move = move };
             ev.entity.GetBehavior<Displaceable>().Activate(ev.actor, ev.action, pars);
         }
-        public static void SetupChainTemplates(BehaviorFactory<Pushable> fact)
+
+        public static ChainPath<Pushable, Event> check_chain;
+        public static ChainPath<Pushable, Event> do_chain;
+        static Pushable()
         {
-            var check = fact.AddTemplate<Event>(s_checkChainName);
-            var setBaseHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
-            var resistSourceHandler = new EvHandler<Event>(ResistSource, PRIORITY_RANKS.HIGH);
-            var armorHandler = new EvHandler<Event>(Armor, PRIORITY_RANKS.HIGH);
-            check.AddHandler(setBaseHandler);
-            check.AddHandler(resistSourceHandler);
-            check.AddHandler(armorHandler);
+            var builder = new ChainTemplateBuilder();
 
-            var _do = fact.AddTemplate<Event>(s_doChainName);
-            var pushedHandler = new EvHandler<Event>(BePushed);
-            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.pushed_do));
-            _do.AddHandler(pushedHandler);
-            _do.AddHandler(addEventHandler);
+            var check = builder.AddTemplate<Event>(s_checkChainName);
+            check_chain = new ChainPath<Pushable, Event>(s_checkChainName);
+            check.AddHandler(SetResistance, PRIORITY_RANKS.HIGH);
+            check.AddHandler(ResistSource, PRIORITY_RANKS.HIGH);
+            check.AddHandler(Armor, PRIORITY_RANKS.HIGH);
+
+            var _do = builder.AddTemplate<Event>(s_doChainName);
+            do_chain = new ChainPath<Pushable, Event>(s_checkChainName);
+            _do.AddHandler(BePushed);
+            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
+
+            BehaviorFactory<Pushable>.s_builder = builder;
+
+            SetupStats();
         }
-
     }
 }

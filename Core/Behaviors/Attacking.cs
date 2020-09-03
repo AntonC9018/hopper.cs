@@ -8,7 +8,7 @@ namespace Core.Behaviors
     public class Attacking : Behavior, IStandartActivateable
     {
 
-        static Attacking()
+        static void SetupStats()
         {
             Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
@@ -60,13 +60,9 @@ namespace Core.Behaviors
         }
         public static string s_checkChainName = "attack:check";
         public static string s_doChainName = "attack:do";
-        Chain<Event> chain_checkAttack;
-        Chain<Event> chain_doAttack;
 
         public Attacking(Entity entity)
         {
-            chain_checkAttack = (Chain<Event>)entity.m_chains[s_checkChainName];
-            chain_doAttack = (Chain<Event>)entity.m_chains[s_doChainName];
         }
 
         public List<Target> GenerateTargets(Event e)
@@ -94,15 +90,8 @@ namespace Core.Behaviors
                 actor = actor,
                 action = action
             };
+            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
 
-            chain_checkAttack.Pass(ev);
-
-            if (!ev.propagate)
-                return false;
-
-            chain_doAttack.Pass(ev);
-
-            return true;
         }
 
         static void SetBase(Event ev)
@@ -159,22 +148,27 @@ namespace Core.Behaviors
             }
         }
 
-        public static void SetupChainTemplates(BehaviorFactory<Attacking> fact)
+
+        public static ChainPath<Attacking, Event> check_chain;
+        public static ChainPath<Attacking, Event> do_chain;
+
+        static Attacking()
         {
-            var check = fact.AddTemplate<Event>(s_checkChainName);
-            var setBaseHandler = new EvHandler<Event>(SetBase, PRIORITY_RANKS.HIGH);
-            var getTargetsHandler = new EvHandler<Event>(GetTargets, PRIORITY_RANKS.MEDIUM);
-            check.AddHandler(setBaseHandler);
-            check.AddHandler(getTargetsHandler);
+            var builder = new ChainTemplateBuilder();
 
-            var _do = fact.AddTemplate<Event>(s_doChainName);
-            var applyAttackHandler = new EvHandler<Event>(ApplyAttack);
-            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacking_do));
-            _do.AddHandler(applyAttackHandler);
-            _do.AddHandler(addEventHandler);
+            var check = builder.AddTemplate<Event>(s_checkChainName);
+            check_chain = new ChainPath<Attacking, Event>(s_checkChainName);
+            check.AddHandler(SetBase, PRIORITY_RANKS.HIGH);
+            check.AddHandler(GetTargets, PRIORITY_RANKS.MEDIUM);
+
+            var _do = builder.AddTemplate<Event>(s_doChainName);
+            do_chain = new ChainPath<Attacking, Event>(s_checkChainName);
+            _do.AddHandler(ApplyAttack);
+            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do));
+
+            BehaviorFactory<Attacking>.s_builder = builder;
+
+            SetupStats();
         }
-
-
-
     }
 }

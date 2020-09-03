@@ -29,7 +29,7 @@ namespace Core.Behaviors
 
         public static int BasicAttackSource = 0;
 
-        static Attackable()
+        static void SetupStats()
         {
             Directory baseDir = StatManager.s_defaultFS.BaseDir;
 
@@ -73,16 +73,10 @@ namespace Core.Behaviors
         public static string s_checkChainName = "attacked:check";
         public static string s_doChainName = "attacked:do";
         public static string s_conditionChainName = "attacked:condition";
-        Chain<Event> chain_checkAttacked;
-        Chain<Event> chain_beAttacked;
-        Chain<AttackablenessEvent> chain_getAttackableness;
         Entity m_entity;
 
         public Attackable(Entity entity)
         {
-            chain_checkAttacked = (Chain<Event>)entity.m_chains[s_checkChainName];
-            chain_beAttacked = (Chain<Event>)entity.m_chains[s_doChainName];
-            chain_getAttackableness = (Chain<AttackablenessEvent>)entity.m_chains[s_conditionChainName];
             m_entity = entity;
         }
 
@@ -94,13 +88,7 @@ namespace Core.Behaviors
                 action = action,
                 attack = ((Params)pars).attack
             };
-            chain_checkAttacked.Pass(ev);
-
-            if (!ev.propagate)
-                return false;
-
-            chain_beAttacked.Pass(ev);
-            return true;
+            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
         }
 
         static void SetResistance(Event ev)
@@ -147,34 +135,41 @@ namespace Core.Behaviors
                 actor = this.m_entity,
                 attackingEvent = attackingEvent
             };
-            chain_getAttackableness.Pass(ev);
+            GetChain<AttackablenessEvent>(s_conditionChainName).Pass(ev);
             return ev.attackableness;
         }
 
-        public static void SetupChainTemplates(BehaviorFactory<Attackable> fact)
+        public static ChainPath<Attackable, Event> check_chain;
+        public static ChainPath<Attackable, Event> do_chain;
+        public static ChainPath<Attackable, AttackablenessEvent> condition_chain;
+
+        static Attackable()
         {
-            var check = fact.AddTemplate<Event>(s_checkChainName);
-            var setResitanceHandler = new EvHandler<Event>(SetResistance, PRIORITY_RANKS.HIGH);
-            var resistRourceHandler = new EvHandler<Event>(ResistSource, PRIORITY_RANKS.LOW);
-            var armorHandler = new EvHandler<Event>(Armor, PRIORITY_RANKS.LOW);
+            var builder = new ChainTemplateBuilder();
+
+            var check = builder.AddTemplate<Event>(s_checkChainName);
+            check_chain = new ChainPath<Attackable, Event>(s_checkChainName);
             // this can be cleaned up by using lambdas
             // this way we would eliminate the need of static methods
             // i.e. e => e.actor.beh_Attackable.MethodName(e)
             // or, even better, wrap it in a method Wrap(func, id) and call it as
             // Wrap(func, s_factory.id)
-            check.AddHandler(setResitanceHandler);
-            check.AddHandler(resistRourceHandler);
-            check.AddHandler(armorHandler);
+            check.AddHandler(SetResistance, PRIORITY_RANKS.HIGH);
+            check.AddHandler(ResistSource, PRIORITY_RANKS.LOW);
+            check.AddHandler(Armor, PRIORITY_RANKS.LOW);
 
-            var _do = fact.AddTemplate<Event>(s_doChainName);
-            var takeHitHandler = new EvHandler<Event>(TakeHit);
-            var addEventHandler = new EvHandler<Event>(Utils.AddHistoryEvent(History.EventCode.attacked_do));
-            _do.AddHandler(takeHitHandler);
-            _do.AddHandler(addEventHandler);
+            var _do = builder.AddTemplate<Event>(s_doChainName);
+            do_chain = new ChainPath<Attackable, Event>(s_doChainName);
+            _do.AddHandler(TakeHit);
+            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacked_do));
 
-            var condition = fact.AddTemplate<AttackablenessEvent>(s_conditionChainName);
+            var condition = builder.AddTemplate<AttackablenessEvent>(s_conditionChainName);
+            condition_chain = new ChainPath<Attackable, AttackablenessEvent>(s_conditionChainName);
+
+            BehaviorFactory<Attackable>.s_builder = builder;
+
+            SetupStats();
         }
-
 
     }
 }

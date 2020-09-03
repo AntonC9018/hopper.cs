@@ -1,3 +1,4 @@
+using System;
 using Chains;
 
 namespace Core
@@ -6,38 +7,46 @@ namespace Core
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        public ChainDef[] chainDefinitions;
+        IChainDef[] m_chainDefinitions;
 
-        public Retoucher(ChainDef[] chainDefinitions)
+        public Retoucher(IChainDef[] chainDefinitions)
         {
-            this.chainDefinitions = chainDefinitions;
+            this.m_chainDefinitions = chainDefinitions;
         }
 
-        public Retoucher(ChainDef chainDefinitions)
+        public Retoucher(IChainDef chainDefinitions)
         {
-            this.chainDefinitions = new ChainDef[] { chainDefinitions };
+            this.m_chainDefinitions = new IChainDef[] { chainDefinitions };
         }
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Retoucher SingleHandlered<T>(
-            string name,
+            System.Func<IProvideBehavior, ICanAddHandlers<T>> path,
             System.Action<T> handler,
-            PRIORITY_RANKS priority = PRIORITY_RANKS.MEDIUM)
+            PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
             where T : EventBase
         {
             return new Retoucher(
-                new ChainDef[]
+                new IChainDef[]
                 {
-                    new ChainDef
+                    new IChainDef<T>
                     {
-                        name = name,
-                        handlers = new IEvHandler[]
+                        path = path,
+                        handlers = new EvHandler<T>[]
                         {
                             new EvHandler<T>(handler, priority)
                         }
                     }
                 }
             );
+        }
+
+        internal void Retouch(IProvideBehavior entityFactory)
+        {
+            foreach (var def in m_chainDefinitions)
+            {
+                def.AddHandlersTo(entityFactory);
+            }
         }
     }
 }

@@ -41,10 +41,10 @@ namespace Hopper
             };
 
             playerFactory.AddBehavior<Acting>(playerActingConf);
-            playerFactory.AddRetoucher(Core.Retouchers.Skip.EmptyAttack);
+            playerFactory.RetouchAndSave(Core.Retouchers.Skip.EmptyAttack);
 
             // this one's for the equip demo
-            playerFactory.AddRetoucher(Core.Retouchers.Equip.OnDisplace);
+            playerFactory.RetouchAndSave(Core.Retouchers.Equip.OnDisplace);
 
 
             var enemyFactory = new EntityFactory<Entity>();
@@ -211,7 +211,7 @@ namespace Hopper
             inventory.AddContainer(0, cyclicContainer);
 
             var tinker = Tinker<TinkerData>.SingleHandlered<Attacking.Event>(
-                Attacking.s_checkChainName,
+                Attacking.check_chain.Path,
                 e => System.Console.WriteLine("Hello from tinker applied by item")
             );
             var item = new TinkerItem(tinker, 0);
@@ -264,7 +264,7 @@ namespace Hopper
             var cyclicContainer2 = new CyclicItemContainer(1);
             inventory.AddContainer(1, cyclicContainer);
 
-            var chainDefs2 = new ChainDef[0];
+            var chainDefs2 = new IChainDef[0];
             var tinker2 = new Tinker<TinkerData>(chainDefs2);
             var item2 = new TinkerItem(tinker2, 1);
 
@@ -330,7 +330,7 @@ namespace Hopper
             System.Console.WriteLine($"Tinker says that i = {data.i}");
         }
         public static Tinker<TestTinkerData> tinker = Tinker<TestTinkerData>
-            .SingleHandlered<Displaceable.Event>(Displaceable.s_doChainName, TestMethod1);
+            .SingleHandlered<Displaceable.Event>(Displaceable.do_chain.Path, TestMethod1);
     }
 
     public static class TestStatusTinkerStuff
@@ -341,7 +341,7 @@ namespace Hopper
             System.Console.WriteLine($"Tinker says that amount = {flavor.amount}");
         }
         public static Tinker<FlavorTinkerData> tinker = Tinker<FlavorTinkerData>
-            .SingleHandlered<Acting.Event>(Acting.s_checkChainName, TestMethod1);
+            .SingleHandlered<Acting.Event>(Acting.check_chain.Path, TestMethod1);
         public static Status<FlavorTinkerData> status =
             new Status<FlavorTinkerData>(tinker);
     }

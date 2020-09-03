@@ -127,7 +127,7 @@ namespace Core
                 return;
             }
             var node = (StatFileContainer)GetNode(modifier.path);
-            var handle = node.chain.AddHandler(modifier.handler);
+            var handle = node.chain.AddWithHandle(modifier.handler);
             m_chainModifierHandles[modifier] = handle;
             m_modifierCounts[modifier] = 0;
         }
