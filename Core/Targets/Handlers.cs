@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Chains;
-using Core;
-using MyLinkedList;
 using Core.Behaviors;
 
 namespace Core.Weapon
@@ -23,13 +21,13 @@ namespace Core.Weapon
             }
         }
 
-        public static void TakeFirstNotSkip(TargetEvent<Weapon.AtkTarget> weaponEvent)
+        public static void TakeFirstNotSkip(TargetEvent<AtkTarget> weaponEvent)
         {
             if (weaponEvent.targets.Count == 0)
                 return;
 
             // take first that doesn't have low priority
-            Weapon.AtkTarget first = weaponEvent.targets.Find(
+            AtkTarget first = weaponEvent.targets.Find(
                 t => t.atkCondition != AtkCondition.SKIP);
 
             // if all have low priority, take the first one
@@ -65,13 +63,13 @@ namespace Core.Weapon
             return !targets.Any(t => reach.Contains(t.index));
         }
 
-        public static void DiscardNotClose(TargetEvent<Weapon.AtkTarget> weaponEvent)
+        public static void DiscardNotClose(TargetEvent<AtkTarget> weaponEvent)
         {
             weaponEvent.targets = weaponEvent.targets
                 .FilterFromIndex(t => t.atkCondition != AtkCondition.IF_NEXT_TO, 1);
         }
 
-        public static void DiscardUnattackable(TargetEvent<Weapon.AtkTarget> weaponEvent)
+        public static void DiscardUnattackable(TargetEvent<AtkTarget> weaponEvent)
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => t.atkCondition != AtkCondition.NEVER);
@@ -84,37 +82,53 @@ namespace Core.Weapon
                 .Where(t => t.entity != null);
         }
 
-        public static void KeepAttackable(TargetEvent<Weapon.AtkTarget> weaponEvent)
+        public static void KeepAttackable(TargetEvent<AtkTarget> weaponEvent)
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => t.atkCondition == AtkCondition.ALWAYS
                          || t.atkCondition == AtkCondition.IF_NEXT_TO);
         }
 
-        public static Chain<TargetEvent<Weapon.AtkTarget>> GeneralChain;
+        public static void StopNoFirst(TargetEvent<DigTarget> digEvent)
+        {
+            if (digEvent.targets[0].entity == null)
+            {
+                digEvent.targets.Clear();
+                digEvent.propagate = false;
+            }
+        }
+
+
+        public static Chain<TargetEvent<AtkTarget>> GeneralChain;
+        public static Chain<TargetEvent<DigTarget>> DigChain;
+
 
         static Handlers()
         {
-            var list = new List<System.Action<TargetEvent<Weapon.AtkTarget>>>{
+            var generalHandlers = new List<System.Action<TargetEvent<AtkTarget>>>{
                 DiscardNoEntity,
                 NextToAny,
                 DiscardUnreachable,
                 DiscardUnattackable,
                 DiscardNotClose,
-                TakeFirstNotSkip
+                TakeFirstNotSkip,
             };
-            GeneralChain = new Chain<TargetEvent<Weapon.AtkTarget>>();
-            foreach (var func in list)
+            GeneralChain = new Chain<TargetEvent<AtkTarget>>();
+            foreach (var func in generalHandlers)
             {
-                GeneralChain.AddHandler(new EvHandler<TargetEvent<Weapon.AtkTarget>>(func));
+                GeneralChain.AddHandler(func);
             }
 
-            // GeneralChain.AddHandler(new EvHandler<Weapon<Weapon.AtkTarget>.Event>(DiscardNoEntity));
-            // GeneralChain.AddHandler(new EvHandler<Weapon<Weapon.AtkTarget>.Event>(NextToAny));
-            // GeneralChain.AddHandler(new EvHandler<Weapon<Weapon.AtkTarget>.Event>(DiscardUnreachable));
-            // GeneralChain.AddHandler(new EvHandler<Weapon<Weapon.AtkTarget>.Event>(DiscardUnattackable));
-            // GeneralChain.AddHandler(new EvHandler<Weapon<Weapon.AtkTarget>.Event>(DiscardNotClose));
-            // GeneralChain.AddHandler(new EvHandler<Weapon<Weapon.AtkTarget>.Event>(TakeFirstNotSkip));
+            var digHandlers = new List<System.Action<TargetEvent<DigTarget>>>
+            {
+                StopNoFirst,
+                DiscardNoEntity,
+            };
+            DigChain = new Chain<TargetEvent<DigTarget>>();
+            foreach (var func in digHandlers)
+            {
+                DigChain.AddHandler(func);
+            }
         }
     }
 }

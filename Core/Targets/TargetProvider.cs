@@ -5,73 +5,6 @@ using Core.Behaviors;
 
 namespace Core.Weapon
 {
-    public class Piece
-    {
-        public IntVector2 pos;
-        public IntVector2 dir;
-        // null is no checking required
-        // empty list to check all previous indeces
-        // list of indices to check the specified indeces
-        public List<int> reach;
-        public Piece Rotate(double angle)
-        {
-            return new Piece
-            {
-                pos = pos.Rotate(angle),
-                dir = dir.Rotate(angle),
-                reach = reach
-            };
-        }
-    }
-    public abstract class Target
-    {
-        public int index;
-        public Piece initialPiece;
-        public Entity entity;
-        public IntVector2 direction;
-
-        public virtual void CalculateCondition(CommonEvent ev)
-        { }
-    }
-    public class AtkTarget : Target
-    {
-        public AtkCondition atkCondition;
-
-        public override void CalculateCondition(CommonEvent ev)
-        {
-            if (ev.GetType() != typeof(Attacking.Event))
-            {
-                throw new System.Exception("Expected event type to be Attacking.Event");
-            }
-            if (entity != null)
-            {
-                var attackable = entity.GetBehavior<Attackable>();
-
-                atkCondition =
-                    attackable == null
-                        ? AtkCondition.NEVER
-                        // TODO: this requires action with the attack already set
-                        : attackable.GetAttackableness((Attacking.Event)ev);
-            }
-            else
-            {
-                atkCondition = AtkCondition.NEVER;
-            }
-        }
-    }
-
-
-
-    // static List<Piece> defaultPattern = new List<Piece>
-    // {
-    //     new Piece
-    //     {
-    //         pos = new IntVector2(1, 0),
-    //         dir = new IntVector2(1, 0),
-    //         reach = null
-    //     }
-    // };
-
     public class TargetEvent<T> : CommonEvent where T : Target
     {
         public List<T> targets;
@@ -79,16 +12,21 @@ namespace Core.Weapon
 
     public class TargetProvider<T> where T : Target, new()
     {
-        List<Piece> pattern;
-        Chain<TargetEvent<T>> chain;
-        System.Func<TargetEvent<T>, bool> stopFunc;
-        Layer attackedLayer = Layer.REAL | Layer.MISC | Layer.WALL;
+        private List<Piece> m_pattern;
+        private Chain<TargetEvent<T>> m_chain;
+        private System.Func<TargetEvent<T>, bool> m_stopFunc;
+        private Layer m_targetedLayer;
 
-        public TargetProvider(List<Piece> pattern, Chain<TargetEvent<T>> chain, System.Func<TargetEvent<T>, bool> stopFunc)
+        public TargetProvider(
+            List<Piece> pattern,
+            Chain<TargetEvent<T>> chain,
+            System.Func<TargetEvent<T>, bool> stopFunc,
+            Layer targetedLayer = Layer.REAL | Layer.MISC | Layer.WALL)
         {
-            this.pattern = pattern;
-            this.chain = chain;
-            this.stopFunc = stopFunc;
+            this.m_pattern = pattern;
+            this.m_chain = chain;
+            this.m_stopFunc = stopFunc;
+            this.m_targetedLayer = targetedLayer;
         }
 
         public List<T> GetTargets(CommonEvent commonEvent)
@@ -96,21 +34,20 @@ namespace Core.Weapon
             var targets = new List<T>();
             double angle = IntVector2.Right.AngleTo(commonEvent.action.direction);
 
-            for (int i = 0; i < this.pattern.Count; i++)
+            for (int i = 0; i < this.m_pattern.Count; i++)
             {
-                var piece = this.pattern[i].Rotate(angle);
+                var piece = this.m_pattern[i].Rotate(angle);
 
-                var pos = commonEvent.actor.m_pos + piece.pos;
-                var entity = commonEvent.actor.m_world.m_grid
-                    .GetCellAt(pos)
-                    .GetEntityFromLayer(attackedLayer);
+                var entity = commonEvent.actor
+                    .GetCellRelative(piece.pos)
+                    .GetEntityFromLayer(m_targetedLayer);
 
                 var target = new T
                 {
                     direction = piece.dir,
                     entity = entity,
                     index = i,
-                    initialPiece = this.pattern[i]
+                    initialPiece = this.m_pattern[i]
                 };
                 target.CalculateCondition(commonEvent);
                 targets.Add(target);
@@ -123,7 +60,7 @@ namespace Core.Weapon
                 action = commonEvent.action
             };
 
-            chain.Pass(ev, stopFunc);
+            m_chain.Pass(ev, m_stopFunc);
 
             return ev.targets;
         }
