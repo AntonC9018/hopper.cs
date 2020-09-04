@@ -11,7 +11,7 @@ namespace Core.Behaviors
 
         public static int RegisterPushSource(string name, int defaultResValue = 1)
         {
-            var sourceResFile = (ArrayFile)StatManager.s_defaultFS.GetFile("pushed/source_res");
+            var sourceResFile = (ArrayFile)StatManager.DefaultFS.GetFile("pushed/source_res");
             sourceResFile.content.Add(defaultResValue);
 
             s_indexSourceNameMap.Add(name);
@@ -20,7 +20,7 @@ namespace Core.Behaviors
 
         static void SetupStats()
         {
-            Directory baseDir = StatManager.s_defaultFS.BaseDir;
+            Directory baseDir = StatManager.DefaultFS.BaseDir;
 
             Directory pushDir = new Directory();
             StatFile sourceResFile = new ArrayFile();
@@ -56,20 +56,15 @@ namespace Core.Behaviors
         public static string s_checkChainName = "pushed:check";
         public static string s_doChainName = "pushed:do";
 
-        public Pushable(Entity entity)
-        {
-        }
-
-        public bool Activate(Entity actor, Action action, ActivationParams pars = null)
+        public bool Activate(Action action, Params pars)
         {
             var ev = new Event
             {
-                actor = actor,
+                actor = m_entity,
                 action = action,
-                push = ((Params)pars).push
+                push = pars.push
             };
             return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
-
         }
 
         static void SetResistance(Event ev)
@@ -99,7 +94,7 @@ namespace Core.Behaviors
             // TODO: set up properly
             var move = new Displaceable.Move();
             var pars = new Displaceable.Params { move = move };
-            ev.entity.GetBehavior<Displaceable>().Activate(ev.actor, ev.action, pars);
+            ev.entity.GetBehavior<Displaceable>().Activate(ev.action, pars);
         }
 
         public static ChainPaths<Pushable, Event> Check;

@@ -24,7 +24,7 @@ namespace Core
         public readonly Dictionary<System.Type, Behavior> m_behaviors =
             new Dictionary<System.Type, Behavior>();
 
-        public T GetBehavior<T>() where T : Behavior
+        public T GetBehavior<T>() where T : Behavior, new()
         {
             if (m_behaviors.ContainsKey(typeof(T)))
                 return (T)m_behaviors[typeof(T)];
@@ -144,7 +144,7 @@ namespace Core
     {
         public Entity Instantiate();
         public void AddBehavior<Beh>(BehaviorConfig conf)
-            where Beh : Behavior;
+            where Beh : Behavior, new();
         public void RetouchAndSave(Retoucher retoucher);
         public bool IsRetouched(Retoucher retoucher);
     }
@@ -168,9 +168,8 @@ namespace Core
             new Dictionary<int, Retoucher>();
 
         public void AddBehavior<Beh>(BehaviorConfig conf = null)
-            where Beh : Behavior
+            where Beh : Behavior, new()
         {
-            System.Console.WriteLine($"Adding behavior of type: {typeof(Beh).Name}");
             var factory = new BehaviorFactory<Beh>();
             m_behaviorSettings.Add(typeof(Beh), (factory, conf));
         }
@@ -199,7 +198,7 @@ namespace Core
             return entity;
         }
 
-        public BehaviorFactory<U> GetBehaviorFactory<U>() where U : Behavior
+        public BehaviorFactory<U> GetBehaviorFactory<U>() where U : Behavior, new()
         {
             return (BehaviorFactory<U>)m_behaviorSettings[typeof(U)].Item1;
         }

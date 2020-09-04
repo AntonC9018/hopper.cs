@@ -19,7 +19,7 @@ namespace Core.Behaviors
     }
 
     public class BehaviorFactory<Beh> : BehaviorFactory, IProvidesChainTemplate
-        where Beh : Behavior
+        where Beh : Behavior, new()
     {
         public static ChainTemplateBuilder s_builder;
 
@@ -43,16 +43,9 @@ namespace Core.Behaviors
 
         public override Behavior Instantiate(Entity entity, BehaviorConfig conf)
         {
-            Behavior behavior;
-            if (conf == null)
-            {
-                behavior = (Behavior)Activator.CreateInstance(typeof(Beh), entity);
-            }
-            else
-            {
-                behavior = (Behavior)Activator.CreateInstance(typeof(Beh), entity, conf);
-            }
+            Behavior behavior = new Beh();
             behavior.GenerateChains(m_templates);
+            behavior.Init(entity, conf);
             return behavior;
         }
 
@@ -61,6 +54,7 @@ namespace Core.Behaviors
     public abstract class Behavior : IProvidesChain
     {
         protected Dictionary<string, Chain> chains;
+        protected Entity m_entity;
 
         public void GenerateChains(Dictionary<string, ChainTemplate> templates)
         {
@@ -78,7 +72,8 @@ namespace Core.Behaviors
             return (Chain<Event>)chains[name];
         }
 
-        public bool CheckDoCycle<Event>(Event ev, string checkName, string doName) where Event : EventBase, new()
+        public bool CheckDoCycle<Event>(Event ev, string checkName, string doName)
+            where Event : EventBase, new()
         {
             GetChain<Event>(checkName).Pass(ev);
 
@@ -88,11 +83,16 @@ namespace Core.Behaviors
             GetChain<Event>(doName).Pass(ev);
             return true;
         }
+
+        public virtual void Init(Entity entity, BehaviorConfig config)
+        {
+            m_entity = entity;
+        }
     }
 
     public interface IStandartActivateable
     {
-        public bool Activate(Entity entity, Action action);
+        public bool Activate(Action action);
     }
 
     public abstract class BehaviorConfig

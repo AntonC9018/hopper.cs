@@ -11,7 +11,7 @@ namespace Core
 
     }
     public class BehaviorAction<T> : Action
-        where T : Behavior, IStandartActivateable
+        where T : Behavior, IStandartActivateable, new()
     {
         public override Action Copy()
         {
@@ -19,7 +19,7 @@ namespace Core
         }
         public override bool Do(Entity e)
         {
-            return ((T)e.GetBehavior<T>()).Activate(e, this);
+            return e.GetBehavior<T>().Activate(this);
         }
     }
     public class SimpleAction : Action

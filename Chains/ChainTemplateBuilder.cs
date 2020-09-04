@@ -22,7 +22,6 @@ namespace Chains
         {
             var template = new ChainTemplate<T>();
             m_templates.Add(name, template);
-            System.Console.WriteLine($"Adding {name}");
             return template;
         }
     }

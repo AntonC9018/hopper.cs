@@ -12,10 +12,6 @@ namespace Core.Behaviors
         }
 
         public static ChainPaths<Tick, Event> chain;
-        public Tick(Entity entity)
-        {
-
-        }
         static Tick()
         {
             var builder = new ChainTemplateBuilder();

@@ -25,9 +25,9 @@ namespace Core.Behaviors
         public Action CurrentAction
         { get { return m_sequence.CurrentAction; } }
 
-        public Sequential(Entity entity, BehaviorConfig _conf)
+        public override void Init(Entity entity, BehaviorConfig config)
         {
-            var conf = (Config)_conf;
+            var conf = (Config)config;
             m_sequence = new Sequence
             {
                 stepData = conf.stepData,

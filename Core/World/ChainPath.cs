@@ -5,11 +5,11 @@ namespace Core
 {
     public interface IProvideBehavior
     {
-        public T GetBehavior<T>() where T : Behavior;
+        public T GetBehavior<T>() where T : Behavior, new();
     }
     public interface IProvideBehaviorFactory
     {
-        public BehaviorFactory<T> GetBehaviorFactory<T>() where T : Behavior;
+        public BehaviorFactory<T> GetBehaviorFactory<T>() where T : Behavior, new();
     }
     public interface IProvidesChain
     {
@@ -20,7 +20,7 @@ namespace Core
         public ChainTemplate<Event> GetTemplate<Event>(string name) where Event : EventBase;
     }
     public class ChainPaths<Beh, Event>
-        where Beh : Behavior
+        where Beh : Behavior, new()
         where Event : EventBase
     {
         public string name;

@@ -88,7 +88,7 @@ namespace Core
     public class StatManager : FS<StatDir>
     {
         // contains either directories or files
-        public static FS<Directory> s_defaultFS = new FS<Directory>();
+        public static FS<Directory> DefaultFS = new FS<Directory>();
         public Dictionary<Modifier, int> m_modifierCounts
             = new Dictionary<Modifier, int>();
 
@@ -98,7 +98,7 @@ namespace Core
         // TODO: init with a base directory
         public StatManager()
         {
-            CopyDirectoryStructure(s_defaultFS.m_baseDir, m_baseDir);
+            CopyDirectoryStructure(DefaultFS.m_baseDir, m_baseDir);
         }
 
         public void AddStatModifier(StatModifier modifier)

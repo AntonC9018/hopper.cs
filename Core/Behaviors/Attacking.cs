@@ -10,7 +10,7 @@ namespace Core.Behaviors
 
         static void SetupStats()
         {
-            Directory baseDir = StatManager.s_defaultFS.BaseDir;
+            Directory baseDir = StatManager.DefaultFS.BaseDir;
 
             StatFile attackStatFile = new Attack
             {
@@ -61,10 +61,6 @@ namespace Core.Behaviors
         public static string s_checkChainName = "attack:check";
         public static string s_doChainName = "attack:do";
 
-        public Attacking(Entity entity)
-        {
-        }
-
         public List<Target> GenerateTargets(Event e)
         {
             var entity = e.actor
@@ -81,17 +77,16 @@ namespace Core.Behaviors
                 new Target { entity = entity, direction = e.action.direction }
             };
         }
-        public bool Activate(Entity actor, Action action) => Activate(actor, action, null);
-        public bool Activate(Entity actor, Action action, ActivationParams pars)
+        public bool Activate(Action action) => Activate(action, null);
+        public bool Activate(Action action, Params pars)
         {
             var ev = new Event
             {
-                targets = ((Params)pars)?.targets,
-                actor = actor,
+                targets = pars?.targets,
+                actor = m_entity,
                 action = action
             };
             return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
-
         }
 
         static void SetBase(Event ev)
@@ -126,7 +121,7 @@ namespace Core.Behaviors
                     attack = (Attack)ev.attack.Copy()
                 };
                 // let it throw if this has not been accounted for
-                attackable.Activate(target.entity, action, pars);
+                attackable.Activate(action, pars);
             }
         }
 
@@ -143,7 +138,7 @@ namespace Core.Behaviors
                     {
                         push = (Push)ev.push.Copy()
                     };
-                    pushable.Activate(target.entity, action, pars);
+                    pushable.Activate(action, pars);
                 }
             }
         }

@@ -7,8 +7,8 @@ namespace Core.Behaviors
     {
         public class Config : BehaviorConfig
         {
-            public System.Func<Entity, Action> calculateAction;
-            public System.Action<EventBase> doAction;
+            public System.Func<Entity, Action> CalculateAction;
+            public System.Action<EventBase> DoAction;
         }
         // TODO: refactor into integers. Map integers to strings if needed
         public static string s_checkChainName = "action:check";
@@ -18,18 +18,15 @@ namespace Core.Behaviors
         public bool b_doingAction = false;
         public bool b_didActionSucceed = false;
         public Action NextAction { get; set; }
-        Entity m_entity;
-        System.Func<Entity, Action> config_calculateAction;
-        System.Action<Event> config_doActionFunc;
+        System.Func<Entity, Action> config_CalculateAction;
+        System.Action<Event> config_DoActionFunc;
 
-
-        // this constructor shouldn't be enforced
-        // TODO: refactor in an init method
-        public Acting(Entity entity, Config conf)
+        public override void Init(Entity entity, BehaviorConfig conf)
         {
+            var config = (Config)conf;
             m_entity = entity;
-            config_calculateAction = conf.calculateAction;
-            config_doActionFunc = conf.doAction;
+            config_CalculateAction = config.CalculateAction;
+            config_DoActionFunc = config.DoAction;
             Tick.chain.ChainPath(entity).AddHandler(
                 e =>
                 {
@@ -67,7 +64,7 @@ namespace Core.Behaviors
             if (ev.propagate)
             {
                 ev.success = true;
-                config_doActionFunc(ev);
+                config_DoActionFunc(ev);
             }
 
             ev.propagate = true;
@@ -89,8 +86,8 @@ namespace Core.Behaviors
             if (NextAction != null)
                 return;
 
-            if (config_calculateAction != null)
-                NextAction = config_calculateAction(m_entity);
+            if (config_CalculateAction != null)
+                NextAction = config_CalculateAction(m_entity);
 
             // TODO: this should be e.g. the default value of this function
             else

@@ -9,7 +9,7 @@ namespace Core.Behaviors
     {
         static void SetupStats()
         {
-            var baseDir = StatManager.s_defaultFS.BaseDir;
+            var baseDir = StatManager.DefaultFS.BaseDir;
 
             var move = new Move
             {
@@ -40,20 +40,15 @@ namespace Core.Behaviors
         public static string s_checkChainName = "displaced:check";
         public static string s_doChainName = "displaced:do";
 
-        public Displaceable(Entity entity)
-        {
-        }
-
-        public bool Activate(Entity actor, Action action, ActivationParams pars = null)
+        public bool Activate(Action action, Params pars)
         {
             var ev = new Event
             {
-                actor = actor,
+                actor = m_entity,
                 action = action,
-                move = ((Params)pars).move
+                move = pars.move
             };
             return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
-
         }
 
         static void ConvertFromMove(Event ev)

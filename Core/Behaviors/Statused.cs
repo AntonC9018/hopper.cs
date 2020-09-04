@@ -13,7 +13,7 @@ namespace Core.Behaviors
 
         public static int RegisterStatus(string name, IStatus status, int defaultResValue = 1)
         {
-            var statusResFile = (ArrayFile)StatManager.s_defaultFS.GetFile("status_res");
+            var statusResFile = (ArrayFile)StatManager.DefaultFS.GetFile("status_res");
             statusResFile.content.Add(defaultResValue);
 
             s_indexStatusNameMap.Add(name);
@@ -23,7 +23,7 @@ namespace Core.Behaviors
 
         static void SetupStats()
         {
-            Directory baseDir = StatManager.s_defaultFS.BaseDir;
+            Directory baseDir = StatManager.DefaultFS.BaseDir;
             StatFile resFile = new ArrayFile();
             baseDir.AddFile("status_res", resFile);
         }
@@ -42,9 +42,8 @@ namespace Core.Behaviors
 
         public static string s_checkChainName = "statused:check";
         public static string s_doChainName = "statused:do";
-        Entity m_entity;
 
-        public Statused(Entity entity)
+        public override void Init(Entity entity, BehaviorConfig config)
         {
             m_entity = entity;
 
@@ -58,13 +57,13 @@ namespace Core.Behaviors
             );
         }
 
-        public bool Activate(Entity actor, Action action, ActivationParams pars)
+        public bool Activate(Action action, Params pars)
         {
             var ev = new Event
             {
                 actor = m_entity,
                 action = action,
-                flavors = ((Params)pars).flavors
+                flavors = pars.flavors
             };
             return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
         }

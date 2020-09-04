@@ -14,19 +14,14 @@ namespace Core.Behaviors
         public static string s_checkChainName = "move:check";
         public static string s_doChainName = "move:do";
 
-        public Moving(Entity entity)
-        {
-        }
-
-        public bool Activate(Entity actor, Action action)
+        public bool Activate(Action action)
         {
             var ev = new Event
             {
-                actor = actor,
+                actor = m_entity,
                 action = action
             };
             return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
-
         }
 
         static void SetBase(Event ev)
@@ -41,7 +36,7 @@ namespace Core.Behaviors
         static void Displace(Event ev)
         {
             var pars = new Displaceable.Params { move = ev.move };
-            ev.actor.GetBehavior<Displaceable>().Activate(ev.actor, ev.action, pars);
+            ev.actor.GetBehavior<Displaceable>().Activate(ev.action, pars);
         }
 
         public static ChainPaths<Moving, Event> Check;

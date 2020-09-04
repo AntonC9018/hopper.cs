@@ -20,7 +20,7 @@ namespace Core.Behaviors
 
         public static int RegisterAttackSource(string name, int defaultResValue = 1)
         {
-            var sourceResFile = (ArrayFile)StatManager.s_defaultFS.GetFile("attacked/source_res");
+            var sourceResFile = (ArrayFile)StatManager.DefaultFS.GetFile("attacked/source_res");
             sourceResFile.content.Add(defaultResValue);
 
             s_indexSourceNameMap.Add(name);
@@ -31,7 +31,7 @@ namespace Core.Behaviors
 
         static void SetupStats()
         {
-            Directory baseDir = StatManager.s_defaultFS.BaseDir;
+            Directory baseDir = StatManager.DefaultFS.BaseDir;
 
             Directory attackDir = new Directory();
             StatFile sourceResFile = new ArrayFile();
@@ -73,20 +73,14 @@ namespace Core.Behaviors
         public static string s_checkChainName = "attacked:check";
         public static string s_doChainName = "attacked:do";
         public static string s_conditionChainName = "attacked:condition";
-        Entity m_entity;
 
-        public Attackable(Entity entity)
-        {
-            m_entity = entity;
-        }
-
-        public bool Activate(Entity actor, Action action, ActivationParams pars)
+        public bool Activate(Action action, Params pars)
         {
             var ev = new Event
             {
                 actor = m_entity,
                 action = action,
-                attack = ((Params)pars).attack
+                attack = pars.attack
             };
             return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
         }

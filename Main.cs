@@ -37,7 +37,7 @@ namespace Hopper
 
             Acting.Config playerActingConf = new Acting.Config
             {
-                doAction = Algos.SimpleAlgo
+                DoAction = Algos.SimpleAlgo
             };
 
             playerFactory.AddBehavior<Acting>(playerActingConf);
@@ -57,7 +57,7 @@ namespace Hopper
 
             Acting.Config enemyActingConf = new Acting.Config
             {
-                doAction = Algos.EnemyAlgo
+                DoAction = Algos.EnemyAlgo
             };
 
             enemyFactory.AddBehavior<Acting>(enemyActingConf);
@@ -302,7 +302,7 @@ namespace Hopper
                 source = testStatusId
             };
             var statusedParams = new Statused.Params { flavors = new Flavor[] { flavor } };
-            player.GetBehavior<Statused>().Activate(player, null, statusedParams);
+            player.GetBehavior<Statused>().Activate(null, statusedParams);
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
             world.m_state.Loop();
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
