@@ -39,7 +39,7 @@ namespace Core
         }
         public Entity GetEntityFromLayer(Layer layer)
         {
-            return m_entities.FindLast(e => e.Layer == layer);
+            return m_entities.FindLast(e => (e.Layer & layer) != 0);
         }
 
         public void FireEnterEvent(Entity entity)

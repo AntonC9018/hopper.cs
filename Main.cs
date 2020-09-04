@@ -196,6 +196,7 @@ namespace Hopper
                 chain: Handlers.GeneralChain,
                 stopFunc: e => !e.propagate || e.targets.Count == 0
             );
+            System.Console.WriteLine($"Enemy is at {enemy.m_pos}");
             var ev = new Attacking.Event { actor = player, action = playerNextAction };
             var targets = weapon.GetTargets(ev);
             foreach (var t in targets)
