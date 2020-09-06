@@ -1,6 +1,6 @@
 using Vector;
 
-namespace Core.Weapon
+namespace Core.Targeting
 {
     public abstract class Target
     {

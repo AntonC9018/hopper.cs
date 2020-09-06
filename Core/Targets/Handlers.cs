@@ -3,11 +3,11 @@ using System.Linq;
 using Chains;
 using Core.Behaviors;
 
-namespace Core.Weapon
+namespace Core.Targeting
 {
     public static class Handlers
     {
-        public static void NextToAny(TargetEvent<Weapon.AtkTarget> weaponEvent)
+        public static void NextToAny(TargetEvent<Targeting.AtkTarget> weaponEvent)
         {
             var first = weaponEvent.targets[0];
             if (first.index == 0 && first.atkCondition != AtkCondition.NEVER)
@@ -39,14 +39,14 @@ namespace Core.Weapon
         }
 
         public static void DiscardUnreachable<T>(TargetEvent<T> weaponEvent)
-            where T : Weapon.Target
+            where T : Targeting.Target
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => CanReach(t, weaponEvent.targets));
         }
 
         public static bool CanReach<T>(T target, List<T> targets)
-            where T : Weapon.Target
+            where T : Targeting.Target
         {
             var reach = target.initialPiece.reach;
 
@@ -76,7 +76,7 @@ namespace Core.Weapon
         }
 
         public static void DiscardNoEntity<T>(TargetEvent<T> weaponEvent)
-            where T : Weapon.Target
+            where T : Targeting.Target
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => t.entity != null);

@@ -1,126 +1,61 @@
-// using Chains;
-// using System.Collections.Generic;
-// using Core.FS;
-// using Vector;
+using Chains;
+using System.Collections.Generic;
+using Core.FS;
+using Vector;
 
-// namespace Core.Behaviors
-// {
-//     public class Displaceable : Behavior
-//     {
-//         static Displaceable()
-//         {
-//             var baseDir = StatManager.s_defaultFS.BaseDir;
+namespace Core.Behaviors
+{
+    public class Template : Behavior
+    {
 
-//             var move = new Move
-//             {
-//                 power = 1,
-//                 through = 0
-//             };
+        public class Event : CommonEvent
+        {
+        }
 
-//             baseDir.AddFile("move", move);
-//         }
+        public class Params : ActivationParams
+        {
+        }
 
-//         public class Move : StatFile
-//         {
-//             public int power = 1;
-//             public int through = 0;
-//         }
+        public static string s_checkChainName = "template:check";
+        public static string s_doChainName = "template:do";
 
-//         public class Event : CommonEvent
-//         {
-//             public Entity entity;
-//             public Move move;
-//             public IntVector2 newPos;
-//         }
+        public bool Activate(Action action, Params pars)
+        {
+            var ev = new Event
+            {
+                actor = m_entity,
+                action = action,
+                // push = pars.push
+            };
+            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
+        }
 
-//         public class Params : ActivationParams
-//         {
-//             public Move move;
-//         }
+        static void HandlerFunction1(Event ev)
+        {
+        }
 
-//         Chain<Event> chain_checkDisplaced;
-//         Chain<Event> chain_beDisplaced;
+        static void HandlerFunction2(Event ev)
+        {
+        }
 
-//         public Displaceable(Entity entity)
-//         {
-//             chain_checkDisplaced = (Chain<Event>)entity.m_chains[Displaceable.s_checkChainName];
-//             chain_beDisplaced = (Chain<Event>)entity.m_chains[Displaceable.s_doChainName];
-//         }
+        public static ChainPaths<Template, Event> Check;
+        public static ChainPaths<Template, Event> Do;
+        static Template()
+        {
+            var builder = new ChainTemplateBuilder();
 
-//         public bool Activate(
-//             Entity actor,
-//             Action action,
-//             ActivationParams pars = null)
-//         {
-//             var ev = new Event
-//             {
-//                 actor = actor,
-//                 action = action,
-//                 move = ((Params)pars).move
-//             };
-//             chain_checkDisplaced.Pass(ev);
+            var check = builder.AddTemplate<Event>(s_checkChainName);
+            Check = new ChainPaths<Template, Event>(s_checkChainName);
+            check.AddHandler(HandlerFunction1, PRIORITY_RANKS.HIGH);
 
-//             if (!ev.propagate)
-//                 return false;
+            var _do = builder.AddTemplate<Event>(s_doChainName);
+            Do = new ChainPaths<Template, Event>(s_checkChainName);
+            _do.AddHandler(HandlerFunction2);
+            // _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
 
-//             chain_beDisplaced.Pass(ev);
-//             return true;
-//         }
+            BehaviorFactory<Template>.s_builder = builder;
 
-//         static void ConvertFromMove(Event ev)
-//         {
-//             int i = 1;
-//             for (; i < ev.move.power; i++)
-//             {
-//                 var cell = ev.actor.GetCellRelative(ev.action.direction * i);
-
-//                 if (cell == null || cell.GetEntityFromLayer(Layer.BLOCK) != null)
-//                 {
-//                     i--;
-//                     break;
-//                 }
-//             }
-//             ev.newPos = ev.actor.GetRelativePos(ev.action.direction * i);
-//         }
-
-//         static void Displace(Event ev)
-//         {
-//             ev.actor.RemoveFromGrid();
-//             ev.actor.m_pos = ev.newPos;
-//             ev.actor.ResetInGrid();
-//         }
-
-//         // I do hate the amount of boilerplate here
-//         // Since we want to have just one copy of this factory per class
-//         // I don't want to bloat my instances with copies of this
-//         public public static BehaviorFactory<Displaceable> s_factory = new BehaviorFactory<Displaceable>(
-//             new ChainDef[]
-//             {
-//                 new ChainDef<Event>
-//                 {
-//                     name = Displaceable.s_checkChainName,
-//                     handlers = new EvHandler<Event>[]
-//                     {
-//                         new EvHandler<Event>(
-//                             ConvertFromMove,
-//                             PRIORITY_RANKS.HIGH
-//                         )
-//                     }
-//                 },
-//                 new ChainDef<Event>
-//                 {
-//                     name = Displaceable.s_doChainName,
-//                     handlers = new EvHandler<Event>[]
-//                     {
-//                         new EvHandler<Event>(
-//                             Displace
-//                         ),
-//                         new EvHandler<Event>(
-//                             Utils.AddHistoryEvent(History.EventCode.displaced_do)
-//                         )
-//                     }
-//                 }
-//             }
-//         );
-//     }
-// }
+            // SetupStats();
+        }
+    }
+}

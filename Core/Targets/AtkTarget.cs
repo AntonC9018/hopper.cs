@@ -1,6 +1,6 @@
 using Core.Behaviors;
 
-namespace Core.Weapon
+namespace Core.Targeting
 {
     public class AtkTarget : Target
     {

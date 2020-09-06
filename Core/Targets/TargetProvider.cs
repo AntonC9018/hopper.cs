@@ -3,7 +3,7 @@ using Vector;
 using Chains;
 using Core.Behaviors;
 
-namespace Core.Weapon
+namespace Core.Targeting
 {
     public class TargetEvent<T> : CommonEvent where T : Target
     {

@@ -43,7 +43,6 @@ namespace Core.Behaviors
 
         public class Event : CommonEvent
         {
-            public Entity entity;
             public Attacking.Push push;
             public Resistance resistance;
         }
@@ -94,7 +93,7 @@ namespace Core.Behaviors
             // TODO: set up properly
             var move = new Displaceable.Move();
             var pars = new Displaceable.Params { move = move };
-            ev.entity.GetBehavior<Displaceable>().Activate(ev.action, pars);
+            ev.actor.GetBehavior<Displaceable>().Activate(ev.action, pars);
         }
 
         public static ChainPaths<Pushable, Event> Check;

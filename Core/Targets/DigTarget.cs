@@ -1,4 +1,4 @@
-namespace Core.Weapon
+namespace Core.Targeting
 {
     public class DigTarget : Target
     {

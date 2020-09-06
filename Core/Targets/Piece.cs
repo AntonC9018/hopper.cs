@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Vector;
 
-namespace Core.Weapon
+namespace Core.Targeting
 {
     public class Piece
     {

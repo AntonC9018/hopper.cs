@@ -4,7 +4,7 @@ using Chains;
 using Core;
 using Core.Items;
 using System.Linq;
-using Core.Weapon;
+using Core.Targeting;
 using Core.Behaviors;
 
 // Hello World! program
