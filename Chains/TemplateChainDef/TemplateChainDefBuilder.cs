@@ -11,10 +11,10 @@ namespace Chains
 
     public class TemplateChainDefBuilder<Event> : ITemplateChainDefBuilder where Event : EventBase
     {
-        public System.Func<IProvideBehaviorFactory, ChainTemplate<Event>> path;
+        public BehaviorFactoryPath<Event> path;
         public List<EvHandler<Event>> handlers;
 
-        public TemplateChainDefBuilder(System.Func<IProvideBehaviorFactory, ChainTemplate<Event>> path)
+        public TemplateChainDefBuilder(BehaviorFactoryPath<Event> path)
         {
             this.path = path;
             handlers = new List<EvHandler<Event>>();

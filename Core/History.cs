@@ -12,8 +12,8 @@ namespace Core
 
             public EntityState(Entity entity)
             {
-                pos = entity.m_pos;
-                orientation = entity.m_orientation;
+                pos = entity.Pos;
+                orientation = entity.Orientation;
             }
         }
 
@@ -55,7 +55,7 @@ namespace Core
                 stateAfter = state,
                 eventCode = eventCode
             };
-            eventsByPhase[entity.m_world.m_state.m_phase].Add(ev);
+            eventsByPhase[entity.World.m_state.m_phase].Add(ev);
         }
         public Event Find(System.Predicate<Event> pred)
         {

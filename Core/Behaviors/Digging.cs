@@ -2,6 +2,8 @@ using Chains;
 using System.Collections.Generic;
 using Core.FS;
 using Vector;
+using Core.Items.Shovel;
+using Core.Items;
 
 namespace Core.Behaviors
 {
@@ -67,12 +69,18 @@ namespace Core.Behaviors
         }
         static void SetDig(Event ev)
         {
-            ev.dig = (Dig)ev.actor.m_statManager.GetFile("dig");
+            ev.dig = (Dig)ev.actor.StatManager.GetFile("dig");
         }
 
         static void GetTargets(Event ev)
         {
-            // TODO: set targets via shovel
+            var inventory = ev.actor.Inventory;
+            if (inventory == null)
+                return;
+            var shovel = (IShovel)inventory.GetItemFromSlot(Inventory.s_shovelSlot);
+            if (shovel == null)
+                return;
+            ev.targets = shovel.GetTargets();
         }
 
         static void Attack(Event ev)

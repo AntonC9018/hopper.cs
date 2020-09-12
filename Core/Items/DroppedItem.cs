@@ -1,18 +1,18 @@
 using Vector;
 using Core;
+using System;
 
 namespace Core.Items
 {
     public class DroppedItem : Entity
     {
         public Item Item { get; set; }
-        public override Layer Layer { get => Layer.DROPPED; }
         public static EntityFactory<DroppedItem> s_factory
             = new EntityFactory<DroppedItem>();
+        public override Layer Layer => Layer.DROPPED;
 
-        static DroppedItem()
+        public DroppedItem() : base()
         {
-            // s_factory.AddBehavior(
         }
     }
 }

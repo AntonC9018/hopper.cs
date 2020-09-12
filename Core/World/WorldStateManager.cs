@@ -46,7 +46,7 @@ namespace Core
 
         void Activate(Entity entity)
         {
-            if (entity.b_isDead) return;
+            if (entity.IsDead) return;
             var acting = entity.GetBehavior<Acting>();
             if (acting != null && !acting.b_didAction)
             {

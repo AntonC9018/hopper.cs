@@ -68,12 +68,12 @@ namespace Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("pushed/res");
+            ev.resistance = (Resistance)ev.actor.StatManager.GetFile("pushed/res");
         }
 
         static void ResistSource(Event ev)
         {
-            var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("pushed/source_res");
+            var sourceRes = (ArrayFile)ev.actor.StatManager.GetFile("pushed/source_res");
             if (sourceRes[ev.push.source] > ev.push.power)
             {
                 ev.push.distance = 0;

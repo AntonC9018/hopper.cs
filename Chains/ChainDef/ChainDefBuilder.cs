@@ -10,10 +10,10 @@ namespace Chains
 
     public class ChainDefBuilder<Event> : IChainDefBuilder where Event : EventBase
     {
-        public System.Func<IProvideBehavior, Chain<Event>> path;
+        public BehaviorPath<Event> path;
         public List<EvHandler<Event>> handlers;
 
-        public ChainDefBuilder(System.Func<IProvideBehavior, Chain<Event>> path)
+        public ChainDefBuilder(BehaviorPath<Event> path)
         {
             this.path = path;
             handlers = new List<EvHandler<Event>>();

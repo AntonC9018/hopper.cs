@@ -34,7 +34,7 @@ namespace Core.Items
         public override void BeUnequipped(Entity entity)
         {
             entity.Untink(tinker);
-            entity.m_world.CreateDroppedItem(this, entity.m_pos);
+            entity.World.CreateDroppedItem(this, entity.Pos);
         }
     }
 
@@ -50,18 +50,18 @@ namespace Core.Items
 
         public override void BeDestroyed(Entity entity)
         {
-            entity.m_statManager.RemoveModifier(modifier);
+            entity.StatManager.RemoveModifier(modifier);
         }
 
         public override void BeEquipped(Entity entity)
         {
-            entity.m_statManager.AddModifier(modifier);
+            entity.StatManager.AddModifier(modifier);
         }
 
         public override void BeUnequipped(Entity entity)
         {
-            entity.m_statManager.RemoveModifier(modifier);
-            entity.m_world.CreateDroppedItem(this, entity.m_pos);
+            entity.StatManager.RemoveModifier(modifier);
+            entity.World.CreateDroppedItem(this, entity.Pos);
         }
     }
 }

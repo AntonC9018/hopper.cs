@@ -29,7 +29,7 @@ namespace Core.Behaviors
             if (ev.move == null)
             {
                 // TODO: set stats for move
-                ev.move = (Displaceable.Move)ev.actor.m_statManager.GetFile("move");
+                ev.move = (Displaceable.Move)ev.actor.StatManager.GetFile("move");
             }
         }
 

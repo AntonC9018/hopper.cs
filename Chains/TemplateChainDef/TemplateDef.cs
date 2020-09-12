@@ -3,6 +3,8 @@ using Handle = MyLinkedList.MyListNode<Chains.IEvHandler>;
 
 namespace Chains
 {
+    public delegate ChainTemplate<T> BehaviorFactoryPath<T>(IProvideBehaviorFactory factoryProvider)
+        where T : EventBase;
     public interface ITemplateChainDef
     {
         public void AddHandlersTo(IProvideBehaviorFactory entity);
@@ -10,7 +12,7 @@ namespace Chains
 
     public class TemplateChainDef<Event> : ITemplateChainDef where Event : EventBase
     {
-        public System.Func<IProvideBehaviorFactory, ChainTemplate<Event>> path;
+        public BehaviorFactoryPath<Event> path;
         public EvHandler<Event>[] handlers;
 
         public void AddHandlersTo(IProvideBehaviorFactory entityFactory)

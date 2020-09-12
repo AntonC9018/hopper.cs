@@ -93,11 +93,11 @@ namespace Core.Behaviors
         {
             if (ev.attack == null)
             {
-                ev.attack = (Attack)ev.actor.m_statManager.GetFile("attack");
+                ev.attack = (Attack)ev.actor.StatManager.GetFile("attack");
             }
             if (ev.push == null)
             {
-                ev.push = (Push)ev.actor.m_statManager.GetFile("push");
+                ev.push = (Push)ev.actor.StatManager.GetFile("push");
             }
         }
 

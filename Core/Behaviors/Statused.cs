@@ -70,7 +70,7 @@ namespace Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = (ArrayFile)ev.actor.m_statManager.GetFile("status_res");
+            ev.resistance = (ArrayFile)ev.actor.StatManager.GetFile("status_res");
         }
 
         static void ResistSomeStatuses(Event ev)

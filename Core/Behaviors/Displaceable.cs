@@ -65,14 +65,12 @@ namespace Core.Behaviors
             } while (i < ev.move.power);
             i--;
 
-            ev.newPos = ev.actor.GetRelativePos(ev.action.direction * i);
+            ev.newPos = ev.actor.GetPosRelative(ev.action.direction * i);
         }
 
         static void Displace(Event ev)
         {
-            ev.actor.RemoveFromGrid();
-            ev.actor.m_pos = ev.newPos;
-            ev.actor.ResetInGrid();
+            ev.actor.ResetPosInGrid(ev.newPos);
         }
 
         public static ChainPaths<Displaceable, Event> Check;

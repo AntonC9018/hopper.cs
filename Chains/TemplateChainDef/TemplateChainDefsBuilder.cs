@@ -7,7 +7,7 @@ namespace Chains
     public class TemplateChainDefsBuilder
     {
         List<ITemplateChainDefBuilder> defs = new List<ITemplateChainDefBuilder>();
-        public TemplateChainDefBuilder<T> AddDef<T>(System.Func<IProvideBehaviorFactory, ChainTemplate<T>> path)
+        public TemplateChainDefBuilder<T> AddDef<T>(BehaviorFactoryPath<T> path)
             where T : EventBase
         {
             var def = new TemplateChainDefBuilder<T>(path);

@@ -87,12 +87,12 @@ namespace Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = (Resistance)ev.actor.m_statManager.GetFile("attacked/res");
+            ev.resistance = (Resistance)ev.actor.StatManager.GetFile("attacked/res");
         }
 
         static void ResistSource(Event ev)
         {
-            var sourceRes = (ArrayFile)ev.actor.m_statManager.GetFile("attacked/source_res");
+            var sourceRes = (ArrayFile)ev.actor.StatManager.GetFile("attacked/source_res");
             if (sourceRes[ev.attack.source] > ev.attack.power)
                 ev.attack.damage = 0;
         }

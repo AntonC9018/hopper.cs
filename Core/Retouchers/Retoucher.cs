@@ -21,7 +21,7 @@ namespace Core
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Retoucher SingleHandlered<T>(
-            System.Func<IProvideBehaviorFactory, ChainTemplate<T>> path,
+            BehaviorFactoryPath<T> path,
             System.Action<T> handler,
             PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
             where T : EventBase

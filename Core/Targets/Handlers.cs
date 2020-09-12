@@ -102,7 +102,6 @@ namespace Core.Targeting
         public static Chain<TargetEvent<AtkTarget>> GeneralChain;
         public static Chain<TargetEvent<DigTarget>> DigChain;
 
-
         static Handlers()
         {
             var generalHandlers = new List<System.Action<TargetEvent<AtkTarget>>>{

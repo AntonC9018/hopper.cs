@@ -76,7 +76,7 @@ namespace Core
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Tinker<T> SingleHandlered<Event>(
-            System.Func<IProvideBehavior, Chain<Event>> path,
+            BehaviorPath<Event> path,
             System.Action<Event> handler,
             PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
             where Event : EventBase

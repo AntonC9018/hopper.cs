@@ -26,7 +26,7 @@ namespace Hopper
 
             int testStatusId = Statused.RegisterStatus("test", TestStatusTinkerStuff.status, 1);
 
-            var playerFactory = new EntityFactory<Entity>();
+            var playerFactory = new EntityFactory<Player>();
             playerFactory.AddBehavior<Attackable>();
             playerFactory.AddBehavior<Attacking>();
             playerFactory.AddBehavior<Displaceable>();
@@ -103,16 +103,16 @@ namespace Hopper
             System.Console.WriteLine("\n ------ Modifier Demo ------ \n");
 
             var mod = new StatModifier("attack", new Attacking.Attack { damage = 1 });
-            var attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
+            var attack = (Attacking.Attack)player.StatManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Adding modifier");
-            player.m_statManager.AddModifier(mod);
+            player.StatManager.AddModifier(mod);
             // attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Removing modifier");
-            player.m_statManager.RemoveModifier(mod);
+            player.StatManager.RemoveModifier(mod);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
@@ -124,14 +124,14 @@ namespace Hopper
                 })
             );
             System.Console.WriteLine("Adding modifier");
-            player.m_statManager.AddModifier(mod2);
-            attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
-            attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
+            player.StatManager.AddModifier(mod2);
+            attack = (Attacking.Attack)player.StatManager.GetFile("attack");
+            attack = (Attacking.Attack)player.StatManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Removing modifier");
-            player.m_statManager.RemoveChainModifier(mod2);
-            attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
+            player.StatManager.RemoveChainModifier(mod2);
+            attack = (Attacking.Attack)player.StatManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
@@ -196,17 +196,17 @@ namespace Hopper
                 chain: Handlers.GeneralChain,
                 stopFunc: e => !e.propagate || e.targets.Count == 0
             );
-            System.Console.WriteLine($"Enemy is at {enemy.m_pos}");
+            System.Console.WriteLine($"Enemy is at {enemy.Pos}");
             var ev = new Attacking.Event { actor = player, action = playerNextAction };
             var targets = weapon.GetTargets(ev);
             foreach (var t in targets)
             {
-                System.Console.WriteLine($"Entity at {t.entity.m_pos} has been considered a potential target");
+                System.Console.WriteLine($"Entity at {t.entity.Pos} has been considered a potential target");
             }
 
 
             System.Console.WriteLine("\n ------ Inventory Demo ------ \n");
-            var inventory = new Inventory(player);
+            var inventory = (Inventory)player.Inventory;
 
             var cyclicContainer = new CyclicItemContainer(1);
             inventory.AddContainer(0, cyclicContainer);
@@ -234,12 +234,12 @@ namespace Hopper
             // world.CreateDroppedItem(id, pos)
             inventory.DropExcess();
 
-            var entities = world.m_grid.GetCellAt(player.m_pos).m_entities;
+            var entities = world.m_grid.GetCellAt(player.Pos).m_entities;
             System.Console.WriteLine($"There's {entities.Count} entities in the cell where the player is standing");
 
             System.Console.WriteLine("\n ------ History Demo ------ \n");
-            var enemyEventsByPhases = enemy.m_history.Phases;
-            var playerEventsByPhases = player.m_history.Phases;
+            var enemyEventsByPhases = enemy.History.Phases;
+            var playerEventsByPhases = player.History.Phases;
             for (int i = 0; i < playerEventsByPhases.Length; i++)
             {
                 foreach (var historyEvent in enemyEventsByPhases[i])
@@ -254,13 +254,11 @@ namespace Hopper
 
             System.Console.WriteLine("\n ------ Equip on Displace Demo ------ \n");
             // we don't need the entity for the next test
-            enemy.b_isDead = true;
-            enemy.RemoveFromGrid();
+            enemy.Die();
 
             var playerMoveAction = moveAction.Copy();
             playerMoveAction.direction = IntVector2.Down;
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
-            player.Inventory = inventory;
 
             var cyclicContainer2 = new CyclicItemContainer(1);
             inventory.AddContainer(1, cyclicContainer);
@@ -269,7 +267,7 @@ namespace Hopper
             var tinker2 = new Tinker<TinkerData>(chainDefs2);
             var item2 = new TinkerItem(tinker2, 1);
 
-            var droppedItem2 = world.CreateDroppedItem(item2, player.m_pos + IntVector2.Down);
+            var droppedItem2 = world.CreateDroppedItem(item2, player.Pos + IntVector2.Down);
 
             /*
             this only works because we did
@@ -277,10 +275,10 @@ namespace Hopper
             up top.
             */
 
-            System.Console.WriteLine($"Player's position before moving: {player.m_pos}");
+            System.Console.WriteLine($"Player's position before moving: {player.Pos}");
             world.m_state.Loop();
-            System.Console.WriteLine($"Player's new position: {player.m_pos}");
-            System.Console.WriteLine($"There's {world.m_grid.GetCellAt(player.m_pos).m_entities.Count} entities in the cell where the player is standing");
+            System.Console.WriteLine($"Player's new position: {player.Pos}");
+            System.Console.WriteLine($"There's {world.m_grid.GetCellAt(player.Pos).m_entities.Count} entities in the cell where the player is standing");
 
 
             System.Console.WriteLine("\n ------ Tinker static reference Demo ------ \n");

@@ -40,7 +40,7 @@ namespace Core
 
         public void Reset(Entity entity)
         {
-            var cell = m_grid[entity.m_pos.x, entity.m_pos.y];
+            var cell = m_grid[entity.Pos.x, entity.Pos.y];
             cell.m_entities.Add(entity);
             cell.FireEnterEvent(entity);
         }
@@ -54,7 +54,7 @@ namespace Core
 
         public void Remove(Entity entity)
         {
-            var cell = m_grid[entity.m_pos.x, entity.m_pos.y];
+            var cell = m_grid[entity.Pos.x, entity.Pos.y];
             cell.m_entities.Remove(entity);
             cell.FireLeaveEvent(entity);
         }

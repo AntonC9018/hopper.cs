@@ -24,8 +24,7 @@ namespace Core.Retouchers
                     if (inv.CanEquipItem(droppedItem.Item))
                     {
                         // eventually, kill through an abstraction
-                        droppedItem.RemoveFromGrid();
-                        droppedItem.b_isDead = true;
+                        droppedItem.Die();
                         inv.Equip(droppedItem.Item);
                     }
                 }

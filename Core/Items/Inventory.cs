@@ -11,21 +11,25 @@ namespace Core.Items
         public void Unequip(Item item);
         public void DropExcess();
         public bool CanEquipItem(Item item);
+        public Item GetItemFromSlot(int slotId);
     }
     public class Inventory : IInventory
     {
-        Dictionary<int, IItemContainer> m_items;
+        public static int s_weaponSlot = 0;
+        public static int s_shovelSlot = 1;
+
+        Dictionary<int, IItemContainer> m_itemSlots;
         Entity m_actor;
 
         public Inventory(Entity entity)
         {
-            m_items = new Dictionary<int, IItemContainer>();
+            m_itemSlots = new Dictionary<int, IItemContainer>();
             m_actor = entity;
         }
 
         public void Equip(Item item)
         {
-            var container = m_items[item.slot];
+            var container = m_itemSlots[item.slot];
             container.Insert(item);
             item.BeEquipped(m_actor);
             System.Console.WriteLine($"Picked up an item with id = {item.id}");
@@ -33,7 +37,7 @@ namespace Core.Items
 
         public void Unequip(Item item)
         {
-            var container = m_items[item.slot];
+            var container = m_itemSlots[item.slot];
             container.Remove(item);
             item.BeUnequipped(m_actor);
             System.Console.WriteLine($"Dropped item with id = {item.id}");
@@ -41,7 +45,7 @@ namespace Core.Items
 
         public void DropExcess()
         {
-            foreach (var (slot, container) in m_items)
+            foreach (var (slot, container) in m_itemSlots)
             {
                 var excess = container.PullOutExcess();
                 foreach (Item item in excess)
@@ -54,12 +58,21 @@ namespace Core.Items
 
         public void AddContainer(int slotId, IItemContainer container)
         {
-            m_items[slotId] = container;
+            if (m_itemSlots.ContainsKey(slotId))
+            {
+                throw new System.Exception($"Container for key {slotId} has already been defined");
+            }
+            m_itemSlots[slotId] = container;
         }
 
         public bool CanEquipItem(Item item)
         {
-            return m_items.ContainsKey(item.slot);
+            return m_itemSlots.ContainsKey(item.slot);
+        }
+
+        public Item GetItemFromSlot(int slotId)
+        {
+            return m_itemSlots[slotId][0];
         }
     }
 
