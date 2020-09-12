@@ -13,18 +13,18 @@ namespace Core
     }
     public interface IProvidesChain
     {
-        public Chain<Event> GetChain<Event>(string name) where Event : EventBase;
+        public Chain<Event> GetChain<Event>(ChainName name) where Event : EventBase;
     }
     public interface IProvidesChainTemplate
     {
-        public ChainTemplate<Event> GetTemplate<Event>(string name) where Event : EventBase;
+        public ChainTemplate<Event> GetTemplate<Event>(ChainName name) where Event : EventBase;
     }
     public class ChainPaths<Beh, Event>
         where Beh : Behavior, new()
         where Event : EventBase
     {
-        public string name;
-        public ChainPaths(string _name)
+        public ChainName name;
+        public ChainPaths(ChainName _name)
         {
             name = _name;
         }
@@ -38,17 +38,4 @@ namespace Core
             return startingFrom.GetBehaviorFactory<Beh>().GetTemplate<Event>(name);
         }
     }
-
-    // public class ChainManager
-    // {
-    //     public List<
-    //     public void AddChain<Event> where Event : EventBase
-    //     {
-    //         return this;
-    //     }
-    //     public ICanAddHandlers<Event> GetChain<Event>(int id) where Event : EventBase
-    //     {
-    //         throw new System.NotImplementedException();
-    //     }
-    // }
 }

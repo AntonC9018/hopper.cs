@@ -13,8 +13,8 @@ namespace Core.Behaviors
         public int id;
         public static Dictionary<System.Type, int> s_idMap =
             new Dictionary<System.Type, int>();
-        protected Dictionary<string, ChainTemplate> m_templates =
-            new Dictionary<string, ChainTemplate>();
+        protected Dictionary<ChainName, ChainTemplate> m_templates =
+            new Dictionary<ChainName, ChainTemplate>();
         public abstract Behavior Instantiate(Entity entity, BehaviorConfig conf);
     }
 
@@ -36,7 +36,7 @@ namespace Core.Behaviors
             m_templates = s_builder?.Templates;
         }
 
-        public ChainTemplate<Event> GetTemplate<Event>(string name) where Event : EventBase
+        public ChainTemplate<Event> GetTemplate<Event>(ChainName name) where Event : EventBase
         {
             return (ChainTemplate<Event>)m_templates[name];
         }
@@ -53,34 +53,34 @@ namespace Core.Behaviors
 
     public abstract class Behavior : IProvidesChain
     {
-        protected Dictionary<string, Chain> chains;
+        protected Dictionary<ChainName, Chain> chains;
         protected Entity m_entity;
 
-        public void GenerateChains(Dictionary<string, ChainTemplate> templates)
+        public void GenerateChains(Dictionary<ChainName, ChainTemplate> templates)
         {
             if (templates == null)
                 return;
-            chains = new Dictionary<string, Chain>();
+            chains = new Dictionary<ChainName, Chain>();
             foreach (var (key, template) in templates)
             {
                 chains[key] = template.Init();
             }
         }
 
-        public Chain<Event> GetChain<Event>(string name) where Event : EventBase
+        public Chain<Event> GetChain<Event>(ChainName name) where Event : EventBase
         {
             return (Chain<Event>)chains[name];
         }
 
-        public bool CheckDoCycle<Event>(Event ev, string checkName, string doName)
+        public bool CheckDoCycle<Event>(Event ev)
             where Event : EventBase, new()
         {
-            GetChain<Event>(checkName).Pass(ev);
+            GetChain<Event>(ChainName.Check).Pass(ev);
 
             if (!ev.propagate)
                 return false;
 
-            GetChain<Event>(doName).Pass(ev);
+            GetChain<Event>(ChainName.Do).Pass(ev);
             return true;
         }
 

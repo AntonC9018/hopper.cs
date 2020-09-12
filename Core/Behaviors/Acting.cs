@@ -11,9 +11,6 @@ namespace Core.Behaviors
             public System.Action<EventBase> DoAction;
         }
         // TODO: refactor into integers. Map integers to strings if needed
-        public static string s_checkChainName = "action:check";
-        public static string s_failChainName = "action:fail";
-        public static string s_succeedChainName = "action:succeed";
         public bool b_didAction = false;
         public bool b_doingAction = false;
         public bool b_didActionSucceed = false;
@@ -54,12 +51,12 @@ namespace Core.Behaviors
             {
                 b_didAction = true;
                 b_didActionSucceed = true;
-                GetChain<Event>(s_succeedChainName).Pass(ev);
+                GetChain<Event>(ChainName.Success).Pass(ev);
                 return true;
             }
 
             b_doingAction = true;
-            GetChain<Event>(s_checkChainName).Pass(ev);
+            GetChain<Event>(ChainName.Check).Pass(ev);
 
             if (ev.propagate)
             {
@@ -70,9 +67,9 @@ namespace Core.Behaviors
             ev.propagate = true;
 
             if (ev.success)
-                GetChain<Event>(s_succeedChainName).Pass(ev);
+                GetChain<Event>(ChainName.Success).Pass(ev);
             else
-                GetChain<Event>(s_failChainName).Pass(ev);
+                GetChain<Event>(ChainName.Fail).Pass(ev);
 
             b_doingAction = false;
             b_didAction = false;
@@ -107,14 +104,14 @@ namespace Core.Behaviors
         {
             var builder = new ChainTemplateBuilder();
 
-            var check = builder.AddTemplate<Event>(s_checkChainName);
-            Check = new ChainPaths<Acting, Event>(s_checkChainName);
+            var check = builder.AddTemplate<Event>(ChainName.Check);
+            Check = new ChainPaths<Acting, Event>(ChainName.Check);
 
-            var fail = builder.AddTemplate<Event>(s_failChainName);
-            fail_chain = new ChainPaths<Acting, Event>(s_failChainName);
+            var fail = builder.AddTemplate<Event>(ChainName.Fail);
+            fail_chain = new ChainPaths<Acting, Event>(ChainName.Fail);
 
-            var succeed = builder.AddTemplate<Event>(s_succeedChainName);
-            succeed_chain = new ChainPaths<Acting, Event>(s_succeedChainName);
+            var succeed = builder.AddTemplate<Event>(ChainName.Success);
+            succeed_chain = new ChainPaths<Acting, Event>(ChainName.Success);
 
             BehaviorFactory<Acting>.s_builder = builder;
         }

@@ -1,16 +1,17 @@
 using System.Collections.Generic;
+using Core.Behaviors;
 
 namespace Chains
 {
     public class ChainTemplateBuilder
     {
-        protected Dictionary<string, ChainTemplate> m_templates
-            = new Dictionary<string, ChainTemplate>();
-        public Dictionary<string, ChainTemplate> Templates
+        protected Dictionary<ChainName, ChainTemplate> m_templates
+            = new Dictionary<ChainName, ChainTemplate>();
+        public Dictionary<ChainName, ChainTemplate> Templates
         {
             get
             {
-                var templates = new Dictionary<string, ChainTemplate>();
+                var templates = new Dictionary<ChainName, ChainTemplate>();
                 foreach (var (key, val) in m_templates)
                 {
                     templates.Add(key, val.Clone());
@@ -18,7 +19,7 @@ namespace Chains
                 return templates;
             }
         }
-        public ChainTemplate<T> AddTemplate<T>(string name) where T : EventBase
+        public ChainTemplate<T> AddTemplate<T>(ChainName name) where T : EventBase
         {
             var template = new ChainTemplate<T>();
             m_templates.Add(name, template);

@@ -16,8 +16,6 @@ namespace Core.Behaviors
         {
         }
 
-        public static string s_checkChainName = "template:check";
-        public static string s_doChainName = "template:do";
 
         public bool Activate(Action action, Params pars)
         {
@@ -27,7 +25,7 @@ namespace Core.Behaviors
                 action = action,
                 // push = pars.push
             };
-            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
+            return CheckDoCycle<Event>(ev);
         }
 
         static void HandlerFunction1(Event ev)
@@ -44,12 +42,12 @@ namespace Core.Behaviors
         {
             var builder = new ChainTemplateBuilder();
 
-            var check = builder.AddTemplate<Event>(s_checkChainName);
-            Check = new ChainPaths<Template, Event>(s_checkChainName);
+            var check = builder.AddTemplate<Event>(ChainName.Check);
+            Check = new ChainPaths<Template, Event>(ChainName.Check);
             check.AddHandler(HandlerFunction1, PRIORITY_RANKS.HIGH);
 
-            var _do = builder.AddTemplate<Event>(s_doChainName);
-            Do = new ChainPaths<Template, Event>(s_checkChainName);
+            var _do = builder.AddTemplate<Event>(ChainName.Do);
+            Do = new ChainPaths<Template, Event>(ChainName.Do);
             _do.AddHandler(HandlerFunction2);
             // _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
 

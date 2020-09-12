@@ -18,10 +18,10 @@ namespace Core.Retouchers
 
         // public static void Setup()
         // {
-        //     var emptyAttack = new ChainDefBuilder<Attacking.Event>(s_checkChainName);
-        //     var blockedMove = new ChainDefBuilder<Moving.Event>(Moving.s_checkChainName);
-        //     var noPlayer = new ChainDefBuilder<Attacking.Event>(s_checkChainName);
-        //     var self = new ChainDefBuilder<Attacking.Event>(s_checkChainName);
+        //     var emptyAttack = new ChainDefBuilder<Attacking.Event>(ChainName.Check);
+        //     var blockedMove = new ChainDefBuilder<Moving.Event>(Moving.ChainName.Check);
+        //     var noPlayer = new ChainDefBuilder<Attacking.Event>(ChainName.Check);
+        //     var self = new ChainDefBuilder<Attacking.Event>(ChainName.Check);
 
         //     var attackHandler = new EvHandler<Attacking.Event>(SkipEmptyAttack);
         //     var blockedHandler = new EvHandler<Moving.Event>(SkipBlocked);

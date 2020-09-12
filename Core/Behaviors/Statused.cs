@@ -40,9 +40,6 @@ namespace Core.Behaviors
             public Flavor[] flavors;
         }
 
-        public static string s_checkChainName = "statused:check";
-        public static string s_doChainName = "statused:do";
-
         public override void Init(Entity entity, BehaviorConfig config)
         {
             m_entity = entity;
@@ -65,7 +62,7 @@ namespace Core.Behaviors
                 action = action,
                 flavors = pars.flavors
             };
-            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
+            return CheckDoCycle<Event>(ev);
         }
 
         static void SetResistance(Event ev)
@@ -93,11 +90,11 @@ namespace Core.Behaviors
         {
             var builder = new ChainTemplateBuilder();
 
-            var check = builder.AddTemplate<Event>(s_checkChainName);
+            var check = builder.AddTemplate<Event>(ChainName.Check);
             check.AddHandler(SetResistance, PRIORITY_RANKS.HIGH);
             check.AddHandler(ResistSomeStatuses, PRIORITY_RANKS.LOW);
 
-            var _do = builder.AddTemplate<Event>(s_doChainName);
+            var _do = builder.AddTemplate<Event>(ChainName.Do);
             _do.AddHandler(Apply);
             _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do));
 

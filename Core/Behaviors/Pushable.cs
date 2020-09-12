@@ -52,9 +52,6 @@ namespace Core.Behaviors
             public Attacking.Push push;
         }
 
-        public static string s_checkChainName = "pushed:check";
-        public static string s_doChainName = "pushed:do";
-
         public bool Activate(Action action, Params pars)
         {
             var ev = new Event
@@ -63,7 +60,7 @@ namespace Core.Behaviors
                 action = action,
                 push = pars.push
             };
-            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
+            return CheckDoCycle<Event>(ev);
         }
 
         static void SetResistance(Event ev)
@@ -102,14 +99,14 @@ namespace Core.Behaviors
         {
             var builder = new ChainTemplateBuilder();
 
-            var check = builder.AddTemplate<Event>(s_checkChainName);
-            Check = new ChainPaths<Pushable, Event>(s_checkChainName);
+            var check = builder.AddTemplate<Event>(ChainName.Check);
+            Check = new ChainPaths<Pushable, Event>(ChainName.Check);
             check.AddHandler(SetResistance, PRIORITY_RANKS.HIGH);
             check.AddHandler(ResistSource, PRIORITY_RANKS.HIGH);
             check.AddHandler(Armor, PRIORITY_RANKS.HIGH);
 
-            var _do = builder.AddTemplate<Event>(s_doChainName);
-            Do = new ChainPaths<Pushable, Event>(s_checkChainName);
+            var _do = builder.AddTemplate<Event>(ChainName.Do);
+            Do = new ChainPaths<Pushable, Event>(ChainName.Check);
             _do.AddHandler(BePushed);
             _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
 

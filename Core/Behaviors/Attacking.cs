@@ -58,8 +58,6 @@ namespace Core.Behaviors
         {
             public List<Target> targets;
         }
-        public static string s_checkChainName = "attack:check";
-        public static string s_doChainName = "attack:do";
 
         public List<Target> GenerateTargets(Event e)
         {
@@ -86,7 +84,7 @@ namespace Core.Behaviors
                 actor = m_entity,
                 action = action
             };
-            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
+            return CheckDoCycle<Event>(ev);
         }
 
         static void SetBase(Event ev)
@@ -151,13 +149,13 @@ namespace Core.Behaviors
         {
             var builder = new ChainTemplateBuilder();
 
-            var check = builder.AddTemplate<Event>(s_checkChainName);
-            Check = new ChainPaths<Attacking, Event>(s_checkChainName);
+            var check = builder.AddTemplate<Event>(ChainName.Check);
+            Check = new ChainPaths<Attacking, Event>(ChainName.Check);
             check.AddHandler(SetBase, PRIORITY_RANKS.HIGH);
             check.AddHandler(GetTargets, PRIORITY_RANKS.MEDIUM);
 
-            var _do = builder.AddTemplate<Event>(s_doChainName);
-            Do = new ChainPaths<Attacking, Event>(s_checkChainName);
+            var _do = builder.AddTemplate<Event>(ChainName.Do);
+            Do = new ChainPaths<Attacking, Event>(ChainName.Check);
             _do.AddHandler(ApplyAttack);
             _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do));
 

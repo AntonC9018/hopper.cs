@@ -11,8 +11,6 @@ namespace Core.Behaviors
         {
             public Displaceable.Move move;
         }
-        public static string s_checkChainName = "move:check";
-        public static string s_doChainName = "move:do";
 
         public bool Activate(Action action)
         {
@@ -21,7 +19,7 @@ namespace Core.Behaviors
                 actor = m_entity,
                 action = action
             };
-            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
+            return CheckDoCycle<Event>(ev);
         }
 
         static void SetBase(Event ev)
@@ -46,12 +44,12 @@ namespace Core.Behaviors
         {
             var builder = new ChainTemplateBuilder();
 
-            var check = builder.AddTemplate<Event>(s_checkChainName);
-            Check = new ChainPaths<Moving, Event>(s_checkChainName);
+            var check = builder.AddTemplate<Event>(ChainName.Check);
+            Check = new ChainPaths<Moving, Event>(ChainName.Check);
             check.AddHandler(SetBase, PRIORITY_RANKS.HIGH);
 
-            var _do = builder.AddTemplate<Event>(s_doChainName);
-            Do = new ChainPaths<Moving, Event>(s_doChainName);
+            var _do = builder.AddTemplate<Event>(ChainName.Do);
+            Do = new ChainPaths<Moving, Event>(ChainName.Do);
             _do.AddHandler(Displace);
             _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.move_do));
 

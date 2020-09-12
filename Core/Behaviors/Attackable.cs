@@ -70,9 +70,6 @@ namespace Core.Behaviors
             public Attacking.Attack attack;
         }
 
-        public static string s_checkChainName = "attacked:check";
-        public static string s_doChainName = "attacked:do";
-        public static string s_conditionChainName = "attacked:condition";
 
         public bool Activate(Action action, Params pars)
         {
@@ -82,7 +79,7 @@ namespace Core.Behaviors
                 action = action,
                 attack = pars.attack
             };
-            return CheckDoCycle<Event>(ev, s_checkChainName, s_doChainName);
+            return CheckDoCycle<Event>(ev);
         }
 
         static void SetResistance(Event ev)
@@ -129,7 +126,7 @@ namespace Core.Behaviors
                 actor = this.m_entity,
                 attackingEvent = attackingEvent
             };
-            GetChain<AttackablenessEvent>(s_conditionChainName).Pass(ev);
+            GetChain<AttackablenessEvent>(ChainName.Condition).Pass(ev);
             return ev.attackableness;
         }
 
@@ -141,8 +138,8 @@ namespace Core.Behaviors
         {
             var builder = new ChainTemplateBuilder();
 
-            var check = builder.AddTemplate<Event>(s_checkChainName);
-            Check = new ChainPaths<Attackable, Event>(s_checkChainName);
+            var check = builder.AddTemplate<Event>(ChainName.Check);
+            Check = new ChainPaths<Attackable, Event>(ChainName.Check);
             // this can be cleaned up by using lambdas
             // this way we would eliminate the need of static methods
             // i.e. e => e.actor.beh_Attackable.MethodName(e)
@@ -152,13 +149,13 @@ namespace Core.Behaviors
             check.AddHandler(ResistSource, PRIORITY_RANKS.LOW);
             check.AddHandler(Armor, PRIORITY_RANKS.LOW);
 
-            var _do = builder.AddTemplate<Event>(s_doChainName);
-            Do = new ChainPaths<Attackable, Event>(s_doChainName);
+            var _do = builder.AddTemplate<Event>(ChainName.Do);
+            Do = new ChainPaths<Attackable, Event>(ChainName.Do);
             _do.AddHandler(TakeHit);
             _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacked_do));
 
-            var condition = builder.AddTemplate<AttackablenessEvent>(s_conditionChainName);
-            Condition = new ChainPaths<Attackable, AttackablenessEvent>(s_conditionChainName);
+            var condition = builder.AddTemplate<AttackablenessEvent>(ChainName.Condition);
+            Condition = new ChainPaths<Attackable, AttackablenessEvent>(ChainName.Condition);
 
             BehaviorFactory<Attackable>.s_builder = builder;
 

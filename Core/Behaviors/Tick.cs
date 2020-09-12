@@ -15,8 +15,8 @@ namespace Core.Behaviors
         static Tick()
         {
             var builder = new ChainTemplateBuilder();
-            var tick = builder.AddTemplate<Event>(s_chainName);
-            chain = new ChainPaths<Tick, Event>(s_chainName);
+            var tick = builder.AddTemplate<Event>(ChainName.Default);
+            chain = new ChainPaths<Tick, Event>(ChainName.Default);
             BehaviorFactory<Tick>.s_builder = builder;
         }
     }
