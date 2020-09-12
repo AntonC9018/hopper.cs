@@ -38,14 +38,14 @@ namespace Core
             public EventCode eventCode;
         }
 
-        List<Event>[] eventsByPhase;
-        public List<Event>[] Phases => eventsByPhase;
+        private List<Event>[] m_eventsByPhase;
+        public List<Event>[] Phases => m_eventsByPhase;
 
         public History()
         {
-            eventsByPhase = new List<Event>[Core.World.s_numPhases];
+            m_eventsByPhase = new List<Event>[Core.World.s_numPhases];
             for (int i = 0; i < Core.World.s_numPhases; i++)
-                eventsByPhase[i] = new List<Event>();
+                m_eventsByPhase[i] = new List<Event>();
         }
         public void Add(Entity entity, EventCode eventCode)
         {
@@ -55,11 +55,11 @@ namespace Core
                 stateAfter = state,
                 eventCode = eventCode
             };
-            eventsByPhase[entity.World.m_state.m_phase].Add(ev);
+            m_eventsByPhase[entity.World.m_state.m_phase].Add(ev);
         }
         public Event Find(System.Predicate<Event> pred)
         {
-            foreach (var events in eventsByPhase)
+            foreach (var events in m_eventsByPhase)
             {
                 var ev = events.Find(pred);
                 if (ev != null)
@@ -70,7 +70,7 @@ namespace Core
 
         public Event FindLast(System.Predicate<Event> pred)
         {
-            foreach (var events in eventsByPhase)
+            foreach (var events in m_eventsByPhase)
             {
                 var ev = events.FindLast(pred);
                 if (ev != null)
@@ -81,9 +81,9 @@ namespace Core
 
         public Event Find(System.Func<Event, int, bool> pred)
         {
-            for (int i = 0; i < eventsByPhase.Length; i++)
+            for (int i = 0; i < m_eventsByPhase.Length; i++)
             {
-                var events = eventsByPhase[i];
+                var events = m_eventsByPhase[i];
                 var ev = events.Find(e => pred(e, i));
                 if (ev != null)
                     return ev;
@@ -93,7 +93,7 @@ namespace Core
 
         public void Clear()
         {
-            foreach (var events in eventsByPhase)
+            foreach (var events in m_eventsByPhase)
                 events.Clear();
         }
     }
