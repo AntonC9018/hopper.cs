@@ -97,8 +97,8 @@ namespace Core.Behaviors
 
         // initialize here
         public static ChainPaths<Acting, Event> Check;
-        public static ChainPaths<Acting, Event> fail_chain;
-        public static ChainPaths<Acting, Event> succeed_chain;
+        public static ChainPaths<Acting, Event> Fail;
+        public static ChainPaths<Acting, Event> Success;
 
         static Acting()
         {
@@ -108,10 +108,10 @@ namespace Core.Behaviors
             Check = new ChainPaths<Acting, Event>(ChainName.Check);
 
             var fail = builder.AddTemplate<Event>(ChainName.Fail);
-            fail_chain = new ChainPaths<Acting, Event>(ChainName.Fail);
+            Fail = new ChainPaths<Acting, Event>(ChainName.Fail);
 
             var succeed = builder.AddTemplate<Event>(ChainName.Success);
-            succeed_chain = new ChainPaths<Acting, Event>(ChainName.Success);
+            Success = new ChainPaths<Acting, Event>(ChainName.Success);
 
             BehaviorFactory<Acting>.s_builder = builder;
         }

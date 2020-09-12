@@ -1,7 +1,7 @@
 using Chains;
 using Core.Behaviors;
 
-namespace Core
+namespace Core.Behaviors
 {
     public interface IProvideBehavior
     {

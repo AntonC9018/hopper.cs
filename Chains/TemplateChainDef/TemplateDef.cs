@@ -1,5 +1,4 @@
-using Core;
-using Handle = MyLinkedList.MyListNode<Chains.IEvHandler>;
+using Core.Behaviors;
 
 namespace Chains
 {
