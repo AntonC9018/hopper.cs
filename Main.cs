@@ -6,6 +6,7 @@ using Core.Items;
 using System.Linq;
 using Core.Targeting;
 using Core.Behaviors;
+using Test;
 
 // Hello World! program
 namespace Hopper
@@ -294,13 +295,17 @@ namespace Hopper
 
             // this has to be rethought for sure
             var status = TestStatusTinkerStuff.status;
-            var flavor = new Flavor
-            {
-                power = 1,
-                amount = 2,
-                source = testStatusId
-            };
-            var statusedParams = new Statused.Params { flavors = new Flavor[] { flavor } };
+            var statusData = new StatusData
+            (
+                statusIndex: testStatusId,
+                flavor: new Flavor(),
+                statusStat: new StatusFile
+                {
+                    power = 1,
+                    amount = 2
+                }
+            );
+            var statusedParams = new Statused.Params { statusData = new StatusData[] { statusData } };
             player.GetBehavior<Statused>().Activate(null, statusedParams);
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
             world.Loop();
@@ -308,6 +313,21 @@ namespace Hopper
             world.Loop();
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
             world.Loop();
+
+
+            System.Console.WriteLine("\n ------ Spider Demo ------ \n");
+            player.ResetPosInGrid(new IntVector2(4, 4));
+            var spider = world.SpawnEntity(Spider.Factory, new IntVector2(3, 3));
+            world.Loop();
+            System.Console.WriteLine($"Tinker is applied? {player.IsTinked(BindStuff.tinker)}");
+            System.Console.WriteLine("Looped");
+            System.Console.WriteLine($"Player's new position: {player.Pos}");
+            System.Console.WriteLine($"Spider's new position: {spider.Pos}");
+            player.GetBehavior<Acting>().NextAction = attackAction;
+            world.Loop();
+            System.Console.WriteLine("Looped");
+            System.Console.WriteLine($"Player's new position: {player.Pos}");
+            System.Console.WriteLine($"Spider's new position: {spider.Pos}");
 
         }
     }
@@ -325,7 +345,7 @@ namespace Hopper
     {
         static void TestMethod1(CommonEvent commonEvent)
         {
-            var data = tinker.GetStoreByEvent(commonEvent);
+            var data = tinker.GetStore(commonEvent);
             System.Console.WriteLine($"Tinker says that i = {data.i}");
         }
         public static Tinker<TestTinkerData> tinker = Tinker<TestTinkerData>
@@ -336,12 +356,12 @@ namespace Hopper
     {
         static void TestMethod1(CommonEvent commonEvent)
         {
-            var flavor = tinker.GetStoreByEvent(commonEvent).flavor;
+            var flavor = tinker.GetStore(commonEvent).flavor;
             System.Console.WriteLine($"Tinker says that amount = {flavor.amount}");
         }
-        public static Tinker<FlavorTinkerData> tinker = Tinker<FlavorTinkerData>
+        public static Tinker<FlavorTinkerData<Flavor>> tinker = Tinker<FlavorTinkerData<Flavor>>
             .SingleHandlered<Acting.Event>(Acting.Check.ChainPath, TestMethod1);
-        public static Status<FlavorTinkerData> status =
-            new Status<FlavorTinkerData>(tinker);
+        public static Status<FlavorTinkerData<Flavor>> status =
+            new Status<FlavorTinkerData<Flavor>>(tinker);
     }
 }

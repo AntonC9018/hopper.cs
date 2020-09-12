@@ -2,12 +2,16 @@ using Core.Behaviors;
 
 namespace Core
 {
-    public interface IEntityFactory
+    public interface IInstantiateEntities
     {
         public Entity Instantiate();
-        public void AddBehavior<Beh>(BehaviorConfig conf)
-            where Beh : Behavior, new();
-        public void RetouchAndSave(Retoucher retoucher);
-        public bool IsRetouched(Retoucher retoucher);
     }
+    // public interface IEntityFactory
+    // {
+
+    //     public IEntityFactory AddBehavior<Beh>(BehaviorConfig conf)
+    //         where Beh : Behavior, new();
+    //     public IEntityFactory RetouchAndSave(Retoucher retoucher);
+    //     public bool IsRetouched(Retoucher retoucher);
+    // }
 }

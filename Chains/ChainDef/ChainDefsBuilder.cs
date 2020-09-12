@@ -10,13 +10,13 @@ namespace Chains
         public ChainDefBuilder<T> AddDef<T>(BehaviorPath<T> path)
             where T : EventBase
         {
-            var def = new ChainDefBuilder<T>(path);
+            var def = new ChainDefBuilder<T>(path, this);
             defs.Add(def);
             return def;
         }
         public IChainDef[] ToStatic()
         {
-            return (IChainDef[])defs.Select(def => def.ToStatic());
+            return defs.Select(def => def.ToStatic()).ToArray<IChainDef>();
         }
     }
 }

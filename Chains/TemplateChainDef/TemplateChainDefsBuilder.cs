@@ -10,13 +10,13 @@ namespace Chains
         public TemplateChainDefBuilder<T> AddDef<T>(BehaviorFactoryPath<T> path)
             where T : EventBase
         {
-            var def = new TemplateChainDefBuilder<T>(path);
+            var def = new TemplateChainDefBuilder<T>(path, this);
             defs.Add(def);
             return def;
         }
         public ITemplateChainDef[] ToStatic()
         {
-            return (ITemplateChainDef[])defs.Select(def => def.ToStatic());
+            return defs.Select(def => def.ToStatic()).ToArray<ITemplateChainDef>();
         }
     }
 }

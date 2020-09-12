@@ -17,7 +17,7 @@ namespace Core
             m_state.Loop();
         }
 
-        public Entity SpawnEntity(IEntityFactory entityFactory, IntVector2 pos)
+        public Entity SpawnEntity(IInstantiateEntities entityFactory, IntVector2 pos)
         {
             var entity = entityFactory.Instantiate();
             entity.Init(pos, this);

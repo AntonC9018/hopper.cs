@@ -67,9 +67,10 @@ namespace Chains
         {
         }
 
-        public void AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
+        public ChainTemplate<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
         {
             AddHandler(new EvHandler<Event>(handlerFunc, priority));
+            return this;
         }
 
         protected override Chain InitAndCache()

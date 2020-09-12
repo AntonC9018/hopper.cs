@@ -6,6 +6,20 @@ using System.Linq;
 
 namespace Core.Behaviors
 {
+    public class StatusData
+    {
+        public Flavor flavor;
+        public StatusFile statusStat;
+        public int statusIndex;
+
+        public StatusData(Flavor flavor, StatusFile statusStat, int statusIndex)
+        {
+            this.flavor = flavor;
+            this.statusStat = statusStat;
+            this.statusIndex = statusIndex;
+        }
+    }
+
     public class Statused : Behavior
     {
         public static List<string> s_indexStatusNameMap = new List<string>();
@@ -32,12 +46,12 @@ namespace Core.Behaviors
         {
             public Attacking.Attack attack;
             public ArrayFile resistance;
-            public Flavor[] flavors;
+            public StatusData[] statusData;
         }
 
         public class Params : ActivationParams
         {
-            public Flavor[] flavors;
+            public StatusData[] statusData;
         }
 
         public override void Init(Entity entity, BehaviorConfig config)
@@ -60,7 +74,7 @@ namespace Core.Behaviors
             {
                 actor = m_entity,
                 action = action,
-                flavors = pars.flavors
+                statusData = pars.statusData
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -72,17 +86,19 @@ namespace Core.Behaviors
 
         static void ResistSomeStatuses(Event ev)
         {
-            ev.flavors = ev.flavors
-                .Where(f => ev.resistance[f.source] <= f.power)
+            ev.statusData = ev.statusData
+                .Where(d => ev.resistance[d.statusIndex] <= d.statusStat.power)
+                .Where(d => d.statusStat.amount > 0)
                 .ToArray();
         }
 
         static void Apply(Event ev)
         {
-            foreach (var f in ev.flavors)
+            foreach (var statusData in ev.statusData)
             {
-                var status = s_indexStatusMap[f.source];
-                status.Apply(ev.actor, f);
+                var status = s_indexStatusMap[statusData.statusIndex];
+                statusData.flavor.amount = statusData.statusStat.amount;
+                status.Apply(ev.actor, statusData.flavor);
             }
         }
 

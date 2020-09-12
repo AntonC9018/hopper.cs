@@ -14,7 +14,7 @@ namespace Core
 
         protected IntVector2 m_pos;
         protected IntVector2 m_orientation = IntVector2.UnitX;
-        public IntVector2 Pos { get => m_pos; }
+        public IntVector2 Pos { get => m_pos; set => m_pos = value; }
         public IntVector2 Orientation { get => m_orientation; }
 
         public virtual Layer Layer => Layer.REAL;
@@ -94,8 +94,18 @@ namespace Core
             return null;
         }
 
+        public bool HasBehavior<T>() where T : Behavior, new()
+        {
+            return m_behaviors.ContainsKey(typeof(T));
+        }
+
         private readonly Dictionary<int, ITinker> m_tinkers =
             new Dictionary<int, ITinker>();
+
+        public bool IsTinked(ITinker tinker)
+        {
+            return m_tinkers.ContainsKey(tinker.id);
+        }
 
         public void TinkAndSave(ITinker tinker)
         {

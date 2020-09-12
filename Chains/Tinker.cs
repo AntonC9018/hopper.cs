@@ -72,7 +72,7 @@ namespace Core
         }
         protected override TinkerData InstantiateData() => new T();
         public T GetStore(int entityId) => (T)m_store[entityId];
-        public T GetStoreByEvent(CommonEvent ev) => (T)m_store[ev.actor.id];
+        public T GetStore(CommonEvent ev) => (T)m_store[ev.actor.id];
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Tinker<T> SingleHandlered<Event>(

@@ -9,7 +9,7 @@ namespace Core
         public BehaviorConfig config;
     }
 
-    public class EntityFactory<T> : IEntityFactory, IProvideBehaviorFactory
+    public class EntityFactory<T> : IInstantiateEntities, IProvideBehaviorFactory
         where T : Entity, new()
     {
         static IdGenerator s_idGenerator = new IdGenerator();
@@ -27,18 +27,20 @@ namespace Core
         private Dictionary<int, Retoucher> m_retouchers =
             new Dictionary<int, Retoucher>();
 
-        public void AddBehavior<Beh>(BehaviorConfig conf = null)
+        public EntityFactory<T> AddBehavior<Beh>(BehaviorConfig conf = null)
             where Beh : Behavior, new()
         {
             var factory = new BehaviorFactory<Beh>();
             var setting = new BehaviorSetting { factory = factory, config = conf };
             m_behaviorSettings.Add(typeof(Beh), setting);
+            return this;
         }
 
-        public void RetouchAndSave(Retoucher retoucher)
+        public EntityFactory<T> RetouchAndSave(Retoucher retoucher)
         {
             m_retouchers.Add(retoucher.id, retoucher);
             retoucher.Retouch(this);
+            return this;
         }
 
         public bool IsRetouched(Retoucher retoucher)
