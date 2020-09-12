@@ -50,7 +50,6 @@ namespace Core
             var acting = entity.GetBehavior<Acting>();
             if (acting != null && !acting.b_didAction)
             {
-                // I've overloaded the Activate method here so that it is not as clunky
                 acting.Activate();
             }
         }
