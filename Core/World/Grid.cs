@@ -5,9 +5,9 @@ namespace Core
 {
     public class GridManager
     {
-        public Cell[,] m_grid;
-        public readonly int m_width;
-        public readonly int m_height;
+        private Cell[,] m_grid;
+        private readonly int m_width;
+        private readonly int m_height;
 
         public GridManager(int width, int height)
         {
@@ -33,16 +33,9 @@ namespace Core
             m_height = grid.GetLength(1);
         }
 
-        public int Int(float x)
-        {
-            return (int)System.Math.Round(x);
-        }
-
         public void Reset(Entity entity)
         {
-            var cell = m_grid[entity.Pos.x, entity.Pos.y];
-            cell.m_entities.Add(entity);
-            cell.FireEnterEvent(entity);
+            Reset(entity, entity.Pos);
         }
 
         public void Reset(Entity entity, IntVector2 pos)
@@ -54,9 +47,7 @@ namespace Core
 
         public void Remove(Entity entity)
         {
-            var cell = m_grid[entity.Pos.x, entity.Pos.y];
-            cell.m_entities.Remove(entity);
-            cell.FireLeaveEvent(entity);
+            Remove(entity, entity.Pos);
         }
 
         public void Remove(Entity entity, IntVector2 pos)
@@ -74,7 +65,7 @@ namespace Core
         public Cell GetCellAt(IntVector2 pos)
         {
             if (IsWithinBounds(pos)) return null;
-            return m_grid[Int(pos.x), Int(pos.y)];
+            return m_grid[pos.x, pos.y];
         }
     }
 }
