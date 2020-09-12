@@ -151,8 +151,8 @@ namespace Core.Behaviors
 
             var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Attacking, Event>(ChainName.Check);
-            check.AddHandler(SetBase, PRIORITY_RANKS.HIGH);
-            check.AddHandler(GetTargets, PRIORITY_RANKS.MEDIUM);
+            check.AddHandler(SetBase, PriorityRanks.High);
+            check.AddHandler(GetTargets, PriorityRanks.Medium);
 
             var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Attacking, Event>(ChainName.Check);

@@ -91,8 +91,8 @@ namespace Core.Behaviors
             var builder = new ChainTemplateBuilder();
 
             var check = builder.AddTemplate<Event>(ChainName.Check);
-            check.AddHandler(SetResistance, PRIORITY_RANKS.HIGH);
-            check.AddHandler(ResistSomeStatuses, PRIORITY_RANKS.LOW);
+            check.AddHandler(SetResistance, PriorityRanks.High);
+            check.AddHandler(ResistSomeStatuses, PriorityRanks.Low);
 
             var _do = builder.AddTemplate<Event>(ChainName.Do);
             _do.AddHandler(Apply);

@@ -9,14 +9,14 @@ namespace Chains
         public void AddHandler(EvHandler<Event> handler);
     }
 
-    public enum PRIORITY_RANKS
+    public enum PriorityRanks
     {
-        HIGHEST = 4,
-        HIGH = 3,
-        MEDIUM = 2,
-        LOW = 1,
-        LOWEST = 0,
-        DEFAULT = MEDIUM
+        Highest = 4,
+        High = 3,
+        Medium = 2,
+        Low = 1,
+        Lowest = 0,
+        Default = Medium
     }
     public class EventBase
     {
@@ -25,7 +25,7 @@ namespace Chains
 
     public abstract class IEvHandler
     {
-        public int priority = (int)PRIORITY_RANKS.MEDIUM;
+        public int priority = (int)PriorityRanks.Medium;
 
         public abstract void Call(EventBase ev);
 
@@ -43,7 +43,7 @@ namespace Chains
         {
         }
 
-        public EvHandler(System.Action<Event> handlerFunc, PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
+        public EvHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
         {
             handlerFunction = handlerFunc;
             this.priority = (int)priority;
@@ -57,7 +57,7 @@ namespace Chains
 
     public abstract class Chain
     {
-        const int NUM_PRIORITY_RANKS = (int)PRIORITY_RANKS.HIGHEST + 1;
+        const int NUM_PRIORITY_RANKS = (int)PriorityRanks.Highest + 1;
         const int PRIORITY_STEP = 5;
         internal MyLinkedList<IEvHandler> m_handlers;
         protected List<MyListNode<IEvHandler>> m_handlersToRemove
@@ -139,7 +139,7 @@ namespace Chains
 
         public MyListNode<IEvHandler> AddHandler(
             System.Action<Event> handlerFunction,
-            PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
+            PriorityRanks priority = PriorityRanks.Default)
         {
             return AddHandler(new EvHandler<Event>(handlerFunction, priority));
         }

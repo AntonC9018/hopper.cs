@@ -145,9 +145,9 @@ namespace Core.Behaviors
             // i.e. e => e.actor.beh_Attackable.MethodName(e)
             // or, even better, wrap it in a method Wrap(func, id) and call it as
             // Wrap(func, s_factory.id)
-            check.AddHandler(SetResistance, PRIORITY_RANKS.HIGH);
-            check.AddHandler(ResistSource, PRIORITY_RANKS.LOW);
-            check.AddHandler(Armor, PRIORITY_RANKS.LOW);
+            check.AddHandler(SetResistance, PriorityRanks.High);
+            check.AddHandler(ResistSource, PriorityRanks.Low);
+            check.AddHandler(Armor, PriorityRanks.Low);
 
             var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Attackable, Event>(ChainName.Do);

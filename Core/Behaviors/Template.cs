@@ -44,7 +44,7 @@ namespace Core.Behaviors
 
             var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Template, Event>(ChainName.Check);
-            check.AddHandler(HandlerFunction1, PRIORITY_RANKS.HIGH);
+            check.AddHandler(HandlerFunction1, PriorityRanks.High);
 
             var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Template, Event>(ChainName.Do);

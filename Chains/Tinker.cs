@@ -78,7 +78,7 @@ namespace Core
         public static Tinker<T> SingleHandlered<Event>(
             BehaviorPath<Event> path,
             System.Action<Event> handler,
-            PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
+            PriorityRanks priority = PriorityRanks.Default)
             where Event : EventBase
         {
             return new Tinker<T>(

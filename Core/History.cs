@@ -32,32 +32,32 @@ namespace Core
             Dead
         }
 
-        public class Event
+        public class EventInfo
         {
             public EntityState stateAfter;
             public EventCode eventCode;
         }
 
-        private List<Event>[] m_eventsByPhase;
-        public List<Event>[] Phases => m_eventsByPhase;
+        private List<EventInfo>[] m_eventsByPhase;
+        public List<EventInfo>[] Phases => m_eventsByPhase;
 
         public History()
         {
-            m_eventsByPhase = new List<Event>[Core.World.s_numPhases];
+            m_eventsByPhase = new List<EventInfo>[Core.World.s_numPhases];
             for (int i = 0; i < Core.World.s_numPhases; i++)
-                m_eventsByPhase[i] = new List<Event>();
+                m_eventsByPhase[i] = new List<EventInfo>();
         }
         public void Add(Entity entity, EventCode eventCode)
         {
             var state = new EntityState(entity);
-            var ev = new Event
+            var ev = new EventInfo
             {
                 stateAfter = state,
                 eventCode = eventCode
             };
             m_eventsByPhase[entity.World.m_state.m_phase].Add(ev);
         }
-        public Event Find(System.Predicate<Event> pred)
+        public EventInfo Find(System.Predicate<EventInfo> pred)
         {
             foreach (var events in m_eventsByPhase)
             {
@@ -68,7 +68,7 @@ namespace Core
             return null;
         }
 
-        public Event FindLast(System.Predicate<Event> pred)
+        public EventInfo FindLast(System.Predicate<EventInfo> pred)
         {
             foreach (var events in m_eventsByPhase)
             {
@@ -79,7 +79,7 @@ namespace Core
             return null;
         }
 
-        public Event Find(System.Func<Event, int, bool> pred)
+        public EventInfo Find(System.Func<EventInfo, int, bool> pred)
         {
             for (int i = 0; i < m_eventsByPhase.Length; i++)
             {

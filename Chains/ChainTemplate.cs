@@ -67,7 +67,7 @@ namespace Chains
         {
         }
 
-        public void AddHandler(System.Action<Event> handlerFunc, PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
+        public void AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
         {
             AddHandler(new EvHandler<Event>(handlerFunc, priority));
         }

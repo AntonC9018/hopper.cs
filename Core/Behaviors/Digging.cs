@@ -101,8 +101,8 @@ namespace Core.Behaviors
 
             var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Diggable, Event>(ChainName.Check);
-            check.AddHandler(SetDig, PRIORITY_RANKS.HIGH);
-            check.AddHandler(GetTargets, PRIORITY_RANKS.HIGH);
+            check.AddHandler(SetDig, PriorityRanks.High);
+            check.AddHandler(GetTargets, PriorityRanks.High);
 
             var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Diggable, Event>(ChainName.Check);

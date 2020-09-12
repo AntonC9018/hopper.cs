@@ -24,7 +24,7 @@ namespace Core
         public static Retoucher SingleHandlered<T>(
             BehaviorFactoryPath<T> path,
             System.Action<T> handler,
-            PRIORITY_RANKS priority = PRIORITY_RANKS.DEFAULT)
+            PriorityRanks priority = PriorityRanks.Default)
             where T : EventBase
         {
             return new Retoucher(

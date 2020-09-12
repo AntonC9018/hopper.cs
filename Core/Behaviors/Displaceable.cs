@@ -80,7 +80,7 @@ namespace Core.Behaviors
 
             var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Displaceable, Event>(ChainName.Check);
-            check.AddHandler(ConvertFromMove, PRIORITY_RANKS.HIGH);
+            check.AddHandler(ConvertFromMove, PriorityRanks.High);
 
             var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Displaceable, Event>(ChainName.Do);
