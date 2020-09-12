@@ -39,12 +39,12 @@ namespace Core
             return m_players.Count - 1;
         }
 
-        void CalculateNextAction(Entity entity)
+        private void CalculateNextAction(Entity entity)
         {
             entity.GetBehavior<Acting>()?.CalculateNextAction();
         }
 
-        void Activate(Entity entity)
+        private void Activate(Entity entity)
         {
             if (entity.IsDead) return;
             var acting = entity.GetBehavior<Acting>();

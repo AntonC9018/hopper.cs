@@ -223,7 +223,7 @@ namespace Hopper
             // tinker.Tink(entity)              // creates tinker data
             inventory.Equip(item);
 
-            world.m_state.Loop();
+            world.Loop();
             System.Console.WriteLine("Looped");
 
             // creates excess as the size is 1
@@ -276,7 +276,7 @@ namespace Hopper
             */
 
             System.Console.WriteLine($"Player's position before moving: {player.Pos}");
-            world.m_state.Loop();
+            world.Loop();
             System.Console.WriteLine($"Player's new position: {player.Pos}");
             System.Console.WriteLine($"There's {world.m_grid.GetCellAt(player.Pos).m_entities.Count} entities in the cell where the player is standing");
 
@@ -286,7 +286,7 @@ namespace Hopper
             var tinker3 = TestTinkerStuff.tinker; // see the definition below
             player.TinkAndSave(tinker3);
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
-            world.m_state.Loop();
+            world.Loop();
             player.Untink(tinker3);
 
 
@@ -303,11 +303,11 @@ namespace Hopper
             var statusedParams = new Statused.Params { flavors = new Flavor[] { flavor } };
             player.GetBehavior<Statused>().Activate(null, statusedParams);
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
-            world.m_state.Loop();
+            world.Loop();
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
-            world.m_state.Loop();
+            world.Loop();
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
-            world.m_state.Loop();
+            world.Loop();
 
         }
     }

@@ -10,7 +10,12 @@ namespace Core
         public WorldStateManager m_state;
 
         public static int s_numPhases = System.Enum.GetNames(typeof(Layer)).Length;
-        public static int s_numEntityTypes = s_numPhases;
+        public static int s_numEntityTypes => s_numPhases;
+
+        public void Loop()
+        {
+            m_state.Loop();
+        }
 
         public Entity SpawnEntity(IEntityFactory entityFactory, IntVector2 pos)
         {
