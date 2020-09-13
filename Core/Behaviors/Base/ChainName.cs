@@ -21,6 +21,14 @@ namespace Core.Behaviors
         {
             return s_idGenerator.GetNextId();
         }
+        public override int GetHashCode()
+        {
+            return value;
+        }
+        public override bool Equals(object obj)
+        {
+            return value == ((ChainName)obj).value;
+        }
 
         public readonly static ChainName Check = NextNew();
         public readonly static ChainName Do = NextNew();
