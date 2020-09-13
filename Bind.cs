@@ -40,7 +40,6 @@ namespace Test
                 {
                     action = bindMoveAction,
                     movs = Movs.Diagonal,
-                    relativeStepIndexFail = 0,
                     successFunction = e => new Result
                     {
                         success = ((ISelfBinder)e).BoundEntity != null
@@ -51,10 +50,8 @@ namespace Test
                     action = null,
                     successFunction = e => new Result
                     {
-                        success = ((ISelfBinder)e).BoundEntity != null,
-                        index = 0
+                        success = ((ISelfBinder)e).BoundEntity == null
                     },
-                    relativeStepIndexFail = 1
                 }
             };
 
@@ -92,13 +89,6 @@ namespace Test
     {
         public static Status<FlavorTinkerData<BindFlavor>> status;
         public static Tinker<FlavorTinkerData<BindFlavor>> tinker;
-
-        // public static System.Action<E> FlavorWrap<E, F>(System.Action<E, F> func)
-        //     where E : CommonEvent
-        //     where F : Flavor
-        // {
-        //     return e => func(e, (F)tinker.GetStoreByEvent(e).flavor);
-        // }
 
         public static void AttackJustMe(Attacking.Event ev)
         {
