@@ -1,5 +1,6 @@
 namespace Core.Behaviors
 {
+    // https://stackoverflow.com/a/2807561
     public struct ChainName
     {
         static IdGenerator s_idGenerator = new IdGenerator();
