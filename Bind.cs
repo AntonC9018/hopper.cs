@@ -227,7 +227,7 @@ namespace Test
         public class Event : CommonEvent
         {
             public Params pars;
-            public StatusData statusData;
+            public StatusParam statusParam;
             public Entity applyTo;
         }
 
@@ -251,7 +251,7 @@ namespace Test
 
         static void SetFlavor(Event ev)
         {
-            ev.statusData = new StatusData
+            ev.statusParam = new StatusParam
             (
                 statusIndex: s_bindStatusIndex,
                 flavor: new BindFlavor(ev.actor, ev.pars.spice),
@@ -279,7 +279,7 @@ namespace Test
         {
             var pars = new Statused.Params
             {
-                statusData = new StatusData[] { ev.statusData }
+                statusParams = new StatusParam[] { ev.statusParam }
             };
             ev.propagate = ev.applyTo.GetBehavior<Statused>().Activate(ev.action, pars);
         }

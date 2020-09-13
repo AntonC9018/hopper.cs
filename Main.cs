@@ -295,7 +295,7 @@ namespace Hopper
 
             // this has to be rethought for sure
             var status = TestStatusTinkerStuff.status;
-            var statusData = new StatusData
+            var statusData = new StatusParam
             (
                 statusIndex: testStatusId,
                 flavor: new Flavor(),
@@ -305,7 +305,7 @@ namespace Hopper
                     amount = 2
                 }
             );
-            var statusedParams = new Statused.Params { statusData = new StatusData[] { statusData } };
+            var statusedParams = new Statused.Params { statusParams = new StatusParam[] { statusData } };
             player.GetBehavior<Statused>().Activate(null, statusedParams);
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
             world.Loop();

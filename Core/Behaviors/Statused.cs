@@ -6,13 +6,13 @@ using System.Linq;
 
 namespace Core.Behaviors
 {
-    public class StatusData
+    public class StatusParam
     {
         public Flavor flavor;
         public StatusFile statusStat;
         public int statusIndex;
 
-        public StatusData(Flavor flavor, StatusFile statusStat, int statusIndex)
+        public StatusParam(Flavor flavor, StatusFile statusStat, int statusIndex)
         {
             this.flavor = flavor;
             this.statusStat = statusStat;
@@ -46,12 +46,12 @@ namespace Core.Behaviors
         {
             public Attacking.Attack attack;
             public ArrayFile resistance;
-            public StatusData[] statusData;
+            public StatusParam[] statusParams;
         }
 
         public class Params : ActivationParams
         {
-            public StatusData[] statusData;
+            public StatusParam[] statusParams;
         }
 
         public override void Init(Entity entity, BehaviorConfig config)
@@ -74,7 +74,7 @@ namespace Core.Behaviors
             {
                 actor = m_entity,
                 action = action,
-                statusData = pars.statusData
+                statusParams = pars.statusParams
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -86,15 +86,15 @@ namespace Core.Behaviors
 
         static void ResistSomeStatuses(Event ev)
         {
-            ev.statusData = ev.statusData
-                .Where(d => ev.resistance[d.statusIndex] <= d.statusStat.power)
-                .Where(d => d.statusStat.amount > 0)
+            ev.statusParams = ev.statusParams
+                .Where(p => ev.resistance[p.statusIndex] <= p.statusStat.power)
+                .Where(p => p.statusStat.amount > 0)
                 .ToArray();
         }
 
         static void Apply(Event ev)
         {
-            foreach (var statusData in ev.statusData)
+            foreach (var statusData in ev.statusParams)
             {
                 var status = s_indexStatusMap[statusData.statusIndex];
                 statusData.flavor.amount = statusData.statusStat.amount;
