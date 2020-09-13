@@ -36,6 +36,11 @@ namespace Core.Behaviors
         public class Params : ActivationParams
         {
             public Move move;
+
+            public Params(Move move)
+            {
+                this.move = move;
+            }
         }
 
         public bool Activate(Action action, Params pars)

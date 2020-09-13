@@ -89,7 +89,7 @@ namespace Core.Behaviors
         {
             // TODO: set up properly
             var move = new Displaceable.Move();
-            var pars = new Displaceable.Params { move = move };
+            var pars = new Displaceable.Params(move);
             ev.actor.GetBehavior<Displaceable>().Activate(ev.action, pars);
         }
 

@@ -33,7 +33,7 @@ namespace Core.Behaviors
 
         static void Displace(Event ev)
         {
-            var pars = new Displaceable.Params { move = ev.move };
+            var pars = new Displaceable.Params(ev.move);
             ev.actor.GetBehavior<Displaceable>().Activate(ev.action, pars);
         }
 

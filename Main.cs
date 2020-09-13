@@ -323,7 +323,18 @@ namespace Hopper
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position: {player.Pos}");
             System.Console.WriteLine($"Spider's new position: {spider.Pos}");
+
             player.GetBehavior<Acting>().NextAction = attackAction;
+            world.Loop();
+            System.Console.WriteLine("Looped");
+            System.Console.WriteLine($"Player's new position: {player.Pos}");
+            System.Console.WriteLine($"Spider's new position: {spider.Pos}");
+
+
+            var ma = moveAction.Copy();
+            ma.direction = new IntVector2(-1, -1);
+            player.GetBehavior<Displaceable>().Activate(ma,
+                new Displaceable.Params(new Displaceable.Move()));
             world.Loop();
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position: {player.Pos}");
