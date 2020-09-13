@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.FS;
 using Chains;
+using Core.Items.Weapon;
+using Core.Items;
 
 namespace Core.Behaviors
 {
@@ -59,21 +61,30 @@ namespace Core.Behaviors
             public List<Target> targets;
         }
 
-        public List<Target> GenerateTargets(Event e)
+        static List<Target> GenerateTargetsDefault(Event ev)
         {
-            var entity = e.actor
-                .GetCellRelative(e.action.direction)
-                .GetEntityFromLayer(Layer.REAL);
+            var entity = ev.actor
+                            .GetCellRelative(ev.action.direction)
+                            .GetEntityFromLayer(Layer.REAL);
 
-            if (entity == null)
-            {
-                return new List<Target>();
-            }
-            // for now, no weapon
-            return new List<Target>
-            {
-                new Target { entity = entity, direction = e.action.direction }
-            };
+            return entity == null
+                ? new List<Target>()
+                : new List<Target>
+                {
+                        new Target { entity = entity, direction = ev.action.direction }
+                };
+        }
+
+        static List<Target> GenerateTargets(Event ev)
+        {
+            var inventory = ev.actor.Inventory;
+
+            if (inventory == null)
+                return GenerateTargetsDefault(ev);
+
+            var weapon = (IWeapon)inventory.GetItemFromSlot(Inventory.WeaponSlot);
+            return weapon == null ? new List<Target>() : weapon.GetTargets();
+
         }
         public bool Activate(Action action) => Activate(action, null);
         public bool Activate(Action action, Params pars)
@@ -103,7 +114,7 @@ namespace Core.Behaviors
         {
             if (ev.targets == null)
             {
-                ev.targets = ev.actor.GetBehavior<Attacking>().GenerateTargets(ev);
+                ev.targets = GenerateTargets(ev);
             }
         }
 

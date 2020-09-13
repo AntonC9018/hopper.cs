@@ -75,7 +75,7 @@ namespace Core.Behaviors
             var inventory = ev.actor.Inventory;
             if (inventory == null)
                 return;
-            var shovel = (IShovel)inventory.GetItemFromSlot(Inventory.s_shovelSlot);
+            var shovel = (IShovel)inventory.GetItemFromSlot(Inventory.ShovelSlot);
             if (shovel == null)
                 return;
             ev.targets = shovel.GetTargets();

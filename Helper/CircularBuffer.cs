@@ -117,11 +117,13 @@ namespace CircularBuffer
             {
                 if (IsEmpty)
                 {
-                    throw new IndexOutOfRangeException(string.Format("Cannot access index {0}. Buffer is empty", index));
+                    // throw new IndexOutOfRangeException(string.Format("Cannot access index {0}. Buffer is empty", index));
+                    return default(T);
                 }
                 if (index >= _size)
                 {
-                    throw new IndexOutOfRangeException(string.Format("Cannot access index {0}. Buffer size is {1}", index, _size));
+                    // throw new IndexOutOfRangeException(string.Format("Cannot access index {0}. Buffer size is {1}", index, _size));
+                    return default(T);
                 }
                 int actualIndex = InternalIndex(index);
                 return _buffer[actualIndex];

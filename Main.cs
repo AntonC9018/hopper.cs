@@ -209,14 +209,15 @@ namespace Hopper
             System.Console.WriteLine("\n ------ Inventory Demo ------ \n");
             var inventory = (Inventory)player.Inventory;
 
-            var cyclicContainer = new CyclicItemContainer(1);
-            inventory.AddContainer(0, cyclicContainer);
+            var cyclicContainer = new CircularItemContainer(1);
+            // indeces 0 and 1 are reserved for weapon and shovel respectively
+            inventory.AddContainer(2, cyclicContainer);
 
             var tinker = Tinker<TinkerData>.SingleHandlered<Attacking.Event>(
                 Attacking.Check.ChainPath,
                 e => System.Console.WriteLine("Hello from tinker applied by item")
             );
-            var item = new TinkerItem(tinker, 0);
+            var item = new TinkerItem(tinker, 2);
 
             // inventory.Equip(item) ->         // the starting point
             // item.BeEquipped(entity) ->       // it's interface method
@@ -261,12 +262,12 @@ namespace Hopper
             playerMoveAction.direction = IntVector2.Down;
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
 
-            var cyclicContainer2 = new CyclicItemContainer(1);
-            inventory.AddContainer(1, cyclicContainer);
+            var cyclicContainer2 = new CircularItemContainer(1);
+            inventory.AddContainer(3, cyclicContainer);
 
             var chainDefs2 = new IChainDef[0];
             var tinker2 = new Tinker<TinkerData>(chainDefs2);
-            var item2 = new TinkerItem(tinker2, 1);
+            var item2 = new TinkerItem(tinker2, 3);
 
             var droppedItem2 = world.CreateDroppedItem(item2, player.Pos + IntVector2.Down);
 
@@ -330,7 +331,6 @@ namespace Hopper
             System.Console.WriteLine($"Player's new position: {player.Pos}");
             System.Console.WriteLine($"Spider's new position: {spider.Pos}");
 
-
             var ma = moveAction.Copy();
             ma.direction = new IntVector2(-1, -1);
             player.GetBehavior<Displaceable>().Activate(ma,
@@ -340,6 +340,23 @@ namespace Hopper
             System.Console.WriteLine($"Player's new position: {player.Pos}");
             System.Console.WriteLine($"Spider's new position: {spider.Pos}");
 
+            System.Console.WriteLine("Killing spider");
+            spider.Die();
+            world.Loop();
+            System.Console.WriteLine($"Tinker is applied? {player.IsTinked(BindStuff.tinker)}");
+
+
+            System.Console.WriteLine("\n ------ Input Demo ------ \n");
+            // we also have the possibilty to add behaviors dynamically.
+            var InputFactory = new BehaviorFactory<Input>();
+            var input = (Input)InputFactory.Instantiate(player,
+                new Input.Config { defaultAction = attackMoveAction });
+            player.AddBehavior(typeof(Input), input);
+
+            var outputAction0 = input.ConvertInputToAction(InputMappings.Up);
+            System.Console.WriteLine($"Fed Up. Output: {outputAction0.direction}");
+            var outputAction1 = input.ConvertInputToAction(InputMappings.Special_0);
+            System.Console.WriteLine($"Fed Special_0. Output is null?: {outputAction1 == null}");
         }
     }
 

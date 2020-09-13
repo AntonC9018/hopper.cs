@@ -25,5 +25,10 @@ namespace Chains
             m_templates.Add(name, template);
             return template;
         }
+
+        public ChainTemplate<T> GetTemplate<T>(ChainName name) where T : EventBase
+        {
+            return (ChainTemplate<T>)m_templates[name];
+        }
     }
 }
