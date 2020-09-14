@@ -118,10 +118,10 @@ namespace Hopper
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
             var mod2 = new ChainModifier("attack", new Chains.EvHandler<StatEvent>(
-                (StatEvent ev) =>
+                (StatEvent _ev) =>
                 {
                     System.Console.WriteLine("Called handler");
-                    ((Attacking.Attack)ev.file).damage *= 3;
+                    ((Attacking.Attack)_ev.file).damage *= 3;
                 })
             );
             System.Console.WriteLine("Adding modifier");

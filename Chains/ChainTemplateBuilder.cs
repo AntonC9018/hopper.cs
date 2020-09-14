@@ -12,9 +12,9 @@ namespace Chains
             get
             {
                 var templates = new Dictionary<ChainName, ChainTemplate>();
-                foreach (var (key, val) in m_templates)
+                foreach (var key in m_templates.Keys)
                 {
-                    templates.Add(key, val.Clone());
+                    templates.Add(key, m_templates[key].Clone());
                 }
                 return templates;
             }

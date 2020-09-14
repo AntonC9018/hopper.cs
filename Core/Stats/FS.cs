@@ -103,12 +103,12 @@ namespace Core.FS
 
         public void Debug(Directory dir, int indentLevel = 0)
         {
-            foreach (var (key, value) in dir.nodes)
+            foreach (var kvp in dir.nodes)
             {
-                System.Console.WriteLine(key.PadLeft(indentLevel));
-                if (value is Directory)
+                System.Console.WriteLine(kvp.Key.PadLeft(indentLevel));
+                if (kvp.Value is Directory)
                 {
-                    Debug((Directory)value, indentLevel + 4);
+                    Debug((Directory)kvp.Value, indentLevel + 4);
                 }
             }
         }
@@ -116,18 +116,18 @@ namespace Core.FS
         // TODO: lazy load
         protected void CopyDirectoryStructure(Directory from, D to)
         {
-            foreach (var (name, node) in from.nodes)
+            foreach (var kvp in from.nodes)
             {
-                if (node is Directory)
+                if (kvp.Value is Directory)
                 {
                     var subdir = new D();
-                    to.nodes.Add(name, subdir);
-                    CopyDirectoryStructure((Directory)node, subdir);
+                    to.nodes.Add(kvp.Key, subdir);
+                    CopyDirectoryStructure((Directory)kvp.Value, subdir);
                 }
                 else
                 {
-                    var copy = CopyFileNode((File)node);
-                    to.nodes.Add(name, copy);
+                    var copy = CopyFileNode((File)kvp.Value);
+                    to.nodes.Add(kvp.Key, copy);
                 }
             }
         }

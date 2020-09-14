@@ -10,7 +10,7 @@ namespace Test
     // TODO: really think through how to (de)serialize this
     public interface ISelfBinder
     {
-        public Entity BoundEntity { get; set; }
+        Entity BoundEntity { get; set; }
     }
 
     public class Spider : Entity, ISelfBinder

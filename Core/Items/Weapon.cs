@@ -5,7 +5,7 @@ namespace Core.Items.Weapon
 {
     public interface IWeapon
     {
-        public List<Target> GetTargets();
+        List<Target> GetTargets();
     }
 
 }

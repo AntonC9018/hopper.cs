@@ -21,7 +21,13 @@ namespace Core
     {
         public static int ToIndex(this Layer layer)
         {
-            return System.Numerics.BitOperations.Log2((uint)layer);
+            int i = 0;
+            uint num = (uint)layer;
+
+            while ((num >>= 1) != 0)
+                i++;
+
+            return i;
         }
     }
 

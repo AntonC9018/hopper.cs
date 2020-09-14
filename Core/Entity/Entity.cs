@@ -125,7 +125,7 @@ namespace Core
         // If nothing eludes me, this is the only potential memory leak.
         ~Entity()
         {
-            foreach (var (_, tinker) in m_tinkers)
+            foreach (var tinker in m_tinkers.Values)
             {
                 tinker.RemoveStore(id);
             }

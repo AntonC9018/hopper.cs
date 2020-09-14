@@ -21,12 +21,12 @@ namespace Core
 
     public interface IHaveFlavor
     {
-        public Flavor Flavor { get; set; }
+        Flavor Flavor { get; set; }
     }
 
     public interface IHaveSpice
     {
-        public ITinker Spice { get; }
+        ITinker Spice { get; }
     }
 
     // such tinker data is used just to hand out flavor
@@ -45,10 +45,10 @@ namespace Core
     public interface IStatus
     {
         // sets up the tinker + flavor on the tinker data
-        public void Apply(Entity entity, Flavor f);
+        void Apply(Entity entity, Flavor f);
         // ticks the tinker and removes status if necessary
-        public void Tick(Entity entity);
-        public bool IsApplied(Entity entity);
+        void Tick(Entity entity);
+        bool IsApplied(Entity entity);
     }
 
     public class Status<T> : IStatus

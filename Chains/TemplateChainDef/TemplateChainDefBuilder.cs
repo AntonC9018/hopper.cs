@@ -6,7 +6,7 @@ namespace Chains
 {
     public interface ITemplateChainDefBuilder
     {
-        public ITemplateChainDef ToStatic();
+        ITemplateChainDef ToStatic();
     }
 
     public class TemplateChainDefBuilder<Event> : ITemplateChainDefBuilder where Event : EventBase

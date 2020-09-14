@@ -8,8 +8,8 @@ namespace Chains
 
     public interface IChainDef
     {
-        public Handle[] AddHandlers(IProvideBehavior entity);
-        public void RemoveHandlers(Handle[] handles, IProvideBehavior entity);
+        Handle[] AddHandlers(IProvideBehavior entity);
+        void RemoveHandlers(Handle[] handles, IProvideBehavior entity);
     }
 
     public class ChainDef<Event> : IChainDef where Event : EventBase

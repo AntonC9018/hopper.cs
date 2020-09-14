@@ -16,9 +16,9 @@ namespace Core.Behaviors
             if (templates == null)
                 return;
             chains = new Dictionary<ChainName, Chain>();
-            foreach (var (key, template) in templates)
+            foreach (var kvp in templates)
             {
-                chains[key] = template.Init();
+                chains[kvp.Key] = kvp.Value.Init();
             }
         }
 

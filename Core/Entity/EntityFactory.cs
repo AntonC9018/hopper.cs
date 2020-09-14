@@ -52,10 +52,12 @@ namespace Core
         {
             Entity entity = new T();
             // Instantiate and save behaviors
-            foreach (var (t, setting) in m_behaviorSettings)
+            foreach (var kvp in m_behaviorSettings)
             {
+                var type = kvp.Key;
+                var setting = kvp.Value;
                 var behavior = setting.factory.Instantiate(entity, setting.config);
-                entity.AddBehavior(t, behavior);
+                entity.AddBehavior(type, behavior);
             }
             InitEvent?.Invoke(entity);
             return entity;

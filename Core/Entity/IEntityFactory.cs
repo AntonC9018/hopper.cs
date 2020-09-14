@@ -4,7 +4,7 @@ namespace Core
 {
     public interface IInstantiateEntities
     {
-        public Entity Instantiate();
+        Entity Instantiate();
     }
     // public interface IEntityFactory
     // {

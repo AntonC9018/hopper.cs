@@ -5,7 +5,7 @@ namespace Chains
 {
     public interface IChainDefBuilder
     {
-        public IChainDef ToStatic();
+        IChainDef ToStatic();
     }
 
     public class ChainDefBuilder<Event> : IChainDefBuilder where Event : EventBase

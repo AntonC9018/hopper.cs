@@ -6,7 +6,7 @@ namespace Chains
 {
     public interface ICanAddHandlers<Event> where Event : EventBase
     {
-        public void AddHandler(EvHandler<Event> handler);
+        void AddHandler(EvHandler<Event> handler);
     }
 
     public enum PriorityRanks

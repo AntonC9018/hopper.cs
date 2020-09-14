@@ -6,7 +6,7 @@ namespace Chains
         where T : EventBase;
     public interface ITemplateChainDef
     {
-        public void AddHandlersTo(IProvideBehaviorFactory entity);
+        void AddHandlersTo(IProvideBehaviorFactory entity);
     }
 
     public class TemplateChainDef<Event> : ITemplateChainDef where Event : EventBase

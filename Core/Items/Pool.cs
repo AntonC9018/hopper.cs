@@ -35,7 +35,7 @@ namespace Core.Items
         {
             deck = new List<PoolItem>();
             index = 0;
-            foreach (var (id, item) in items)
+            foreach (var item in items.Values)
             {
                 for (int i = 0; i < item.q; i++)
                 {
@@ -55,12 +55,12 @@ namespace Core.Items
 
     public class SubPool : ISubPool
     {
-        public override ISubPool Copy(Dictionary<int, PoolItem> items)
+        public override ISubPool Copy(Dictionary<int, PoolItem> _items)
         {
             var sp = new SubPool();
-            foreach (var (id, item) in this.items)
+            foreach (var id in this.items.Keys)
             {
-                sp.items.Add(id, items[id]);
+                sp.items.Add(id, _items[id]);
             }
             return sp;
         }
@@ -81,12 +81,12 @@ namespace Core.Items
 
     public class EndlessSubPool : ISubPool
     {
-        public override ISubPool Copy(Dictionary<int, PoolItem> items)
+        public override ISubPool Copy(Dictionary<int, PoolItem> _items)
         {
             var sp = new EndlessSubPool();
-            foreach (var (id, item) in this.items)
+            foreach (var id in this.items.Keys)
             {
-                sp.items.Add(id, items[id]);
+                sp.items.Add(id, _items[id]);
             }
             return sp;
         }
@@ -114,26 +114,26 @@ namespace Core.Items
         public SuperPool(PoolDefinition<SP> poolDef)
         {
             this.poolDef = poolDef;
-            foreach (var (id, item) in poolDef.items)
+            foreach (var kvp in poolDef.items)
             {
-                items.Add(id, item.Copy());
+                items.Add(kvp.Key, kvp.Value.Copy());
             }
             CopyDirectoryStructure(poolDef.m_baseDir, this.m_baseDir);
         }
 
         protected void Exhaust(ISubPool subPool)
         {
-            foreach (var (id, item) in subPool.items)
+            foreach (var kvp in subPool.items)
             {
-                item.q = poolDef.items[id].q;
+                kvp.Value.q = poolDef.items[kvp.Key].q;
                 subPool.ReshuffleDeck();
             }
         }
         protected void ExhaustAll()
         {
-            foreach (var (id, item) in items)
+            foreach (var id in items.Keys)
             {
-                item.q = poolDef.items[id].q;
+                items[id].q = poolDef.items[id].q;
             }
         }
         public PoolItem GetNextItem(string path)

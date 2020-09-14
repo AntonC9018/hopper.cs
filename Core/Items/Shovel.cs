@@ -5,7 +5,7 @@ namespace Core.Items.Shovel
 {
     public interface IShovel
     {
-        public List<Target> GetTargets();
+        List<Target> GetTargets();
     }
 
 }

@@ -37,7 +37,7 @@ namespace Core.Items
 
         public void DropExcess()
         {
-            foreach (var (slot, container) in m_itemSlots)
+            foreach (var container in m_itemSlots.Values)
             {
                 var excess = container.PullOutExcess();
                 foreach (Item item in excess)

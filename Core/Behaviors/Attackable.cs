@@ -1,6 +1,7 @@
 using Chains;
 using System.Collections.Generic;
 using Core.FS;
+using Utils;
 
 namespace Core.Behaviors
 {
@@ -99,7 +100,7 @@ namespace Core.Behaviors
             if (ev.attack.pierce < ev.resistance.pierce)
                 ev.attack.damage = 0;
             else
-                ev.attack.damage = System.Math.Clamp(
+                ev.attack.damage = Math.Clamp(
                     ev.attack.damage - ev.resistance.armor,
                     ev.resistance.minDamage,
                     ev.resistance.maxDamage);
