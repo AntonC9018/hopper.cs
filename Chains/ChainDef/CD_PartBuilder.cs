@@ -37,7 +37,7 @@ namespace Chains
             return new ChainDef<Event> { path = path, handlers = handlers.ToArray() };
         }
 
-        public ChainDefBuilder EndDef()
+        public ChainDefBuilder End()
         {
             return builder;
         }

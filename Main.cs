@@ -315,7 +315,6 @@ namespace Hopper
             player.GetBehavior<Acting>().NextAction = playerMoveAction;
             world.Loop();
 
-
             System.Console.WriteLine("\n ------ Spider Demo ------ \n");
             player.ResetPosInGrid(new IntVector2(4, 4));
             var spider = world.SpawnEntity(Spider.Factory, new IntVector2(3, 3));
@@ -344,7 +343,6 @@ namespace Hopper
             spider.Die();
             world.Loop();
             System.Console.WriteLine($"Tinker is applied? {player.IsTinked(BindStuff.tinker)}");
-
 
             System.Console.WriteLine("\n ------ Input Demo ------ \n");
             // we also have the possibilty to add behaviors dynamically.

@@ -43,7 +43,7 @@ namespace Core
             World = world;
             StatManager = new StatManager();
             History = new History();
-            StartMonitoringEvents();
+            // StartMonitoringEvents();
         }
 
 
@@ -73,6 +73,12 @@ namespace Core
         {
             IsDead = true;
             RemoveFromGrid();
+
+            // Remove tinker stores to avoid memory leaks
+            foreach (var tinker in m_tinkers.Values)
+            {
+                tinker.Untink(this);
+            }
         }
         // the idea is to get the behavior instances like this:
         // entity.behaviors[Attackable.s_factory.id]
@@ -118,40 +124,26 @@ namespace Core
             m_tinkers.Remove(tinker.id);
             tinker.Untink(this);
         }
-        // TODO: this won't work, since other tinkers may also reference
-        // this entity in their stores.
-        // I guess when that happens, they should be checking for whether
-        // this object is dead or not to remove it when necessary.
-        // We can't force the object cleanup otherwise.
-        // If nothing eludes me, this is the only potential memory leak.
-        ~Entity()
-        {
-            foreach (var tinker in m_tinkers.Values)
-            {
-                tinker.RemoveStore(id);
-            }
-        }
 
-        private void RetranslateEndOfLoopEvent()
-        {
-            Tick.chain.ChainPath(this)
-                .Pass(new Tick.Event { actor = this });
-        }
-        private void StartMonitoringEvents()
-        {
-            World.m_state.EndOfLoopEvent += RetranslateEndOfLoopEvent;
-        }
-        public void StopMonitoringEvents()
-        {
-            World.m_state.EndOfLoopEvent -= RetranslateEndOfLoopEvent;
-        }
+        // private void RetranslateEndOfLoopEvent()
+        // {
+        //     RetranslateEndOfLoopEvent?.
+        // }
+        // private void StartMonitoringEvents()
+        // {
+        //     World.m_state.EndOfLoopEvent += RetranslateEndOfLoopEvent;
+        // }
+        // public void StopMonitoringEvents()
+        // {
+        //     World.m_state.EndOfLoopEvent -= RetranslateEndOfLoopEvent;
+        // }
 
 
         public Entity GetClosestPlayer()
         {
             float minDist = 0;
             Entity closestPlayer = null;
-            foreach (var player in World.m_state.m_players)
+            foreach (var player in World.m_state.Players)
             {
                 float curDist = (m_pos - player.m_pos).SqMag;
 

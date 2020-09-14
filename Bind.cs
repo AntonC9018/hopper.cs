@@ -131,7 +131,7 @@ namespace Test
                 .AddHandler(SelfRemove, PriorityRanks.High)
                 .AddDef<Displaceable.Event>(Displaceable.Do.ChainPath)
                 .AddHandler(DisplaceMe, PriorityRanks.Low)
-                .EndDef();
+                .End();
 
             tinker = new Tinker<FlavorTinkerData<BindFlavor>>(builder.ToStatic());
             status = new Status<FlavorTinkerData<BindFlavor>>(tinker);

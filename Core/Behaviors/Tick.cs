@@ -4,11 +4,15 @@ namespace Core.Behaviors
 {
     public class Tick : Behavior
     {
-        public static string s_chainName = "tick";
-
         public class Event : EventBase
         {
             public Entity actor;
+        }
+
+        public void Activate()
+        {
+            var ev = new Event { actor = m_entity };
+            GetChain<Event>(ChainName.Default).Pass(ev);
         }
 
         public static ChainPaths<Tick, Event> chain;
