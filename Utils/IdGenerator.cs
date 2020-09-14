@@ -1,4 +1,4 @@
-namespace Core
+namespace Utils
 {
     // USAGE:
     /*

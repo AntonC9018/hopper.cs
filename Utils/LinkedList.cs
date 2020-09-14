@@ -1,4 +1,4 @@
-namespace MyLinkedList
+namespace Utils.MyLinkedList
 {
     public class MyLinkedList<T>
     {

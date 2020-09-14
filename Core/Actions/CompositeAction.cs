@@ -1,4 +1,4 @@
-using Vector;
+using Utils.Vector;
 
 namespace Core
 {

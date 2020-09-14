@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Vector;
+using Utils.Vector;
 using Chains;
 using Core;
 using Core.Items;

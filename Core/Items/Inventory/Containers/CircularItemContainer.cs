@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using CircularBuffer;
+using Utils.CircularBuffer;
 
 namespace Core.Items
 {

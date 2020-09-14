@@ -1,7 +1,6 @@
-using Chains;
 using Core.Behaviors;
 using Core.Items;
-using System.Linq;
+using Utils;
 
 namespace Core.Retouchers
 {
@@ -12,9 +11,9 @@ namespace Core.Retouchers
 
         static void PickUp(CommonEvent commonEvent)
         {
-            var droppedItems = from droppedItem in commonEvent.actor.Cell.m_entities
-                               where droppedItem.Layer == Layer.DROPPED
-                               select (DroppedItem)droppedItem;
+            var droppedItems = commonEvent.actor.Cell.m_entities
+                .Where(i => i.Layer == Layer.DROPPED)
+                .ConvertAll<DroppedItem>(i => (DroppedItem)i);
 
             var inv = commonEvent.actor.Inventory;
             if (inv != null)

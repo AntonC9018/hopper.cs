@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Chains;
-using Handle = MyLinkedList.MyListNode<Chains.IEvHandler>;
+using Utils;
+using Handle = Utils.MyLinkedList.MyListNode<Chains.IEvHandler>;
 
 namespace Core
 {

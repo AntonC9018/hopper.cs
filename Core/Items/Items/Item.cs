@@ -1,4 +1,6 @@
 
+using Utils;
+
 namespace Core.Items
 {
     public abstract class Item
@@ -10,8 +12,4 @@ namespace Core.Items
         public abstract void BeDestroyed(Entity entity);
         public int slot;
     }
-
-    
-
-    
 }

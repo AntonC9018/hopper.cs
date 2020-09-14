@@ -3,7 +3,7 @@ using Chains;
 using Core;
 using Core.Behaviors;
 using Core.FS;
-using Vector;
+using Utils.Vector;
 
 namespace Test
 {

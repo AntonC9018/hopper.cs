@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using CircularBuffer;
-using Vector;
+using Utils.CircularBuffer;
+using Utils.Vector;
 
 namespace Core.Items
 {

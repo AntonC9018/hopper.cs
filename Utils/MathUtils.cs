@@ -2,7 +2,7 @@ using System;
 
 namespace Utils
 {
-    public static class Math
+    public static class Maths
     {
         public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
         {

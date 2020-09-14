@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using Chains;
-using Vector;
+using Utils.Vector;
 using Core.Behaviors;
 using Core.Items;
 using System;
+using Utils;
 
 namespace Core
 {

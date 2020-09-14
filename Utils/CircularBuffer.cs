@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 
-namespace CircularBuffer
+namespace Utils.CircularBuffer
 {
     /// <inheritdoc/>
     /// <summary>

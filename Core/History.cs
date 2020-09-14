@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Vector;
+using Utils.Vector;
 
 namespace Core
 {

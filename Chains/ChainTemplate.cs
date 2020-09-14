@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Core;
 using Core.Behaviors;
-using MyLinkedList;
+using Utils.MyLinkedList;
 
 namespace Chains
 {

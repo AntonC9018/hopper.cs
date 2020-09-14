@@ -1,5 +1,5 @@
 using Core.Behaviors;
-using Vector;
+using Utils.Vector;
 
 namespace Core
 {

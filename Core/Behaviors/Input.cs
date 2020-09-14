@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Core.FS;
 using Chains;
 using System.Reflection;
-using Vector;
+using Utils.Vector;
 
 namespace Core.Behaviors
 {
