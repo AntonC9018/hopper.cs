@@ -88,19 +88,20 @@ namespace Core.Behaviors
 
             builder
                 .GetTemplate<Event>(InputMappings.Up)
-                .AddHandler(Default(IntVector2.Up), PriorityRanks.Lowest);
+                .AddHandler(Default(IntVector2.Up), PriorityRanks.Lowest)
+                .End()
 
-            builder
                 .GetTemplate<Event>(InputMappings.Right)
-                .AddHandler(Default(IntVector2.Right), PriorityRanks.Lowest);
+                .AddHandler(Default(IntVector2.Right), PriorityRanks.Lowest)
+                .End()
 
-            builder
                 .GetTemplate<Event>(InputMappings.Down)
-                .AddHandler(Default(IntVector2.Down), PriorityRanks.Lowest);
+                .AddHandler(Default(IntVector2.Down), PriorityRanks.Lowest)
+                .End()
 
-            builder
                 .GetTemplate<Event>(InputMappings.Left)
-                .AddHandler(Default(IntVector2.Left), PriorityRanks.Lowest);
+                .AddHandler(Default(IntVector2.Left), PriorityRanks.Lowest)
+                .End();
 
             BehaviorFactory<Input>.s_builder = builder;
         }

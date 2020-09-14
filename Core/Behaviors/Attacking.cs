@@ -4,6 +4,7 @@ using Core.FS;
 using Chains;
 using Core.Items.Weapon;
 using Core.Items;
+using Core.Targeting;
 
 namespace Core.Behaviors
 {
@@ -158,17 +159,20 @@ namespace Core.Behaviors
 
         static Attacking()
         {
-            var builder = new ChainTemplateBuilder();
-
-            var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Attacking, Event>(ChainName.Check);
-            check.AddHandler(SetBase, PriorityRanks.High);
-            check.AddHandler(GetTargets, PriorityRanks.Medium);
-
-            var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Attacking, Event>(ChainName.Check);
-            _do.AddHandler(ApplyAttack);
-            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do));
+
+            var builder = new ChainTemplateBuilder()
+
+                .AddTemplate<Event>(ChainName.Check)
+                .AddHandler(SetBase, PriorityRanks.High)
+                .AddHandler(GetTargets, PriorityRanks.Medium)
+
+                .AddTemplate<Event>(ChainName.Do)
+                .AddHandler(ApplyAttack)
+                .AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do))
+
+                .End();
 
             BehaviorFactory<Attacking>.s_builder = builder;
 

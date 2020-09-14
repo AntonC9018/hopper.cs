@@ -4,13 +4,13 @@ using Core;
 
 namespace Chains
 {
-    public class TemplateChainDefsBuilder
+    public class TemplateChainDefBuilder
     {
-        List<ITemplateChainDefBuilder> defs = new List<ITemplateChainDefBuilder>();
-        public TemplateChainDefBuilder<T> AddDef<T>(BehaviorFactoryPath<T> path)
+        List<I_TCD_PartBuilder> defs = new List<I_TCD_PartBuilder>();
+        public TCD_PartBuilder<T> AddDef<T>(BehaviorFactoryPath<T> path)
             where T : EventBase
         {
-            var def = new TemplateChainDefBuilder<T>(path, this);
+            var def = new TCD_PartBuilder<T>(path, this);
             defs.Add(def);
             return def;
         }

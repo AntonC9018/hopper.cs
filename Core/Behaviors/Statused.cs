@@ -101,18 +101,24 @@ namespace Core.Behaviors
                 status.Apply(ev.actor, statusData.flavor);
             }
         }
-
+        public static ChainPaths<Statused, Event> Check;
+        public static ChainPaths<Statused, Event> Do;
         static Statused()
         {
-            var builder = new ChainTemplateBuilder();
+            Check = new ChainPaths<Statused, Event>(ChainName.Check);
+            Do = new ChainPaths<Statused, Event>(ChainName.Check);
 
-            var check = builder.AddTemplate<Event>(ChainName.Check);
-            check.AddHandler(SetResistance, PriorityRanks.High);
-            check.AddHandler(ResistSomeStatuses, PriorityRanks.Low);
+            var builder = new ChainTemplateBuilder()
 
-            var _do = builder.AddTemplate<Event>(ChainName.Do);
-            _do.AddHandler(Apply);
-            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do));
+                .AddTemplate<Event>(ChainName.Check)
+                .AddHandler(SetResistance, PriorityRanks.High)
+                .AddHandler(ResistSomeStatuses, PriorityRanks.Low)
+
+                .AddTemplate<Event>(ChainName.Do)
+                .AddHandler(Apply)
+                .AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do))
+
+                .End();
 
             BehaviorFactory<Statused>.s_builder = builder;
 

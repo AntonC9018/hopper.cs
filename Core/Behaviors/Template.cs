@@ -40,16 +40,19 @@ namespace Core.Behaviors
         public static ChainPaths<Template, Event> Do;
         static Template()
         {
-            var builder = new ChainTemplateBuilder();
-
-            var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Template, Event>(ChainName.Check);
-            check.AddHandler(HandlerFunction1, PriorityRanks.High);
-
-            var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Template, Event>(ChainName.Do);
-            _do.AddHandler(HandlerFunction2);
-            // _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
+
+            var builder = new ChainTemplateBuilder()
+
+                .AddTemplate<Event>(ChainName.Check)
+                .AddHandler(HandlerFunction1, PriorityRanks.High)
+
+                .AddTemplate<Event>(ChainName.Do)
+                .AddHandler(HandlerFunction2)
+                //.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
+
+                .End();
 
             BehaviorFactory<Template>.s_builder = builder;
 

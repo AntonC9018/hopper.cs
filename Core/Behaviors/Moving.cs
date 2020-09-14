@@ -42,16 +42,19 @@ namespace Core.Behaviors
 
         static Moving()
         {
-            var builder = new ChainTemplateBuilder();
-
-            var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Moving, Event>(ChainName.Check);
-            check.AddHandler(SetBase, PriorityRanks.High);
-
-            var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Moving, Event>(ChainName.Do);
-            _do.AddHandler(Displace);
-            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.move_do));
+
+            var builder = new ChainTemplateBuilder()
+
+                .AddTemplate<Event>(ChainName.Check)
+                .AddHandler(SetBase, PriorityRanks.High)
+
+                .AddTemplate<Event>(ChainName.Do)
+                .AddHandler(Displace)
+                .AddHandler(Utils.AddHistoryEvent(History.EventCode.move_do))
+
+                .End();
 
             BehaviorFactory<Moving>.s_builder = builder;
         }

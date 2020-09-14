@@ -3,6 +3,7 @@ using Chains;
 using Core;
 using Core.Behaviors;
 using Core.FS;
+using Core.Targeting;
 using Utils.Vector;
 
 namespace Test
@@ -123,13 +124,11 @@ namespace Test
 
         public static void SetupTinker()
         {
-            var builder = new ChainDefsBuilder()
+            var builder = new ChainDefBuilder()
                 .AddDef<Attacking.Event>(Attacking.Check.ChainPath)
                 .AddHandler(AttackJustMe, PriorityRanks.High)
-                .EndDef()
                 .AddDef<Tick.Event>(Tick.chain.ChainPath)
                 .AddHandler(SelfRemove, PriorityRanks.High)
-                .EndDef()
                 .AddDef<Displaceable.Event>(Displaceable.Do.ChainPath)
                 .AddHandler(DisplaceMe, PriorityRanks.Low)
                 .EndDef();
@@ -192,16 +191,18 @@ namespace Test
 
         public static Retoucher SetupRetoucher()
         {
-            var builder = new TemplateChainDefsBuilder()
+            var builder = new TemplateChainDefBuilder()
+
                 .AddDef<Tick.Event>(Tick.chain.TemplatePath)
                 .AddHandler(FreeIfHostIsDead, PriorityRanks.High)
-                .EndDef()
+
                 .AddDef<Binding.Event>(Binding.Do.TemplatePath)
                 .AddHandler(Register)
-                .EndDef()
+
                 .AddDef<Displaceable.Event>(Displaceable.Check.TemplatePath)
                 .AddHandler(SkipDisplaceIfBinding)
-                .EndDef();
+
+                .End();
 
             return new Retoucher(builder.ToStatic());
         }
@@ -288,22 +289,20 @@ namespace Test
         public static ChainPaths<Binding, Event> Do;
         static Binding()
         {
-            var builder = new ChainTemplateBuilder();
-
             Check = new ChainPaths<Binding, Event>(ChainName.Check);
-            builder
+            Do = new ChainPaths<Binding, Event>(ChainName.Do);
+
+            var builder = new ChainTemplateBuilder()
+
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(SetFlavor)
                 .AddHandler(GetTarget)
-                .AddHandler(CheckCanBind);
+                .AddHandler(CheckCanBind)
 
-
-            Do = new ChainPaths<Binding, Event>(ChainName.Do);
-            builder
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(BindTarget)
             //  .AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do))
-            ;
+                .End();
 
             BehaviorFactory<Binding>.s_builder = builder;
 

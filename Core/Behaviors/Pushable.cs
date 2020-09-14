@@ -97,18 +97,21 @@ namespace Core.Behaviors
         public static ChainPaths<Pushable, Event> Do;
         static Pushable()
         {
-            var builder = new ChainTemplateBuilder();
-
-            var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Pushable, Event>(ChainName.Check);
-            check.AddHandler(SetResistance, PriorityRanks.High);
-            check.AddHandler(ResistSource, PriorityRanks.High);
-            check.AddHandler(Armor, PriorityRanks.High);
-
-            var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Pushable, Event>(ChainName.Check);
-            _do.AddHandler(BePushed);
-            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
+
+            var builder = new ChainTemplateBuilder()
+
+                .AddTemplate<Event>(ChainName.Check)
+                .AddHandler(SetResistance, PriorityRanks.High)
+                .AddHandler(ResistSource, PriorityRanks.High)
+                .AddHandler(Armor, PriorityRanks.High)
+
+                .AddTemplate<Event>(ChainName.Do)
+                .AddHandler(BePushed)
+                .AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do))
+
+                .End();
 
             BehaviorFactory<Pushable>.s_builder = builder;
 

@@ -4,6 +4,7 @@ using Core.FS;
 using Utils.Vector;
 using Core.Items.Shovel;
 using Core.Items;
+using Core.Targeting;
 
 namespace Core.Behaviors
 {
@@ -54,7 +55,6 @@ namespace Core.Behaviors
         {
         }
 
-
         public bool Activate(Action action, Params pars)
         {
             var ev = new Event
@@ -65,6 +65,7 @@ namespace Core.Behaviors
             };
             return CheckDoCycle<Event>(ev);
         }
+
         static void SetDig(Event ev)
         {
             ev.dig = (Dig)ev.actor.StatManager.GetFile("dig");
@@ -97,16 +98,20 @@ namespace Core.Behaviors
         public static ChainPaths<Diggable, Event> Do;
         static Diggable()
         {
-            var builder = new ChainTemplateBuilder();
-
-            var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Diggable, Event>(ChainName.Check);
-            check.AddHandler(SetDig, PriorityRanks.High);
-            check.AddHandler(GetTargets, PriorityRanks.High);
-
-            var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Diggable, Event>(ChainName.Check);
-            _do.AddHandler(Attack);
+
+            var builder = new ChainTemplateBuilder()
+
+                .AddTemplate<Event>(ChainName.Check)
+                .AddHandler(SetDig, PriorityRanks.High)
+                .AddHandler(GetTargets, PriorityRanks.High)
+
+                .AddTemplate<Event>(ChainName.Do)
+                .AddHandler(Attack)
+
+                .End();
+
             // _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
 
             BehaviorFactory<Diggable>.s_builder = builder;

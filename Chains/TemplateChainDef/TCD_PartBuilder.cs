@@ -4,39 +4,45 @@ using Core;
 
 namespace Chains
 {
-    public interface ITemplateChainDefBuilder
+    public interface I_TCD_PartBuilder
     {
         ITemplateChainDef ToStatic();
     }
 
-    public class TemplateChainDefBuilder<Event> : ITemplateChainDefBuilder where Event : EventBase
+    public class TCD_PartBuilder<Event> : I_TCD_PartBuilder where Event : EventBase
     {
         public BehaviorFactoryPath<Event> path;
         public List<EvHandler<Event>> handlers;
-        private TemplateChainDefsBuilder builder;
+        private TemplateChainDefBuilder builder;
 
-        public TemplateChainDefBuilder(
-            BehaviorFactoryPath<Event> path, TemplateChainDefsBuilder builder = null)
+        public TCD_PartBuilder(
+            BehaviorFactoryPath<Event> path, TemplateChainDefBuilder builder = null)
         {
             this.path = path;
             this.builder = builder;
             handlers = new List<EvHandler<Event>>();
         }
 
-        public TemplateChainDefBuilder<Event> AddHandler(EvHandler<Event> handler)
+        public TCD_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
         {
             handlers.Add(handler);
             return this;
         }
 
-        public TemplateChainDefBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
+        public TCD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
         {
             return AddHandler(new EvHandler<Event>(handlerFunc, priority));
         }
 
-        public TemplateChainDefsBuilder EndDef()
+        public TemplateChainDefBuilder End()
         {
             return builder;
+        }
+
+        public TCD_PartBuilder<T> AddDef<T>(BehaviorFactoryPath<T> path)
+            where T : EventBase
+        {
+            return builder.AddDef<T>(path);
         }
 
         public ITemplateChainDef ToStatic()

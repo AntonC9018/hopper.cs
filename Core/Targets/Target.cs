@@ -2,7 +2,7 @@ using Utils.Vector;
 
 namespace Core.Targeting
 {
-    public abstract class Target
+    public class Target
     {
         public int index;
         public Piece initialPiece;

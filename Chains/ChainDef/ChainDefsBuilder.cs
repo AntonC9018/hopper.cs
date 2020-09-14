@@ -4,13 +4,13 @@ using Core;
 
 namespace Chains
 {
-    public class ChainDefsBuilder
+    public class ChainDefBuilder
     {
-        List<IChainDefBuilder> defs = new List<IChainDefBuilder>();
-        public ChainDefBuilder<T> AddDef<T>(BehaviorPath<T> path)
+        List<I_CD_PartBuilder> defs = new List<I_CD_PartBuilder>();
+        public CD_PartBuilder<T> AddDef<T>(BehaviorPath<T> path)
             where T : EventBase
         {
-            var def = new ChainDefBuilder<T>(path, this);
+            var def = new CD_PartBuilder<T>(path, this);
             defs.Add(def);
             return def;
         }

@@ -20,7 +20,7 @@ namespace Core.Behaviors
             }
         }
 
-        Sequence m_sequence;
+        private Sequence m_sequence;
 
         public Action CurrentAction
         { get { return m_sequence.CurrentAction; } }
@@ -42,7 +42,5 @@ namespace Core.Behaviors
         {
             return m_sequence.GetMovs();
         }
-
-
     }
 }

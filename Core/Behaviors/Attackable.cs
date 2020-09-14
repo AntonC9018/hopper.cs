@@ -137,26 +137,29 @@ namespace Core.Behaviors
 
         static Attackable()
         {
-            var builder = new ChainTemplateBuilder();
-
-            var check = builder.AddTemplate<Event>(ChainName.Check);
+            Do = new ChainPaths<Attackable, Event>(ChainName.Do);
             Check = new ChainPaths<Attackable, Event>(ChainName.Check);
+            Condition = new ChainPaths<Attackable, AttackablenessEvent>(ChainName.Condition);
+
             // this can be cleaned up by using lambdas
             // this way we would eliminate the need of static methods
             // i.e. e => e.actor.beh_Attackable.MethodName(e)
             // or, even better, wrap it in a method Wrap(func, id) and call it as
             // Wrap(func, s_factory.id)
-            check.AddHandler(SetResistance, PriorityRanks.High);
-            check.AddHandler(ResistSource, PriorityRanks.Low);
-            check.AddHandler(Armor, PriorityRanks.Low);
+            var builder = new ChainTemplateBuilder()
 
-            var _do = builder.AddTemplate<Event>(ChainName.Do);
-            Do = new ChainPaths<Attackable, Event>(ChainName.Do);
-            _do.AddHandler(TakeHit);
-            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.attacked_do));
+                .AddTemplate<Event>(ChainName.Check)
+                .AddHandler(SetResistance, PriorityRanks.High)
+                .AddHandler(ResistSource, PriorityRanks.Low)
+                .AddHandler(Armor, PriorityRanks.Low)
 
-            var condition = builder.AddTemplate<AttackablenessEvent>(ChainName.Condition);
-            Condition = new ChainPaths<Attackable, AttackablenessEvent>(ChainName.Condition);
+                .AddTemplate<Event>(ChainName.Do)
+                .AddHandler(TakeHit)
+                .AddHandler(Utils.AddHistoryEvent(History.EventCode.attacked_do))
+
+                .AddTemplate<AttackablenessEvent>(ChainName.Condition)
+
+                .End();
 
             BehaviorFactory<Attackable>.s_builder = builder;
 

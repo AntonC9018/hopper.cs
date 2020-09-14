@@ -102,16 +102,16 @@ namespace Core.Behaviors
 
         static Acting()
         {
-            var builder = new ChainTemplateBuilder();
 
-            var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Acting, Event>(ChainName.Check);
-
-            var fail = builder.AddTemplate<Event>(ChainName.Fail);
             Fail = new ChainPaths<Acting, Event>(ChainName.Fail);
-
-            var succeed = builder.AddTemplate<Event>(ChainName.Success);
             Success = new ChainPaths<Acting, Event>(ChainName.Success);
+
+            var builder = new ChainTemplateBuilder()
+                .AddTemplate<Event>(ChainName.Check)
+                .AddTemplate<Event>(ChainName.Fail)
+                .AddTemplate<Event>(ChainName.Success)
+                .End();
 
             BehaviorFactory<Acting>.s_builder = builder;
         }

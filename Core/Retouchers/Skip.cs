@@ -16,29 +16,6 @@ namespace Core.Retouchers
         public static Retoucher Self = Retoucher
             .SingleHandlered<Attacking.Event>(Attacking.Check.TemplatePath, SkipSelf);
 
-        // public static void Setup()
-        // {
-        //     var emptyAttack = new ChainDefBuilder<Attacking.Event>(ChainName.Check);
-        //     var blockedMove = new ChainDefBuilder<Moving.Event>(Moving.ChainName.Check);
-        //     var noPlayer = new ChainDefBuilder<Attacking.Event>(ChainName.Check);
-        //     var self = new ChainDefBuilder<Attacking.Event>(ChainName.Check);
-
-        //     var attackHandler = new EvHandler<Attacking.Event>(SkipEmptyAttack);
-        //     var blockedHandler = new EvHandler<Moving.Event>(SkipBlocked);
-        //     var noPlayerHandler = new EvHandler<Attacking.Event>(SkipNoPlayer);
-        //     var selfHandler = new EvHandler<Attacking.Event>(SkipSelf);
-
-        //     emptyAttack.AddHandler(attackHandler);
-        //     blockedMove.AddHandler(blockedHandler);
-        //     noPlayer.AddHandler(noPlayerHandler);
-        //     self.AddHandler(selfHandler);
-
-        //     EmptyAttack = new Retoucher(emptyAttack.ToStatic());
-        //     BlockedMove = new Retoucher(blockedMove.ToStatic());
-        //     NoPlayer = new Retoucher(noPlayer.ToStatic());
-        //     Self = new Retoucher(self.ToStatic());
-        // }
-
         static void SkipEmptyAttack(Attacking.Event ev)
         {
             ev.propagate = ev.targets.Count > 0;

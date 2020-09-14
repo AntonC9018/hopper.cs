@@ -81,16 +81,19 @@ namespace Core.Behaviors
 
         static Displaceable()
         {
-            var builder = new ChainTemplateBuilder();
-
-            var check = builder.AddTemplate<Event>(ChainName.Check);
             Check = new ChainPaths<Displaceable, Event>(ChainName.Check);
-            check.AddHandler(ConvertFromMove, PriorityRanks.High);
-
-            var _do = builder.AddTemplate<Event>(ChainName.Do);
             Do = new ChainPaths<Displaceable, Event>(ChainName.Do);
-            _do.AddHandler(Displace);
-            _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.displaced_do));
+
+            var builder = new ChainTemplateBuilder()
+
+                .AddTemplate<Event>(ChainName.Check)
+                .AddHandler(ConvertFromMove, PriorityRanks.High)
+
+                .AddTemplate<Event>(ChainName.Do)
+                .AddHandler(Displace)
+                .AddHandler(Utils.AddHistoryEvent(History.EventCode.displaced_do))
+
+                .End();
 
             BehaviorFactory<Displaceable>.s_builder = builder;
 

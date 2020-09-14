@@ -3,31 +3,31 @@ using Core;
 
 namespace Chains
 {
-    public interface IChainDefBuilder
+    public interface I_CD_PartBuilder
     {
         IChainDef ToStatic();
     }
 
-    public class ChainDefBuilder<Event> : IChainDefBuilder where Event : EventBase
+    public class CD_PartBuilder<Event> : I_CD_PartBuilder where Event : EventBase
     {
         public BehaviorPath<Event> path;
-        private ChainDefsBuilder builder;
+        private ChainDefBuilder builder;
         public List<EvHandler<Event>> handlers;
 
-        public ChainDefBuilder(BehaviorPath<Event> path, ChainDefsBuilder builder)
+        public CD_PartBuilder(BehaviorPath<Event> path, ChainDefBuilder builder)
         {
             this.path = path;
             this.builder = builder;
             handlers = new List<EvHandler<Event>>();
         }
 
-        public ChainDefBuilder<Event> AddHandler(EvHandler<Event> handler)
+        public CD_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
         {
             handlers.Add(handler);
             return this;
         }
 
-        public ChainDefBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
+        public CD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
         {
             return AddHandler(new EvHandler<Event>(handlerFunc, priority));
         }
@@ -37,9 +37,15 @@ namespace Chains
             return new ChainDef<Event> { path = path, handlers = handlers.ToArray() };
         }
 
-        public ChainDefsBuilder EndDef()
+        public ChainDefBuilder EndDef()
         {
             return builder;
+        }
+
+        public CD_PartBuilder<T> AddDef<T>(BehaviorPath<T> path)
+            where T : EventBase
+        {
+            return builder.AddDef<T>(path);
         }
     }
 }
