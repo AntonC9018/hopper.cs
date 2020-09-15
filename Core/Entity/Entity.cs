@@ -8,10 +8,10 @@ using Utils;
 
 namespace Core
 {
-    public class Entity : IProvideBehavior
+    public class Entity : IProvideBehavior, IHaveId
     {
-        static IdGenerator s_idGenerator = new IdGenerator();
-        public readonly int id = s_idGenerator.GetNextId();
+        public int Id => m_id;
+        private int m_id;
 
         protected IntVector2 m_pos;
         protected IntVector2 m_orientation = IntVector2.UnitX;
@@ -47,6 +47,11 @@ namespace Core
         public Entity()
         {
             IsDead = false;
+        }
+
+        public void _SetId(int id)
+        {
+            this.m_id = id;
         }
 
         public void Init(IntVector2 pos, World world)
@@ -111,30 +116,30 @@ namespace Core
 
         public bool IsTinked(ITinker tinker)
         {
-            return m_tinkerStore.ContainsKey(tinker.id);
+            return m_tinkerStore.ContainsKey(tinker.Id);
         }
 
         public void TinkAndSave(ITinker tinker)
         {
             if (IsTinked(tinker))
             {
-                var store = m_tinkerStore[tinker.id];
+                var store = m_tinkerStore[tinker.Id];
                 store.count++;
             }
             else
             {
-                m_tinkerStore[tinker.id] = tinker.CreateDataAndTink(this);
+                m_tinkerStore[tinker.Id] = tinker.CreateDataAndTink(this);
             }
         }
 
         public void Untink(ITinker tinker)
         {
-            var store = m_tinkerStore[tinker.id];
+            var store = m_tinkerStore[tinker.Id];
             store.count--;
             if (store.count == 0)
             {
                 tinker.Untink(store, this);
-                m_tinkerStore.Remove(tinker.id);
+                m_tinkerStore.Remove(tinker.Id);
             }
         }
 
@@ -146,7 +151,7 @@ namespace Core
 
         public TinkerData GetTinkerStore(ITinker tinker)
         {
-            return m_tinkerStore[tinker.id];
+            return m_tinkerStore[tinker.Id];
         }
 
         // private void RetranslateEndOfLoopEvent()

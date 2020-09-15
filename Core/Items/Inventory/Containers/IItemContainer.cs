@@ -4,9 +4,9 @@ namespace Core.Items
 {
     public interface IItemContainer
     {
-        void Insert(Item item);
-        void Remove(Item item);
-        Item this[int index] { get; }
-        List<Item> PullOutExcess();
+        void Insert(IItem item);
+        void Remove(IItem item);
+        IItem this[int index] { get; }
+        List<IItem> PullOutExcess();
     }
 }

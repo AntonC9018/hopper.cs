@@ -14,17 +14,27 @@ namespace Core
         public virtual void Init(Entity entity) { }
     }
 
-    public abstract class ITinker
+    public interface ITinker : IHaveId
     {
-        protected IChainDef[] m_chainDefinition;
-        static IdGenerator s_idGenerator = new IdGenerator();
-        public readonly int id = s_idGenerator.GetNextId();
+        TinkerData CreateDataAndTink(Entity entity);
+        void Untink(TinkerData data, Entity entity);
+    }
 
-        protected abstract TinkerData InstantiateData();
+    public class Tinker<T> : ITinker where T : TinkerData, new()
+    {
+        public int Id => m_id;
+        protected readonly int m_id;
+        protected IChainDef[] m_chainDefinition;
+
+        public Tinker(IChainDef[] chainDefs)
+        {
+            m_chainDefinition = chainDefs;
+            m_id = IdMap.Tinker.Add(this);
+        }
 
         public TinkerData CreateDataAndTink(Entity entity)
         {
-            var data = InstantiateData();
+            var data = new T();
             // we have to do this manually to not pass the length into the init function
             data.chainHandlesArray = new Handle[m_chainDefinition.Length][];
             data.Init(entity); // since the constructor can only be parameterless 
@@ -47,15 +57,7 @@ namespace Core
                 chainDef.RemoveHandlers(data.chainHandlesArray[i], entity);
             }
         }
-    }
 
-    public class Tinker<T> : ITinker where T : TinkerData, new()
-    {
-        public Tinker(IChainDef[] chainDefs)
-        {
-            m_chainDefinition = chainDefs;
-        }
-        protected override TinkerData InstantiateData() => new T();
         public T GetStore(Entity actor) => (T)actor.GetTinkerStore(this);
         public T GetStore(CommonEvent ev) => (T)ev.actor.GetTinkerStore(this);
 

@@ -1,26 +1,31 @@
 namespace Core.Items
 {
-    public class TinkerItem : Item
+    public class TinkerItem : IItem
     {
-        ITinker tinker;
+        private readonly int m_id;
+        private readonly int m_slot;
+        public int Slot => m_slot;
+        public int Id => m_id;
+        private ITinker tinker;
 
         public TinkerItem(ITinker tinker, int slot = 0)
         {
             this.tinker = tinker;
-            this.slot = slot;
+            m_slot = slot;
+            m_id = IdMap.Items.Add(this);
         }
 
-        public override void BeDestroyed(Entity entity)
+        public void BeDestroyed(Entity entity)
         {
             entity.Untink(tinker);
         }
 
-        public override void BeEquipped(Entity entity)
+        public void BeEquipped(Entity entity)
         {
             entity.TinkAndSave(tinker);
         }
 
-        public override void BeUnequipped(Entity entity)
+        public void BeUnequipped(Entity entity)
         {
             entity.Untink(tinker);
             entity.World.CreateDroppedItem(this, entity.Pos);

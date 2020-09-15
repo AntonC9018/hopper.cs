@@ -6,13 +6,13 @@ namespace Core.Items
 {
     public class CircularItemContainer : IItemContainer, IResizable
     {
-        CircularBuffer<Item> items;
-        List<Item> excess;
+        CircularBuffer<IItem> items;
+        List<IItem> excess;
 
         public CircularItemContainer(int size)
         {
-            items = new CircularBuffer<Item>(size);
-            excess = new List<Item>();
+            items = new CircularBuffer<IItem>(size);
+            excess = new List<IItem>();
         }
 
         public int Size
@@ -23,29 +23,29 @@ namespace Core.Items
                 var allItems = items.ToArray();
                 var remainingItems = allItems.Take(value).ToArray();
                 excess.AddRange(allItems.Skip(value));
-                items = new CircularBuffer<Item>(Size, remainingItems);
+                items = new CircularBuffer<IItem>(Size, remainingItems);
             }
         }
 
-        public List<Item> PullOutExcess()
+        public List<IItem> PullOutExcess()
         {
             var exc = excess;
-            excess = new List<Item>();
+            excess = new List<IItem>();
             return exc;
         }
-        public Item this[int index] { get => items[index]; }
-        public void Insert(Item item)
+        public IItem this[int index] { get => items[index]; }
+        public void Insert(IItem item)
         {
             var ex = items.PushBack(item);
             if (ex != null)
                 excess.Add(ex);
         }
-        public void Remove(Item item)
+        public void Remove(IItem item)
         {
             var remainingItems = items
-                .Where<Item>(i => i.id != item.id)
-                .ToArray<Item>();
-            items = new CircularBuffer<Item>(items.Capacity, remainingItems);
+                .Where<IItem>(i => i.Id != item.Id)
+                .ToArray<IItem>();
+            items = new CircularBuffer<IItem>(items.Capacity, remainingItems);
         }
 
     }

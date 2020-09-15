@@ -17,7 +17,7 @@ namespace Core
             m_state.Loop();
         }
 
-        public Entity SpawnEntity(IInstantiateEntities entityFactory, IntVector2 pos)
+        public Entity SpawnEntity(IEntityFactory entityFactory, IntVector2 pos)
         {
             var entity = entityFactory.Instantiate();
             entity.Init(pos, this);
@@ -26,9 +26,9 @@ namespace Core
             return entity;
         }
 
-        public Entity CreateDroppedItem(Item item, IntVector2 pos)
+        public Entity CreateDroppedItem(IItem item, IntVector2 pos)
         {
-            var entity = (DroppedItem)SpawnEntity(DroppedItem.s_factory, pos);
+            var entity = (DroppedItem)SpawnEntity(DroppedItem.Factory, pos);
             entity.Item = item;
             return entity;
         }

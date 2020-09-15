@@ -5,20 +5,16 @@ using Utils;
 
 namespace Core
 {
-    public class Retoucher
+    public class Retoucher : IHaveId
     {
-        static IdGenerator s_idGenerator = new IdGenerator();
-        public readonly int id = s_idGenerator.GetNextId();
-        ITemplateChainDef[] m_chainDefinitions;
+        public int Id => m_id;
+        public readonly int m_id;
+        private ITemplateChainDef[] m_chainDefinitions;
 
         public Retoucher(ITemplateChainDef[] chainDefinitions)
         {
             this.m_chainDefinitions = chainDefinitions;
-        }
-
-        public Retoucher(ITemplateChainDef chainDefinitions)
-        {
-            this.m_chainDefinitions = new ITemplateChainDef[] { chainDefinitions };
+            m_id = IdMap.Retoucher.Add(this);
         }
 
         // beacuse I'm sick of boilerplate for simple stuff
@@ -43,7 +39,7 @@ namespace Core
             );
         }
 
-        internal void Retouch(IProvideBehaviorFactory entityFactory)
+        public void Retouch(IProvideBehaviorFactory entityFactory)
         {
             foreach (var def in m_chainDefinitions)
             {

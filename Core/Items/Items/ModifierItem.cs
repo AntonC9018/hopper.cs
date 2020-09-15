@@ -1,26 +1,31 @@
 namespace Core.Items
 {
-    public class ModifierItem : Item
+    public class ModifierItem : IItem
     {
-        Modifier modifier;
+        private readonly int m_id;
+        private readonly int m_slot;
+        public int Slot => m_slot;
+        public int Id => m_id;
+        private Modifier modifier;
 
-        public ModifierItem(Modifier modifier, int slot = 0)
+        public ModifierItem(Modifier modifier, int slot)
         {
             this.modifier = modifier;
-            this.slot = slot;
+            m_slot = slot;
+            m_id = IdMap.Items.Add(this);
         }
 
-        public override void BeDestroyed(Entity entity)
+        public void BeDestroyed(Entity entity)
         {
             entity.StatManager.RemoveModifier(modifier);
         }
 
-        public override void BeEquipped(Entity entity)
+        public void BeEquipped(Entity entity)
         {
             entity.StatManager.AddModifier(modifier);
         }
 
-        public override void BeUnequipped(Entity entity)
+        public void BeUnequipped(Entity entity)
         {
             entity.StatManager.RemoveModifier(modifier);
             entity.World.CreateDroppedItem(this, entity.Pos);

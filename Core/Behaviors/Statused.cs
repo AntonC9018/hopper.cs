@@ -10,29 +10,22 @@ namespace Core.Behaviors
     {
         public Flavor flavor;
         public StatusFile statusStat;
-        public int statusIndex;
+        public int statusId;
 
-        public StatusParam(Flavor flavor, StatusFile statusStat, int statusIndex)
+        public StatusParam(Flavor flavor, StatusFile statusStat, int statusId)
         {
             this.flavor = flavor;
             this.statusStat = statusStat;
-            this.statusIndex = statusIndex;
+            this.statusId = statusId;
         }
     }
 
     public class Statused : Behavior
     {
-        public static List<string> s_indexStatusNameMap = new List<string>();
-        public static List<IStatus> s_indexStatusMap = new List<IStatus>();
-
-        public static int RegisterStatus(string name, IStatus status, int defaultResValue = 1)
+        public static void RegisterStatus(IStatus status, int defaultResValue = 1)
         {
             var statusResFile = (ArrayFile)StatManager.DefaultFS.GetFile("status_res");
             statusResFile.content.Add(defaultResValue);
-
-            s_indexStatusNameMap.Add(name);
-            s_indexStatusMap.Add(status);
-            return s_indexStatusNameMap.Count - 1;
         }
 
         static void SetupStats()
@@ -62,8 +55,8 @@ namespace Core.Behaviors
             Tick.Chain.ChainPath(entity).AddHandler(
                 e =>
                 {
-                    foreach (var status in s_indexStatusMap)
-                        status.Tick(e.actor);
+                    foreach (var status in IdMap.Status.AllItems)
+                        ((IStatus)status).Tick(e.actor);
                 }
             );
         }
@@ -87,7 +80,7 @@ namespace Core.Behaviors
         static void ResistSomeStatuses(Event ev)
         {
             ev.statusParams = ev.statusParams
-                .Where(p => ev.resistance[p.statusIndex] <= p.statusStat.power)
+                .Where(p => ev.resistance[p.statusId] <= p.statusStat.power)
                 .Where(p => p.statusStat.amount > 0)
                 .ToArray();
         }
@@ -96,7 +89,7 @@ namespace Core.Behaviors
         {
             foreach (var statusData in ev.statusParams)
             {
-                var status = s_indexStatusMap[statusData.statusIndex];
+                var status = IdMap.Status.Map(statusData.statusId);
                 statusData.flavor.amount = statusData.statusStat.amount;
                 status.Apply(ev.actor, statusData.flavor);
             }

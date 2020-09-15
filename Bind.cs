@@ -68,6 +68,9 @@ namespace Test
                 .AddBehavior<Binding>()
                 .AddBehavior<Attackable>()
                 .RetouchAndSave(SelfBindingStuff.retoucher);
+
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(BindStuff).TypeHandle);
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SelfBindingStuff).TypeHandle);
         }
     }
 
@@ -135,6 +138,7 @@ namespace Test
 
             tinker = new Tinker<FlavorTinkerData<BindFlavor>>(builder.ToStatic());
             status = new Status<FlavorTinkerData<BindFlavor>>(tinker);
+            Statused.RegisterStatus(BindStuff.status);
         }
 
         static BindStuff()
@@ -210,11 +214,9 @@ namespace Test
 
     public class Binding : Behavior
     {
-        public static int s_bindStatusIndex;
         static void SetupStats()
         {
             Directory baseDir = StatManager.DefaultFS.BaseDir;
-            s_bindStatusIndex = Statused.RegisterStatus("Bind", BindStuff.status);
 
             StatFile bind = new StatusFile
             {
@@ -254,7 +256,7 @@ namespace Test
         {
             ev.statusParam = new StatusParam
             (
-                statusIndex: s_bindStatusIndex,
+                statusId: BindStuff.status.Id,
                 flavor: new BindFlavor(ev.actor, ev.pars.spice),
                 statusStat: (StatusFile)ev.actor.StatManager.GetFile("test_bind")
             );

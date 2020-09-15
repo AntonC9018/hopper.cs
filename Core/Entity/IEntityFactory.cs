@@ -2,7 +2,7 @@ using Core.Behaviors;
 
 namespace Core
 {
-    public interface IInstantiateEntities
+    public interface IEntityFactory : IHaveId
     {
         Entity Instantiate();
     }

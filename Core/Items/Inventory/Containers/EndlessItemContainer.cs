@@ -4,10 +4,10 @@ namespace Core.Items
 {
     public class EndelssItemContanier : IItemContainer
     {
-        List<Item> items = new List<Item>();
-        public List<Item> PullOutExcess() => new List<Item>();
-        public Item this[int index] { get => items[index]; }
-        public void Insert(Item item) => items.Add(item);
-        public void Remove(Item item) => items.Remove(item);
+        List<IItem> items = new List<IItem>();
+        public List<IItem> PullOutExcess() => new List<IItem>();
+        public IItem this[int index] { get => items[index]; }
+        public void Insert(IItem item) => items.Add(item);
+        public void Remove(IItem item) => items.Remove(item);
     }
 }

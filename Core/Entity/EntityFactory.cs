@@ -10,15 +10,19 @@ namespace Core
         public BehaviorConfig config;
     }
 
-    public class EntityFactory<T> : IInstantiateEntities, IProvideBehaviorFactory
+
+
+    public class EntityFactory<T> : IEntityFactory, IProvideBehaviorFactory
         where T : Entity, new()
     {
-        static IdGenerator s_idGenerator = new IdGenerator();
-        public readonly int id = s_idGenerator.GetNextId();
+
+        public int Id => m_id;
+        private int m_id;
         public event System.Action<Entity> InitEvent;
 
         public EntityFactory()
         {
+            m_id = IdMap.EntityFactory.Add(this);
             AddBehavior<Tick>();
         }
 
@@ -39,17 +43,32 @@ namespace Core
 
         public EntityFactory<T> RetouchAndSave(Retoucher retoucher)
         {
-            m_retouchers.Add(retoucher.id, retoucher);
+            m_retouchers.Add(retoucher.Id, retoucher);
             retoucher.Retouch(this);
             return this;
         }
 
         public bool IsRetouched(Retoucher retoucher)
         {
-            return m_retouchers.ContainsKey(retoucher.id);
+            return m_retouchers.ContainsKey(retoucher.Id);
         }
 
         public Entity Instantiate()
+        {
+            var entity = InstantiateLogic();
+            int id = IdMap.Entity.Add(entity, this);
+            entity._SetId(id);
+            return entity;
+        }
+
+        public Entity ReInstantiate(int id)
+        {
+            var entity = InstantiateLogic();
+            entity._SetId(id);
+            return entity;
+        }
+
+        private Entity InstantiateLogic()
         {
             Entity entity = new T();
             // Instantiate and save behaviors

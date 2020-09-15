@@ -2,10 +2,10 @@ namespace Core.Items
 {
     public interface IInventory
     {
-        void Equip(Item item);
-        void Unequip(Item item);
+        void Equip(IItem item);
+        void Unequip(IItem item);
         void DropExcess();
-        bool CanEquipItem(Item item);
-        Item GetItemFromSlot(int slotId);
+        bool CanEquipItem(IItem item);
+        IItem GetItemFromSlot(int slotId);
     }
 }

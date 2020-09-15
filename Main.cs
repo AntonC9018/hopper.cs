@@ -16,6 +16,8 @@ namespace Hopper
 
         static void Main(string[] args)
         {
+            var ____ = Spider.Factory;
+
             System.Console.WriteLine("\n ------ Definition + Instantiation Demo ------ \n");
 
             World world = new World
@@ -25,7 +27,11 @@ namespace Hopper
             };
             System.Console.WriteLine("Created world");
 
-            int testStatusId = Statused.RegisterStatus("test", TestStatusTinkerStuff.status, 1);
+            Statused.RegisterStatus(TestStatusTinkerStuff.status, 1);
+
+            var packed = IdMap.Status.PackModMap();
+            System.Console.WriteLine("Setting map");
+            IdMap.Status.SetServerMap(packed);
 
             var playerFactory = new EntityFactory<Player>();
             playerFactory.AddBehavior<Attackable>();
@@ -298,7 +304,7 @@ namespace Hopper
             var status = TestStatusTinkerStuff.status;
             var statusData = new StatusParam
             (
-                statusIndex: testStatusId,
+                statusId: TestStatusTinkerStuff.tinker.Id,
                 flavor: new Flavor(),
                 statusStat: new StatusFile
                 {

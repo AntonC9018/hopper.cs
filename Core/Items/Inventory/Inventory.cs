@@ -19,20 +19,20 @@ namespace Core.Items
             m_actor = entity;
         }
 
-        public void Equip(Item item)
+        public void Equip(IItem item)
         {
-            var container = m_itemSlots[item.slot];
+            var container = m_itemSlots[item.Slot];
             container.Insert(item);
             item.BeEquipped(m_actor);
-            System.Console.WriteLine($"Picked up an item with id = {item.id}");
+            System.Console.WriteLine($"Picked up an item with id = {item.Id}");
         }
 
-        public void Unequip(Item item)
+        public void Unequip(IItem item)
         {
-            var container = m_itemSlots[item.slot];
+            var container = m_itemSlots[item.Slot];
             container.Remove(item);
             item.BeUnequipped(m_actor);
-            System.Console.WriteLine($"Dropped item with id = {item.id}");
+            System.Console.WriteLine($"Dropped item with id = {item.Id}");
         }
 
         public void DropExcess()
@@ -40,10 +40,10 @@ namespace Core.Items
             foreach (var container in m_itemSlots.Values)
             {
                 var excess = container.PullOutExcess();
-                foreach (Item item in excess)
+                foreach (IItem item in excess)
                 {
                     item.BeUnequipped(m_actor);
-                    System.Console.WriteLine($"Dropped excess item with id = {item.id}");
+                    System.Console.WriteLine($"Dropped excess item with id = {item.Id}");
                 }
             }
         }
@@ -57,12 +57,12 @@ namespace Core.Items
             m_itemSlots[slotId] = container;
         }
 
-        public bool CanEquipItem(Item item)
+        public bool CanEquipItem(IItem item)
         {
-            return m_itemSlots.ContainsKey(item.slot);
+            return m_itemSlots.ContainsKey(item.Slot);
         }
 
-        public Item GetItemFromSlot(int slotId)
+        public IItem GetItemFromSlot(int slotId)
         {
             return m_itemSlots[slotId][0];
         }
