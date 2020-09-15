@@ -15,10 +15,10 @@ namespace Core.Behaviors
             GetChain<Event>(ChainName.Default).Pass(ev);
         }
 
-        public static ChainPaths<Tick, Event> chain;
+        public static ChainPaths<Tick, Event> Chain;
         static Tick()
         {
-            chain = new ChainPaths<Tick, Event>(ChainName.Default);
+            Chain = new ChainPaths<Tick, Event>(ChainName.Default);
             var builder = new ChainTemplateBuilder()
                 .AddTemplate<Event>(ChainName.Default).End();
             BehaviorFactory<Tick>.s_builder = builder;

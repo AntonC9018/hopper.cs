@@ -104,7 +104,7 @@ namespace Test
 
         public static void SelfRemove(Tick.Event ev)
         {
-            var flavor = tinker.GetStore(ev.actor.id).flavor;
+            var flavor = tinker.GetStore(ev.actor).flavor;
             if (flavor.whoApplied == null || flavor.whoApplied.IsDead)
             {
                 // ev.actor.Untink(tinker);
@@ -125,11 +125,11 @@ namespace Test
         public static void SetupTinker()
         {
             var builder = new ChainDefBuilder()
-                .AddDef<Attacking.Event>(Attacking.Check.ChainPath)
+                .AddDef<Attacking.Event>(Attacking.Check)
                 .AddHandler(AttackJustMe, PriorityRanks.High)
-                .AddDef<Tick.Event>(Tick.chain.ChainPath)
+                .AddDef<Tick.Event>(Tick.Chain)
                 .AddHandler(SelfRemove, PriorityRanks.High)
-                .AddDef<Displaceable.Event>(Displaceable.Do.ChainPath)
+                .AddDef<Displaceable.Event>(Displaceable.Do)
                 .AddHandler(DisplaceMe, PriorityRanks.Low)
                 .End();
 
@@ -148,7 +148,7 @@ namespace Test
         }
 
         public static Tinker<TinkerData> StopMoveSpice = Tinker<TinkerData>
-            .SingleHandlered<Moving.Event>(Moving.Check.ChainPath, StopMove, PriorityRanks.High);
+            .SingleHandlered<Moving.Event>(Moving.Check, StopMove, PriorityRanks.High);
     }
 
     public static class SelfBindingStuff
@@ -193,13 +193,13 @@ namespace Test
         {
             var builder = new TemplateChainDefBuilder()
 
-                .AddDef<Tick.Event>(Tick.chain.TemplatePath)
+                .AddDef<Tick.Event>(Tick.Chain)
                 .AddHandler(FreeIfHostIsDead, PriorityRanks.High)
 
-                .AddDef<Binding.Event>(Binding.Do.TemplatePath)
+                .AddDef<Binding.Event>(Binding.Do)
                 .AddHandler(Register)
 
-                .AddDef<Displaceable.Event>(Displaceable.Check.TemplatePath)
+                .AddDef<Displaceable.Event>(Displaceable.Check)
                 .AddHandler(SkipDisplaceIfBinding)
 
                 .End();

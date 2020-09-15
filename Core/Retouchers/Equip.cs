@@ -7,7 +7,7 @@ namespace Core.Retouchers
     public static class Equip
     {
         public static Retoucher OnDisplace = Retoucher
-            .SingleHandlered<Displaceable.Event>(Displaceable.Do.TemplatePath, PickUp);
+            .SingleHandlered<Displaceable.Event>(Displaceable.Do, PickUp);
 
         static void PickUp(CommonEvent commonEvent)
         {

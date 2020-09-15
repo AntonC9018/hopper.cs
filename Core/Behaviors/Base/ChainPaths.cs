@@ -19,7 +19,14 @@ namespace Core.Behaviors
     {
         ChainTemplate<Event> GetTemplate<Event>(ChainName name) where Event : EventBase;
     }
-    public class ChainPaths<Beh, Event>
+
+    public interface IChainPaths<Event> where Event : EventBase
+    {
+        Chain<Event> ChainPath(IProvideBehavior startingFrom);
+        ChainTemplate<Event> TemplatePath(IProvideBehaviorFactory startingFrom);
+    }
+
+    public class ChainPaths<Beh, Event> : IChainPaths<Event>
         where Beh : Behavior, new()
         where Event : EventBase
     {

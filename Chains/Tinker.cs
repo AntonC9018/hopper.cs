@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Chains;
+using Core.Behaviors;
 using Utils;
 using Handle = Utils.MyLinkedList.MyListNode<Chains.IEvHandler>;
 
@@ -15,33 +16,18 @@ namespace Core
 
     public abstract class ITinker
     {
-        protected Dictionary<int, TinkerData> m_store;
         protected IChainDef[] m_chainDefinition;
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
 
-        public void RemoveStore(int entityId)
-        {
-            m_store.Remove(entityId);
-        }
-        public bool IsApplied(int entityId)
-        {
-            return m_store.ContainsKey(entityId);
-        }
         protected abstract TinkerData InstantiateData();
-        public void Tink(Entity entity)
-        {
-            if (m_store.ContainsKey(entity.id))
-            {
-                m_store[entity.id].count++;
-                return;
-            }
 
+        public TinkerData CreateDataAndTink(Entity entity)
+        {
             var data = InstantiateData();
             // we have to do this manually to not pass the length into the init function
             data.chainHandlesArray = new Handle[m_chainDefinition.Length][];
             data.Init(entity); // since the constructor can only be parameterless 
-            m_store[entity.id] = data;
 
             for (int i = 0; i < m_chainDefinition.Length; i++)
             {
@@ -49,13 +35,12 @@ namespace Core
                 var handles = chainDef.AddHandlers(entity);
                 data.chainHandlesArray[i] = handles;
             }
-        }
-        public void Untink(Entity entity)
-        {
-            m_store[entity.id].count--;
-            if (m_store[entity.id].count > 0) return;
 
-            var data = m_store[entity.id];
+            return data;
+        }
+
+        public void Untink(TinkerData data, Entity entity)
+        {
             for (int i = 0; i < data.chainHandlesArray.Length; i++)
             {
                 var chainDef = m_chainDefinition[i];
@@ -68,16 +53,15 @@ namespace Core
     {
         public Tinker(IChainDef[] chainDefs)
         {
-            m_store = new Dictionary<int, TinkerData>();
             m_chainDefinition = chainDefs;
         }
         protected override TinkerData InstantiateData() => new T();
-        public T GetStore(int entityId) => (T)m_store[entityId];
-        public T GetStore(CommonEvent ev) => (T)m_store[ev.actor.id];
+        public T GetStore(Entity actor) => (T)actor.GetTinkerStore(this);
+        public T GetStore(CommonEvent ev) => (T)ev.actor.GetTinkerStore(this);
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Tinker<T> SingleHandlered<Event>(
-            BehaviorPath<Event> path,
+            IChainPaths<Event> path,
             System.Action<Event> handler,
             PriorityRanks priority = PriorityRanks.Default)
             where Event : EventBase
@@ -87,7 +71,7 @@ namespace Core
                 {
                     new ChainDef<Event>
                     {
-                        path = path,
+                        path = path.ChainPath,
                         handlers = new EvHandler<Event>[]
                         {
                             new EvHandler<Event>(handler, priority)

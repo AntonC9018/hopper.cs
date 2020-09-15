@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core;
+using Core.Behaviors;
 
 namespace Chains
 {
@@ -39,7 +40,7 @@ namespace Chains
             return builder;
         }
 
-        public TCD_PartBuilder<T> AddDef<T>(BehaviorFactoryPath<T> path)
+        public TCD_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
             where T : EventBase
         {
             return builder.AddDef<T>(path);

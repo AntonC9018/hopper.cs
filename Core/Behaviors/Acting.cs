@@ -24,7 +24,7 @@ namespace Core.Behaviors
             m_entity = entity;
             config_CalculateAction = config.CalculateAction;
             config_DoActionFunc = config.DoAction;
-            Tick.chain.ChainPath(entity).AddHandler(
+            Tick.Chain.ChainPath(entity).AddHandler(
                 e =>
                 {
                     b_didAction = false;

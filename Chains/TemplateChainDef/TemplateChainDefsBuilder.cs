@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core;
+using Core.Behaviors;
 
 namespace Chains
 {
     public class TemplateChainDefBuilder
     {
         List<I_TCD_PartBuilder> defs = new List<I_TCD_PartBuilder>();
-        public TCD_PartBuilder<T> AddDef<T>(BehaviorFactoryPath<T> path)
+        public TCD_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
             where T : EventBase
         {
-            var def = new TCD_PartBuilder<T>(path, this);
+            var def = new TCD_PartBuilder<T>(path.TemplatePath, this);
             defs.Add(def);
             return def;
         }

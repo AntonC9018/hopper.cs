@@ -8,9 +8,9 @@ namespace Core.Retouchers
     public static class Invincibility
     {
         public static Retoucher PreventsDamage = Retoucher
-            .SingleHandlered<Attackable.Event>(Attackable.Do.TemplatePath, PreventDamage);
+            .SingleHandlered<Attackable.Event>(Attackable.Do, PreventDamage);
         public static Retoucher Decreases = Retoucher
-            .SingleHandlered<Tick.Event>(Tick.chain.TemplatePath, Decrease);
+            .SingleHandlered<Tick.Event>(Tick.Chain, Decrease);
 
 
         // TODO:

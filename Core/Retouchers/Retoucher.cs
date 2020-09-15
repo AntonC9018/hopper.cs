@@ -23,7 +23,7 @@ namespace Core
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Retoucher SingleHandlered<T>(
-            BehaviorFactoryPath<T> path,
+            IChainPaths<T> path,
             System.Action<T> handler,
             PriorityRanks priority = PriorityRanks.Default)
             where T : EventBase
@@ -33,7 +33,7 @@ namespace Core
                 {
                     new TemplateChainDef<T>
                     {
-                        path = path,
+                        path = path.TemplatePath,
                         handlers = new EvHandler<T>[]
                         {
                             new EvHandler<T>(handler, priority)

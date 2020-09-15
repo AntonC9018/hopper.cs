@@ -32,6 +32,18 @@ namespace Core
         // and removed from the internal lists
         public bool IsDead { get; protected set; }
 
+        // the idea is to get the behavior instances like this:
+        // entity.behaviors[Attackable.s_factory.id]
+        // Don't add stuff here. The contents of this are determined 
+        // by the EntityFactory
+        private readonly Dictionary<System.Type, Behavior> m_behaviors =
+            new Dictionary<System.Type, Behavior>();
+
+        // tinker's storage. The elements of this map are processed exclusively by tinkers
+        // and the handlers added by them.
+        private readonly Dictionary<int, TinkerData> m_tinkerStore =
+            new Dictionary<int, TinkerData>();
+
         public Entity()
         {
             IsDead = false;
@@ -73,19 +85,8 @@ namespace Core
         {
             IsDead = true;
             RemoveFromGrid();
-
-            // Remove tinker stores to avoid memory leaks
-            foreach (var tinker in m_tinkers.Values)
-            {
-                tinker.Untink(this);
-            }
         }
-        // the idea is to get the behavior instances like this:
-        // entity.behaviors[Attackable.s_factory.id]
-        // Don't add stuff here. The contents of this are determined 
-        // by the EntityFactory
-        private readonly Dictionary<System.Type, Behavior> m_behaviors =
-            new Dictionary<System.Type, Behavior>();
+
 
         // A setup method. May also be used at runtime, but setting up
         // behaviors in factory is prefered.
@@ -106,23 +107,46 @@ namespace Core
             return m_behaviors.ContainsKey(typeof(T));
         }
 
-        private readonly Dictionary<int, ITinker> m_tinkers =
-            new Dictionary<int, ITinker>();
+
 
         public bool IsTinked(ITinker tinker)
         {
-            return m_tinkers.ContainsKey(tinker.id);
+            return m_tinkerStore.ContainsKey(tinker.id);
         }
 
         public void TinkAndSave(ITinker tinker)
         {
-            m_tinkers[tinker.id] = tinker;
-            tinker.Tink(this);
+            if (IsTinked(tinker))
+            {
+                var store = m_tinkerStore[tinker.id];
+                store.count++;
+            }
+            else
+            {
+                m_tinkerStore[tinker.id] = tinker.CreateDataAndTink(this);
+            }
         }
+
         public void Untink(ITinker tinker)
         {
-            m_tinkers.Remove(tinker.id);
-            tinker.Untink(this);
+            var store = m_tinkerStore[tinker.id];
+            store.count--;
+            if (store.count == 0)
+            {
+                tinker.Untink(store, this);
+                m_tinkerStore.Remove(tinker.id);
+            }
+        }
+
+        public void TryUntink(ITinker tinker)
+        {
+            if (IsTinked(tinker))
+                Untink(tinker);
+        }
+
+        public TinkerData GetTinkerStore(ITinker tinker)
+        {
+            return m_tinkerStore[tinker.id];
         }
 
         // private void RetranslateEndOfLoopEvent()

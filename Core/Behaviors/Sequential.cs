@@ -33,7 +33,7 @@ namespace Core.Behaviors
                 stepData = conf.stepData,
                 actor = entity
             };
-            Tick.chain.ChainPath(entity).AddHandler(
+            Tick.Chain.ChainPath(entity).AddHandler(
                 e => m_sequence.TickAction()
             );
         }

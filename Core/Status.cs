@@ -63,7 +63,7 @@ namespace Core
         {
             System.Console.WriteLine("Status applied");
             entity.TinkAndSave(m_tinker);
-            var store = m_tinker.GetStore(entity.id);
+            var store = m_tinker.GetStore(entity);
             store.Flavor = f;
 
             // this tinker is not being saved on the entity
@@ -73,7 +73,7 @@ namespace Core
             if (f is IHaveSpice)
             {
                 var tinker = ((IHaveSpice)f).Spice;
-                tinker.Tink(entity);
+                entity.TinkAndSave(tinker);
             }
         }
 
@@ -81,8 +81,9 @@ namespace Core
         {
             if (!IsApplied(entity))
                 return;
-            var store = m_tinker.GetStore(entity.id);
+            var store = m_tinker.GetStore(entity);
             var f = store.Flavor;
+
             if (store != null && --f.amount <= 0)
             {
                 entity.Untink(m_tinker);
@@ -90,14 +91,14 @@ namespace Core
                 if (f is IHaveSpice)
                 {
                     var tinker = ((IHaveSpice)f).Spice;
-                    tinker.Untink(entity);
+                    entity.Untink(tinker);
                 }
             }
         }
 
         public bool IsApplied(Entity entity)
         {
-            return m_tinker.IsApplied(entity.id);
+            return entity.IsTinked(m_tinker);
         }
     }
 

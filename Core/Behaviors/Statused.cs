@@ -59,7 +59,7 @@ namespace Core.Behaviors
             m_entity = entity;
 
             // this should be refactored into a retoucher
-            Tick.chain.ChainPath(entity).AddHandler(
+            Tick.Chain.ChainPath(entity).AddHandler(
                 e =>
                 {
                     foreach (var status in s_indexStatusMap)

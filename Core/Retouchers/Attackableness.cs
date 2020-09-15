@@ -25,7 +25,7 @@ namespace Core.Retouchers
             {
                 ConstantRetouchers[index] = Retoucher
                     .SingleHandlered<Attackable.AttackablenessEvent>(
-                        Attackable.Condition.TemplatePath, _Constant(attackableness)
+                        Attackable.Condition, _Constant(attackableness)
                     );
             }
             return ConstantRetouchers[index];
