@@ -7,25 +7,6 @@ namespace Core.Behaviors
 {
     public class Displaceable : Behavior
     {
-        static void SetupStats()
-        {
-            var baseDir = StatManager.DefaultFS.BaseDir;
-
-            var move = new Move
-            {
-                power = 1,
-                through = 0
-            };
-
-            baseDir.AddFile("move", move);
-        }
-
-        public class Move : StatFile
-        {
-            public int power = 1;
-            public int through = 0;
-        }
-
         public class Event : CommonEvent
         {
             public Entity entity;
@@ -96,8 +77,7 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Displaceable>.s_builder = builder;
-
-            SetupStats();
+            AssureRun(typeof(MoveSetup));
         }
 
     }

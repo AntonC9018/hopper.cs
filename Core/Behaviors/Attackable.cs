@@ -5,70 +5,18 @@ using Utils;
 
 namespace Core.Behaviors
 {
-    public enum AtkCondition
-    {
-        ALWAYS,
-        NEVER,
-        SKIP,
-        IF_NEXT_TO
-    }
     public class Attackable : Behavior
     {
-
-        // this makes more sense on stats. Think about moving it there via some
-        // e.g. extension api
-        public static List<string> s_indexSourceNameMap = new List<string>();
-
-        public static int RegisterAttackSource(string name, int defaultResValue = 1)
-        {
-            var sourceResFile = (ArrayFile)StatManager.DefaultFS.GetFile("attacked/source_res");
-            sourceResFile.content.Add(defaultResValue);
-
-            s_indexSourceNameMap.Add(name);
-            return s_indexSourceNameMap.Count - 1;
-        }
-
-        public static int BasicAttackSource = 0;
-
-        static void SetupStats()
-        {
-            Directory baseDir = StatManager.DefaultFS.BaseDir;
-
-            Directory attackDir = new Directory();
-            StatFile sourceResFile = new ArrayFile();
-            StatFile resFile = new Resistance
-            {
-                armor = 0,
-                minDamage = 1,
-                maxDamage = 10,
-                pierce = 1
-            };
-
-            baseDir.AddDirectory("attacked", attackDir);
-            attackDir.AddFile("source_res", sourceResFile);
-            attackDir.AddFile("res", resFile);
-
-            RegisterAttackSource("default");
-        }
-
-        public class Resistance : StatFile
-        {
-            public int armor;
-            public int minDamage;
-            public int maxDamage;
-            public int pierce;
-        }
-
         public class Event : CommonEvent
         {
             public Entity entity;
-            public Attacking.Attack attack;
-            public Resistance resistance;
+            public Attack attack;
+            public Attack.Resistance resistance;
         }
 
         public class Params : ActivationParams
         {
-            public Attacking.Attack attack;
+            public Attack attack;
         }
 
 
@@ -85,13 +33,13 @@ namespace Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = (Resistance)ev.actor.StatManager.GetFile("attacked/res");
+            ev.resistance = (Attack.Resistance)ev.actor.StatManager.GetFile("attacked/res");
         }
 
         static void ResistSource(Event ev)
         {
-            var sourceRes = (ArrayFile)ev.actor.StatManager.GetFile("attacked/source_res");
-            if (sourceRes[ev.attack.source] > ev.attack.power)
+            var sourceRes = (MapFile)ev.actor.StatManager.GetFile("attacked/source_res");
+            if (sourceRes[ev.attack.sourceId] > ev.attack.power)
                 ev.attack.damage = 0;
         }
 
@@ -162,8 +110,7 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Attackable>.s_builder = builder;
-
-            SetupStats();
+            AssureRun(typeof(AttackSetup));
         }
 
     }

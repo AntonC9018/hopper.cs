@@ -9,7 +9,7 @@ namespace Core.Behaviors
 
         public class Event : CommonEvent
         {
-            public Displaceable.Move move;
+            public Move move;
         }
 
         public bool Activate(Action action)
@@ -27,14 +27,14 @@ namespace Core.Behaviors
             if (ev.move == null)
             {
                 // TODO: set stats for move
-                ev.move = (Displaceable.Move)ev.actor.StatManager.GetFile("move");
+                ev.move = (Move)ev.actor.StatManager.GetFile("move");
             }
         }
 
         static void Displace(Event ev)
         {
             var pars = new Displaceable.Params(ev.move);
-            ev.actor.GetBehavior<Displaceable>().Activate(ev.action, pars);
+            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action, pars);
         }
 
         public static ChainPaths<Moving, Event> Check;
@@ -57,6 +57,7 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Moving>.s_builder = builder;
+            AssureRun(typeof(MoveSetup));
         }
     }
 }

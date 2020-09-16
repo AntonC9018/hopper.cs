@@ -43,6 +43,11 @@ namespace Core.Behaviors
         {
             m_entity = entity;
         }
+
+        protected static void AssureRun(System.Type type)
+        {
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
+        }
     }
 
 

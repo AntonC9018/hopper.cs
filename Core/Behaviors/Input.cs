@@ -66,7 +66,7 @@ namespace Core.Behaviors
         {
             return ev =>
             {
-                ev.action = ev.actor.GetBehavior<Input>().config_defaultAction.Copy();
+                ev.action = ev.actor.Behaviors.Get<Input>().config_defaultAction.Copy();
                 ev.action.direction = dir;
             };
         }

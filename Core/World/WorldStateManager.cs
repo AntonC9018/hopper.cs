@@ -57,13 +57,13 @@ namespace Core
 
         private void CalculateNextAction(Entity entity)
         {
-            entity.GetBehavior<Acting>()?.CalculateNextAction();
+            entity.Behaviors.Get<Acting>()?.CalculateNextAction();
         }
 
         private void Activate(Entity entity)
         {
             if (entity.IsDead) return;
-            var acting = entity.GetBehavior<Acting>();
+            var acting = entity.Behaviors.Get<Acting>();
             if (acting != null && !acting.b_didAction)
             {
                 acting.Activate();
@@ -100,12 +100,12 @@ namespace Core
         {
             foreach (var player in m_players)
             {
-                player.GetBehavior<Tick>().Activate();
+                player.Behaviors.Get<Tick>().Activate();
             }
             foreach (var es in m_entities)
             {
                 foreach (var e in es)
-                    e.GetBehavior<Tick>().Activate();
+                    e.Behaviors.Get<Tick>().Activate();
             }
         }
 

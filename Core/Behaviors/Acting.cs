@@ -15,8 +15,8 @@ namespace Core.Behaviors
         public bool b_doingAction = false;
         public bool b_didActionSucceed = false;
         public Action NextAction { get; set; }
-        System.Func<Entity, Action> config_CalculateAction;
-        System.Action<Event> config_DoActionFunc;
+        private System.Func<Entity, Action> config_CalculateAction;
+        private System.Action<Event> config_DoActionFunc;
 
         public override void Init(Entity entity, BehaviorConfig conf)
         {
@@ -24,7 +24,7 @@ namespace Core.Behaviors
             m_entity = entity;
             config_CalculateAction = config.CalculateAction;
             config_DoActionFunc = config.DoAction;
-            Tick.Chain.ChainPath(entity).AddHandler(
+            Tick.Chain.ChainPath(entity.Behaviors).AddHandler(
                 e =>
                 {
                     b_didAction = false;
@@ -89,7 +89,7 @@ namespace Core.Behaviors
             // TODO: this should be e.g. the default value of this function
             else
             {
-                var sequenced = m_entity.GetBehavior<Sequential>();
+                var sequenced = m_entity.Behaviors.Get<Sequential>();
                 NextAction = sequenced.CurrentAction;
             }
         }

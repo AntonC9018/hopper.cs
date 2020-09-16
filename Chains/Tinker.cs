@@ -17,7 +17,7 @@ namespace Core
     public interface ITinker : IHaveId
     {
         TinkerData CreateDataAndTink(Entity entity);
-        void Untink(TinkerData data, Entity entity);
+        void Untink(TinkerData data, IProvideBehavior behaviors);
     }
 
     public class Tinker<T> : ITinker where T : TinkerData, new()
@@ -42,24 +42,25 @@ namespace Core
             for (int i = 0; i < m_chainDefinition.Length; i++)
             {
                 var chainDef = m_chainDefinition[i];
-                var handles = chainDef.AddHandlers(entity);
+                var handles = chainDef.AddHandlers(entity.Behaviors);
                 data.chainHandlesArray[i] = handles;
             }
 
             return data;
         }
 
-        public void Untink(TinkerData data, Entity entity)
+        public void Untink(TinkerData data, IProvideBehavior behaviors)
         {
             for (int i = 0; i < data.chainHandlesArray.Length; i++)
             {
                 var chainDef = m_chainDefinition[i];
-                chainDef.RemoveHandlers(data.chainHandlesArray[i], entity);
+                chainDef.RemoveHandlers(data.chainHandlesArray[i], behaviors);
             }
         }
 
-        public T GetStore(Entity actor) => (T)actor.GetTinkerStore(this);
-        public T GetStore(CommonEvent ev) => (T)ev.actor.GetTinkerStore(this);
+        public T GetStore(Entity actor) => (T)actor.Tinkers.GetStore(this);
+        public T GetStore(TinkerControl tinker) => (T)tinker.GetStore(this);
+        public T GetStore(CommonEvent ev) => (T)ev.actor.Tinkers.GetStore(this);
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Tinker<T> SingleHandlered<Event>(

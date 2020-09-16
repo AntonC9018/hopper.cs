@@ -15,7 +15,7 @@ namespace Core
             if (thing == null)
                 return false;
 
-            var acting = thing.GetBehavior<Acting>();
+            var acting = thing.Behaviors.Get<Acting>();
 
             if (acting == null || acting.b_didAction || acting.b_doingAction)
                 return false;
@@ -44,7 +44,7 @@ namespace Core
         {
             var ev = (Acting.Event)_ev;
 
-            var dirs = ev.actor.GetBehavior<Sequential>().GetMovs();
+            var dirs = ev.actor.Behaviors.Get<Sequential>().GetMovs();
 
             foreach (var dir in dirs)
             {

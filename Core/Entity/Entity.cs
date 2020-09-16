@@ -8,7 +8,7 @@ using Utils;
 
 namespace Core
 {
-    public class Entity : IProvideBehavior, IHaveId
+    public class Entity : IHaveId
     {
         public int Id => m_id;
         private int m_id;
@@ -22,31 +22,23 @@ namespace Core
         public virtual bool IsPlayer => false;
         public Cell Cell => World.m_grid.GetCellAt(m_pos);
 
-        public IInventory Inventory { get; protected set; }
-        public World World { get; private set; }
-        public StatManager StatManager { get; private set; }
-        public History History { get; private set; }
-
         // state
         // isDead is set to true when the entity needs to be filtered out 
         // and removed from the internal lists
         public bool IsDead { get; protected set; }
 
-        // the idea is to get the behavior instances like this:
-        // entity.behaviors[Attackable.s_factory.id]
-        // Don't add stuff here. The contents of this are determined 
-        // by the EntityFactory
-        private readonly Dictionary<System.Type, Behavior> m_behaviors =
-            new Dictionary<System.Type, Behavior>();
-
-        // tinker's storage. The elements of this map are processed exclusively by tinkers
-        // and the handlers added by them.
-        private readonly Dictionary<int, TinkerData> m_tinkerStore =
-            new Dictionary<int, TinkerData>();
+        public IInventory Inventory { get; protected set; }
+        public World World { get; private set; }
+        public StatManager StatManager { get; private set; }
+        public History History { get; private set; }
+        public BehaviorControl Behaviors { get; private set; }
+        public TinkerControl Tinkers { get; private set; }
 
         public Entity()
         {
             IsDead = false;
+            Behaviors = new BehaviorControl();
+            Tinkers = new TinkerControl(this);
         }
 
         public void _SetId(int id)
@@ -64,6 +56,7 @@ namespace Core
         }
 
 
+        // Utility methods
         public void ResetPosInGrid(IntVector2 newPos)
         {
             RemoveFromGrid();
@@ -86,87 +79,11 @@ namespace Core
             m_orientation = orientation;
         }
 
-        internal void Die()
+        public void Die()
         {
             IsDead = true;
             RemoveFromGrid();
         }
-
-
-        // A setup method. May also be used at runtime, but setting up
-        // behaviors in factory is prefered.
-        internal void AddBehavior(Type t, Behavior behavior)
-        {
-            m_behaviors[t] = behavior;
-        }
-
-        public T GetBehavior<T>() where T : Behavior, new()
-        {
-            if (m_behaviors.ContainsKey(typeof(T)))
-                return (T)m_behaviors[typeof(T)];
-            return null;
-        }
-
-        public bool HasBehavior<T>() where T : Behavior, new()
-        {
-            return m_behaviors.ContainsKey(typeof(T));
-        }
-
-
-
-        public bool IsTinked(ITinker tinker)
-        {
-            return m_tinkerStore.ContainsKey(tinker.Id);
-        }
-
-        public void TinkAndSave(ITinker tinker)
-        {
-            if (IsTinked(tinker))
-            {
-                var store = m_tinkerStore[tinker.Id];
-                store.count++;
-            }
-            else
-            {
-                m_tinkerStore[tinker.Id] = tinker.CreateDataAndTink(this);
-            }
-        }
-
-        public void Untink(ITinker tinker)
-        {
-            var store = m_tinkerStore[tinker.Id];
-            store.count--;
-            if (store.count == 0)
-            {
-                tinker.Untink(store, this);
-                m_tinkerStore.Remove(tinker.Id);
-            }
-        }
-
-        public void TryUntink(ITinker tinker)
-        {
-            if (IsTinked(tinker))
-                Untink(tinker);
-        }
-
-        public TinkerData GetTinkerStore(ITinker tinker)
-        {
-            return m_tinkerStore[tinker.Id];
-        }
-
-        // private void RetranslateEndOfLoopEvent()
-        // {
-        //     RetranslateEndOfLoopEvent?.
-        // }
-        // private void StartMonitoringEvents()
-        // {
-        //     World.m_state.EndOfLoopEvent += RetranslateEndOfLoopEvent;
-        // }
-        // public void StopMonitoringEvents()
-        // {
-        //     World.m_state.EndOfLoopEvent -= RetranslateEndOfLoopEvent;
-        // }
-
 
         public Entity GetClosestPlayer()
         {

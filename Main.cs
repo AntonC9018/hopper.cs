@@ -17,6 +17,8 @@ namespace Hopper
         static void Main(string[] args)
         {
             var ____ = Spider.Factory;
+            var _____ = TestTinkerStuff.tinker;
+            var ______ = TestStatusTinkerStuff.tinker;
 
             System.Console.WriteLine("\n ------ Definition + Instantiation Demo ------ \n");
 
@@ -27,10 +29,8 @@ namespace Hopper
             };
             System.Console.WriteLine("Created world");
 
-            Statused.RegisterStatus(TestStatusTinkerStuff.status, 1);
-
+            // Statused.RegisterStatus(TestStatusTinkerStuff.status, 1);
             var packed = IdMap.Status.PackModMap();
-            System.Console.WriteLine("Setting map");
             IdMap.Status.SetServerMap(packed);
 
             var playerFactory = new EntityFactory<Player>();
@@ -105,17 +105,17 @@ namespace Hopper
 
             var playerNextAction = attackMoveAction.Copy();
             playerNextAction.direction = new IntVector2(0, 1);
-            player.GetBehavior<Acting>().NextAction = playerNextAction;
+            player.Behaviors.Get<Acting>().NextAction = playerNextAction;
             System.Console.WriteLine("Set player action");
             System.Console.WriteLine("\n ------ Modifier Demo ------ \n");
 
-            var mod = new StatModifier("attack", new Attacking.Attack { damage = 1 });
-            var attack = (Attacking.Attack)player.StatManager.GetFile("attack");
+            var mod = new StatModifier("attack", new Attack { damage = 1 });
+            var attack = (Attack)player.StatManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Adding modifier");
             player.StatManager.AddModifier(mod);
-            // attack = (Attacking.Attack)player.m_statManager.GetFile("attack");
+            // attack = (Attack)player.m_statManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Removing modifier");
@@ -127,18 +127,18 @@ namespace Hopper
                 (StatEvent _ev) =>
                 {
                     System.Console.WriteLine("Called handler");
-                    ((Attacking.Attack)_ev.file).damage *= 3;
+                    ((Attack)_ev.file).damage *= 3;
                 })
             );
             System.Console.WriteLine("Adding modifier");
             player.StatManager.AddModifier(mod2);
-            attack = (Attacking.Attack)player.StatManager.GetFile("attack");
-            attack = (Attacking.Attack)player.StatManager.GetFile("attack");
+            attack = (Attack)player.StatManager.GetFile("attack");
+            attack = (Attack)player.StatManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Removing modifier");
             player.StatManager.RemoveChainModifier(mod2);
-            attack = (Attacking.Attack)player.StatManager.GetFile("attack");
+            attack = (Attack)player.StatManager.GetFile("attack");
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
@@ -266,7 +266,7 @@ namespace Hopper
 
             var playerMoveAction = moveAction.Copy();
             playerMoveAction.direction = IntVector2.Down;
-            player.GetBehavior<Acting>().NextAction = playerMoveAction;
+            player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
 
             var cyclicContainer2 = new CircularItemContainer(1);
             inventory.AddContainer(3, cyclicContainer);
@@ -292,10 +292,10 @@ namespace Hopper
             System.Console.WriteLine("\n ------ Tinker static reference Demo ------ \n");
 
             var tinker3 = TestTinkerStuff.tinker; // see the definition below
-            player.TinkAndSave(tinker3);
-            player.GetBehavior<Acting>().NextAction = playerMoveAction;
+            player.Tinkers.TinkAndSave(tinker3);
+            player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
             world.Loop();
-            player.Untink(tinker3);
+            player.Tinkers.Untink(tinker3);
 
 
             System.Console.WriteLine("\n ------ Status Demo ------ \n");
@@ -304,7 +304,7 @@ namespace Hopper
             var status = TestStatusTinkerStuff.status;
             var statusData = new StatusParam
             (
-                statusId: TestStatusTinkerStuff.tinker.Id,
+                statusId: TestStatusTinkerStuff.status.Id,
                 flavor: new Flavor(),
                 statusStat: new StatusFile
                 {
@@ -313,24 +313,24 @@ namespace Hopper
                 }
             );
             var statusedParams = new Statused.Params { statusParams = new StatusParam[] { statusData } };
-            player.GetBehavior<Statused>().Activate(null, statusedParams);
-            player.GetBehavior<Acting>().NextAction = playerMoveAction;
+            player.Behaviors.Get<Statused>().Activate(null, statusedParams);
+            player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
             world.Loop();
-            player.GetBehavior<Acting>().NextAction = playerMoveAction;
+            player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
             world.Loop();
-            player.GetBehavior<Acting>().NextAction = playerMoveAction;
+            player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
             world.Loop();
 
             System.Console.WriteLine("\n ------ Spider Demo ------ \n");
             player.ResetPosInGrid(new IntVector2(4, 4));
             var spider = world.SpawnEntity(Spider.Factory, new IntVector2(3, 3));
             world.Loop();
-            System.Console.WriteLine($"Tinker is applied? {player.IsTinked(BindStuff.tinker)}");
+            System.Console.WriteLine($"Tinker is applied? {player.Tinkers.IsTinked(BindStuff.tinker)}");
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position: {player.Pos}");
             System.Console.WriteLine($"Spider's new position: {spider.Pos}");
 
-            player.GetBehavior<Acting>().NextAction = attackAction;
+            player.Behaviors.Get<Acting>().NextAction = attackAction;
             world.Loop();
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position: {player.Pos}");
@@ -338,8 +338,8 @@ namespace Hopper
 
             var ma = moveAction.Copy();
             ma.direction = new IntVector2(-1, -1);
-            player.GetBehavior<Displaceable>().Activate(ma,
-                new Displaceable.Params(new Displaceable.Move()));
+            player.Behaviors.Get<Displaceable>().Activate(ma,
+                new Displaceable.Params(new Move()));
             world.Loop();
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position: {player.Pos}");
@@ -348,14 +348,14 @@ namespace Hopper
             System.Console.WriteLine("Killing spider");
             spider.Die();
             world.Loop();
-            System.Console.WriteLine($"Tinker is applied? {player.IsTinked(BindStuff.tinker)}");
+            System.Console.WriteLine($"Tinker is applied? {player.Tinkers.IsTinked(BindStuff.tinker)}");
 
             System.Console.WriteLine("\n ------ Input Demo ------ \n");
             // we also have the possibilty to add behaviors dynamically.
             var InputFactory = new BehaviorFactory<Input>();
             var input = (Input)InputFactory.Instantiate(player,
                 new Input.Config { defaultAction = attackMoveAction });
-            player.AddBehavior(typeof(Input), input);
+            player.Behaviors.Add(typeof(Input), input);
 
             var outputAction0 = input.ConvertInputToAction(InputMappings.Up);
             System.Console.WriteLine($"Fed Up. Output: {outputAction0.direction}");

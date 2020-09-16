@@ -77,7 +77,7 @@ namespace Core
                 var type = kvp.Key;
                 var setting = kvp.Value;
                 var behavior = setting.factory.Instantiate(entity, setting.config);
-                entity.AddBehavior(type, behavior);
+                entity.Behaviors.Add(type, behavior);
             }
             InitEvent?.Invoke(entity);
             return entity;

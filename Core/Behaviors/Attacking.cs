@@ -10,46 +10,6 @@ namespace Core.Behaviors
 {
     public class Attacking : Behavior, IStandartActivateable
     {
-
-        static void SetupStats()
-        {
-            Directory baseDir = StatManager.DefaultFS.BaseDir;
-
-            StatFile attackStatFile = new Attack
-            {
-                source = 0,
-                power = 1,
-                damage = 1,
-                pierce = 1
-            };
-            StatFile pushStatFile = new Push
-            {
-                source = 0,
-                power = 1,
-                distance = 1,
-                pierce = 1
-            };
-
-            baseDir.AddFile("attack", attackStatFile);
-            baseDir.AddFile("push", pushStatFile);
-        }
-
-        public class Attack : StatFile
-        {
-            public int source;
-            public int power;
-            public int damage;
-            public int pierce;
-        }
-
-        public class Push : StatFile
-        {
-            public int source = 0;
-            public int power = 1;
-            public int distance = 1;
-            public int pierce = 1;
-        }
-
         public class Event : CommonEvent
         {
             public List<Target> targets;
@@ -125,7 +85,7 @@ namespace Core.Behaviors
             {
                 var action = ev.action.Copy();
                 action.direction = target.direction;
-                var attackable = target.entity.GetBehavior<Attackable>();
+                var attackable = target.entity.Behaviors.Get<Attackable>();
                 var pars = new Attackable.Params
                 {
                     attack = (Attack)ev.attack.Copy()
@@ -141,7 +101,7 @@ namespace Core.Behaviors
             {
                 var action = ev.action.Copy();
                 action.direction = target.direction;
-                Pushable pushable = target.entity.GetBehavior<Pushable>();
+                Pushable pushable = target.entity.Behaviors.Get<Pushable>();
                 if (pushable != null)
                 {
                     var pars = new Pushable.Params
@@ -175,8 +135,7 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Attacking>.s_builder = builder;
-
-            SetupStats();
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(AttackSetup).TypeHandle);
         }
     }
 }

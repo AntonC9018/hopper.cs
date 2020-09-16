@@ -44,7 +44,7 @@ namespace Core
                 return relativeStepIndexFail;
             }
 
-            var acting = e.GetBehavior<Acting>();
+            var acting = e.Behaviors.Get<Acting>();
 
             if (acting != null)
             {

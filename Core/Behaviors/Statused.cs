@@ -6,39 +6,13 @@ using System.Linq;
 
 namespace Core.Behaviors
 {
-    public class StatusParam
-    {
-        public Flavor flavor;
-        public StatusFile statusStat;
-        public int statusId;
-
-        public StatusParam(Flavor flavor, StatusFile statusStat, int statusId)
-        {
-            this.flavor = flavor;
-            this.statusStat = statusStat;
-            this.statusId = statusId;
-        }
-    }
 
     public class Statused : Behavior
     {
-        public static void RegisterStatus(IStatus status, int defaultResValue = 1)
-        {
-            var statusResFile = (ArrayFile)StatManager.DefaultFS.GetFile("status_res");
-            statusResFile.content.Add(defaultResValue);
-        }
-
-        static void SetupStats()
-        {
-            Directory baseDir = StatManager.DefaultFS.BaseDir;
-            StatFile resFile = new ArrayFile();
-            baseDir.AddFile("status_res", resFile);
-        }
-
         public class Event : CommonEvent
         {
-            public Attacking.Attack attack;
-            public ArrayFile resistance;
+            public Attack attack;
+            public MapFile resistance;
             public StatusParam[] statusParams;
         }
 
@@ -52,10 +26,10 @@ namespace Core.Behaviors
             m_entity = entity;
 
             // this should be refactored into a retoucher
-            Tick.Chain.ChainPath(entity).AddHandler(
+            Tick.Chain.ChainPath(entity.Behaviors).AddHandler(
                 e =>
                 {
-                    foreach (var status in IdMap.Status.AllItems)
+                    foreach (var status in IdMap.Status.ActiveItems)
                         ((IStatus)status).Tick(e.actor);
                 }
             );
@@ -74,7 +48,7 @@ namespace Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = (ArrayFile)ev.actor.StatManager.GetFile("status_res");
+            ev.resistance = (MapFile)ev.actor.StatManager.GetFile("status_res");
         }
 
         static void ResistSomeStatuses(Event ev)
@@ -115,7 +89,7 @@ namespace Core.Behaviors
 
             BehaviorFactory<Statused>.s_builder = builder;
 
-            SetupStats();
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(StatusSetup).TypeHandle);
         }
 
     }

@@ -25,7 +25,7 @@ namespace Test
         static StepData[] CreateSequenceData()
         {
             var bindAction = new SimpleAction(
-                (entity, a) => entity.GetBehavior<Binding>()
+                (entity, a) => entity.Behaviors.Get<Binding>()
                     .Activate(a, new Binding.Params { spice = BindStuff.StopMoveSpice })
             );
 
@@ -138,7 +138,6 @@ namespace Test
 
             tinker = new Tinker<FlavorTinkerData<BindFlavor>>(builder.ToStatic());
             status = new Status<FlavorTinkerData<BindFlavor>>(tinker);
-            Statused.RegisterStatus(BindStuff.status);
         }
 
         static BindStuff()
@@ -161,7 +160,7 @@ namespace Test
 
         static void Register(Binding.Event ev)
         {
-            bool success = ev.applyTo.IsTinked(BindStuff.tinker);
+            bool success = ev.applyTo.Tinkers.IsTinked(BindStuff.tinker);
 
             if (success)
             {
@@ -274,8 +273,8 @@ namespace Test
 
         static void CheckCanBind(Event ev)
         {
-            ev.propagate = ev.applyTo.HasBehavior<Statused>()
-                && (ev.applyTo.IsTinked(BindStuff.tinker) == false);
+            ev.propagate = ev.applyTo.Behaviors.Has<Statused>()
+                && (ev.applyTo.Tinkers.IsTinked(BindStuff.tinker) == false);
         }
 
         static void BindTarget(Event ev)
@@ -284,7 +283,7 @@ namespace Test
             {
                 statusParams = new StatusParam[] { ev.statusParam }
             };
-            ev.propagate = ev.applyTo.GetBehavior<Statused>().Activate(ev.action, pars);
+            ev.propagate = ev.applyTo.Behaviors.Get<Statused>().Activate(ev.action, pars);
         }
 
         public static ChainPaths<Binding, Event> Check;

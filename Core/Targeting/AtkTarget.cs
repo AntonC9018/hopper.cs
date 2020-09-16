@@ -14,7 +14,7 @@ namespace Core.Targeting
             }
             if (entity != null)
             {
-                var attackable = entity.GetBehavior<Attackable>();
+                var attackable = entity.Behaviors.Get<Attackable>();
 
                 atkCondition =
                     attackable == null

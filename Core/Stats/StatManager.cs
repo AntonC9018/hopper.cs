@@ -47,6 +47,28 @@ namespace Core
         }
     }
 
+    public class MapFile : StatFile
+    {
+        public Dictionary<int, int> content = new Dictionary<int, int>();
+
+        public override void _Add(StatFile f, int sign)
+        {
+            // we assume it is the same type 
+            var otherFile = (MapFile)f;
+            var otherArray = otherFile.content;
+            for (int i = 0; i < content.Count; i++)
+            {
+                content[i] += otherArray[i] * sign;
+            }
+        }
+
+        public int this[int id]
+        {
+            get => content[id];
+            set => content[id] = value;
+        }
+    }
+
     public class ArrayFile : StatFile
     {
         public List<int> content = new List<int>();

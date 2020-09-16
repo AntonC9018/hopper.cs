@@ -12,7 +12,7 @@ namespace Core
         }
         public override bool Do(Entity e)
         {
-            return e.GetBehavior<T>().Activate(this);
+            return e.Behaviors.Get<T>().Activate(this);
         }
     }
 }

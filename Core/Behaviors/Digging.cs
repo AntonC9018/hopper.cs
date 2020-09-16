@@ -10,40 +10,8 @@ namespace Core.Behaviors
 {
     public class Diggable : Behavior
     {
-        public static int s_attackSource;
-        static void SetupStats()
-        {
-            s_attackSource = Attackable.RegisterAttackSource("dig");
+        public static Attack.Source DigAttackSource;
 
-            Directory baseDir = StatManager.DefaultFS.BaseDir;
-            StatFile digStatFile = new Dig
-            {
-                source = s_attackSource,
-                power = 0,
-                damage = 1,
-                pierce = 10
-            };
-            baseDir.AddFile("dig", digStatFile);
-        }
-
-        public class Dig : StatFile
-        {
-            public int source;
-            public int power;
-            public int damage;
-            public int pierce;
-
-            public Attacking.Attack ToAttack()
-            {
-                return new Attacking.Attack
-                {
-                    source = s_attackSource,
-                    power = power,
-                    damage = damage,
-                    pierce = pierce
-                };
-            }
-        }
 
         public class Event : CommonEvent
         {
@@ -90,7 +58,7 @@ namespace Core.Behaviors
                 {
                     attack = ev.dig.ToAttack()
                 };
-                target.entity.GetBehavior<Attackable>().Activate(ev.action, pars);
+                target.entity.Behaviors.Get<Attackable>().Activate(ev.action, pars);
             }
         }
 
@@ -115,8 +83,7 @@ namespace Core.Behaviors
             // _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
 
             BehaviorFactory<Diggable>.s_builder = builder;
-
-            SetupStats();
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(DigSetup).TypeHandle);
         }
     }
 }

@@ -1,33 +1,30 @@
-using System;
-using Core.Behaviors;
-
 namespace Core
 {
     public class Status<T> : IStatus
         where T : TinkerData, IHaveFlavor, new()
     {
-
         public int Id => m_id;
         protected readonly int m_id;
         private Tinker<T> m_tinker;
 
-        public Status(Tinker<T> tinker)
+        public Status(Tinker<T> tinker, int defaultResValue = 1)
         {
             m_tinker = tinker;
             m_id = IdMap.Status.Add(this);
+            StatusSetup.ResFile.content.Add(m_id, defaultResValue);
         }
 
         public void Apply(Entity entity, Flavor f)
         {
             System.Console.WriteLine("Status applied");
-            entity.TinkAndSave(m_tinker);
+            entity.Tinkers.TinkAndSave(m_tinker);
             var store = m_tinker.GetStore(entity);
             store.Flavor = f;
 
             if (f is IHaveSpice)
             {
                 var tinker = ((IHaveSpice)f).Spice;
-                entity.TinkAndSave(tinker);
+                entity.Tinkers.TinkAndSave(tinker);
             }
         }
 
@@ -40,19 +37,19 @@ namespace Core
 
             if (store != null && --f.amount <= 0)
             {
-                entity.Untink(m_tinker);
+                entity.Tinkers.Untink(m_tinker);
 
                 if (f is IHaveSpice)
                 {
                     var tinker = ((IHaveSpice)f).Spice;
-                    entity.Untink(tinker);
+                    entity.Tinkers.Untink(tinker);
                 }
             }
         }
 
         public bool IsApplied(Entity entity)
         {
-            return entity.IsTinked(m_tinker);
+            return entity.Tinkers.IsTinked(m_tinker);
         }
     }
 }

@@ -7,49 +7,17 @@ namespace Core.Behaviors
 {
     public class Pushable : Behavior
     {
-        public static List<string> s_indexSourceNameMap = new List<string>();
 
-        public static int RegisterPushSource(string name, int defaultResValue = 1)
-        {
-            var sourceResFile = (ArrayFile)StatManager.DefaultFS.GetFile("pushed/source_res");
-            sourceResFile.content.Add(defaultResValue);
-
-            s_indexSourceNameMap.Add(name);
-            return s_indexSourceNameMap.Count - 1;
-        }
-
-        static void SetupStats()
-        {
-            Directory baseDir = StatManager.DefaultFS.BaseDir;
-
-            Directory pushDir = new Directory();
-            StatFile sourceResFile = new ArrayFile();
-            StatFile resFile = new Resistance
-            {
-                pierce = 1
-            };
-
-            baseDir.AddDirectory("pushed", pushDir);
-            pushDir.AddFile("source_res", sourceResFile);
-            pushDir.AddFile("res", resFile);
-
-            RegisterPushSource("default", 1);
-        }
-
-        public class Resistance : StatFile
-        {
-            public int pierce = 0;
-        }
 
         public class Event : CommonEvent
         {
-            public Attacking.Push push;
-            public Resistance resistance;
+            public Push push;
+            public Push.Resistance resistance;
         }
 
         public class Params : ActivationParams
         {
-            public Attacking.Push push;
+            public Push push;
         }
 
         public bool Activate(Action action, Params pars)
@@ -65,7 +33,7 @@ namespace Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = (Resistance)ev.actor.StatManager.GetFile("pushed/res");
+            ev.resistance = (Push.Resistance)ev.actor.StatManager.GetFile("pushed/res");
         }
 
         static void ResistSource(Event ev)
@@ -88,9 +56,9 @@ namespace Core.Behaviors
         static void BePushed(Event ev)
         {
             // TODO: set up properly
-            var move = new Displaceable.Move();
+            var move = new Move();
             var pars = new Displaceable.Params(move);
-            ev.actor.GetBehavior<Displaceable>().Activate(ev.action, pars);
+            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action, pars);
         }
 
         public static ChainPaths<Pushable, Event> Check;
@@ -114,8 +82,7 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Pushable>.s_builder = builder;
-
-            SetupStats();
+            AssureRun(typeof(PushSetup));
         }
     }
 }
