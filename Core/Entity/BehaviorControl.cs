@@ -5,15 +5,11 @@ namespace Core
 {
     public class BehaviorControl : IProvideBehavior
     {
-        // the idea is to get the behavior instances like this:
-        // entity.behaviors[Attackable.s_factory.id]
-        // Don't add stuff here. The contents of this are determined 
-        // by the EntityFactory
         private readonly Dictionary<System.Type, Behavior> m_behaviors =
             new Dictionary<System.Type, Behavior>();
 
         // A setup method. May also be used at runtime, but setting up
-        // behaviors in factory is prefered.
+        // behaviors in factory is prefered. Feel free to use while debugging.
         public void Add(System.Type t, Behavior behavior)
         {
             m_behaviors[t] = behavior;
