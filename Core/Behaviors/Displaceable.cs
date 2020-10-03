@@ -1,10 +1,10 @@
 using Chains;
-using System.Collections.Generic;
-using Core.FS;
 using Utils.Vector;
+using System.Runtime.Serialization;
 
 namespace Core.Behaviors
 {
+    [DataContract]
     public class Displaceable : Behavior
     {
         public class Event : CommonEvent

@@ -1,15 +1,18 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Utils.Vector;
 
 namespace Core
 {
+    [DataContract]
     public class Sequence
     {
         public StepData[] stepData;
         public Entity actor;
 
-        int currentStepIndex = 0;
-        int currentRepeatCount = 0;
+        [DataMember] int currentStepIndex = 0;
+        [DataMember] int currentRepeatCount = 0;
+
         public Action CurrentAction
         {
             get

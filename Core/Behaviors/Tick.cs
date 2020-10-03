@@ -1,7 +1,9 @@
+using System.Runtime.Serialization;
 using Chains;
 
 namespace Core.Behaviors
 {
+    [DataContract]
     public class Tick : Behavior
     {
         public class Event : EventBase

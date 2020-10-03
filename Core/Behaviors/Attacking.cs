@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using System.Linq;
-using Core.FS;
 using Chains;
 using Core.Items.Weapon;
 using Core.Items;
 using Core.Targeting;
+using System.Runtime.Serialization;
 
 namespace Core.Behaviors
 {
+    [DataContract]
     public class Attacking : Behavior, IStandartActivateable
     {
         public class Event : CommonEvent

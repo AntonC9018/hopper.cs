@@ -1,10 +1,14 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Core.Behaviors;
+using Newtonsoft.Json;
 
 namespace Core
 {
+    [DataContract]
     public class BehaviorControl : IProvideBehavior
     {
+        [DataMember]
         private readonly Dictionary<System.Type, Behavior> m_behaviors =
             new Dictionary<System.Type, Behavior>();
 

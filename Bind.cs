@@ -17,10 +17,10 @@ namespace Test
     public class Spider : Entity, ISelfBinder
     {
         public Spider() : base() { }
+        public Entity BoundEntity { get; set; }
+
 
         public static EntityFactory<Spider> Factory;
-
-        public Entity BoundEntity { get; set; }
 
         static StepData[] CreateSequenceData()
         {
@@ -78,7 +78,7 @@ namespace Test
     {
         public Entity whoApplied;
 
-        public ITinker spice;
+        private ITinker spice;
         public ITinker Spice => spice;
 
         public BindFlavor(Entity whoApplied, ITinker spice)

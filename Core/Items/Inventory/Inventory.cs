@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
-using Utils.CircularBuffer;
-using Utils.Vector;
+using Newtonsoft.Json;
 
 namespace Core.Items
 {
@@ -11,7 +9,22 @@ namespace Core.Items
         public const int ShovelSlot = 1;
 
         private Dictionary<int, IItemContainer> m_itemSlots;
+
+        
+
         private Entity m_actor;
+
+        public IEnumerable<IItem> AllItems 
+        {
+            get
+            {
+                foreach (var container in m_itemSlots.Values)
+                {
+                    foreach (var item in container.AllItems)
+                        yield return item;
+                }
+            }   
+        }
 
         public Inventory(Entity entity)
         {
@@ -67,20 +80,4 @@ namespace Core.Items
             return m_itemSlots[slotId][0];
         }
     }
-
-    // public class UnlimitedCounterItemContainer<T> : IItemContainer
-    // {
-    //     int count;
-    //     Item item;
-
-    //     public UnlimitedCounterItemContainer(Item item)
-    //     {
-    //         count = 0;
-    //         this.item = item;
-    //     }
-
-    //     public List<Item> GetExcess() => new List<Item>();
-    //     public Item GetItemAtIndex(int index) => item;
-    //     public void Insert(Item item) => count++;
-    // }
 }

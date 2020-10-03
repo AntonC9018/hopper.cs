@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace Utils.Vector
 {
@@ -118,9 +119,9 @@ namespace Utils.Vector
             };
         }
 
-        public int SqMag => x * x + y * y;
+        [JsonIgnore] public int SqMag => x * x + y * y;
 
-        public float Mag => (float)Math.Sqrt(SqMag);
+        [JsonIgnore] public float Mag => (float)Math.Sqrt(SqMag);
 
         public double AngleTo(IntVector2 v)
         {

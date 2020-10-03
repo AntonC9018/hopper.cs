@@ -1,11 +1,10 @@
 using Chains;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-
+using System.Runtime.Serialization;
 
 namespace Core.Behaviors
 {
+    [DataContract]
     public abstract class Behavior : IProvidesChain
     {
         protected Dictionary<ChainName, Chain> chains;

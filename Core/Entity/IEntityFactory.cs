@@ -5,6 +5,7 @@ namespace Core
     public interface IEntityFactory : IHaveId
     {
         Entity Instantiate();
+        Entity ReInstantiate(int id);
     }
     // public interface IEntityFactory
     // {

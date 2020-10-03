@@ -1,12 +1,10 @@
 using Chains;
-using System.Collections.Generic;
-using Core.FS;
-using Core;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Core.Behaviors
 {
-
+    [DataContract]
     public class Statused : Behavior
     {
         public class Event : CommonEvent

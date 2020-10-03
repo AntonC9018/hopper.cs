@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using Core.FS;
+using System.Runtime.Serialization;
 using Chains;
 
 namespace Core.Behaviors
 {
+    [DataContract]
     public class Moving : Behavior, IStandartActivateable
     {
 

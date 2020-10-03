@@ -1,14 +1,13 @@
-using System.Collections.Generic;
 using Chains;
 using Core.Behaviors;
-using Utils;
+using Newtonsoft.Json;
 using Handle = Utils.MyLinkedList.MyListNode<Chains.IEvHandler>;
 
 namespace Core
 {
     public class TinkerData
     {
-        public Handle[][] chainHandlesArray;
+        [JsonIgnore] public Handle[][] chainHandlesArray;
         public int count = 1;
 
         public virtual void Init(Entity entity) { }
@@ -36,17 +35,22 @@ namespace Core
         {
             var data = new T();
             // we have to do this manually to not pass the length into the init function
-            data.chainHandlesArray = new Handle[m_chainDefinition.Length][];
-            data.Init(entity); // since the constructor can only be parameterless 
+            // TODO: maybe remove the init function
+            data.Init(entity); // since the constructor can only be parameterless
+            Tink(entity.Behaviors, data);
+            return data;
+        }
 
+        public void Tink(BehaviorControl behaviors, TinkerData data)
+        {
+            data.chainHandlesArray = new Handle[m_chainDefinition.Length][];
+            
             for (int i = 0; i < m_chainDefinition.Length; i++)
             {
                 var chainDef = m_chainDefinition[i];
-                var handles = chainDef.AddHandlers(entity.Behaviors);
+                var handles = chainDef.AddHandlers(behaviors);
                 data.chainHandlesArray[i] = handles;
             }
-
-            return data;
         }
 
         public void Untink(TinkerData data, IProvideBehavior behaviors)

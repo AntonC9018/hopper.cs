@@ -2,66 +2,77 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public class InstanceAndFactory
+    public interface IRuntimeIdMap
     {
-        public IHaveId instance;
-        public IHaveId factory;
-
-        public InstanceAndFactory(IHaveId instance, IHaveId factory)
-        {
-            this.instance = instance;
-            this.factory = factory;
-        }
     }
 
-    public class RuntimeIdMap
+    public class RuntimeIdMap<T, Meta> : IRuntimeIdMap
     {
-        protected Dictionary<int, InstanceAndFactory> m_map = new Dictionary<int, InstanceAndFactory>();
-        protected int m_currentId;
+        protected Dictionary<int, T> m_map =
+            new Dictionary<int, T>();
 
-        // public async void RestoreState()
-        // {
+        protected Dictionary<int, Meta> m_meta =
+            new Dictionary<int, Meta>();
 
-        //     m_map.Clear();
-        // var currentId = await idProxy.GetCurrentId();
-        // if (IdMap.IsInRuntimePhase)
-        // {
-        //     m_currentId = currentId;
-        // }
-        // }
+        protected int m_currentId = 0;
 
-        public IHaveId Map(int id)
+        public void Reset() { }
+
+        public int Add(T instance, Meta metadata)
+        {
+            m_currentId++;
+            m_map[m_currentId] = instance;
+            m_meta[m_currentId] = metadata;
+            return m_currentId;
+        }
+
+        public T MapInstance(int id)
         {
             if (m_map.ContainsKey(id))
-                return m_map[id].instance;
-            return null;
+                return m_map[id];
+            return default(T);
+        }
+
+        public Meta MapMetadata(int id)
+        {
+            if (m_meta.ContainsKey(id))
+                return m_meta[id];
+            return default(Meta);
         }
 
         public void Remove(int id)
         {
             m_map.Remove(id);
+            m_meta.Remove(id);
         }
+    }
 
-        public int Add(IHaveId instance, IHaveId factory)
+    public class RuntimeIdMap<T> : IRuntimeIdMap
+    {
+        protected Dictionary<int, T> m_map =
+            new Dictionary<int, T>();
+
+        protected int m_currentId = 0;
+
+        public void Reset() { }
+
+        public int Add(T instance)
         {
             m_currentId++;
-            m_map[m_currentId] = new InstanceAndFactory(instance, factory);
+            m_map[m_currentId] = instance;
             return m_currentId;
         }
 
-        // public int GenerateId()
-        // {
-        //     m_currentId++;
-        //     return m_currentId;
-        // }
-    }
-
-    public class RuntimeIdMap<T, FactoryT> : RuntimeIdMap
-        where T : IHaveId
-    {
-        public int Add(T instance, FactoryT factory)
+        public T MapInstance(int id)
         {
-            return base.Add(instance, (IHaveId)factory);
+            if (m_map.ContainsKey(id))
+                return m_map[id];
+            return default(T);
+        }
+
+        public void Remove(int id)
+        {
+            m_map.Remove(id);
         }
     }
 }

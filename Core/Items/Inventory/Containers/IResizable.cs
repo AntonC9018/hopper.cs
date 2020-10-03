@@ -1,7 +1,9 @@
+using Newtonsoft.Json;
+
 namespace Core.Items
 {
     public interface IResizable
     {
-        int Size { get; set; }
+        [JsonIgnore] int Size { get; set; }
     }
 }

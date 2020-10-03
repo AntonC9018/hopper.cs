@@ -5,9 +5,11 @@ using Utils.Vector;
 using Core.Items.Shovel;
 using Core.Items;
 using Core.Targeting;
+using System.Runtime.Serialization;
 
 namespace Core.Behaviors
 {
+    [DataContract]
     public class Diggable : Behavior
     {
         public static Attack.Source DigAttackSource;

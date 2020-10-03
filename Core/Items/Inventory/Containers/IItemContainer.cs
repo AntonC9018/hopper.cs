@@ -8,5 +8,6 @@ namespace Core.Items
         void Remove(IItem item);
         IItem this[int index] { get; }
         List<IItem> PullOutExcess();
+        IEnumerable<IItem> AllItems { get; }
     }
 }

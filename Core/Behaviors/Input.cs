@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core.FS;
 using Chains;
 using System.Reflection;
 using Utils.Vector;
+using System.Runtime.Serialization;
 
 namespace Core.Behaviors
 {
@@ -34,6 +34,7 @@ namespace Core.Behaviors
         }
     }
 
+    [DataContract]
     public class Input : Behavior
     {
 

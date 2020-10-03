@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using Newtonsoft.Json;
 
 namespace Utils.CircularBuffer
 {

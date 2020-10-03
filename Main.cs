@@ -7,14 +7,62 @@ using System.Linq;
 using Core.Targeting;
 using Core.Behaviors;
 using Test;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 // Hello World! program
 namespace Hopper
 {
     class Hello
     {
-
         static void Main(string[] args)
+        {
+            // Serialize();
+            Demo();
+        }
+
+        static void Serialize()
+        {
+            var playerFactory = new EntityFactory<Player>();
+            playerFactory.AddBehavior<Attackable>();
+            playerFactory.AddBehavior<Attacking>();
+            playerFactory.AddBehavior<Displaceable>();
+            playerFactory.AddBehavior<Moving>();
+            playerFactory.AddBehavior<Pushable>();
+            playerFactory.AddBehavior<Statused>();
+            playerFactory.AddBehavior<Sequential>(new Sequential.Config(new StepData[0]));
+            System.Console.WriteLine("Set up playerFactory");
+
+            var player = playerFactory.Instantiate();
+            World world = new World(1, 1);
+            player.Init(new IntVector2(1, 1), world);
+            var item = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }));
+            var item2 = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), 1);
+            var packed = IdMap.Items.PackModMap();
+            ((Inventory)player.Inventory).AddContainer(3, new CircularItemContainer(5));
+            player.Inventory.Equip(item);
+            player.Inventory.Equip(item2);
+
+            MemoryTraceWriter traceWriter = new MemoryTraceWriter();
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.Converters.Add(new IHaveIdConverter<IItem>());
+            settings.Converters.Add(new InventoryConverter());
+            // settings.Converters.Add(new BehaviorConverter());
+            settings.Converters.Add(new BehaviorControlConverter());
+            settings.Converters.Add(new EntityConverter());
+            settings.TraceWriter = traceWriter;
+            string result = JsonConvert.SerializeObject(player, settings);
+            System.Console.WriteLine(result);
+            Entity entity = JsonConvert.DeserializeObject<Player>(result, settings);
+            System.Console.WriteLine(entity);
+            // System.Console.WriteLine(traceWriter.ToString());
+
+        }
+
+        static void Demo()
         {
             var ____ = Spider.Factory;
             var _____ = TestTinkerStuff.tinker;

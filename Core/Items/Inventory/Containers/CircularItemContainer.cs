@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Utils.CircularBuffer;
 
 namespace Core.Items
 {
     public class CircularItemContainer : IItemContainer, IResizable
     {
-        CircularBuffer<IItem> items;
-        List<IItem> excess;
+        private CircularBuffer<IItem> items;
+        private List<IItem> excess;
 
         public CircularItemContainer(int size)
         {
@@ -20,12 +21,13 @@ namespace Core.Items
             get => items.Size;
             set
             {
-                var allItems = items.ToArray();
-                var remainingItems = allItems.Take(value).ToArray();
-                excess.AddRange(allItems.Skip(value));
+                var remainingItems = AllItems.Take(value).ToArray();
+                excess.AddRange(AllItems.Skip(value));
                 items = new CircularBuffer<IItem>(Size, remainingItems);
             }
         }
+
+        public IEnumerable<IItem> AllItems => items.ToArray();
 
         public List<IItem> PullOutExcess()
         {

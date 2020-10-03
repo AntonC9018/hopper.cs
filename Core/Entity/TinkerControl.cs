@@ -1,11 +1,14 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Core
 {
+    [DataContract]
     public class TinkerControl
     {
         // tinker's storage. The elements of this map are processed exclusively by tinkers
         // and the handlers added by them.
+        [DataMember]
         private readonly Dictionary<int, TinkerData> m_tinkerStore =
             new Dictionary<int, TinkerData>();
 

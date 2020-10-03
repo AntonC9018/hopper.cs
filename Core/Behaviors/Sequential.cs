@@ -1,9 +1,11 @@
-using Chains;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using Utils.Vector;
 
 namespace Core.Behaviors
 {
+    [DataContract]
     public class Sequential : Behavior
     {
         public class Config : BehaviorConfig
@@ -20,6 +22,8 @@ namespace Core.Behaviors
             }
         }
 
+        [DataMember]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         private Sequence m_sequence;
 
         public Action CurrentAction

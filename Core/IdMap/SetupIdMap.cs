@@ -10,7 +10,7 @@ namespace Core
         // client and server, which is required for ids to match intended ones.
         protected Dictionary<string, List<T>> m_modMap = new Dictionary<string, List<T>>();
         // represents the local map. Once ids are generated at client, they are set in stone here
-        protected List<T> m_clientMap = new List<T>();
+        public List<T> m_clientMap = new List<T>();
         // provides a mapping of Server ids -> Client ids and backwards
         // this is used only for processing data coming from server and serialization (and backwards)
         protected Map<int, int> m_serverToClientMap = new Map<int, int>();

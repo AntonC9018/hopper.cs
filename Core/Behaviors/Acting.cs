@@ -1,8 +1,9 @@
 using Chains;
-using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Core.Behaviors
 {
+    [DataContract]
     public class Acting : Behavior
     {
         public class Config : BehaviorConfig

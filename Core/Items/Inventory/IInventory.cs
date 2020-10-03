@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Core.Items
 {
     public interface IInventory
@@ -7,5 +9,6 @@ namespace Core.Items
         void DropExcess();
         bool CanEquipItem(IItem item);
         IItem GetItemFromSlot(int slotId);
+        IEnumerable<IItem> AllItems { get; }
     }
 }

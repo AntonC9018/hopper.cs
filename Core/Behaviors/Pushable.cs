@@ -1,14 +1,11 @@
+using System.Runtime.Serialization;
 using Chains;
-using System.Collections.Generic;
-using Core.FS;
-using Utils.Vector;
 
 namespace Core.Behaviors
 {
+    [DataContract]
     public class Pushable : Behavior
     {
-
-
         public class Event : CommonEvent
         {
             public Push push;
