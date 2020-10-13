@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Utils.Vector
@@ -20,6 +21,31 @@ namespace Utils.Vector
         public static IntVector2 UnitY
         {
             get => new IntVector2(0, 1);
+        }
+
+        public IEnumerable<IntVector2> CircleAround
+        {
+            get
+            {
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        yield return new IntVector2(this.x + x, this.y + y);
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<IntVector2> OrthogonallyAdjacent
+        {
+            get
+            {
+                yield return new IntVector2(this.x + 1, this.y);
+                yield return new IntVector2(this.x, this.y - 1);
+                yield return new IntVector2(this.x - 1, this.y);
+                yield return new IntVector2(this.x, this.y + 1);
+            }
         }
 
         public IntVector2() { }
@@ -144,6 +170,22 @@ namespace Utils.Vector
             );
         }
 
+        public IntVector2 RotateHalfPi()
+        {
+            return MatMul(
+                new IntVector2
+                {
+                    x = 0,
+                    y = 1
+                },
+                new IntVector2
+                {
+                    x = -1,
+                    y = 0
+                }
+            );
+        }
+
         internal IntVector2 Sign()
         {
             return new IntVector2
@@ -160,5 +202,28 @@ namespace Utils.Vector
 
         public static implicit operator Vector2(IntVector2 v)
             => new Vector2(v.x, v.y);
+
+        public IntVector2 HagamardProduct(IntVector2 vector2)
+        {
+            return new IntVector2
+            {
+                x = x * vector2.x,
+                y = y * vector2.y
+            };
+        }
+
+        public int ComponentSum()
+        {
+            return x + y;
+        }
+
+        public IntVector2 Abs()
+        {
+            return new IntVector2
+            {
+                x = x > 0 ? x : -x,
+                y = y > 0 ? y : -y
+            };
+        }
     }
 }

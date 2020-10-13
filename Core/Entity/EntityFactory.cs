@@ -56,7 +56,7 @@ namespace Core
         public Entity Instantiate()
         {
             var entity = InstantiateLogic();
-            int id = IdMap.Entity.Add(entity, new FactoryAndWorldIds { factoryId = m_id });
+            int id = IdMap.Entity.Add(entity, new FactoryLink { factoryId = m_id });
             entity._SetId(id);
             return entity;
         }

@@ -11,12 +11,12 @@ namespace Core
     {
         FieldInfo info_m_behaviors = typeof(BehaviorControl).GetField("m_behaviors", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        public class TokenThing
+        public class BehaviorData
         {
             public string type;
             public Behavior data;
 
-            public TokenThing(string type, Behavior data)
+            public BehaviorData(string type, Behavior data)
             {
                 this.type = type;
                 this.data = data;
@@ -56,7 +56,9 @@ namespace Core
                 // TODO: maybe store the string in the object idk
                 if (behToken.Children().Count() != 0)
                 {
-                    jarr.Add(JToken.FromObject(new TokenThing(kvp.Key.ToString(), kvp.Value)));
+                    var data = new BehaviorData(kvp.Key.ToString(), kvp.Value);
+                    var token = JToken.FromObject(data);
+                    jarr.Add(token);
                 }
             }
             jarr.WriteTo(writer);

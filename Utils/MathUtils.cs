@@ -10,5 +10,15 @@ namespace Utils
             else if (val.CompareTo(max) > 0) return max;
             else return val;
         }
+
+        public static int Min(int x, int y)
+        {
+            return x < y ? x : y;
+        }
+
+        internal static int Abs(int x)
+        {
+            return x < 0 ? -x : x;
+        }
     }
 }

@@ -12,6 +12,7 @@ using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
+using Core.Generation;
 
 // Hello World! program
 namespace Hopper
@@ -21,7 +22,25 @@ namespace Hopper
         static void Main(string[] args)
         {
             // Serialize();
-            Demo();
+            // Demo();
+            Generate();
+        }
+
+        static void Generate()
+        {
+            Generator generator = new Generator(50, 50, new Generator.Options());
+            generator.graph.Print();
+            generator.AddRoom(new IntVector2(5, 5));
+            generator.graph.Print();
+            generator.AddRoom(new IntVector2(5, 5));
+            generator.graph.Print();
+            generator.AddRoom(new IntVector2(5, 5));
+            generator.graph.Print();
+            generator.AddRoom(new IntVector2(5, 5));
+            generator.graph.Print();
+            generator.AddRoom(new IntVector2(5, 5));
+            generator.graph.Print();
+            generator.Generate();
         }
 
         static void Serialize()

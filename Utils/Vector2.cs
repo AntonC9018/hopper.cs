@@ -165,5 +165,24 @@ namespace Utils.Vector
 
         public static explicit operator IntVector2(Vector2 v)
             => new IntVector2((int)v.x, (int)v.y);
+
+        public float ComponentSum()
+        {
+            return x + y;
+        }
+
+        public bool IsWhole()
+        {
+            return Math.Floor(x) == x && Math.Floor(y) == y;
+        }
+
+        public Vector2 Abs()
+        {
+            return new Vector2
+            {
+                x = x > 0 ? x : -x,
+                y = y > 0 ? y : -y
+            };
+        }
     }
 }

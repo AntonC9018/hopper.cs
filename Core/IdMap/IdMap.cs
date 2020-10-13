@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Core
 {
-    public struct FactoryAndWorldIds
+    public struct FactoryLink
     {
         public int factoryId;
     }
@@ -14,9 +14,8 @@ namespace Core
         public static bool IsInRuntimePhase { get; private set; } = false;
 
 
-        public static RuntimeIdMap<Entity, FactoryAndWorldIds> Entity =
-            new RuntimeIdMap<Entity, FactoryAndWorldIds>();
-
+        public static RuntimeIdMap<Entity, FactoryLink> Entity =
+            new RuntimeIdMap<Entity, FactoryLink>();
         public static RuntimeIdMap<World> World = new RuntimeIdMap<World>();
 
         public static SetupIdMap<ITinker> Tinker = new SetupIdMap<ITinker>();
@@ -27,7 +26,7 @@ namespace Core
         public static SetupIdMap<Attack.Source> AttackSources = new SetupIdMap<Attack.Source>();
         public static SetupIdMap<Push.Source> PushSources = new SetupIdMap<Push.Source>();
 
-        public static Dictionary<System.Type, ISetupIdMap> All = new Dictionary<System.Type, ISetupIdMap>
+        private static Dictionary<System.Type, ISetupIdMap> All = new Dictionary<System.Type, ISetupIdMap>
         {
             { typeof(ITinker), Tinker },
             { typeof(Retoucher), Retoucher},

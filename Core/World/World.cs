@@ -21,7 +21,7 @@ namespace Core
         {
             m_grid = new GridManager(width, height);
             m_state = new WorldStateManager();
-            IdMap.World.Add(this);
+            m_id = IdMap.World.Add(this);
         }
 
         public void Loop()
