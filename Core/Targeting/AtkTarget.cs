@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Core.Behaviors;
+using Utils;
 
 namespace Core.Targeting
 {
@@ -12,9 +14,9 @@ namespace Core.Targeting
             {
                 throw new System.Exception("Expected event type to be Attacking.Event");
             }
-            if (entity != null)
+            if (Entity != null)
             {
-                var attackable = entity.Behaviors.Get<Attackable>();
+                var attackable = Entity.Behaviors.Get<Attackable>();
 
                 atkCondition =
                     attackable == null
@@ -27,5 +29,12 @@ namespace Core.Targeting
                 atkCondition = AtkCondition.NEVER;
             }
         }
+
+        public override void CalculateTargets(Cell cell, Layer m_targetedLayer)
+        {
+            // I do not know what exactly to do here
+            entities = cell.m_entities.Where(e => (e.Layer & m_targetedLayer) != 0);
+        }
+
     }
 }

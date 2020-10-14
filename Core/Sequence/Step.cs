@@ -13,7 +13,7 @@ namespace Core
         public bool success = false;
     }
 
-    public class StepData
+    public class Step
     {
         public int relativeStepIndexSuccess = 1;
         public int relativeStepIndexFail = 0;

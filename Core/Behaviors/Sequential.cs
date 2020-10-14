@@ -10,9 +10,9 @@ namespace Core.Behaviors
     {
         public class Config : BehaviorConfig
         {
-            public StepData[] stepData;
+            public Step[] stepData;
 
-            public Config(StepData[] _stepData)
+            public Config(Step[] _stepData)
             {
                 if (_stepData == null)
                 {

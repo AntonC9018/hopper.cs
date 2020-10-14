@@ -5,7 +5,7 @@ using Utils.Vector;
 
 namespace Core.Generation
 {
-    public class Generator
+    public partial class Generator
     {
         public enum Mark
         {
@@ -15,68 +15,9 @@ namespace Core.Generation
 
         public Graph graph;
 
-        public class RoomStuff
-        {
-            public int hallway_length;
-            public int hallway_width;
-            public int wall_width;
-        }
-
-        public class Room
-        {
-            public IntVector2 position;
-            public IntVector2 dimensions;
-            public Node node;
-            public Vector2 Center => (Vector2)position + ((Vector2)DimensionsMinusOne) / 2;
-            public IntVector2 DimensionsMinusOne => dimensions - new IntVector2(1, 1);
-
-            public RoomStuff roomStuff;
-
-            public Room(IntVector2 dimensions, Node node)
-            {
-                this.dimensions = dimensions;
-                this.node = node;
-            }
-
-            public Vector2 GetBorderCenter(IntVector2 direction)
-            {
-                return Center + GetCenterOffsetVector(direction);
-            }
-
-            public IntVector2 GetDimensionVector(IntVector2 direction)
-            {
-                return direction.HagamardProduct(dimensions);
-            }
-
-            public int GetDimension(IntVector2 direction)
-            {
-                return Math.Abs(GetDimensionVector(direction).ComponentSum());
-            }
-
-            public IntVector2 GetDimensionMinusOneVector(IntVector2 direction)
-            {
-                return direction.HagamardProduct(DimensionsMinusOne);
-            }
-
-            public int GetDimensionMinusOne(IntVector2 direction)
-            {
-                return Math.Abs(GetDimensionMinusOneVector(direction).ComponentSum());
-            }
-
-            public Vector2 GetCenterOffsetVector(IntVector2 direction)
-            {
-                return ((Vector2)GetDimensionMinusOneVector(direction)) / 2;
-            }
-
-            public void SetPositionFromCenter(Vector2 center)
-            {
-                this.position = (IntVector2)(center - ((Vector2)DimensionsMinusOne) / 2);
-            }
-        }
-
         public class Options
         {
-            public int max_hallway_length = -1;
+            public int max_hallway_length = 0;
             public int min_hallway_length = -1;
             public int min_hallway_width = 2;
             public int max_hallway_width = 2;
@@ -103,7 +44,7 @@ namespace Core.Generation
 
         public void AddRoom(IntVector2 dimensions)
         {
-            var node = rooms.Count == 0 ? graph.nodes[0] : graph.AddNode();
+            var node = rooms.Count == 0 ? graph.nodes[0] : graph.AddNode(rng);
             var room = new Room(dimensions, node);
             rooms.Add(room);
         }
@@ -143,16 +84,11 @@ namespace Core.Generation
 
         public void GenerateRoom(Room parent, Room child)
         {
-            // outline:
-            // the direction
             IntVector2 direction = child.node.position - parent.node.position;
             IntVector2 orthogonal_direction = direction.RotateHalfPi();
 
             Vector2 parent_center = parent.Center;
-
             Vector2 parent_border = parent.GetBorderCenter(direction);
-            System.Console.WriteLine($"Direction: {direction}");
-            System.Console.WriteLine($"Border: {parent_border}");
             IntVector2 parent_orthogonal_dimension_minus_one_vector = parent.GetDimensionMinusOneVector(orthogonal_direction);
             int parent_orthogonal_dimension = parent.GetDimension(orthogonal_direction);
 
@@ -171,14 +107,7 @@ namespace Core.Generation
                 throw new System.Exception("Cannot be less");
             }
 
-            System.Console.WriteLine($"Useful parent width: {useful_parent_width}");
-            System.Console.WriteLine($"Useful child width: {useful_child_width}");
-
-
             int min_orthogonal_offset = -useful_child_width + options.min_hallway_width;
-            // account for centers that point in between the cells
-            // if (!parent_border.IsWhole() && child_border.IsWhole())
-            //     min_orthogonal_offset -= 1;
             int max_orthogonal_offset = useful_parent_width - options.min_hallway_width;
 
             Queue<int> offsets_queue = Utils.Functions.ShuffledRangeQueue(
@@ -187,8 +116,6 @@ namespace Core.Generation
             while (offsets_queue.Count != 0)
             {
                 int current_orthogonal_offset = offsets_queue.Dequeue();
-
-                System.Console.WriteLine($"Trying: {current_orthogonal_offset}");
 
                 int current_useful_parent_width = useful_parent_width;
                 int current_useful_child_width = useful_child_width;
@@ -218,29 +145,16 @@ namespace Core.Generation
 
                 int current_hallway_offset = rng.Next(min_hallway_offset, max_hallway_offset + 1);
 
-                System.Console.WriteLine($"Max hallway offset: {max_hallway_offset}");
-                System.Console.WriteLine($"Current hallway offset: {current_hallway_offset}");
-
                 Vector2 child_corner = parent_border
                     + ((Vector2)parent_orthogonal_dimension_minus_one_vector) / 2
                     + direction * (current_hallway_length + 1)
                     + orthogonal_direction * current_orthogonal_offset;
 
 
-                System.Console.WriteLine($"Hallway length: {current_hallway_length}");
-                System.Console.WriteLine($"Coordinate: {child_corner}");
-
                 if (child_corner.IsWhole() == false)
                 {
                     throw new System.Exception("Must be whole. Review the algo");
                 }
-
-                // this will be whole
-                // this is coordinate of some angle
-                // now we backtrack to the center
-                IntVector2 current_coordinate = (IntVector2)child_corner;
-
-                // Vector2 child_border = child.GetBorderCenter(-direction);
 
                 Vector2 child_center = child_corner
                     - ((Vector2)child_orthogonal_dimension_minus_one_vector) / 2
@@ -285,7 +199,7 @@ namespace Core.Generation
 
                         WriteHallway(
                             current_hallway_length + 2,
-                            current_hallway_width + 2,
+                            current_hallway_width,
                             direction,
                             hallway_start_int);
                         rooms.Add(hallway);
@@ -348,8 +262,8 @@ namespace Core.Generation
             int wall_width = 1;
 
             Vector2 target_room_center = target_room.Center;
-            Vector2 ones = new Vector2(1.0f, 1.0f);
-            Vector2 walls_target_dimensions = ones * wall_width;
+            Vector2 twos = new Vector2(2.0f, 2.0f);
+            Vector2 walls_target_dimensions = twos * wall_width;
 
             foreach (var room in rooms)
             {
@@ -360,7 +274,7 @@ namespace Core.Generation
 
                 Vector2 room_center = room.Center;
                 Vector2 center_difference = (target_room_center - room_center).Abs();
-                Vector2 walls_dimensions = ones * wall_width;
+                Vector2 walls_dimensions = twos * wall_width;
 
                 Vector2 useful_width_sum = (Vector2)(target_room.dimensions + room.dimensions);
                 useful_width_sum -= walls_target_dimensions;

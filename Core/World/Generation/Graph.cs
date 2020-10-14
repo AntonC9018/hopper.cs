@@ -1,30 +1,10 @@
 using System.Collections.Generic;
 using Utils.Vector;
 using System.Linq;
+using System;
 
 namespace Core.Generation
 {
-    public class FutureNode
-    {
-        public IntVector2 position;
-        public Node node;
-
-        public FutureNode(IntVector2 position, Node node)
-        {
-            this.position = position;
-            this.node = node;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return position == ((FutureNode)obj).position;
-        }
-
-        public override int GetHashCode()
-        {
-            return position.GetHashCode();
-        }
-    }
 
     public class Node
     {
@@ -66,7 +46,7 @@ namespace Core.Generation
                     || position.y >= dimensions.y
                     || position.x < 0
                     || position.y < 0
-                    || nodes.Any(node => node.position.Equals(position)))
+                    || nodes.Any(nd => nd.position.Equals(position)))
                 {
                     continue;
                 }
@@ -100,9 +80,9 @@ namespace Core.Generation
             }
         }
 
-        public Node AddNode()
+        public Node AddNode(Random rng)
         {
-            var selectedKvp = availableCells.GetRandom();
+            var selectedKvp = availableCells.GetRandom(rng);
             availableCells.Remove(selectedKvp.Key);
             var node = new Node(selectedKvp.Key, nodes.Count, selectedKvp.Value);
             selectedKvp.Value.childNodes.Add(node);

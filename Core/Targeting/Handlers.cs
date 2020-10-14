@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Utils;
 using Chains;
-using Core.Behaviors;
 
 namespace Core.Targeting
 {
     public static class Handlers
     {
-        public static void NextToAny(TargetEvent<Targeting.AtkTarget> weaponEvent)
+        public static void NextToAny(TargetEvent<AtkTarget> weaponEvent)
         {
             var first = weaponEvent.targets[0];
             if (first.index == 0 && first.atkCondition != AtkCondition.NEVER)
@@ -40,14 +39,14 @@ namespace Core.Targeting
         }
 
         public static void DiscardUnreachable<T>(TargetEvent<T> weaponEvent)
-            where T : Targeting.Target
+            where T : Target
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => CanReach(t, weaponEvent.targets));
         }
 
         public static bool CanReach<T>(T target, List<T> targets)
-            where T : Targeting.Target
+            where T : Target
         {
             var reach = target.initialPiece.reach;
 
@@ -77,10 +76,10 @@ namespace Core.Targeting
         }
 
         public static void DiscardNoEntity<T>(TargetEvent<T> weaponEvent)
-            where T : Targeting.Target
+            where T : Target
         {
             weaponEvent.targets = weaponEvent.targets
-                .Where(t => t.entity != null);
+                .Where(t => t.Entity != null);
         }
 
         public static void KeepAttackable(TargetEvent<AtkTarget> weaponEvent)
@@ -92,7 +91,7 @@ namespace Core.Targeting
 
         public static void StopNoFirst(TargetEvent<DigTarget> digEvent)
         {
-            if (digEvent.targets[0].entity == null)
+            if (digEvent.targets[0].Entity == null)
             {
                 digEvent.targets.Clear();
                 digEvent.propagate = false;

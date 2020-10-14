@@ -32,7 +32,7 @@ namespace Core.Behaviors
                 ? new List<Target>()
                 : new List<Target>
                 {
-                        new Target { entity = entity, direction = ev.action.direction }
+                        new Target { Entity = entity, direction = ev.action.direction }
                 };
         }
 
@@ -85,7 +85,7 @@ namespace Core.Behaviors
             {
                 var action = ev.action.Copy();
                 action.direction = target.direction;
-                var attackable = target.entity.Behaviors.Get<Attackable>();
+                var attackable = target.Entity.Behaviors.Get<Attackable>();
                 var pars = new Attackable.Params
                 {
                     attack = (Attack)ev.attack.Copy()
@@ -101,7 +101,7 @@ namespace Core.Behaviors
             {
                 var action = ev.action.Copy();
                 action.direction = target.direction;
-                Pushable pushable = target.entity.Behaviors.Get<Pushable>();
+                Pushable pushable = target.Entity.Behaviors.Get<Pushable>();
                 if (pushable != null)
                 {
                     var pars = new Pushable.Params

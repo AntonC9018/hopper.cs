@@ -11,7 +11,7 @@ namespace Core.Behaviors
             public System.Func<Entity, Action> CalculateAction;
             public System.Action<EventBase> DoAction;
         }
-        // TODO: refactor into integers. Map integers to strings if needed
+
         public bool b_didAction = false;
         public bool b_doingAction = false;
         public bool b_didActionSucceed = false;
@@ -85,7 +85,9 @@ namespace Core.Behaviors
                 return;
 
             if (config_CalculateAction != null)
+            {
                 NextAction = config_CalculateAction(m_entity);
+            }
 
             // TODO: this should be e.g. the default value of this function
             else

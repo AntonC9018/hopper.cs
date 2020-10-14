@@ -1,6 +1,7 @@
 using Utils.Vector;
 using Core.Items;
 using System.Runtime.Serialization;
+using System;
 
 namespace Core
 {
@@ -38,6 +39,7 @@ namespace Core
         // These fields do not store persistent state
         public World World { get; private set; }
         public StatManager StatManager { get; private set; }
+
         public History History { get; private set; }
 
         public Entity()

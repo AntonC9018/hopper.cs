@@ -7,7 +7,7 @@ namespace Core
     [DataContract]
     public class Sequence
     {
-        public StepData[] stepData;
+        public Step[] stepData;
         public Entity actor;
 
         [DataMember] int currentStepIndex = 0;
@@ -24,7 +24,7 @@ namespace Core
         public void TickAction()
         {
             currentRepeatCount++;
-            StepData currentStep = stepData[currentStepIndex];
+            Step currentStep = stepData[currentStepIndex];
 
             if (!currentStep.IsRepeatLimitMet(currentRepeatCount))
                 return;

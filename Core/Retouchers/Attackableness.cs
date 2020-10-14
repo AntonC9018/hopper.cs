@@ -1,6 +1,3 @@
-
-using System.Linq;
-using Chains;
 using Core.Behaviors;
 
 namespace Core.Retouchers
@@ -9,10 +6,7 @@ namespace Core.Retouchers
     {
         static System.Action<Attackable.AttackablenessEvent> _Constant(AtkCondition attackableness)
         {
-            return (Attackable.AttackablenessEvent ev) =>
-            {
-                ev.attackableness = attackableness;
-            };
+            return (Attackable.AttackablenessEvent ev) => ev.attackableness = attackableness;
         }
 
         static Retoucher[] ConstantRetouchers

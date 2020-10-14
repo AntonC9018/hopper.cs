@@ -9,9 +9,6 @@ using Core.Behaviors;
 using Test;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json.Linq;
-using System.Reflection;
-using System.Diagnostics.CodeAnalysis;
 using Core.Generation;
 
 // Hello World! program
@@ -22,8 +19,8 @@ namespace Hopper
         static void Main(string[] args)
         {
             // Serialize();
-            // Demo();
-            Generate();
+            Demo();
+            // Generate();
         }
 
         static void Generate()
@@ -52,7 +49,7 @@ namespace Hopper
             playerFactory.AddBehavior<Moving>();
             playerFactory.AddBehavior<Pushable>();
             playerFactory.AddBehavior<Statused>();
-            playerFactory.AddBehavior<Sequential>(new Sequential.Config(new StepData[0]));
+            playerFactory.AddBehavior<Sequential>(new Sequential.Config(new Step[0]));
             System.Console.WriteLine("Set up playerFactory");
 
             var player = playerFactory.Instantiate();
@@ -143,10 +140,10 @@ namespace Hopper
                 new Action[] { attackAction, moveAction }
             );
 
-            StepData[] stepData =
+            Step[] stepData =
             {
-                new StepData { action = null },
-                new StepData { action = attackMoveAction, movs = Movs.Basic }
+                new Step { action = null },
+                new Step { action = attackMoveAction, movs = Movs.Basic }
             };
 
             var sequenceConfig = new Sequential.Config(stepData);
@@ -275,7 +272,7 @@ namespace Hopper
             var targets = weapon.GetTargets(ev);
             foreach (var t in targets)
             {
-                System.Console.WriteLine($"Entity at {t.entity.Pos} has been considered a potential target");
+                System.Console.WriteLine($"Entity at {t.Entity.Pos} has been considered a potential target");
             }
 
 

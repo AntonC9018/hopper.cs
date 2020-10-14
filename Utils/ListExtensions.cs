@@ -45,5 +45,12 @@ namespace Utils
                 list[n] = value;
             }
         }
+
+        public static List<T> Copy<T>(this IList<T> list)
+        {
+            var result = new List<T>(list.Count);
+            result.AddRange(list);
+            return result;
+        }
     }
 }

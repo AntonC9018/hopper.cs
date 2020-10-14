@@ -38,17 +38,15 @@ namespace Core.Targeting
             {
                 var piece = this.m_pattern[i].Rotate(angle);
 
-                var entity = commonEvent.actor
-                    .GetCellRelative(piece.pos)
-                    .GetEntityFromLayer(m_targetedLayer);
 
                 var target = new T
                 {
                     direction = piece.dir,
-                    entity = entity,
                     index = i,
                     initialPiece = this.m_pattern[i]
                 };
+
+                target.CalculateTargets(commonEvent.actor.GetCellRelative(piece.pos), m_targetedLayer);
                 target.CalculateCondition(commonEvent);
                 targets.Add(target);
             }

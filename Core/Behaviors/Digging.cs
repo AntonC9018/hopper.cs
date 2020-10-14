@@ -60,7 +60,7 @@ namespace Core.Behaviors
                 {
                     attack = ev.dig.ToAttack()
                 };
-                target.entity.Behaviors.Get<Attackable>().Activate(ev.action, pars);
+                target.Entity.Behaviors.Get<Attackable>().Activate(ev.action, pars);
             }
         }
 

@@ -170,6 +170,22 @@ namespace Utils.Vector
             );
         }
 
+        public IntVector2 RotateAndRound(double angle_in_rads)
+        {
+            return MatMul(
+                new IntVector2
+                {
+                    x = (int)Math.Round(Math.Cos(angle_in_rads)),
+                    y = (int)Math.Round(Math.Sin(angle_in_rads))
+                },
+                new IntVector2
+                {
+                    x = -(int)Math.Round(Math.Sin(angle_in_rads)),
+                    y = (int)Math.Round(Math.Cos(angle_in_rads))
+                }
+            );
+        }
+
         public IntVector2 RotateHalfPi()
         {
             return MatMul(

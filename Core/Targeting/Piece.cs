@@ -15,8 +15,8 @@ namespace Core.Targeting
         {
             return new Piece
             {
-                pos = pos.Rotate(angle),
-                dir = dir.Rotate(angle),
+                pos = pos.RotateAndRound(angle),
+                dir = dir.RotateAndRound(angle),
                 reach = reach
             };
         }
