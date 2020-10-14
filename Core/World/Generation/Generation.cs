@@ -59,17 +59,6 @@ namespace Core.Generation
             rooms[0].SetPositionFromCenter(dimensions / 2);
             WriteRoom(rooms[0]);
             Iterate(rooms[0]);
-
-            for (int y = 0; y < grid.GetLength(1); y++)
-            {
-                for (int x = 0; x < grid.GetLength(0); x++)
-                {
-                    char ch = grid[x, y] == Mark.EMPTY ? '-' : (char)grid[x, y];
-                    System.Console.Write(ch);
-                    System.Console.Write(' ');
-                }
-                System.Console.WriteLine();
-            }
         }
 
         public void Iterate(Room parent)

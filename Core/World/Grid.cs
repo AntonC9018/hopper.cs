@@ -40,7 +40,7 @@ namespace Core
 
         public void Reset(Entity entity, IntVector2 pos)
         {
-            var cell = m_grid[pos.x, pos.y];
+            var cell = m_grid[pos.y, pos.x];
             cell.m_entities.Add(entity);
             cell.FireEnterEvent(entity);
         }
@@ -52,20 +52,20 @@ namespace Core
 
         public void Remove(Entity entity, IntVector2 pos)
         {
-            var cell = m_grid[pos.x, pos.y];
+            var cell = m_grid[pos.y, pos.x];
             cell.m_entities.Remove(entity);
             cell.FireLeaveEvent(entity);
         }
 
         bool IsWithinBounds(IntVector2 pos)
         {
-            return pos.x < 0 || pos.y < 0 || pos.x >= m_height || pos.y >= m_width;
+            return pos.y < 0 || pos.x < 0 || pos.y >= m_height || pos.x >= m_width;
         }
 
         public Cell GetCellAt(IntVector2 pos)
         {
             if (IsWithinBounds(pos)) return null;
-            return m_grid[pos.x, pos.y];
+            return m_grid[pos.y, pos.x];
         }
     }
 }

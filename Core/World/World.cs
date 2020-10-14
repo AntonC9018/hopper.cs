@@ -38,6 +38,15 @@ namespace Core
             return entity;
         }
 
+        public Entity SpawnPlayer(IEntityFactory entityFactory, IntVector2 pos)
+        {
+            var entity = entityFactory.Instantiate();
+            entity.Init(pos, this);
+            m_state.AddPlayer(entity);
+            m_grid.Reset(entity);
+            return entity;
+        }
+
         public Entity CreateDroppedItem(IItem item, IntVector2 pos)
         {
             var entity = (DroppedItem)SpawnEntity(DroppedItem.Factory, pos);

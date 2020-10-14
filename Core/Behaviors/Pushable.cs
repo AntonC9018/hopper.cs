@@ -74,7 +74,7 @@ namespace Core.Behaviors
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(BePushed)
-                .AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do))
+                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.pushed_do))
 
                 .End();
 

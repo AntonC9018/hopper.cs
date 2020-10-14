@@ -35,7 +35,7 @@ namespace Core.Behaviors
     }
 
     [DataContract]
-    public class Input : Behavior
+    public class Controllable : Behavior
     {
 
         public class Event : CommonEvent
@@ -67,15 +67,15 @@ namespace Core.Behaviors
         {
             return ev =>
             {
-                ev.action = ev.actor.Behaviors.Get<Input>().config_defaultAction.Copy();
+                ev.action = ev.actor.Behaviors.Get<Controllable>().config_defaultAction.Copy();
                 ev.action.direction = dir;
             };
         }
 
-        public static readonly Dictionary<ChainName, ChainPaths<Input, Event>> Chains
-            = new Dictionary<ChainName, ChainPaths<Input, Event>>();
+        public static readonly Dictionary<ChainName, ChainPaths<Controllable, Event>> Chains
+            = new Dictionary<ChainName, ChainPaths<Controllable, Event>>();
 
-        static Input()
+        static Controllable()
         {
             var builder = new ChainTemplateBuilder();
 
@@ -84,7 +84,7 @@ namespace Core.Behaviors
             foreach (ChainName name in InputMappings.Members)
             {
                 builder.AddTemplate<Event>(name);
-                Chains[name] = new ChainPaths<Input, Event>(name);
+                Chains[name] = new ChainPaths<Controllable, Event>(name);
             }
 
             builder
@@ -104,7 +104,7 @@ namespace Core.Behaviors
                 .AddHandler(Default(IntVector2.Left), PriorityRanks.Lowest)
                 .End();
 
-            BehaviorFactory<Input>.s_builder = builder;
+            BehaviorFactory<Controllable>.s_builder = builder;
         }
     }
 }

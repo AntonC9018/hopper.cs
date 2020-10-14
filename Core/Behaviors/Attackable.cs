@@ -103,7 +103,7 @@ namespace Core.Behaviors
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(TakeHit)
-                .AddHandler(Utils.AddHistoryEvent(History.EventCode.attacked_do))
+                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacked_do))
 
                 .AddTemplate<AttackablenessEvent>(ChainName.Condition)
 

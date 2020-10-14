@@ -49,6 +49,8 @@ namespace Core.Behaviors
             } while (i < ev.move.power);
             i--;
 
+            System.Console.WriteLine(i);
+
             ev.newPos = ev.actor.GetPosRelative(ev.action.direction * i);
         }
 
@@ -72,7 +74,7 @@ namespace Core.Behaviors
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(Displace)
-                .AddHandler(Utils.AddHistoryEvent(History.EventCode.displaced_do))
+                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.displaced_do))
 
                 .End();
 

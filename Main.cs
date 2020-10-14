@@ -316,11 +316,11 @@ namespace Hopper
             {
                 foreach (var historyEvent in enemyEventsByPhases[i])
                 {
-                    System.Console.WriteLine($"Enemy did {historyEvent.eventCode.ToString()}. Position after: {historyEvent.stateAfter.pos}");
+                    System.Console.WriteLine($"Enemy did {historyEvent.updateCode.ToString()}. Position after: {historyEvent.stateAfter.pos}");
                 }
                 foreach (var historyEvent in playerEventsByPhases[i])
                 {
-                    System.Console.WriteLine($"Player did {historyEvent.eventCode.ToString()}. Position after: {historyEvent.stateAfter.pos}");
+                    System.Console.WriteLine($"Player did {historyEvent.updateCode.ToString()}. Position after: {historyEvent.stateAfter.pos}");
                 }
             }
 
@@ -416,10 +416,10 @@ namespace Hopper
 
             System.Console.WriteLine("\n ------ Input Demo ------ \n");
             // we also have the possibilty to add behaviors dynamically.
-            var InputFactory = new BehaviorFactory<Input>();
-            var input = (Input)InputFactory.Instantiate(player,
-                new Input.Config { defaultAction = attackMoveAction });
-            player.Behaviors.Add(typeof(Input), input);
+            var InputFactory = new BehaviorFactory<Controllable>();
+            var input = (Controllable)InputFactory.Instantiate(player,
+                new Controllable.Config { defaultAction = attackMoveAction });
+            player.Behaviors.Add(typeof(Controllable), input);
 
             var outputAction0 = input.ConvertInputToAction(InputMappings.Up);
             System.Console.WriteLine($"Fed Up. Output: {outputAction0.direction}");

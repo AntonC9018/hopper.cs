@@ -81,7 +81,7 @@ namespace Core.Behaviors
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(Apply)
-                .AddHandler(Utils.AddHistoryEvent(History.EventCode.attacking_do))
+                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacking_do))
 
                 .End();
 

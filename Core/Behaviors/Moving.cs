@@ -52,7 +52,7 @@ namespace Core.Behaviors
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(Displace)
-                .AddHandler(Utils.AddHistoryEvent(History.EventCode.move_do))
+                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.move_do))
 
                 .End();
 

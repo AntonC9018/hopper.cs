@@ -39,7 +39,7 @@ namespace Test
             if (flavor.whoApplied != null)
             {
                 flavor.whoApplied.Pos = ev.actor.Pos;
-                flavor.whoApplied.History.Add(flavor.whoApplied, History.EventCode.displaced_do);
+                flavor.whoApplied.History.Add(flavor.whoApplied, History.UpdateCode.displaced_do);
             }
         }
 

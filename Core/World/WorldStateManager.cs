@@ -94,6 +94,7 @@ namespace Core
                 foreach (var e in m_entities[i])
                     Activate(e);
             }
+            m_phase = 0;
         }
 
         private void TickAll()
