@@ -17,22 +17,17 @@ namespace Core.Behaviors
             public Push push;
         }
 
-        public class Params : ActivationParams
-        {
-            public List<Target> targets;
-        }
-
         static List<Target> GenerateTargetsDefault(Event ev)
         {
             var entity = ev.actor
-                            .GetCellRelative(ev.action.direction)
-                            .GetEntityFromLayer(Layer.REAL);
+                .GetCellRelative(ev.action.direction)
+                .GetEntityFromLayer(Layer.REAL);
 
             return entity == null
                 ? new List<Target>()
                 : new List<Target>
                 {
-                        new Target { Entity = entity, direction = ev.action.direction }
+                    new Target { Entity = entity, direction = ev.action.direction }
                 };
         }
 
@@ -48,11 +43,11 @@ namespace Core.Behaviors
 
         }
         public bool Activate(Action action) => Activate(action, null);
-        public bool Activate(Action action, Params pars)
+        public bool Activate(Action action, List<Target> targets)
         {
             var ev = new Event
             {
-                targets = pars?.targets,
+                targets = targets,
                 actor = m_entity,
                 action = action
             };
@@ -86,12 +81,8 @@ namespace Core.Behaviors
                 var action = ev.action.Copy();
                 action.direction = target.direction;
                 var attackable = target.Entity.Behaviors.Get<Attackable>();
-                var pars = new Attackable.Params
-                {
-                    attack = (Attack)ev.attack.Copy()
-                };
                 // let it throw if this has not been accounted for
-                attackable.Activate(action, pars);
+                attackable.Activate(action, (Attack)ev.attack.Copy());
             }
         }
 
@@ -104,11 +95,7 @@ namespace Core.Behaviors
                 Pushable pushable = target.Entity.Behaviors.Get<Pushable>();
                 if (pushable != null)
                 {
-                    var pars = new Pushable.Params
-                    {
-                        push = (Push)ev.push.Copy()
-                    };
-                    pushable.Activate(action, pars);
+                    pushable.Activate(action, (Push)ev.push.Copy());
                 }
             }
         }

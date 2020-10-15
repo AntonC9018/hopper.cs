@@ -22,7 +22,6 @@ namespace Test
 
         public class Event : CommonEvent
         {
-            public Params pars;
             public StatusFile statusStat;
             public BindStatus bindStatus;
             public Entity applyTo;
@@ -31,11 +30,6 @@ namespace Test
         public class Config : BehaviorConfig
         {
             public BindStatus bindStatus;
-        }
-
-        public class Params : ActivationParams
-        {
-            public Entity applyTo;
         }
 
         public BindStatus config_bindStatus;
@@ -47,14 +41,13 @@ namespace Test
         }
 
         public bool Activate(Action action) => Activate(action, null);
-
-        public bool Activate(Action action, Params pars)
+        public bool Activate(Action action, Entity applyTo)
         {
             var ev = new Event
             {
                 actor = m_entity,
                 action = action,
-                applyTo = pars?.applyTo,
+                applyTo = applyTo,
                 statusStat = config_bindStatus.GetStat(m_entity),
                 bindStatus = config_bindStatus
             };

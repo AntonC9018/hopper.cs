@@ -21,17 +21,12 @@ namespace Core.Behaviors
             public List<Target> targets;
         }
 
-        public class Params : ActivationParams
-        {
-        }
-
-        public bool Activate(Action action, Params pars)
+        public bool Activate(Action action)
         {
             var ev = new Event
             {
                 actor = m_entity,
-                action = action,
-                // push = pars.push
+                action = action
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -56,11 +51,9 @@ namespace Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
-                var pars = new Attackable.Params
-                {
-                    attack = ev.dig.ToAttack()
-                };
-                target.Entity.Behaviors.Get<Attackable>().Activate(ev.action, pars);
+                target.Entity.Behaviors
+                    .Get<Attackable>()
+                    .Activate(ev.action, ev.dig.ToAttack());
             }
         }
 

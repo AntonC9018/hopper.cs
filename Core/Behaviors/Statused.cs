@@ -16,7 +16,7 @@ namespace Core.Behaviors
             public StatusParam[] statusParams;
         }
 
-        public class Params : ActivationParams
+        public class Params
         {
             public StatusParam[] statusParams;
 

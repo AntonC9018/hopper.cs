@@ -14,19 +14,13 @@ namespace Core.Behaviors
             public Attack.Resistance resistance;
         }
 
-        public class Params : ActivationParams
-        {
-            public Attack attack;
-        }
-
-
-        public bool Activate(Action action, Params pars)
+        public bool Activate(Action action, Attack attack)
         {
             var ev = new Event
             {
                 actor = m_entity,
                 action = action,
-                attack = pars.attack
+                attack = attack
             };
             return CheckDoCycle<Event>(ev);
         }

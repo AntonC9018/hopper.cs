@@ -10,13 +10,10 @@ namespace Core.Behaviors
         static BehaviorFactory()
         {
             var type = typeof(Beh);
-            var id = BehaviorFactory.s_idGenerator.GetNextId();
-            s_idMap[type] = id;
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
         }
         public BehaviorFactory()
         {
-            id = s_idMap[typeof(Beh)];
             m_templates = s_builder?.Templates;
         }
 

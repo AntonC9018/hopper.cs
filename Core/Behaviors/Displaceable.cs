@@ -14,23 +14,13 @@ namespace Core.Behaviors
             public IntVector2 newPos;
         }
 
-        public class Params : ActivationParams
-        {
-            public Move move;
-
-            public Params(Move move)
-            {
-                this.move = move;
-            }
-        }
-
-        public bool Activate(Action action, Params pars)
+        public bool Activate(Action action, Move move)
         {
             var ev = new Event
             {
                 actor = m_entity,
                 action = action,
-                move = pars.move
+                move = move
             };
             return CheckDoCycle<Event>(ev);
         }

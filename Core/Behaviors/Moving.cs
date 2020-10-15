@@ -33,8 +33,7 @@ namespace Core.Behaviors
 
         static void Displace(Event ev)
         {
-            var pars = new Displaceable.Params(ev.move);
-            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action, pars);
+            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action, ev.move);
         }
 
         public static ChainPaths<Moving, Event> Check;

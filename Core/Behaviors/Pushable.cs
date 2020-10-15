@@ -12,18 +12,13 @@ namespace Core.Behaviors
             public Push.Resistance resistance;
         }
 
-        public class Params : ActivationParams
-        {
-            public Push push;
-        }
-
-        public bool Activate(Action action, Params pars)
+        public bool Activate(Action action, Push push)
         {
             var ev = new Event
             {
                 actor = m_entity,
                 action = action,
-                push = pars.push
+                push = push
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -53,9 +48,7 @@ namespace Core.Behaviors
         static void BePushed(Event ev)
         {
             // TODO: set up properly
-            var move = new Move();
-            var pars = new Displaceable.Params(move);
-            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action, pars);
+            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action, new Move());
         }
 
         public static ChainPaths<Pushable, Event> Check;

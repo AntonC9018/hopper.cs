@@ -9,12 +9,7 @@ namespace Core.Behaviors
         {
         }
 
-        public class Params : ActivationParams
-        {
-        }
-
-
-        public bool Activate(Action action, Params pars)
+        public bool Activate(Action action)
         {
             var ev = new Event
             {

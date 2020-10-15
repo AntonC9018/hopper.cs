@@ -11,9 +11,6 @@ namespace Core
         [DataMember] public int Id => m_id;
         private int m_id;
 
-        public int FactoryId => m_factoryId;
-        private int m_factoryId;
-
         [DataMember(Name = "pos")]
         protected IntVector2 m_pos;
         [DataMember(Name = "orientation")]

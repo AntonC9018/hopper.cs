@@ -53,8 +53,4 @@ namespace Core.Behaviors
     public abstract class BehaviorConfig
     {
     }
-
-    public abstract class ActivationParams
-    {
-    }
 }

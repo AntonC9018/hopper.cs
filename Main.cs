@@ -395,8 +395,7 @@ namespace Hopper
 
             var ma = moveAction.Copy();
             ma.direction = new IntVector2(-1, -1);
-            player.Behaviors.Get<Displaceable>().Activate(ma,
-                new Displaceable.Params(new Move()));
+            player.Behaviors.Get<Displaceable>().Activate(ma, new Move());
             world.Loop();
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position: {player.Pos}");
