@@ -52,5 +52,23 @@ namespace Utils
             result.AddRange(list);
             return result;
         }
+
+        public static T[] Concat<T>(this T[] array, params T[][] arrays)
+        {
+            int length = array.Length;
+            foreach (var arr in arrays)
+            {
+                length += arr.Length;
+            }
+            var result = new T[length];
+            length = array.Length;
+            array.CopyTo(result, 0);
+            foreach (var arr in arrays)
+            {
+                array.CopyTo(arr, length);
+                length += arr.Length;
+            }
+            return result;
+        }
     }
 }

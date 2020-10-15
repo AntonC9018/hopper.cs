@@ -1,16 +1,16 @@
+using Core.Behaviors;
+
 namespace Core
 {
     public class StatusParam
     {
-        public Flavor flavor;
+        public IStatus status;
         public StatusFile statusStat;
-        public int statusId;
 
-        public StatusParam(Flavor flavor, StatusFile statusStat, int statusId)
+        public StatusParam(IStatus status, StatusFile statusStat)
         {
-            this.flavor = flavor;
+            this.status = status;
             this.statusStat = statusStat;
-            this.statusId = statusId;
         }
     }
 }

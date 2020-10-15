@@ -6,7 +6,7 @@ namespace Core
     {
         Action[] m_actions;
 
-        public CompositeAction(Action[] actions)
+        public CompositeAction(params Action[] actions)
         {
             m_actions = actions;
         }

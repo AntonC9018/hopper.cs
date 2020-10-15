@@ -1,4 +1,5 @@
 using Chains;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -7,8 +8,9 @@ namespace Core.Behaviors
     [DataContract]
     public class Statused : Behavior
     {
-        public class Event : CommonEvent
+        public class Event : EventBase
         {
+            public Entity actor;
             public Attack attack;
             public MapFile resistance;
             public StatusParam[] statusParams;
@@ -17,31 +19,62 @@ namespace Core.Behaviors
         public class Params : ActivationParams
         {
             public StatusParam[] statusParams;
+
+            public Params(StatusParam param)
+            {
+                statusParams = new StatusParam[] { param };
+            }
         }
+
+        [DataMember]
+        private HashSet<IStatus> m_appliedStatuses;
 
         public override void Init(Entity entity, BehaviorConfig config)
         {
             m_entity = entity;
+            m_appliedStatuses = new HashSet<IStatus>();
 
             // this should be refactored into a retoucher
             Tick.Chain.ChainPath(entity.Behaviors).AddHandler(
-                e =>
-                {
-                    foreach (var status in IdMap.Status.ActiveItems)
-                        ((IStatus)status).Tick(e.actor);
-                }
+                e => UpdateStatuses()
             );
         }
 
-        public bool Activate(Action action, Params pars)
+        // Returns a list of the statuses that were applied
+        // public IEnumerable<IStatus> Activate(Params pars)
+        public bool Activate(Params pars)
         {
             var ev = new Event
             {
                 actor = m_entity,
-                action = action,
                 statusParams = pars.statusParams
             };
-            return CheckDoCycle<Event>(ev);
+            GetChain<Event>(ChainName.Check).Pass(ev);
+            AddStatuses(ev.statusParams);
+            // foreach (var statusParam in ev.statusParams)
+            // {
+            //     yield return statusParam.status;
+            // }
+            return ev.statusParams.Length > 0;
+        }
+
+        private void UpdateStatuses()
+        {
+            foreach (var status in m_appliedStatuses.ToList())
+            {
+                if (status.Update(m_entity))
+                {
+                    m_appliedStatuses.Remove(status);
+                }
+            }
+        }
+
+        private void AddStatuses(StatusParam[] statusParams)
+        {
+            foreach (var par in statusParams)
+            {
+                m_appliedStatuses.Add(par.status);
+            }
         }
 
         static void SetResistance(Event ev)
@@ -52,26 +85,15 @@ namespace Core.Behaviors
         static void ResistSomeStatuses(Event ev)
         {
             ev.statusParams = ev.statusParams
-                .Where(p => ev.resistance[p.statusId] <= p.statusStat.power)
+                .Where(p => ev.resistance[p.status.Id] <= p.statusStat.power)
                 .Where(p => p.statusStat.amount > 0)
                 .ToArray();
         }
 
-        static void Apply(Event ev)
-        {
-            foreach (var statusData in ev.statusParams)
-            {
-                var status = IdMap.Status.Map(statusData.statusId);
-                statusData.flavor.amount = statusData.statusStat.amount;
-                status.Apply(ev.actor, statusData.flavor);
-            }
-        }
         public static ChainPaths<Statused, Event> Check;
-        public static ChainPaths<Statused, Event> Do;
         static Statused()
         {
             Check = new ChainPaths<Statused, Event>(ChainName.Check);
-            Do = new ChainPaths<Statused, Event>(ChainName.Check);
 
             var builder = new ChainTemplateBuilder()
 
@@ -79,9 +101,7 @@ namespace Core.Behaviors
                 .AddHandler(SetResistance, PriorityRanks.High)
                 .AddHandler(ResistSomeStatuses, PriorityRanks.Low)
 
-                .AddTemplate<Event>(ChainName.Do)
-                .AddHandler(Apply)
-                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacking_do))
+                // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
 
                 .End();
 

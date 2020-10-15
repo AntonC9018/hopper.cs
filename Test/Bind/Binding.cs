@@ -5,7 +5,7 @@ using Core.FS;
 
 namespace Test
 {
-    public class Binding : Behavior
+    public class Binding : Behavior, IStandartActivateable
     {
         static void SetupStats()
         {
@@ -23,16 +23,30 @@ namespace Test
         public class Event : CommonEvent
         {
             public Params pars;
-            public StatusParam statusParam;
+            public StatusFile statusStat;
+            public BindStatus bindStatus;
             public Entity applyTo;
+        }
+
+        public class Config : BehaviorConfig
+        {
+            public BindStatus bindStatus;
         }
 
         public class Params : ActivationParams
         {
             public Entity applyTo;
-            public ITinker spice;
         }
 
+        public BindStatus config_bindStatus;
+
+        public override void Init(Entity entity, BehaviorConfig config)
+        {
+            config_bindStatus = ((Config)config).bindStatus;
+            m_entity = entity;
+        }
+
+        public bool Activate(Action action) => Activate(action, null);
 
         public bool Activate(Action action, Params pars)
         {
@@ -40,19 +54,11 @@ namespace Test
             {
                 actor = m_entity,
                 action = action,
-                pars = pars
+                applyTo = pars?.applyTo,
+                statusStat = config_bindStatus.GetStat(m_entity),
+                bindStatus = config_bindStatus
             };
             return CheckDoCycle<Event>(ev);
-        }
-
-        static void SetFlavor(Event ev)
-        {
-            ev.statusParam = new StatusParam
-            (
-                statusId: BindStuff.status.Id,
-                flavor: new BindFlavor(ev.actor, ev.pars.spice),
-                statusStat: (StatusFile)ev.actor.StatManager.GetFile("test_bind")
-            );
         }
 
         static void GetTarget(Event ev)
@@ -67,17 +73,12 @@ namespace Test
 
         static void CheckCanBind(Event ev)
         {
-            ev.propagate = ev.applyTo.Behaviors.Has<Statused>()
-                && (ev.applyTo.Tinkers.IsTinked(BindStuff.tinker) == false);
+            ev.propagate = ev.bindStatus.IsApplied(ev.applyTo) == false;
         }
 
         static void BindTarget(Event ev)
         {
-            var pars = new Statused.Params
-            {
-                statusParams = new StatusParam[] { ev.statusParam }
-            };
-            ev.propagate = ev.applyTo.Behaviors.Get<Statused>().Activate(ev.action, pars);
+            ev.propagate = ev.bindStatus.TryApply(ev.applyTo, new BindData(ev.actor), ev.statusStat);
         }
 
         public static ChainPaths<Binding, Event> Check;
@@ -90,13 +91,12 @@ namespace Test
             var builder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(SetFlavor)
                 .AddHandler(GetTarget)
                 .AddHandler(CheckCanBind)
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(BindTarget)
-            //  .AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do))
+                //  .AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do))
                 .End();
 
             BehaviorFactory<Binding>.s_builder = builder;

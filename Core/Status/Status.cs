@@ -1,55 +1,87 @@
+using Chains;
+using Core.Behaviors;
+
 namespace Core
 {
-    public class Status<T> : IStatus
-        where T : TinkerData, IHaveFlavor, new()
+    public interface IStatus : IHaveId
     {
-        public int Id => m_id;
-        protected readonly int m_id;
-        private Tinker<T> m_tinker;
+        bool Update(Entity entity);
+        bool IsApplied(Entity entity);
+        void Nullify(Entity entity);
+        bool TryApply(Entity applicant, Entity target);
+    }
 
-        public Status(Tinker<T> tinker, int defaultResValue = 1)
+    public class Status<T> : Tinker<T>, IStatus where T : StatusData, new()
+    {
+        private string m_statName;
+
+        public Status(IChainDef[] chainDefs, string statName, int defaultResValue) : base(chainDefs)
         {
-            m_tinker = tinker;
-            m_id = IdMap.Status.Add(this);
+            m_statName = statName;
             StatusSetup.ResFile.content.Add(m_id, defaultResValue);
         }
 
-        public void Apply(Entity entity, Flavor f)
+        // Returns true if it is still applied after the update 
+        public virtual bool Update(Entity entity)
         {
-            System.Console.WriteLine("Status applied");
-            entity.Tinkers.TinkAndSave(m_tinker);
-            var store = m_tinker.GetStore(entity);
-            store.Flavor = f;
-
-            if (f is IHaveSpice)
+            var data = GetStore(entity);
+            if (data != null)
             {
-                var tinker = ((IHaveSpice)f).Spice;
-                entity.Tinkers.TinkAndSave(tinker);
+                data.amount--;
+                return data.amount == 0;
             }
+            return true;
         }
 
-        public void Tick(Entity entity)
+        public virtual bool IsApplied(Entity entity)
         {
-            if (!IsApplied(entity))
-                return;
-            var store = m_tinker.GetStore(entity);
-            var f = store.Flavor;
-
-            if (store != null && --f.amount <= 0)
-            {
-                entity.Tinkers.Untink(m_tinker);
-
-                if (f is IHaveSpice)
-                {
-                    var tinker = ((IHaveSpice)f).Spice;
-                    entity.Tinkers.Untink(tinker);
-                }
-            }
+            var data = GetStore(entity);
+            return data != null && data.amount > 0;
         }
 
-        public bool IsApplied(Entity entity)
+        public virtual void Nullify(Entity entity)
         {
-            return entity.Tinkers.IsTinked(m_tinker);
+            Untink(entity);
+        }
+
+        public bool TryApply(Entity applicant, Entity target)
+            => TryApply(applicant, target, new T());
+
+        public bool TryApply(Entity applicant, Entity target, T statusData)
+            => TryApply(target, statusData, GetStat(applicant));
+
+        // By default, just update the amount
+        protected virtual void Reapply(T existingData, T newData)
+        {
+            existingData.amount = newData.amount;
+        }
+
+        // A convenience method for calling the Statused decorator
+        public bool TryApply(Entity target, T statusData, StatusFile stat)
+        {
+            var existingData = GetStore(target);
+
+            if (existingData != null)
+            {
+                Reapply(existingData, statusData);
+                return true;
+            }
+
+            statusData.amount = stat.amount;
+            var pars = new Statused.Params(new StatusParam(this, stat));
+            bool success = target.Behaviors.Get<Statused>().Activate(pars);
+
+            if (success)
+            {
+                Tink(target, statusData);
+            }
+
+            return success;
+        }
+
+        public StatusFile GetStat(Entity entity)
+        {
+            return (StatusFile)entity.StatManager.GetFile(m_statName);
         }
     }
 }

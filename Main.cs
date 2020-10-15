@@ -82,7 +82,7 @@ namespace Hopper
         {
             var ____ = Spider.Factory;
             var _____ = TestTinkerStuff.tinker;
-            var ______ = TestStatusTinkerStuff.tinker;
+            var ______ = TestStatusStuff.status;
 
             System.Console.WriteLine("\n ------ Definition + Instantiation Demo ------ \n");
 
@@ -94,8 +94,8 @@ namespace Hopper
             System.Console.WriteLine("Created world");
 
             // Statused.RegisterStatus(TestStatusTinkerStuff.status, 1);
-            var packed = IdMap.Status.PackModMap();
-            IdMap.Status.SetServerMap(packed);
+            var packed = IdMap.Tinker.PackModMap();
+            IdMap.Tinker.SetServerMap(packed);
 
             var playerFactory = new EntityFactory<Player>();
             playerFactory.AddBehavior<Attackable>();
@@ -356,28 +356,21 @@ namespace Hopper
             System.Console.WriteLine("\n ------ Tinker static reference Demo ------ \n");
 
             var tinker3 = TestTinkerStuff.tinker; // see the definition below
-            player.Tinkers.TinkAndSave(tinker3);
+            tinker3.Tink(player);
             player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
             world.Loop();
-            player.Tinkers.Untink(tinker3);
+            tinker3.Untink(player);
 
 
             System.Console.WriteLine("\n ------ Status Demo ------ \n");
 
             // this has to be rethought for sure
-            var status = TestStatusTinkerStuff.status;
-            var statusData = new StatusParam
-            (
-                statusId: TestStatusTinkerStuff.status.Id,
-                flavor: new Flavor(),
-                statusStat: new StatusFile
-                {
-                    power = 1,
-                    amount = 2
-                }
+            var status = TestStatusStuff.status;
+            status.TryApply(
+                player,
+                new StatusData(),
+                new StatusFile { power = 1, amount = 2 }
             );
-            var statusedParams = new Statused.Params { statusParams = new StatusParam[] { statusData } };
-            player.Behaviors.Get<Statused>().Activate(null, statusedParams);
             player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
             world.Loop();
             player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
@@ -389,7 +382,7 @@ namespace Hopper
             player.ResetPosInGrid(new IntVector2(4, 4));
             var spider = world.SpawnEntity(Spider.Factory, new IntVector2(3, 3));
             world.Loop();
-            System.Console.WriteLine($"Tinker is applied? {player.Tinkers.IsTinked(BindStuff.tinker)}");
+            System.Console.WriteLine($"Tinker is applied? {BindStatuses.NoMove.IsApplied(player)}");
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position: {player.Pos}");
             System.Console.WriteLine($"Spider's new position: {spider.Pos}");
@@ -412,7 +405,7 @@ namespace Hopper
             System.Console.WriteLine("Killing spider");
             spider.Die();
             world.Loop();
-            System.Console.WriteLine($"Tinker is applied? {player.Tinkers.IsTinked(BindStuff.tinker)}");
+            System.Console.WriteLine($"Tinker is applied? {BindStatuses.NoMove.IsApplied(player)}");
 
             System.Console.WriteLine("\n ------ Input Demo ------ \n");
             // we also have the possibilty to add behaviors dynamically.
@@ -430,11 +423,7 @@ namespace Hopper
 
     public class TestTinkerData : TinkerData
     {
-        public int i;
-        public override void Init(Entity entity)
-        {
-            i = 1;
-        }
+        public int i = 1;
     }
 
     public static class TestTinkerStuff
@@ -448,16 +437,20 @@ namespace Hopper
             .SingleHandlered<Displaceable.Event>(Displaceable.Do, TestMethod1);
     }
 
-    public static class TestStatusTinkerStuff
+    public static class TestStatusStuff
     {
         static void TestMethod1(CommonEvent commonEvent)
         {
-            var flavor = tinker.GetStore(commonEvent).flavor;
-            System.Console.WriteLine($"Tinker says that amount = {flavor.amount}");
+            var data = status.GetStore(commonEvent);
+            System.Console.WriteLine($"Tinker says that amount = {data.amount}");
         }
-        public static Tinker<FlavorTinkerData<Flavor>> tinker = Tinker<FlavorTinkerData<Flavor>>
-            .SingleHandlered<Acting.Event>(Acting.Check, TestMethod1);
-        public static Status<FlavorTinkerData<Flavor>> status =
-            new Status<FlavorTinkerData<Flavor>>(tinker);
+        public static Status<StatusData> status = new Status<StatusData>(
+            new ChainDefBuilder()
+                .AddDef<Acting.Event>(Acting.Check)
+                .AddHandler(TestMethod1)
+                .End().ToStatic(),
+            null,
+            0
+        );
     }
 }

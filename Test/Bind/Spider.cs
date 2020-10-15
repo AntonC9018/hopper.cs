@@ -20,16 +20,10 @@ namespace Test
 
         static Step[] CreateSequenceData()
         {
-            var bindAction = new SimpleAction(
-                (entity, a) => entity.Behaviors.Get<Binding>()
-                    .Activate(a, new Binding.Params { spice = BindStuff.StopMoveSpice })
-            );
-
+            var bindAction = new BehaviorAction<Binding>();
             var moveAction = new BehaviorAction<Moving>();
 
-            var bindMoveAction = new CompositeAction(
-                new Action[] { bindAction, moveAction }
-            );
+            var bindMoveAction = new CompositeAction(bindAction, moveAction);
 
             var stepData = new Step[]
             {
@@ -62,12 +56,11 @@ namespace Test
                 .AddBehavior<Sequential>(new Sequential.Config(CreateSequenceData()))
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Moving>()
-                .AddBehavior<Binding>()
+                .AddBehavior<Binding>(new Binding.Config { bindStatus = BindStatuses.NoMove })
                 .AddBehavior<Attackable>()
-                .RetouchAndSave(SelfBindingStuff.retoucher);
+                .RetouchAndSave(SelfBinding.NoMoveRetoucher);
 
-            ClassUtils.AssureStaticallyConstructed(typeof(BindStuff));
-            ClassUtils.AssureStaticallyConstructed(typeof(SelfBindingStuff));
+            ClassUtils.AssureStaticallyConstructed(typeof(SelfBinding));
         }
     }
 }

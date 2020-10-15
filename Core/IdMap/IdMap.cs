@@ -22,7 +22,6 @@ namespace Core
         public static SetupIdMap<Retoucher> Retoucher = new SetupIdMap<Retoucher>();
         public static SetupIdMap<IEntityFactory> EntityFactory = new SetupIdMap<IEntityFactory>();
         public static SetupIdMap<IItem> Items = new SetupIdMap<IItem>();
-        public static SetupIdMap<IStatus> Status = new SetupIdMap<IStatus>();
         public static SetupIdMap<Attack.Source> AttackSources = new SetupIdMap<Attack.Source>();
         public static SetupIdMap<Push.Source> PushSources = new SetupIdMap<Push.Source>();
 
@@ -32,7 +31,6 @@ namespace Core
             { typeof(Retoucher), Retoucher},
             { typeof(IEntityFactory), EntityFactory },
             { typeof(IItem), Items },
-            { typeof(IStatus), Status},
             { typeof(Attack.Source), AttackSources },
             { typeof(Push.Source), PushSources }
         };

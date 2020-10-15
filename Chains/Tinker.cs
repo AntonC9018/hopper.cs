@@ -9,14 +9,12 @@ namespace Core
     {
         [JsonIgnore] public Handle[][] chainHandlesArray;
         public int count = 1;
-
-        public virtual void Init(Entity entity) { }
     }
 
     public interface ITinker : IHaveId
     {
-        TinkerData CreateDataAndTink(Entity entity);
-        void Untink(TinkerData data, IProvideBehavior behaviors);
+        void Untink(Entity entity);
+        void Tink(Entity entity);
     }
 
     public class Tinker<T> : ITinker where T : TinkerData, new()
@@ -31,20 +29,24 @@ namespace Core
             m_id = IdMap.Tinker.Add(this);
         }
 
-        public TinkerData CreateDataAndTink(Entity entity)
+        public void Tink(Entity entity)
         {
-            var data = new T();
-            // we have to do this manually to not pass the length into the init function
-            // TODO: maybe remove the init function
-            data.Init(entity); // since the constructor can only be parameterless
-            Tink(entity.Behaviors, data);
-            return data;
+            Tink(entity, new T());
         }
 
-        public void Tink(BehaviorControl behaviors, TinkerData data)
+        public void Tink(Entity entity, T tinkerData)
+        {
+            entity.Tinkers.Store(this, tinkerData);
+            if (tinkerData.count <= 1)
+            {
+                TinkHandlers(entity.Behaviors, tinkerData);
+            }
+        }
+
+        private void TinkHandlers(BehaviorControl behaviors, TinkerData data)
         {
             data.chainHandlesArray = new Handle[m_chainDefinition.Length][];
-            
+
             for (int i = 0; i < m_chainDefinition.Length; i++)
             {
                 var chainDef = m_chainDefinition[i];
@@ -53,12 +55,22 @@ namespace Core
             }
         }
 
-        public void Untink(TinkerData data, IProvideBehavior behaviors)
+        private void UntinkHandlers(TinkerData data, IProvideBehavior behaviors)
         {
             for (int i = 0; i < data.chainHandlesArray.Length; i++)
             {
                 var chainDef = m_chainDefinition[i];
                 chainDef.RemoveHandlers(data.chainHandlesArray[i], behaviors);
+            }
+        }
+
+        public void Untink(Entity entity)
+        {
+            var data = GetStore(entity);
+            entity.Tinkers.RemoveStore(this);
+            if (data.count == 0)
+            {
+                UntinkHandlers(data, entity.Behaviors);
             }
         }
 

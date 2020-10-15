@@ -24,7 +24,7 @@ namespace Core
             return m_tinkerStore.ContainsKey(tinker.Id);
         }
 
-        public void TinkAndSave(ITinker tinker)
+        public void Store(ITinker tinker, TinkerData tinkerData)
         {
             if (IsTinked(tinker))
             {
@@ -33,30 +33,23 @@ namespace Core
             }
             else
             {
-                m_tinkerStore[tinker.Id] = tinker.CreateDataAndTink(m_entity);
+                m_tinkerStore[tinker.Id] = tinkerData;
             }
         }
 
-        public void Untink(ITinker tinker)
+        public void RemoveStore(ITinker tinker)
         {
             var store = m_tinkerStore[tinker.Id];
             store.count--;
             if (store.count == 0)
             {
-                tinker.Untink(store, m_entity.Behaviors);
                 m_tinkerStore.Remove(tinker.Id);
             }
         }
 
-        public void TryUntink(ITinker tinker)
-        {
-            if (IsTinked(tinker))
-                Untink(tinker);
-        }
-
         public TinkerData GetStore(ITinker tinker)
         {
-            return m_tinkerStore[tinker.Id];
+            return m_tinkerStore.ContainsKey(tinker.Id) ? m_tinkerStore[tinker.Id] : null;
         }
     }
 }

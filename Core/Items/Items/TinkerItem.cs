@@ -17,17 +17,17 @@ namespace Core.Items
 
         public void BeDestroyed(Entity entity)
         {
-            entity.Tinkers.Untink(tinker);
+            tinker.Untink(entity);
         }
 
         public void BeEquipped(Entity entity)
         {
-            entity.Tinkers.TinkAndSave(tinker);
+            tinker.Tink(entity);
         }
 
         public void BeUnequipped(Entity entity)
         {
-            entity.Tinkers.Untink(tinker);
+            tinker.Untink(entity);
             entity.World.CreateDroppedItem(this, entity.Pos);
         }
     }

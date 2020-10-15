@@ -5,15 +5,19 @@ using Core.Behaviors;
 namespace Test
 {
 
-    public class InvincibilityData : FlavorTinkerData<Flavor>
+    public static class Invincibility
     {
-    }
-
-    public static class InvincibilityStuff
-    {
-        public static Tinker<InvincibilityData> tinker = Tinker<InvincibilityData>
-            .SingleHandlered<Attackable.Event>(Attackable.Do, PreventDamage, PriorityRanks.High);
-        public static Status<InvincibilityData> status = new Status<InvincibilityData>(tinker);
+        // TODO: this probably should be a `positive status` = benefit
+        // which get applied unconditionally
+        public static Status<StatusData> status = new Status<StatusData>(
+            new ChainDefBuilder()
+                .AddDef<Attackable.Event>(Attackable.Do)
+                .AddHandler(PreventDamage, PriorityRanks.High)
+                .End()
+                .ToStatic(),
+            "test_invincibility", // TODO: actually add this stat
+            0
+        );
 
         static void PreventDamage(Attackable.Event ev)
         {

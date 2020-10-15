@@ -4,13 +4,41 @@ using Core.Behaviors;
 
 namespace Test
 {
-    public static class SelfBindingStuff
+    public class SelfBinding
     {
-        public static Retoucher retoucher = SetupRetoucher();
+        public static Retoucher NoMoveRetoucher = SetupRetoucher(BindStatuses.NoMove);
 
-        static void Register(Binding.Event ev)
+        private BindStatus status;
+
+        public SelfBinding(BindStatus status)
         {
-            bool success = ev.applyTo.Tinkers.IsTinked(BindStuff.tinker);
+            this.status = status;
+        }
+
+        public static Retoucher SetupRetoucher(BindStatus bindStatus)
+        {
+            var lambdas = new SelfBinding(bindStatus);
+            var builder = new TemplateChainDefBuilder()
+
+                .AddDef<Tick.Event>(Tick.Chain)
+                .AddHandler(FreeIfHostIsDead, PriorityRanks.High)
+
+                .AddDef<Binding.Event>(Binding.Do)
+                .AddHandler(lambdas.Register)
+
+                .AddDef<Displaceable.Event>(Displaceable.Check)
+                .AddHandler(SkipDisplaceIfBinding)
+
+                .End();
+
+            return new Retoucher(builder.ToStatic());
+        }
+
+
+        private void Register(Binding.Event ev)
+        {
+            // TODO: maybe instead of doing one at a time, check all bind statuses?
+            bool success = status.IsApplied(ev.applyTo);
 
             if (success)
             {
@@ -23,7 +51,7 @@ namespace Test
             }
         }
 
-        static void FreeIfHostIsDead(Tick.Event ev)
+        private static void FreeIfHostIsDead(Tick.Event ev)
         {
             var boundEntity = ((ISelfBinder)ev.actor).BoundEntity;
             if (boundEntity != null && boundEntity.IsDead)
@@ -33,31 +61,13 @@ namespace Test
             }
         }
 
-        static void SkipDisplaceIfBinding(Displaceable.Event ev)
+        private static void SkipDisplaceIfBinding(Displaceable.Event ev)
         {
             var boundEntity = ((ISelfBinder)ev.actor).BoundEntity;
             if (boundEntity != null)
             {
                 ev.propagate = false;
             }
-        }
-
-        public static Retoucher SetupRetoucher()
-        {
-            var builder = new TemplateChainDefBuilder()
-
-                .AddDef<Tick.Event>(Tick.Chain)
-                .AddHandler(FreeIfHostIsDead, PriorityRanks.High)
-
-                .AddDef<Binding.Event>(Binding.Do)
-                .AddHandler(Register)
-
-                .AddDef<Displaceable.Event>(Displaceable.Check)
-                .AddHandler(SkipDisplaceIfBinding)
-
-                .End();
-
-            return new Retoucher(builder.ToStatic());
         }
     }
 }
