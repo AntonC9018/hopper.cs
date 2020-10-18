@@ -70,5 +70,13 @@ namespace Utils
             }
             return result;
         }
+
+        public static IEnumerable<T> ToIEnumerable<T>(this IEnumerator<T> enumerator)
+        {
+            while (enumerator.MoveNext())
+            {
+                yield return enumerator.Current;
+            }
+        }
     }
 }

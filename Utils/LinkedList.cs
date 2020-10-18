@@ -122,12 +122,18 @@ namespace Utils.MyLinkedList
         }
     }
 
-    public class MyListNode<T>
+    public interface IMyListNode<out T>
+    {
+        T Item { get; }
+        void RemoveSelf();
+    }
+
+    public class MyListNode<T> : IMyListNode<T>
     {
         public MyListNode<T> Next;
         public MyListNode<T> Prev;
 
-        public T Item;
+        public T Item { get; private set; }
 
         public MyListNode(T item)
         {

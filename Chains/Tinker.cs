@@ -1,7 +1,6 @@
 using Chains;
 using Core.Behaviors;
 using Newtonsoft.Json;
-using Handle = Utils.MyLinkedList.MyListNode<Chains.IEvHandler>;
 
 namespace Core
 {

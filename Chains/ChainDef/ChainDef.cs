@@ -1,5 +1,5 @@
 using Core.Behaviors;
-using Handle = Utils.MyLinkedList.MyListNode<Chains.IEvHandler>;
+using Utils.MyLinkedList;
 
 namespace Chains
 {
@@ -15,7 +15,7 @@ namespace Chains
     public class ChainDef<Event> : IChainDef where Event : EventBase
     {
         public BehaviorPath<Event> path;
-        public EvHandler<Event>[] handlers;
+        public IEvHandler<Event>[] handlers;
 
         public Handle[] AddHandlers(IProvideBehavior entity)
         {

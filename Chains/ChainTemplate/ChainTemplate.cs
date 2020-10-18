@@ -49,7 +49,7 @@ namespace Chains
             return InitAndCache();
         }
 
-        private Chain InitAndCache()
+        private Chain<Event> InitAndCache()
         {
             var chain = new Chain<Event>();
             foreach (var handler in m_handlers)
@@ -60,7 +60,7 @@ namespace Chains
 
             m_handlers.TrimExcess();
             int i = m_handlers.Count - 1;
-            foreach (var handler in chain.m_handlers)
+            foreach (var handler in chain.Handlers)
             {
                 m_handlers[i] = (EvHandler<Event>)handler;
                 i--;
@@ -71,9 +71,9 @@ namespace Chains
             return chain;
         }
 
-        private Chain InitFromCache()
+        private Chain<Event> InitFromCache()
         {
-            var linkedList = new MyLinkedList<IEvHandler>();
+            var linkedList = new MyLinkedList<IEvHandler<Event>>();
             foreach (var handler in m_handlers)
             {
                 linkedList.AddFront(handler);

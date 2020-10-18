@@ -1,87 +1,90 @@
-using System;
 using System.Collections.Generic;
+using Utils;
 using Utils.MyLinkedList;
 
 namespace Chains
 {
-    public interface ICanAddHandlers<Event> where Event : EventBase
+
+    public class Chain { }
+
+    public class Chain<Event> : Chain where Event : EventBase
     {
-        void AddHandler(EvHandler<Event> handler);
-    }
-
-    public enum PriorityRanks
-    {
-        Highest = 4,
-        High = 3,
-        Medium = 2,
-        Low = 1,
-        Lowest = 0,
-        Default = Medium
-    }
-    public class EventBase
-    {
-        public bool propagate = true;
-    }
-
-    public abstract class IEvHandler
-    {
-        public int priority = (int)PriorityRanks.Medium;
-
-        public abstract void Call(EventBase ev);
-
-        public IEvHandler Clone()
-        {
-            return (IEvHandler)this.MemberwiseClone();
-        }
-    }
-
-    public class EvHandler<Event> : IEvHandler where Event : EventBase
-    {
-        System.Action<Event> handlerFunction;
-
-        public EvHandler()
-        {
-        }
-
-        public EvHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
-        {
-            handlerFunction = handlerFunc;
-            this.priority = (int)priority;
-        }
-
-        public override void Call(EventBase ev)
-        {
-            handlerFunction((Event)ev);
-        }
-    }
-
-    public abstract class Chain
-    {
-        const int NUM_PRIORITY_RANKS = (int)PriorityRanks.Highest + 1;
-        const int PRIORITY_STEP = 5;
-        internal MyLinkedList<IEvHandler> m_handlers;
-        protected List<MyListNode<IEvHandler>> m_handlersToRemove
-            = new List<MyListNode<IEvHandler>>();
-
+        public const int NUM_PRIORITY_RANKS = (int)PriorityRanks.Highest + 1;
+        public const int PRIORITY_STEP = 5;
         private int[] m_priorityRanksMap = {
             5000, 6000, 7000, 8000, 9000
         };
-
         protected bool b_dirty;
 
-        // public MyListNode<IEvHandler> AddHandler<T>(
-        //     System.Action<T> handlerFunction) where T : EventBase
-        // {
-        //     return AddHandler(
-        //         new EvHandler<T>(handlerFunction));
-        // }
+        private MyLinkedList<IEvHandler<Event>> m_handlers;
+        private List<MyListNode<IEvHandler<Event>>> m_handlersToRemove
+            = new List<MyListNode<IEvHandler<Event>>>();
 
-        public MyListNode<IEvHandler> AddHandler(IEvHandler handler)
+        public IEnumerable<IEvHandler<Event>> Handlers =>
+            m_handlers.GetEnumerator().ToIEnumerable();
+
+        public Chain()
+        {
+            m_handlers = new MyLinkedList<IEvHandler<Event>>();
+        }
+
+        // Assumes the given list is sorted        
+        public Chain(MyLinkedList<IEvHandler<Event>> list)
+        {
+            m_handlers = list;
+            b_dirty = false;
+        }
+
+        public Handle<Event> AddHandler(IEvHandler<Event> handler)
         {
             b_dirty = true;
             m_handlers.AddFront(handler);
-            handler.priority = MapPriority(handler.priority);
-            return m_handlers.Head;
+            handler.Priority = MapPriority(handler.Priority);
+            return new Handle<Event>(m_handlers.Head);
+        }
+
+        public Handle<Event> AddHandler(
+            System.Action<Event> handlerFunction,
+            PriorityRanks priority = PriorityRanks.Default)
+        {
+            return AddHandler(new EvHandler<Event>(handlerFunction, priority));
+        }
+
+        public void Pass(Event ev)
+        {
+            CleanUp();
+            foreach (var handler in m_handlers)
+            {
+                if (!ev.propagate)
+                    return;
+                handler.Call(ev);
+            }
+        }
+
+        public void Pass(Event ev, System.Func<Event, bool> stopFunc)
+        {
+            CleanUp();
+            foreach (var handler in m_handlers)
+            {
+                if (stopFunc(ev))
+                    return;
+                handler.Call(ev);
+            }
+        }
+
+        public void RemoveHandler(MyListNode<IEvHandler<Event>> handle)
+        {
+            m_handlersToRemove.Add(handle);
+        }
+
+        public void RemoveHandler(Handle<Event> handle)
+        {
+            m_handlersToRemove.Add(handle.Item);
+        }
+
+        public void RemoveHandler(Handle handle)
+        {
+            m_handlersToRemove.Add(((Handle<Event>)handle).Item);
         }
 
         protected int MapPriority(int rank)
@@ -113,57 +116,8 @@ namespace Chains
 
         public void SortHandlers()
         {
-            m_handlers.Sort((a, b) => a.priority - b.priority);
+            m_handlers.Sort((a, b) => a.Priority - b.Priority);
             b_dirty = false;
-        }
-
-        public void RemoveHandler(MyListNode<IEvHandler> handle)
-        {
-            m_handlersToRemove.Add(handle);
-        }
-    }
-
-    public class Chain<Event> : Chain where Event : EventBase
-    {
-        public Chain()
-        {
-            m_handlers = new MyLinkedList<IEvHandler>();
-        }
-
-        // Assumes the given list is sorted        
-        public Chain(MyLinkedList<IEvHandler> list)
-        {
-            m_handlers = list;
-            b_dirty = false;
-        }
-
-        public MyListNode<IEvHandler> AddHandler(
-            System.Action<Event> handlerFunction,
-            PriorityRanks priority = PriorityRanks.Default)
-        {
-            return AddHandler(new EvHandler<Event>(handlerFunction, priority));
-        }
-
-        public void Pass(Event ev)
-        {
-            CleanUp();
-            foreach (var handler in m_handlers)
-            {
-                if (!ev.propagate)
-                    return;
-                handler.Call(ev);
-            }
-        }
-
-        public void Pass(Event ev, System.Func<Event, bool> stopFunc)
-        {
-            CleanUp();
-            foreach (var handler in m_handlers)
-            {
-                if (stopFunc(ev))
-                    return;
-                handler.Call(ev);
-            }
         }
     }
 }
