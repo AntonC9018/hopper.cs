@@ -1,8 +1,5 @@
 using Chains;
 using System.Collections.Generic;
-using Core.FS;
-using Utils.Vector;
-using Core.Items.Shovel;
 using Core.Items;
 using Core.Targeting;
 using System.Runtime.Serialization;
@@ -10,10 +7,9 @@ using System.Runtime.Serialization;
 namespace Core.Behaviors
 {
     [DataContract]
-    public class Diggable : Behavior
+    public class Digging : Behavior, IStandartActivateable
     {
         public static Attack.Source DigAttackSource;
-
 
         public class Event : CommonEvent
         {
@@ -36,39 +32,39 @@ namespace Core.Behaviors
             ev.dig = (Dig)ev.actor.StatManager.GetFile("dig");
         }
 
-        static void GetTargets(Event ev)
+        static void SetTargets(Event ev)
         {
-            var inventory = ev.actor.Inventory;
-            if (inventory == null)
-                return;
-            var shovel = (IShovel)inventory.GetItemFromSlot(Inventory.ShovelSlot);
-            if (shovel == null)
-                return;
-            ev.targets = shovel.GetTargets();
+            if (ev.targets == null)
+            {
+                var inv = ev.actor.Inventory;
+                ev.targets = inv == null
+                    ? new List<Target>()
+                    : inv.GenerateTargets(ev, Inventory.ShovelSlot);
+            }
         }
 
         static void Attack(Event ev)
         {
             foreach (var target in ev.targets)
             {
-                target.Entity.Behaviors
+                target.targetEntity.Behaviors
                     .Get<Attackable>()
                     .Activate(ev.action, ev.dig.ToAttack());
             }
         }
 
-        public static ChainPaths<Diggable, Event> Check;
-        public static ChainPaths<Diggable, Event> Do;
-        static Diggable()
+        public static ChainPaths<Digging, Event> Check;
+        public static ChainPaths<Digging, Event> Do;
+        static Digging()
         {
-            Check = new ChainPaths<Diggable, Event>(ChainName.Check);
-            Do = new ChainPaths<Diggable, Event>(ChainName.Check);
+            Check = new ChainPaths<Digging, Event>(ChainName.Check);
+            Do = new ChainPaths<Digging, Event>(ChainName.Check);
 
             var builder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(SetDig, PriorityRanks.High)
-                .AddHandler(GetTargets, PriorityRanks.High)
+                .AddHandler(SetTargets, PriorityRanks.High)
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(Attack)
@@ -77,7 +73,7 @@ namespace Core.Behaviors
 
             // _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
 
-            BehaviorFactory<Diggable>.s_builder = builder;
+            BehaviorFactory<Digging>.s_builder = builder;
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(DigSetup).TypeHandle);
         }
     }

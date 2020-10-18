@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Chains;
-using Core.Items.Weapon;
 using Core.Items;
 using Core.Targeting;
 using System.Runtime.Serialization;
@@ -25,23 +24,12 @@ namespace Core.Behaviors
 
             return entity == null
                 ? new List<Target>()
-                : new List<Target>
+                : new List<Target>(1)
                 {
-                    new Target { Entity = entity, direction = ev.action.direction }
+                    new Target { targetEntity = entity, direction = ev.action.direction }
                 };
         }
 
-        static List<Target> GenerateTargets(Event ev)
-        {
-            var inventory = ev.actor.Inventory;
-
-            if (inventory == null)
-                return GenerateTargetsDefault(ev);
-
-            var weapon = (IWeapon)inventory.GetItemFromSlot(Inventory.WeaponSlot);
-            return weapon == null ? new List<Target>() : weapon.GetTargets();
-
-        }
         public bool Activate(Action action) => Activate(action, null);
         public bool Activate(Action action, List<Target> targets)
         {
@@ -66,11 +54,14 @@ namespace Core.Behaviors
             }
         }
 
-        static void GetTargets(Event ev)
+        static void SetTargets(Event ev)
         {
             if (ev.targets == null)
             {
-                ev.targets = GenerateTargets(ev);
+                var inv = ev.actor.Inventory;
+                ev.targets = inv == null
+                    ? GenerateTargetsDefault(ev)
+                    : inv.GenerateTargets(ev, Inventory.WeaponSlot);
             }
         }
 
@@ -78,9 +69,10 @@ namespace Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
+                System.Console.WriteLine($"Attacking {target.targetEntity.GetType().Name}");
                 var action = ev.action.Copy();
                 action.direction = target.direction;
-                var attackable = target.Entity.Behaviors.Get<Attackable>();
+                var attackable = target.targetEntity.Behaviors.Get<Attackable>();
                 // let it throw if this has not been accounted for
                 attackable.Activate(action, (Attack)ev.attack.Copy());
             }
@@ -92,7 +84,7 @@ namespace Core.Behaviors
             {
                 var action = ev.action.Copy();
                 action.direction = target.direction;
-                Pushable pushable = target.Entity.Behaviors.Get<Pushable>();
+                Pushable pushable = target.targetEntity.Behaviors.Get<Pushable>();
                 if (pushable != null)
                 {
                     pushable.Activate(action, (Push)ev.push.Copy());
@@ -113,7 +105,7 @@ namespace Core.Behaviors
 
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(SetBase, PriorityRanks.High)
-                .AddHandler(GetTargets, PriorityRanks.Medium)
+                .AddHandler(SetTargets, PriorityRanks.Medium)
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(ApplyAttack)

@@ -106,16 +106,13 @@ namespace Hopper
             playerFactory.AddBehavior<Statused>();
             System.Console.WriteLine("Set up playerFactory");
 
-            Acting.Config playerActingConf = new Acting.Config
-            {
-                DoAction = Algos.SimpleAlgo
-            };
+            Acting.Config playerActingConf = new Acting.Config(Algos.SimpleAlgo, null);
 
             playerFactory.AddBehavior<Acting>(playerActingConf);
-            playerFactory.RetouchAndSave(Core.Retouchers.Skip.EmptyAttack);
+            playerFactory.Retouch(Core.Retouchers.Skip.EmptyAttack);
 
             // this one's for the equip demo
-            playerFactory.RetouchAndSave(Core.Retouchers.Equip.OnDisplace);
+            playerFactory.Retouch(Core.Retouchers.Equip.OnDisplace);
 
 
             var enemyFactory = new EntityFactory<Entity>();
@@ -126,10 +123,7 @@ namespace Hopper
             enemyFactory.AddBehavior<Pushable>();
 
 
-            Acting.Config enemyActingConf = new Acting.Config
-            {
-                DoAction = Algos.EnemyAlgo
-            };
+            Acting.Config enemyActingConf = new Acting.Config(Algos.EnemyAlgo);
 
             enemyFactory.AddBehavior<Acting>(enemyActingConf);
 
@@ -269,10 +263,10 @@ namespace Hopper
             );
             System.Console.WriteLine($"Enemy is at {enemy.Pos}");
             var ev = new Attacking.Event { actor = player, action = playerNextAction };
-            var targets = weapon.GetTargets(ev);
+            var targets = weapon.GetParticularTargets(ev);
             foreach (var t in targets)
             {
-                System.Console.WriteLine($"Entity at {t.Entity.Pos} has been considered a potential target");
+                System.Console.WriteLine($"Entity at {t.targetEntity.Pos} has been considered a potential target");
             }
 
 

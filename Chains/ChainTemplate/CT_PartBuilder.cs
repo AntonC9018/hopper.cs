@@ -5,12 +5,12 @@ namespace Chains
 {
     public interface I_CT_PartBuilder
     {
-        ChainTemplate Template { get; }
+        IChainTemplate Template { get; }
     }
     public class CT_PartBuilder<Event> : I_CT_PartBuilder where Event : EventBase
     {
         private ChainTemplate<Event> m_template;
-        public ChainTemplate Template { get => m_template.Clone(); }
+        public IChainTemplate Template { get => m_template.Clone(); }
         private ChainTemplateBuilder builder;
 
         public CT_PartBuilder(ChainTemplateBuilder builder = null)

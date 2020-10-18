@@ -8,6 +8,7 @@ namespace Core.Items
         void Unequip(IItem item);
         void DropExcess();
         bool CanEquipItem(IItem item);
+        List<Targeting.Target> GenerateTargets(CommonEvent commonEvent, int slotId);
         IItem GetItemFromSlot(int slotId);
         IEnumerable<IItem> AllItems { get; }
     }

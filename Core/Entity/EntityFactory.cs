@@ -41,7 +41,7 @@ namespace Core
             return this;
         }
 
-        public EntityFactory<T> RetouchAndSave(Retoucher retoucher)
+        public EntityFactory<T> Retouch(Retoucher retoucher)
         {
             m_retouchers.Add(retoucher.Id, retoucher);
             retoucher.Retouch(this);
@@ -86,6 +86,11 @@ namespace Core
         public BehaviorFactory<U> GetBehaviorFactory<U>() where U : Behavior, new()
         {
             return (BehaviorFactory<U>)m_behaviorSettings[typeof(U)].factory;
+        }
+
+        public bool HasBehaviorFactory<U>() where U : Behavior, new()
+        {
+            return m_behaviorSettings.ContainsKey(typeof(U));
         }
     }
 }

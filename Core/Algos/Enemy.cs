@@ -8,8 +8,8 @@ namespace Core
     {
         static bool AskMove(Acting.Event ev)
         {
-            Entity thing = ev.actor.World.m_grid
-                .GetCellAt(ev.actor.Pos + ev.action.direction) // change to action.direction
+            Entity thing = ev.actor
+                .GetCellRelative(ev.action.direction)
                 .GetEntityFromLayer(Layer.REAL);
 
             if (thing == null)

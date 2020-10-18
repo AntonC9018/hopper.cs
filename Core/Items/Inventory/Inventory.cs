@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core.Targeting;
 using Newtonsoft.Json;
 
 namespace Core.Items
@@ -10,11 +11,9 @@ namespace Core.Items
 
         private Dictionary<int, IItemContainer> m_itemSlots;
 
-        
-
         private Entity m_actor;
 
-        public IEnumerable<IItem> AllItems 
+        public IEnumerable<IItem> AllItems
         {
             get
             {
@@ -23,7 +22,7 @@ namespace Core.Items
                     foreach (var item in container.AllItems)
                         yield return item;
                 }
-            }   
+            }
         }
 
         public Inventory(Entity entity)
@@ -78,6 +77,16 @@ namespace Core.Items
         public IItem GetItemFromSlot(int slotId)
         {
             return m_itemSlots[slotId][0];
+        }
+
+        public List<Target> GenerateTargets(CommonEvent commonEvent, int slotId)
+        {
+            var targetProvider = (IProvideTargets)GetItemFromSlot(slotId);
+            if (targetProvider == null)
+            {
+                return new List<Target>();
+            }
+            return targetProvider.GetTargets(commonEvent);
         }
     }
 }

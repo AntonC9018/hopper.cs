@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Utils.Vector;
 using Chains;
-using Core.Behaviors;
 
 namespace Core.Targeting
 {
@@ -10,26 +9,32 @@ namespace Core.Targeting
         public List<T> targets;
     }
 
-    public class TargetProvider<T> where T : Target, new()
+    public class TargetProvider<T> : IProvideTargets where T : Target, new()
     {
         private List<Piece> m_pattern;
         private Chain<TargetEvent<T>> m_chain;
         private System.Func<TargetEvent<T>, bool> m_stopFunc;
-        private Layer m_targetedLayer;
+
+        public TargetProvider(
+            List<Piece> pattern,
+            Chain<TargetEvent<T>> chain)
+        {
+            this.m_pattern = pattern;
+            this.m_chain = chain;
+            this.m_stopFunc = e => (e.propagate == false) || e.targets.Count == 0;
+        }
 
         public TargetProvider(
             List<Piece> pattern,
             Chain<TargetEvent<T>> chain,
-            System.Func<TargetEvent<T>, bool> stopFunc,
-            Layer targetedLayer = Layer.REAL | Layer.MISC | Layer.WALL)
+            System.Func<TargetEvent<T>, bool> stopFunc)
         {
             this.m_pattern = pattern;
             this.m_chain = chain;
             this.m_stopFunc = stopFunc;
-            this.m_targetedLayer = targetedLayer;
         }
 
-        public List<T> GetTargets(CommonEvent commonEvent)
+        public List<T> GetParticularTargets(CommonEvent commonEvent)
         {
             var targets = new List<T>();
             double angle = IntVector2.Right.AngleTo(commonEvent.action.direction);
@@ -38,15 +43,14 @@ namespace Core.Targeting
             {
                 var piece = this.m_pattern[i].Rotate(angle);
 
-
                 var target = new T
                 {
                     direction = piece.dir,
-                    index = i,
+                    pieceIndex = i,
                     initialPiece = this.m_pattern[i]
                 };
 
-                target.CalculateTargets(commonEvent.actor.GetCellRelative(piece.pos), m_targetedLayer);
+                target.CalculateTargetedEntity(commonEvent.actor.GetCellRelative(piece.pos));
                 target.CalculateCondition(commonEvent);
                 targets.Add(target);
             }
@@ -61,6 +65,11 @@ namespace Core.Targeting
             m_chain.Pass(ev, m_stopFunc);
 
             return ev.targets;
+        }
+
+        public List<Target> GetTargets(CommonEvent commonEvent)
+        {
+            return GetParticularTargets(commonEvent).ConvertAll(e => (Target)e);
         }
     }
 }

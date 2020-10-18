@@ -6,8 +6,8 @@ namespace Core.Behaviors
 {
     public abstract class BehaviorFactory
     {
-        protected Dictionary<ChainName, ChainTemplate> m_templates =
-            new Dictionary<ChainName, ChainTemplate>();
+        protected Dictionary<ChainName, IChainTemplate> m_templates =
+            new Dictionary<ChainName, IChainTemplate>();
         public abstract Behavior Instantiate(Entity entity, BehaviorConfig conf);
     }
 }

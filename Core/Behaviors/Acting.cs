@@ -9,7 +9,19 @@ namespace Core.Behaviors
         public class Config : BehaviorConfig
         {
             public System.Func<Entity, Action> CalculateAction;
-            public System.Action<EventBase> DoAction;
+            public System.Action<Acting.Event> DoAction;
+
+            public Config(System.Action<EventBase> doAction)
+            {
+                DoAction = doAction;
+                CalculateAction = ent => ent.Behaviors.Get<Sequential>()?.CurrentAction;
+            }
+
+            public Config(System.Action<EventBase> doAction, System.Func<Entity, Action> calculateAction)
+            {
+                CalculateAction = calculateAction;
+                DoAction = doAction;
+            }
         }
 
         public bool b_didAction = false;
@@ -31,7 +43,8 @@ namespace Core.Behaviors
                     b_didAction = false;
                     b_doingAction = false;
                     NextAction = null;
-                }
+                },
+                PriorityRanks.Low
             );
         }
 
@@ -66,34 +79,24 @@ namespace Core.Behaviors
             }
 
             ev.propagate = true;
+            b_didActionSucceed = ev.success;
 
             if (ev.success)
                 GetChain<Event>(ChainName.Success).Pass(ev);
             else
                 GetChain<Event>(ChainName.Fail).Pass(ev);
 
+            b_didAction = true;
             b_doingAction = false;
-            b_didAction = false;
-            b_didActionSucceed = ev.success;
 
             return ev.success;
         }
 
         public void CalculateNextAction()
         {
-            if (NextAction != null)
-                return;
-
-            if (config_CalculateAction != null)
+            if (NextAction == null && config_CalculateAction != null)
             {
                 NextAction = config_CalculateAction(m_entity);
-            }
-
-            // TODO: this should be e.g. the default value of this function
-            else
-            {
-                var sequenced = m_entity.Behaviors.Get<Sequential>();
-                NextAction = sequenced.CurrentAction;
             }
         }
 

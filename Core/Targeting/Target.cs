@@ -6,27 +6,25 @@ namespace Core.Targeting
 {
     public class Target
     {
-        public int index;
+        public int pieceIndex;
         public Piece initialPiece;
-        public List<Entity> entities;
-        public Entity Entity
-        {
-            get => entities.Count > 0 ? entities[0] : null;
-            set => entities = new List<Entity>(1) { value };
-        }
+        public Entity targetEntity;
         public IntVector2 direction;
+
+        public virtual Layer TargetedLayer
+            => Layer.REAL | Layer.MISC | Layer.WALL;
+
+        public virtual Layer SkipLayer => 0;
 
         public virtual void CalculateCondition(CommonEvent ev)
         { }
 
         // by default, take the entity from the top
-        public virtual void CalculateTargets(Cell cell, Layer m_targetedLayer)
+        public virtual void CalculateTargetedEntity(Cell cell)
         {
-            entities = new List<Entity>();
-            var entity = cell.GetEntityFromLayer(m_targetedLayer);
-            if (entity != null)
+            if (cell.GetEntityFromLayer(SkipLayer) == null)
             {
-                entities.Add(entity);
+                targetEntity = cell.GetEntityFromLayer(TargetedLayer);
             }
         }
     }

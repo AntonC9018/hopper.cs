@@ -29,6 +29,7 @@ namespace Core
 
         public int CheckSuccessAndGetRelativeIndex(Entity e)
         {
+            System.Console.WriteLine("Calculating success");
 
             if (successFunction != null)
             {

@@ -11,6 +11,7 @@ namespace Core.Targeting
         // empty list to check all previous indeces
         // list of indices to check the specified indeces
         public List<int> reach;
+        
         public Piece Rotate(double angle)
         {
             return new Piece

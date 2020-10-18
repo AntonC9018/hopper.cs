@@ -111,7 +111,7 @@ namespace Chains
             m_handlersToRemove.Clear();
         }
 
-        private void SortHandlers()
+        public void SortHandlers()
         {
             m_handlers.Sort((a, b) => a.priority - b.priority);
             b_dirty = false;

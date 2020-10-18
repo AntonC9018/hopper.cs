@@ -6,10 +6,12 @@ namespace Core.Behaviors
     public interface IProvideBehavior
     {
         T Get<T>() where T : Behavior, new();
+        bool Has<T>() where T : Behavior, new();
     }
     public interface IProvideBehaviorFactory
     {
         BehaviorFactory<T> GetBehaviorFactory<T>() where T : Behavior, new();
+        bool HasBehaviorFactory<T>() where T : Behavior, new();
     }
     public interface IProvidesChain
     {
@@ -42,6 +44,10 @@ namespace Core.Behaviors
 
         public ChainTemplate<Event> TemplatePath(IProvideBehaviorFactory startingFrom)
         {
+            if (!startingFrom.HasBehaviorFactory<Beh>())
+            {
+                throw new System.Exception($"Tried to add chains to a template of {typeof(Beh).Name}, but no such Behavior was present on the entity. Please, add the required behaviors prior to retouching");
+            }
             return startingFrom.GetBehaviorFactory<Beh>().GetTemplate<Event>(name);
         }
     }

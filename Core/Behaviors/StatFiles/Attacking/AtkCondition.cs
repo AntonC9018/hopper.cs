@@ -2,9 +2,9 @@ namespace Core
 {
     public enum AtkCondition
     {
-        ALWAYS,
-        NEVER,
-        SKIP,
-        IF_NEXT_TO
+        NEVER = 0,
+        ALWAYS = 1,
+        SKIP = 2,
+        IF_NEXT_TO = 3
     }
 }

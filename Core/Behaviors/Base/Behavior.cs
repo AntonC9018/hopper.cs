@@ -10,7 +10,7 @@ namespace Core.Behaviors
         protected Dictionary<ChainName, Chain> chains;
         protected Entity m_entity;
 
-        public void GenerateChains(Dictionary<ChainName, ChainTemplate> templates)
+        public void GenerateChains(Dictionary<ChainName, IChainTemplate> templates)
         {
             if (templates == null)
                 return;

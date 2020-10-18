@@ -50,6 +50,7 @@ namespace Core.Behaviors
 
         static void TakeHit(Event ev)
         {
+            ev.actor.Behaviors.Get<Damageable>()?.Activate(ev.attack.damage);
             System.Console.WriteLine($"Taken {ev.attack.damage} damage");
         }
 

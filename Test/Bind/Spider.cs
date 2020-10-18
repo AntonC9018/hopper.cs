@@ -52,13 +52,13 @@ namespace Test
         static Spider()
         {
             Factory = new EntityFactory<Spider>()
-                .AddBehavior<Acting>(new Acting.Config { DoAction = Algos.EnemyAlgo })
+                .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(CreateSequenceData()))
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Moving>()
                 .AddBehavior<Binding>(new Binding.Config { bindStatus = BindStatuses.NoMove })
                 .AddBehavior<Attackable>()
-                .RetouchAndSave(SelfBinding.NoMoveRetoucher);
+                .Retouch(SelfBinding.NoMoveRetoucher);
 
             ClassUtils.AssureStaticallyConstructed(typeof(SelfBinding));
         }

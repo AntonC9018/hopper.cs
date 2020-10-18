@@ -12,7 +12,7 @@ namespace Test
             var moveAction = new BehaviorAction<Moving>();
             var attackAction = new BehaviorAction<Attacking>();
             var attackMoveAction = new CompositeAction(
-                new Action[] { }
+                new Action[] { attackAction, moveAction }
             );
 
             var stepData = new Step[]
@@ -31,7 +31,7 @@ namespace Test
         static Skeleton()
         {
             Factory = new EntityFactory<Entity>()
-                .AddBehavior<Acting>(new Acting.Config { DoAction = Algos.EnemyAlgo })
+                .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(CreateSequenceData()))
 
                 .AddBehavior<Attacking>()
@@ -40,7 +40,11 @@ namespace Test
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Attackable>()
                 .AddBehavior<Pushable>()
-                .AddBehavior<Statused>();
+                .AddBehavior<Statused>()
+
+                .Retouch(Core.Retouchers.Skip.NoPlayer)
+                .Retouch(Core.Retouchers.Skip.BlockedMove)
+                .Retouch(Core.Retouchers.Reorient.OnActionSuccess);
         }
     }
 }

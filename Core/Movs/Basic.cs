@@ -13,44 +13,73 @@ namespace Core
             {
                 return list;
             }
-            void Add(int x, int y) => list.Add(new IntVector2(x, y));
-            var rel = CalculateRelativeness(e, player);
 
-            if (e.Orientation.x > 0)
+            var orientation = e.Orientation;
+            var diff = player.Pos - e.Pos;
+            var diff_ones = diff.Sign();
+            var diff_x = new IntVector2(diff_ones.x, 0);
+            var diff_y = new IntVector2(0, diff_ones.y);
+
+            if (diff_ones.x * orientation.x > 0)
             {
-                if (rel.gx) Add(1, 0);
-                if (rel.gy) Add(0, 1);
-                if (rel.lx) Add(0, -1);
-                if (rel.ly) Add(-1, 0);
+                list.Add(diff_x);
+                if (diff_ones.y != 0) { list.Add(diff_y); }
             }
-            else if (e.Orientation.x < 0)
+            else if (diff_ones.y * orientation.y > 0)
             {
-                if (rel.lx) Add(-1, 0);
-                if (rel.gy) Add(0, 1);
-                if (rel.ly) Add(0, -1);
-                if (rel.gx) Add(1, 0);
-            }
-            else if (e.Orientation.y > 0)
-            {
-                if (rel.gy) Add(0, 1);
-                if (rel.gx) Add(1, 0);
-                if (rel.lx) Add(-1, 0);
-                if (rel.ly) Add(0, -1);
-            }
-            else if (e.Orientation.y < 0)
-            {
-                if (rel.ly) Add(0, -1);
-                if (rel.gx) Add(1, 0);
-                if (rel.lx) Add(-1, 0);
-                if (rel.gy) Add(0, 1);
+                list.Add(diff_y);
+                if (diff_ones.x != 0) { list.Add(diff_x); }
             }
             else
             {
-                if (rel.gx) Add(1, 0);
-                if (rel.lx) Add(-1, 0);
-                if (rel.gy) Add(0, 1);
-                if (rel.ly) Add(0, -1);
+                if (diff_ones.x != 0) { list.Add(diff_x); }
+                if (diff_ones.y != 0) { list.Add(diff_y); }
             }
+
+            foreach (var dir in list)
+            {
+                System.Console.WriteLine(dir);
+            }
+
+
+
+            // var rel = CalculateRelativeness(e, player);
+
+            // if (e.Orientation.x > 0)
+            // {
+            //     if (rel.gx) Add(1, 0);
+            //     if (rel.gy) Add(0, 1);
+            //     if (rel.lx) Add(0, -1);
+            //     if (rel.ly) Add(-1, 0);
+            // }
+            // else if (e.Orientation.x < 0)
+            // {
+            //     if (rel.lx) Add(-1, 0);
+            //     if (rel.gy) Add(0, 1);
+            //     if (rel.ly) Add(0, -1);
+            //     if (rel.gx) Add(1, 0);
+            // }
+            // else if (e.Orientation.y > 0)
+            // {
+            //     if (rel.gy) Add(0, 1);
+            //     if (rel.gx) Add(1, 0);
+            //     if (rel.lx) Add(-1, 0);
+            //     if (rel.ly) Add(0, -1);
+            // }
+            // else if (e.Orientation.y < 0)
+            // {
+            //     if (rel.ly) Add(0, -1);
+            //     if (rel.gx) Add(1, 0);
+            //     if (rel.lx) Add(-1, 0);
+            //     if (rel.gy) Add(0, 1);
+            // }
+            // else
+            // {
+            //     if (rel.gx) Add(1, 0);
+            //     if (rel.lx) Add(-1, 0);
+            //     if (rel.gy) Add(0, 1);
+            //     if (rel.ly) Add(0, -1);
+            // }
 
             return list;
         }

@@ -46,7 +46,7 @@ namespace Test
         {
             var target = new Target
             {
-                Entity = status.GetStore(ev).whoApplied,
+                targetEntity = status.GetStore(ev).whoApplied,
                 direction = new IntVector2(0, 0)
             };
             ev.targets = new List<Target> { target };

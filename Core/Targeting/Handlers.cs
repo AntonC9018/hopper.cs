@@ -10,7 +10,7 @@ namespace Core.Targeting
         public static void NextToAny(TargetEvent<AtkTarget> weaponEvent)
         {
             var first = weaponEvent.targets[0];
-            if (first.index == 0 && first.atkCondition != AtkCondition.NEVER)
+            if (first.pieceIndex == 0 && first.atkCondition != AtkCondition.NEVER)
                 return;
 
             if (weaponEvent.targets.Any(
@@ -57,10 +57,10 @@ namespace Core.Targeting
             // reachable only if all the ones before are empty
             if (reach.Count == 0)
                 // is of lowest index
-                return !targets.Any(t => t.index < target.index);
+                return !targets.Any(t => t.pieceIndex < target.pieceIndex);
 
             // reachable if no specified indeces are present
-            return !targets.Any(t => reach.Contains(t.index));
+            return !targets.Any(t => reach.Contains(t.pieceIndex));
         }
 
         public static void DiscardNotClose(TargetEvent<AtkTarget> weaponEvent)
@@ -79,7 +79,7 @@ namespace Core.Targeting
             where T : Target
         {
             weaponEvent.targets = weaponEvent.targets
-                .Where(t => t.Entity != null);
+                .Where(t => t.targetEntity != null);
         }
 
         public static void KeepAttackable(TargetEvent<AtkTarget> weaponEvent)
@@ -91,7 +91,7 @@ namespace Core.Targeting
 
         public static void StopNoFirst(TargetEvent<DigTarget> digEvent)
         {
-            if (digEvent.targets[0].Entity == null)
+            if (digEvent.targets[0].targetEntity == null)
             {
                 digEvent.targets.Clear();
                 digEvent.propagate = false;

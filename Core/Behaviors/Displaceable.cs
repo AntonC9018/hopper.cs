@@ -39,8 +39,6 @@ namespace Core.Behaviors
             } while (i < ev.move.power);
             i--;
 
-            System.Console.WriteLine(i);
-
             ev.newPos = ev.actor.GetPosRelative(ev.action.direction * i);
         }
 

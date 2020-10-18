@@ -9,6 +9,8 @@ namespace Core.Retouchers
     {
         public static Retoucher EmptyAttack = Retoucher
             .SingleHandlered<Attacking.Event>(Attacking.Check, SkipEmptyAttack);
+        public static Retoucher EmptyDig = Retoucher
+            .SingleHandlered<Digging.Event>(Digging.Check, SkipEmptyDig);
         public static Retoucher BlockedMove = Retoucher
             .SingleHandlered<Moving.Event>(Moving.Check, SkipBlocked);
         public static Retoucher NoPlayer = Retoucher
@@ -17,6 +19,11 @@ namespace Core.Retouchers
             .SingleHandlered<Attacking.Event>(Attacking.Check, SkipSelf);
 
         static void SkipEmptyAttack(Attacking.Event ev)
+        {
+            ev.propagate = ev.targets.Count > 0;
+        }
+
+        static void SkipEmptyDig(Digging.Event ev)
         {
             ev.propagate = ev.targets.Count > 0;
         }
@@ -32,13 +39,13 @@ namespace Core.Retouchers
         static void SkipNoPlayer(Attacking.Event ev)
         {
             ev.propagate = ev.targets
-                .Any(t => t.Entity.IsPlayer);
+                .Any(t => t.targetEntity.IsPlayer);
         }
 
         static void SkipSelf(Attacking.Event ev)
         {
             ev.propagate = ev.targets
-                .Any(t => t.Entity == ev.actor);
+                .Any(t => t.targetEntity == ev.actor);
         }
     }
 }

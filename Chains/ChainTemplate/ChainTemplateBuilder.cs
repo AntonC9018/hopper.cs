@@ -7,11 +7,11 @@ namespace Chains
     {
         protected Dictionary<ChainName, I_CT_PartBuilder> m_templateBuilders
             = new Dictionary<ChainName, I_CT_PartBuilder>();
-        public Dictionary<ChainName, ChainTemplate> Templates
+        public Dictionary<ChainName, IChainTemplate> Templates
         {
             get
             {
-                var templates = new Dictionary<ChainName, ChainTemplate>();
+                var templates = new Dictionary<ChainName, IChainTemplate>();
                 foreach (var key in m_templateBuilders.Keys)
                 {
                     templates.Add(key, m_templateBuilders[key].Template);

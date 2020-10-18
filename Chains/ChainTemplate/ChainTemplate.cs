@@ -1,20 +1,43 @@
 using System.Collections.Generic;
-using Core;
-using Core.Behaviors;
 using Utils.MyLinkedList;
 
 namespace Chains
 {
-    public abstract class ChainTemplate
+    public interface IChainTemplate
     {
-        protected List<IEvHandler> m_handlers;
-        protected bool b_areHandlersCached;
+        Chain Init();
+        IChainTemplate Clone();
+    }
 
-        public ChainTemplate() { }
-        protected ChainTemplate(List<IEvHandler> handlers, bool areHandlersCached)
+    public class ChainTemplate<Event> : IChainTemplate
+        where Event : EventBase
+    {
+        private List<EvHandler<Event>> m_handlers;
+        private bool b_areHandlersCached;
+
+        public ChainTemplate()
         {
-            m_handlers = new List<IEvHandler>(handlers);
-            b_areHandlersCached = areHandlersCached;
+            m_handlers = new List<EvHandler<Event>>(8);
+            b_areHandlersCached = false;
+        }
+
+        private ChainTemplate(List<EvHandler<Event>> handlers)
+        {
+            m_handlers = new List<EvHandler<Event>>(handlers);
+        }
+
+        public void AddHandler(EvHandler<Event> handler)
+        {
+            b_areHandlersCached = false;
+            m_handlers.Add(handler);
+        }
+
+        public ChainTemplate<Event> AddHandler(
+            System.Action<Event> handlerFunc,
+            PriorityRanks priority = PriorityRanks.Default)
+        {
+            AddHandler(new EvHandler<Event>(handlerFunc, priority));
+            return this;
         }
 
         public Chain Init()
@@ -26,18 +49,20 @@ namespace Chains
             return InitAndCache();
         }
 
-        protected Chain _InitAndCache(Chain chain)
+        private Chain InitAndCache()
         {
+            var chain = new Chain<Event>();
             foreach (var handler in m_handlers)
             {
                 chain.AddHandler(handler);
             }
+            chain.SortHandlers();
 
             m_handlers.TrimExcess();
             int i = m_handlers.Count - 1;
             foreach (var handler in chain.m_handlers)
             {
-                m_handlers[i] = handler;
+                m_handlers[i] = (EvHandler<Event>)handler;
                 i--;
             }
 
@@ -45,41 +70,8 @@ namespace Chains
 
             return chain;
         }
-        protected abstract Chain InitFromCache();
-        protected abstract Chain InitAndCache();
-        public void AddHandler(IEvHandler handler)
-        {
-            b_areHandlersCached = false;
-            m_handlers.Add(handler);
-        }
-        public abstract ChainTemplate Clone();
-    }
-    public class ChainTemplate<Event> : ChainTemplate
-        where Event : EventBase
-    {
-        public ChainTemplate()
-        {
-            m_handlers = new List<IEvHandler>(8);
-            b_areHandlersCached = false;
-        }
-        protected ChainTemplate(List<IEvHandler> handlers, bool areHandlersCached)
-            : base(handlers, areHandlersCached)
-        {
-        }
 
-        public ChainTemplate<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
-        {
-            AddHandler(new EvHandler<Event>(handlerFunc, priority));
-            return this;
-        }
-
-        protected override Chain InitAndCache()
-        {
-            var chain = new Chain<Event>();
-            return base._InitAndCache(chain);
-        }
-
-        protected override Chain InitFromCache()
+        private Chain InitFromCache()
         {
             var linkedList = new MyLinkedList<IEvHandler>();
             foreach (var handler in m_handlers)
@@ -89,9 +81,11 @@ namespace Chains
             return new Chain<Event>(linkedList);
         }
 
-        public override ChainTemplate Clone()
+        public IChainTemplate Clone()
         {
-            return new ChainTemplate<Event>(m_handlers, b_areHandlersCached);
+            var newTemplate = new ChainTemplate<Event>(m_handlers);
+            newTemplate.b_areHandlersCached = b_areHandlersCached;
+            return newTemplate;
         }
     }
 
