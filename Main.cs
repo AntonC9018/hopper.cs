@@ -24,6 +24,23 @@ namespace Hopper
             Demo();
             // Generate();
             // Release();
+            // var item = new TinkerItem(null);
+
+            // var pool = SuperPool.CreateNormal<IItem>();
+
+            // pool.Add("zone0/rare/weapon", item.Id, 1);
+
+            // var list = new List<PoolItem>
+            // {
+            //     new PoolItem(item.Id, 1),
+            //     new PoolItem(item.Id, 2),
+            // };
+
+            // pool.AddRange("zone0/rare/weapon", list);
+
+            // var poolCopy = pool.Copy();
+            // pool.Debug();
+            // poolCopy.Debug();
         }
 
         public class TestContent : IContent
@@ -229,8 +246,7 @@ namespace Hopper
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
             System.Console.WriteLine("\n ------ Pools Demo ------ \n");
-            var poolDef = new PoolDefinition<SubPool>();
-            // other option: new PoolDefinition<EndlessSubPool>();
+
             PoolItem[] items = new[]
             {
                 new PoolItem(0, 1),
@@ -239,32 +255,23 @@ namespace Hopper
                 new PoolItem(3, 1),
                 new PoolItem(4, 10)
             };
-            poolDef.RegisterItems(items);
 
-            Pool zone1dir = new Pool();
+            var pool = Pool.CreateNormal<IItem>();
 
-            SubPool weapons = new NormalSubPool();
-            SubPool trinkets = new NormalSubPool();
-            SubPool armor = new NormalSubPool();
+            pool.AddRange("zone1/weapons", items.Take(2));
+            pool.AddRange("zone1/trinkets", items.Skip(2).Take(2));
+            pool.Add("zone1/trinkets", items[4]);
 
-            poolDef.m_baseDir.AddDirectory("zone1", zone1dir);
-            // TODO: create + add
-            zone1dir.AddFile("weapons", weapons);
-            zone1dir.AddFile("trinkets", trinkets);
-            zone1dir.AddFile("armor", armor);
+            var poolCopy = pool.Copy();
 
-            poolDef.AddItemsToPool(items.Take(2), "zone1/weapons");
-            poolDef.AddItemsToPool(items.Skip(2).Take(2), "zone1/trinkets");
-            poolDef.AddItemToPool(items[4], "zone1/trinkets");
-
-            SuperPool<SubPool> superPool = new SuperPool<SubPool>(poolDef);
-
-            var it1 = superPool.GetNextItem("zone1/weapons");
-            System.Console.WriteLine($"Item Id = {it1.id}, q = {it1.q}");
-            var it2 = superPool.GetNextItem("zone1/weapons");
-            System.Console.WriteLine($"Item Id = {it2.id}, q = {it2.q}");
-            var it3 = superPool.GetNextItem("zone1/weapons");
-            System.Console.WriteLine($"Item Id = {it3.id}, q = {it3.q}");
+            var it1 = pool.GetNextItem("zone1/weapons");
+            System.Console.WriteLine($"Item Id = {it1.id}, q = {it1.quantity}");
+            // var it2 = pool.GetNextItem("zone1/weapons");
+            // System.Console.WriteLine($"Item Id = {it2.id}, q = {it2.quantity}");
+            var it3 = poolCopy.GetNextItem("zone1/weapons");
+            System.Console.WriteLine($"Item Id = {it3.id}, q = {it3.quantity}");
+            var it4 = poolCopy.GetNextItem("zone1/weapons");
+            System.Console.WriteLine($"Item Id = {it4.id}, q = {it4.quantity}");
 
 
             System.Console.WriteLine("\n ------ TargetProvider Demo ------ \n");

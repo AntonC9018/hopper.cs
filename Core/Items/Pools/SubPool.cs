@@ -1,33 +1,48 @@
 using System;
 using System.Collections.Generic;
+using Core.FS;
 using Utils;
 
 namespace Core.Items
 {
-    public class NormalSubPool : SubPool
+    // public interface ISubPool
+    // {
+    //     bool IsReadyToGenerate { get; }
+    //     Dictionary<int, PoolItem> items { get; }
+    //     ISubPool Copy(Dictionary<int, PoolItem> _items);
+    //     void GenerateDeck();
+    //     PoolItem GetNextItem();
+    //     void ReshuffleDeck();
+    // }
+
+    public abstract class SubPool : File
     {
-        public override SubPool Copy(Dictionary<int, PoolItem> _items)
+        public HashSet<PoolItem> items = new HashSet<PoolItem>();
+        public List<PoolItem> deck;
+        public int index;
+
+        public bool IsReadyToGenerate { get => deck != null; }
+
+        public void GenerateDeck(Random rng)
         {
-            var sp = new NormalSubPool();
-            foreach (var id in this.items.Keys)
+            deck = new List<PoolItem>();
+            index = 0;
+            foreach (var item in items)
             {
-                sp.items.Add(id, _items[id]);
+                for (int i = 0; i < item.quantity; i++)
+                {
+                    deck.Add(item);
+                }
             }
-            return sp;
+            deck.Shuffle(rng);
         }
 
-        public override PoolItem GetNextItem()
+        public void ReshuffleDeck(Random rng)
         {
-            if (index >= deck.Count)
-            {
-                return null;
-            }
-            var item = deck[index];
-            index++;
-            if (item.q == 0)
-                return GetNextItem();
-            item.q--;
-            return item;
+            deck.Shuffle(rng);
+            index = 0;
         }
+
+        public abstract PoolItem GetNextItem(Random rng);
     }
 }

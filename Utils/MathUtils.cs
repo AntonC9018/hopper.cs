@@ -20,5 +20,10 @@ namespace Utils
         {
             return x < 0 ? -x : x;
         }
+
+        internal static int Max(int x, int y)
+        {
+            return x > y ? x : y;
+        }
     }
 }

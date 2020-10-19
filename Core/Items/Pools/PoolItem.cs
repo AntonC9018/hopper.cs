@@ -1,19 +1,32 @@
+using Core.FS;
+
 namespace Core.Items
 {
-    public class PoolItem
+    public class PoolItem : File
     {
         public int id;
-        public int q;
+        public int quantity;
 
         public PoolItem(int id, int q)
         {
             this.id = id;
-            this.q = q;
+            this.quantity = q;
         }
 
-        public PoolItem Copy()
+        public PoolItem(IHaveId item, int q)
         {
-            return (PoolItem)this.MemberwiseClone();
+            this.id = item.Id;
+            this.quantity = q;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return id == ((PoolItem)obj).id;
+        }
+
+        public override int GetHashCode()
+        {
+            return id;
         }
     }
 }

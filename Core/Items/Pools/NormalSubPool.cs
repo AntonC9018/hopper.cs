@@ -3,11 +3,11 @@ using Core.FS;
 
 namespace Core.Items
 {
-    public class EndlessSubPool : SubPool
+    public class NormalSubPool : SubPool
     {
         public override File Copy()
         {
-            var sp = new EndlessSubPool();
+            var sp = new NormalSubPool();
             foreach (var item in this.items)
             {
                 sp.items.Add(item);
@@ -17,12 +17,15 @@ namespace Core.Items
 
         public override PoolItem GetNextItem(Random rng)
         {
-            if (index == deck.Count - 1)
+            if (index >= deck.Count)
             {
-                ReshuffleDeck(rng);
+                return null;
             }
             var item = deck[index];
             index++;
+            if (item.quantity == 0)
+                return GetNextItem(rng);
+            item.quantity--;
             return item;
         }
     }

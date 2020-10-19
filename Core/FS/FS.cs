@@ -95,12 +95,9 @@ namespace Core.FS
             return node.GetFile(fileName);
         }
 
-        public void Debug()
-        {
-            Debug(m_baseDir, 0);
-        }
+        public void Debug() => Debug(m_baseDir, 2);
 
-        public void Debug(Directory dir, int indentLevel = 0)
+        public void Debug(Directory dir, int indentLevel)
         {
             foreach (var kvp in dir.nodes)
             {

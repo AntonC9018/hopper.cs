@@ -78,5 +78,13 @@ namespace Utils
                 yield return enumerator.Current;
             }
         }
+
+        public static void AddRange<T>(this HashSet<T> set, IEnumerable<T> enumerable)
+        {
+            foreach (var it in enumerable)
+            {
+                set.Add(it);
+            }
+        }
     }
 }
