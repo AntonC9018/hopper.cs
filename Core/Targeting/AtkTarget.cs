@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core.Behaviors;
+using Core.Stats.Basic;
 using Utils;
 
 namespace Core.Targeting

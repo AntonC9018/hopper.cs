@@ -18,7 +18,7 @@ namespace Test
             var lambdas = new BindStatuses();
             var builder = lambdas.CreateBaseBuilder();
             AddNoMove(builder);
-            lambdas.status = new BindStatus(builder.ToStatic(), "test_bind");
+            lambdas.status = new BindStatus(builder.ToStatic(), Bind.Path);
             return lambdas.status;
         }
 

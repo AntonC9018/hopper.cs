@@ -1,5 +1,6 @@
 using Chains;
 using Core;
+using Core.Stats;
 using Newtonsoft.Json;
 using Utils;
 
@@ -20,14 +21,14 @@ namespace Test
 
     public class BindStatus : Status<BindData>
     {
-        public BindStatus(IChainDef[] chainDefs, string statusName, IChainDef[] spice, int defaultResValue = 1)
-            : base(null, statusName, defaultResValue)
+        public BindStatus(IChainDef[] chainDefs, IStatPath<StatusFile> statusPath, IChainDef[] spice, int defaultResValue = 1)
+            : base(null, statusPath, defaultResValue)
         {
             this.m_chainDefinition = spice == null ? chainDefs : chainDefs.Concat(spice);
         }
 
-        public BindStatus(IChainDef[] chainDefs, string statusName, int defaultResValue = 1)
-            : base(chainDefs, statusName, defaultResValue)
+        public BindStatus(IChainDef[] chainDefs, IStatPath<StatusFile> statusPath, int defaultResValue = 1)
+            : base(chainDefs, statusPath, defaultResValue)
         {
         }
     }

@@ -1,4 +1,5 @@
 using Chains;
+using Core.Stats.Basic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -12,7 +13,7 @@ namespace Core.Behaviors
         {
             public Entity actor;
             public Attack attack;
-            public MapFile resistance;
+            public Status.Resistance resistance;
             public StatusParam[] statusParams;
         }
 
@@ -79,7 +80,7 @@ namespace Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = (MapFile)ev.actor.StatManager.GetFile("status_res");
+            ev.resistance = ev.actor.Stats.Get(Status.Resistance.Path);
         }
 
         static void ResistSomeStatuses(Event ev)
@@ -106,8 +107,6 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Statused>.s_builder = builder;
-
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(StatusSetup).TypeHandle);
         }
 
     }

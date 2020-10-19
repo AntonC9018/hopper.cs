@@ -1,3 +1,5 @@
+using Core.Stats;
+
 namespace Core.Items
 {
     public class ModifierItem : IItem
@@ -17,17 +19,17 @@ namespace Core.Items
 
         public void BeDestroyed(Entity entity)
         {
-            entity.StatManager.RemoveModifier(modifier);
+            entity.Stats.RemoveModifier(modifier);
         }
 
         public void BeEquipped(Entity entity)
         {
-            entity.StatManager.AddModifier(modifier);
+            entity.Stats.AddModifier(modifier);
         }
 
         public void BeUnequipped(Entity entity)
         {
-            entity.StatManager.RemoveModifier(modifier);
+            entity.Stats.RemoveModifier(modifier);
             entity.World.CreateDroppedItem(this, entity.Pos);
         }
     }

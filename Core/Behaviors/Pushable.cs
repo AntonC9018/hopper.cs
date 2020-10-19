@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
 using Chains;
+using Core.Stats.Basic;
 
 namespace Core.Behaviors
 {
@@ -25,12 +26,12 @@ namespace Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = (Push.Resistance)ev.actor.StatManager.GetFile("pushed/res");
+            ev.resistance = ev.actor.Stats.Get(Push.Resistance.Path);
         }
 
         static void ResistSource(Event ev)
         {
-            var sourceRes = (ArrayFile)ev.actor.StatManager.GetFile("pushed/source_res");
+            var sourceRes = ev.actor.Stats.Get(Push.Source.Resistance.Path);
             if (sourceRes[ev.push.source] > ev.push.power)
             {
                 ev.push.distance = 0;
@@ -72,7 +73,6 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Pushable>.s_builder = builder;
-            AssureRun(typeof(PushSetup));
         }
     }
 }

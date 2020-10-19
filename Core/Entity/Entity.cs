@@ -2,6 +2,7 @@ using Utils.Vector;
 using Core.Items;
 using System.Runtime.Serialization;
 using System;
+using Core.Stats;
 
 namespace Core
 {
@@ -35,7 +36,7 @@ namespace Core
 
         // These fields do not store persistent state
         public World World { get; private set; }
-        public StatManager StatManager { get; private set; }
+        public StatManager Stats { get; private set; }
 
         public History History { get; private set; }
 
@@ -44,7 +45,7 @@ namespace Core
             IsDead = false;
             Behaviors = new BehaviorControl();
             Tinkers = new TinkerControl(this);
-            StatManager = new StatManager();
+            Stats = new StatManager();
             History = new History();
         }
 

@@ -1,6 +1,7 @@
 using Chains;
 using Utils;
 using System.Runtime.Serialization;
+using Core.Stats.Basic;
 
 namespace Core.Behaviors
 {
@@ -27,14 +28,16 @@ namespace Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = (Attack.Resistance)ev.actor.StatManager.GetFile("attacked/res");
+            ev.resistance = ev.actor.Stats.Get(Attack.Resistance.Path);
         }
 
         static void ResistSource(Event ev)
         {
-            var sourceRes = (MapFile)ev.actor.StatManager.GetFile("attacked/source_res");
+            var sourceRes = ev.actor.Stats.Get(Attack.Source.Resistance.Path);
             if (sourceRes[ev.attack.sourceId] > ev.attack.power)
+            {
                 ev.attack.damage = 0;
+            }
         }
 
         static void Armor(Event ev)
@@ -105,7 +108,10 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Attackable>.s_builder = builder;
-            AssureRun(typeof(AttackSetup));
+            AssureRun(typeof(Attack));
+            AssureRun(typeof(Attack.Resistance));
+            AssureRun(typeof(Attack.Source));
+            AssureRun(typeof(Attack.Source.Resistance));
         }
 
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Items;
 using Core.Targeting;
 using System.Runtime.Serialization;
+using Core.Stats.Basic;
 
 namespace Core.Behaviors
 {
@@ -29,7 +30,7 @@ namespace Core.Behaviors
 
         static void SetDig(Event ev)
         {
-            ev.dig = (Dig)ev.actor.StatManager.GetFile("dig");
+            ev.dig = ev.actor.Stats.Get(Dig.Path);
         }
 
         static void SetTargets(Event ev)
@@ -74,7 +75,7 @@ namespace Core.Behaviors
             // _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
 
             BehaviorFactory<Digging>.s_builder = builder;
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(DigSetup).TypeHandle);
+            AssureRun(typeof(Dig));
         }
     }
 }

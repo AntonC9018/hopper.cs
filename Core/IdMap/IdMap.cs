@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core.Items;
+using Core.Stats.Basic;
 using Newtonsoft.Json;
 
 namespace Core

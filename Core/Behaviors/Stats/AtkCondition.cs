@@ -1,4 +1,4 @@
-namespace Core
+namespace Core.Stats.Basic
 {
     public enum AtkCondition
     {

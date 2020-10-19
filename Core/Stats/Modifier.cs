@@ -1,13 +1,12 @@
-using Core.FS;
 using Utils;
 
-namespace Core
+namespace Core.Stats
 {
     public class Modifier
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        public string path;
+        public IStatPath<StatFile> path;
 
         public override int GetHashCode()
         {
@@ -18,7 +17,7 @@ namespace Core
     public class StatModifier : Modifier
     {
         public StatFile file;
-        public StatModifier(string path, StatFile file)
+        public StatModifier(IStatPath<StatFile> path, StatFile file)
         {
             this.file = file;
             base.path = path;
@@ -28,7 +27,7 @@ namespace Core
     public class ChainModifier : Modifier
     {
         public Chains.EvHandler<StatEvent> handler;
-        public ChainModifier(string path, Chains.EvHandler<StatEvent> handler)
+        public ChainModifier(IStatPath<StatFile> path, Chains.EvHandler<StatEvent> handler)
         {
             this.handler = handler;
             base.path = path;

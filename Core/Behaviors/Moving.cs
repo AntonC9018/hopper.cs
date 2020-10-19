@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
 using Chains;
+using Core.Stats.Basic;
 
 namespace Core.Behaviors
 {
@@ -27,7 +28,7 @@ namespace Core.Behaviors
             if (ev.move == null)
             {
                 // TODO: set stats for move
-                ev.move = (Move)ev.actor.StatManager.GetFile("move");
+                ev.move = ev.actor.Stats.Get(Move.Path);
             }
         }
 
@@ -56,7 +57,6 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Moving>.s_builder = builder;
-            AssureRun(typeof(MoveSetup));
         }
     }
 }

@@ -4,37 +4,6 @@ using System.Reflection;
 
 namespace Core.FS
 {
-    public class Node
-    {
-    }
-
-    public class File : Node
-    {
-        public virtual File Copy()
-        {
-            return (File)this.MemberwiseClone();
-        }
-    }
-    public class Directory : Node
-    {
-        public Dictionary<string, Node> nodes =
-            new Dictionary<string, Node>();
-
-        public virtual File GetFile(string name)
-        {
-            return (File)nodes[name];
-        }
-
-        public void AddFile(string name, File file)
-        {
-            nodes.Add(name, file);
-        }
-
-        public void AddDirectory(string name, Directory directory)
-        {
-            nodes.Add(name, directory);
-        }
-    }
 
     public class FS<D> where D : Directory, new()
     {
@@ -60,7 +29,7 @@ namespace Core.FS
             m_baseDir = d;
         }
 
-        D GetDirectoryBySplitPath(IEnumerable<string> dirNames)
+        protected D GetDirectoryBySplitPath(IEnumerable<string> dirNames)
         {
             Directory dir = m_baseDir;
             foreach (var dirName in dirNames)
@@ -72,13 +41,29 @@ namespace Core.FS
             return (D)dir;
         }
 
-        public D GetDirectory(string path)
+        protected D GetDirectoryBySplitPathLazy(IEnumerable<string> dirNames)
+        {
+            Directory dir = m_baseDir;
+            foreach (var dirName in dirNames)
+            {
+                // getting a node should not require a virtual function
+                // since it is always just nodes in an array
+                if (!dir.nodes.ContainsKey(dirName))
+                {
+                    dir.nodes.Add(dirName, new D());
+                }
+                dir = (Directory)dir.nodes[dirName];
+            }
+            return (D)dir;
+        }
+
+        protected D GetDirectory(string path)
         {
             var dirName = Split(path);
             return GetDirectoryBySplitPath(dirName);
         }
 
-        public Node GetNode(string path)
+        protected Node GetNode(string path)
         {
             var dirNames = Split(path);
             var dirPath = dirNames.Take(dirNames.Length - 1);
@@ -87,7 +72,21 @@ namespace Core.FS
             return node.nodes[fileName];
         }
 
-        public File GetFile(string path)
+        public File GetFileLazy(string path, File initialValue)
+        {
+            var dirNames = Split(path);
+            var dirPath = dirNames.Take(dirNames.Length - 1);
+            var node = GetDirectoryBySplitPathLazy(dirPath);
+            var fileName = dirNames[dirNames.Length - 1];
+            if (!node.nodes.ContainsKey(fileName))
+            {
+                System.Console.WriteLine($"The system doesn't contain {path}");
+                node.nodes.Add(fileName, CopyFileNode(initialValue));
+            }
+            return node.GetFile(fileName);
+        }
+
+        protected File GetFile(string path)
         {
             var dirNames = Split(path);
             var dirPath = dirNames.Take(dirNames.Length - 1);
@@ -113,7 +112,6 @@ namespace Core.FS
             }
         }
 
-        // TODO: lazy load
         protected void CopyDirectoryStructure(Directory from, D to)
         {
             foreach (var kvp in from.nodes)

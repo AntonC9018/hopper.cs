@@ -1,6 +1,7 @@
 using Chains;
 using Utils.Vector;
 using System.Runtime.Serialization;
+using Core.Stats.Basic;
 
 namespace Core.Behaviors
 {
@@ -67,7 +68,6 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Displaceable>.s_builder = builder;
-            AssureRun(typeof(MoveSetup));
         }
 
     }

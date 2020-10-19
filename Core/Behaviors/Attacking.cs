@@ -3,6 +3,7 @@ using Chains;
 using Core.Items;
 using Core.Targeting;
 using System.Runtime.Serialization;
+using Core.Stats.Basic;
 
 namespace Core.Behaviors
 {
@@ -46,11 +47,11 @@ namespace Core.Behaviors
         {
             if (ev.attack == null)
             {
-                ev.attack = (Attack)ev.actor.StatManager.GetFile("attack");
+                ev.attack = ev.actor.Stats.Get(Attack.Path);
             }
             if (ev.push == null)
             {
-                ev.push = (Push)ev.actor.StatManager.GetFile("push");
+                ev.push = ev.actor.Stats.Get(Push.Path);
             }
         }
 
@@ -113,7 +114,10 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Attacking>.s_builder = builder;
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(AttackSetup).TypeHandle);
+            AssureRun(typeof(Attack));
+            AssureRun(typeof(Attack.Resistance));
+            AssureRun(typeof(Attack.Source));
+            AssureRun(typeof(Attack.Source.Resistance));
         }
     }
 }

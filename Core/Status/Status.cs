@@ -1,5 +1,6 @@
 using Chains;
 using Core.Behaviors;
+using Core.Stats;
 
 namespace Core
 {
@@ -11,14 +12,22 @@ namespace Core
         bool TryApply(Entity applicant, Entity target);
     }
 
+    public static class Status
+    {
+        public class Resistance : MapFile
+        {
+            public static readonly IStatPath<Resistance> Path = new StatPath<Resistance>("status/res");
+        }
+    }
+
     public class Status<T> : Tinker<T>, IStatus where T : StatusData, new()
     {
-        private string m_statName;
+        private IStatPath<StatusFile> m_statPath;
 
-        public Status(IChainDef[] chainDefs, string statName, int defaultResValue) : base(chainDefs)
+        public Status(IChainDef[] chainDefs, IStatPath<StatusFile> statPath, int defaultResValue) : base(chainDefs)
         {
-            m_statName = statName;
-            StatusSetup.ResFile.content.Add(m_id, defaultResValue);
+            m_statPath = statPath;
+            Status.Resistance.Path.DefaultFile.content.Add(m_id, defaultResValue);
         }
 
         // Returns true if it is still applied after the update 
@@ -81,7 +90,7 @@ namespace Core
 
         public StatusFile GetStat(Entity entity)
         {
-            return (StatusFile)entity.StatManager.GetFile(m_statName);
+            return entity.Stats.Get(m_statPath);
         }
     }
 }

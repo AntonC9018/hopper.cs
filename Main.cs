@@ -10,6 +10,8 @@ using Test;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Core.Generation;
+using Core.Stats;
+using Core.Stats.Basic;
 
 // Hello World! program
 namespace Hopper
@@ -19,9 +21,9 @@ namespace Hopper
         static void Main(string[] args)
         {
             // Serialize();
-            // Demo();
+            Demo();
             // Generate();
-            Release();
+            // Release();
         }
 
         public class TestContent : IContent
@@ -193,21 +195,22 @@ namespace Hopper
             System.Console.WriteLine("Set player action");
             System.Console.WriteLine("\n ------ Modifier Demo ------ \n");
 
-            var mod = new StatModifier("attack", new Attack { damage = 1 });
-            var attack = (Attack)player.StatManager.GetFile("attack");
+            var mod = new StatModifier(Attack.Path, new Attack { damage = 1 });
+            var attack = player.Stats.Get(Attack.Path);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Adding modifier");
-            player.StatManager.AddModifier(mod);
-            // attack = (Attack)player.m_statManager.GetFile("attack");
+            player.Stats.AddModifier(mod);
+            attack = player.Stats.Get(Attack.Path);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Removing modifier");
-            player.StatManager.RemoveModifier(mod);
+            player.Stats.RemoveModifier(mod);
+            attack = player.Stats.Get(Attack.Path);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
-            var mod2 = new ChainModifier("attack", new Chains.EvHandler<StatEvent>(
+            var mod2 = new ChainModifier(Attack.Path, new Chains.EvHandler<StatEvent>(
                 (StatEvent _ev) =>
                 {
                     System.Console.WriteLine("Called handler");
@@ -215,14 +218,13 @@ namespace Hopper
                 })
             );
             System.Console.WriteLine("Adding modifier");
-            player.StatManager.AddModifier(mod2);
-            attack = (Attack)player.StatManager.GetFile("attack");
-            attack = (Attack)player.StatManager.GetFile("attack");
+            player.Stats.AddModifier(mod2);
+            attack = player.Stats.Get(Attack.Path);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Removing modifier");
-            player.StatManager.RemoveChainModifier(mod2);
-            attack = (Attack)player.StatManager.GetFile("attack");
+            player.Stats.RemoveChainModifier(mod2);
+            attack = player.Stats.Get(Attack.Path);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 

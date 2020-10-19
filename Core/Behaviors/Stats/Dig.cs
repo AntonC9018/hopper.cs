@@ -1,4 +1,4 @@
-namespace Core
+namespace Core.Stats.Basic
 {
     public class Dig : StatFile
     {
@@ -6,7 +6,16 @@ namespace Core
         public int damage;
         public int pierce;
 
-        public static Attack.Source Source;
+        public static Attack.Source Source = new Attack.Source();
+        public static readonly IStatPath<Dig> Path = new StatPath<Dig>(
+            "dig/base",
+            new Dig
+            {
+                power = 0,
+                damage = 1,
+                pierce = 10
+            }
+        );
 
         public Attack ToAttack()
         {

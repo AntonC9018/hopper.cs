@@ -2,24 +2,23 @@
 using Core;
 using Core.Behaviors;
 using Core.FS;
+using Core.Stats;
 
 namespace Test
 {
-    public class Binding : Behavior, IStandartActivateable
+    public class Bind : StatusFile
     {
-        static void SetupStats()
+        public Bind()
         {
-            Directory baseDir = StatManager.DefaultFS.BaseDir;
-
-            StatFile bind = new StatusFile
-            {
-                power = 1,
-                amount = System.Int32.MaxValue
-            };
-
-            baseDir.AddFile("test_bind", bind);
+            power = 1;
+            amount = System.Int32.MaxValue;
         }
 
+        public static readonly IStatPath<Bind> Path = new StatPath<Bind>("status/bind");
+
+    }
+    public class Binding : Behavior, IStandartActivateable
+    {
         public class Event : CommonEvent
         {
             public StatusFile statusStat;
@@ -93,8 +92,6 @@ namespace Test
                 .End();
 
             BehaviorFactory<Binding>.s_builder = builder;
-
-            SetupStats();
         }
     }
 }
