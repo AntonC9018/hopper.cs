@@ -114,10 +114,6 @@ namespace Core.Behaviors
                 .End();
 
             BehaviorFactory<Attacking>.s_builder = builder;
-            AssureRun(typeof(Attack));
-            AssureRun(typeof(Attack.Resistance));
-            AssureRun(typeof(Attack.Source));
-            AssureRun(typeof(Attack.Source.Resistance));
         }
     }
 }
