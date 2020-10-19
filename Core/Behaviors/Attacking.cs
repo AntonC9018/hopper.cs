@@ -69,7 +69,6 @@ namespace Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
-                System.Console.WriteLine($"Attacking {target.targetEntity.GetType().Name}");
                 var action = ev.action.Copy();
                 action.direction = target.direction;
                 var attackable = target.targetEntity.Behaviors.Get<Attackable>();

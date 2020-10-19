@@ -92,5 +92,11 @@ namespace Core
         {
             return m_behaviorSettings.ContainsKey(typeof(U));
         }
+
+        public EntityFactory<T> ReconfigureBehavior<U>(BehaviorConfig config) where U : Behavior, new()
+        {
+            m_behaviorSettings[typeof(U)].config = config;
+            return this;
+        }
     }
 }

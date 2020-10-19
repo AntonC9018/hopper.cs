@@ -19,8 +19,34 @@ namespace Hopper
         static void Main(string[] args)
         {
             // Serialize();
-            Demo();
+            // Demo();
             // Generate();
+            Release();
+        }
+
+        public class TestContent : IContent
+        {
+            public static EntityFactory<Entity> factory = new EntityFactory<Entity>();
+
+            public void Release(Entity entity)
+            {
+                System.Console.WriteLine("spawned");
+                entity.World.SpawnEntity(factory, entity.Pos);
+            }
+        }
+
+        static void Release()
+        {
+            var content = new TestContent();
+            var interactableEntityFactory = new EntityFactory<Entity>()
+                .AddBehavior<Interactable>();
+            var world = new World(1, 1);
+            var entity = world.SpawnEntity(interactableEntityFactory, new IntVector2(0, 0));
+            var interactable = entity.Behaviors.Get<Interactable>();
+            interactable.m_content = content;
+            interactable.Activate();
+            var releasedContent = entity.Cell.GetFirstEntity();
+            System.Console.WriteLine($"Entity = content entity? - {entity == releasedContent}");
         }
 
         static void Generate()
@@ -215,9 +241,9 @@ namespace Hopper
 
             Pool zone1dir = new Pool();
 
-            SubPool weapons = new SubPool();
-            SubPool trinkets = new SubPool();
-            SubPool armor = new SubPool();
+            SubPool weapons = new NormalSubPool();
+            SubPool trinkets = new NormalSubPool();
+            SubPool armor = new NormalSubPool();
 
             poolDef.m_baseDir.AddDirectory("zone1", zone1dir);
             // TODO: create + add

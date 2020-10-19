@@ -1,4 +1,5 @@
 using System.Runtime.Serialization;
+using Core.Behaviors;
 using Core.Items;
 
 namespace Core
@@ -17,5 +18,18 @@ namespace Core
         }
 
         [DataMember] private int SomeSavedMember;
+
+        public static EntityFactory<Player> CreateFactory() => new EntityFactory<Player>()
+            .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo, null))
+            .AddBehavior<Moving>()
+            .AddBehavior<Displaceable>()
+            // .AddBehavior<Controllable>() // needs to be reconfigured
+            .AddBehavior<Attackable>()
+            .AddBehavior<Damageable>()
+            .AddBehavior<Attacking>()
+            .Retouch(Core.Retouchers.Skip.EmptyAttack)
+            .AddBehavior<Digging>()
+            .Retouch(Core.Retouchers.Skip.EmptyDig)
+            .Retouch(Core.Retouchers.Equip.OnDisplace);
     }
 }

@@ -1,7 +1,3 @@
-using Utils.Vector;
-using Core;
-using System;
-
 namespace Core.Items
 {
     public class DroppedItem : Entity
