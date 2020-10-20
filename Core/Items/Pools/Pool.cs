@@ -24,101 +24,69 @@ namespace Core.Items
         }
     }
 
-    public class Pool<SP, T> : FS<Directory>, ISuperPool
+    public class PoolFS<T> : FS<Directory, T> where T : SubPool, new()
+    {
+        public List<string> m_tildeMap;
+
+        public PoolFS()
+        {
+            m_tildeMap = new List<string>();
+        }
+
+        protected override string[] Split(string path)
+        {
+            var split = base.Split(path);
+            for (int i = 0; i < split.Length; i++)
+            {
+                if (split[i] == "~")
+                {
+                    split[i] = m_tildeMap[i];
+                }
+            }
+            return split;
+        }
+    }
+
+    public class Pool<SP, T> : ISuperPool
         where SP : SubPool, new()
         where T : IHaveId
     {
-        private List<string> m_tildeMap;
+        private PoolFS<SP> m_fs = new PoolFS<SP>();
         private Dictionary<int, int> m_quantities = new Dictionary<int, int>();
         private Dictionary<int, PoolItem> m_items = new Dictionary<int, PoolItem>();
-        private int maxDepth = 0;
-        private Random rng = new Random();
+        private Random m_rng = new Random();
 
-        private IEnumerable<Node> Expand(string pathItem, Directory currentDir)
+        public Pool()
         {
-            if (pathItem == "*")
-            {
-                foreach (var item in currentDir.nodes.Values)
-                {
-                    yield return item;
-                }
-            }
-            else
-            {
-                yield return currentDir.nodes[pathItem];
-            }
+            m_fs = new PoolFS<SP>();
+            m_quantities = new Dictionary<int, int>();
+            m_items = new Dictionary<int, PoolItem>();
+            m_rng = new Random();
         }
 
-        private IEnumerable<Node> ExpandLazy<U>(string pathItem, Directory currentDir)
-            where U : Node, new()
+        private Pool(Pool<SP, T> copyFrom)
         {
-            if (pathItem == "*")
-            {
-                foreach (var item in currentDir.nodes.Values)
-                {
-                    yield return item;
-                }
-            }
-            else
-            {
-                if (!currentDir.nodes.ContainsKey(pathItem))
-                {
-                    currentDir.nodes.Add(pathItem, new U());
-                }
-                yield return currentDir.nodes[pathItem];
-            }
-        }
+            m_fs = new PoolFS<SP>();
+            m_fs.CopyDirectoryStructure(copyFrom.m_fs.BaseDir, m_fs.BaseDir);
+            m_fs.m_tildeMap = new List<string>(copyFrom.m_fs.m_tildeMap);
+            m_rng = copyFrom.m_rng; // TODO: copy from seed
 
-        private List<SP> GetSubPools(string path)
-        {
-            var splitPath = Split(path);
-            maxDepth = Maths.Max(maxDepth, splitPath.Length);
-            List<Node> currentNodes = new List<Node> { m_baseDir };
-            for (int i = 0; i < splitPath.Length; i++)
+            foreach (var pool in copyFrom.m_items.Values)
             {
-                var prevNodes = currentNodes;
-                currentNodes = new List<Node>();
-                var segment = splitPath[i] == "~" ? m_tildeMap[i] : splitPath[i];
-                foreach (var node in currentNodes)
-                {
-                    foreach (var n in Expand(segment, (Directory)node))
-                    {
-                        currentNodes.Add(n);
-                    }
-                }
+                m_items.Add(pool.id, (PoolItem)pool.Copy());
             }
-            return currentNodes.ConvertAll(e => (SP)e);
-        }
 
-        private List<SP> GetSubPoolsLazy(string path)
-        {
-            var splitPath = Split(path);
-            maxDepth = Maths.Max(maxDepth, splitPath.Length);
-            List<Node> currentNodes = new List<Node> { m_baseDir };
-            for (int i = 0; i < splitPath.Length; i++)
+            m_quantities = new Dictionary<int, int>(copyFrom.m_quantities);
+
+            foreach (var subpool in m_fs.GetAllFiles())
             {
-                var prevNodes = currentNodes;
-                currentNodes = new List<Node>();
-                var segment = splitPath[i] == "~" ? m_tildeMap[i] : splitPath[i];
-                foreach (var node in prevNodes)
+                var prev = subpool.items;
+                subpool.items = new HashSet<PoolItem>();
+                foreach (var it in prev)
                 {
-                    if (i < splitPath.Length - 1)
-                    {
-                        foreach (var n in ExpandLazy<Directory>(segment, (Directory)node))
-                        {
-                            currentNodes.Add(n);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var n in ExpandLazy<SP>(segment, (Directory)node))
-                        {
-                            currentNodes.Add(n);
-                        }
-                    }
+                    subpool.items.Add(m_items[it.id]);
                 }
             }
-            return currentNodes.ConvertAll(i => (SP)i);
         }
 
         private void AddItem(PoolItem item)
@@ -127,37 +95,48 @@ namespace Core.Items
             m_quantities[item.id] = item.quantity;
         }
 
-
         // this operation only supports one specific path (no wildcards)
         public void Add(string path, int id, int quantity)
         {
-            var subpool = (SP)GetFileLazy(path, new SP());
+            var subpool = (SP)m_fs.GetFileLazy(path, new SP());
             var item = new PoolItem(id, quantity);
             subpool.items.Add(item);
         }
 
-        public void Add(string path, IHaveId item, int quantity) => Add(path, item.Id, quantity);
+        public void Add(string path, IHaveId item, int quantity)
+            => Add(path, item.Id, quantity);
+
+        public void Add(string path, int id)
+            => Add(path, m_items[id]);
+
+        public void AddItems(IEnumerable<PoolItem> items)
+        {
+            foreach (var item in items)
+            {
+                AddItem(item);
+            }
+        }
 
         // make sure you don't use wildcards on intermediary levels
-        public void AssureExists(string path)
-        {
-            GetSubPoolsLazy(path);
-        }
+        // public void AssureExists(string path)
+        // {
+        //     GetNodesLazy(path);
+        // }
 
         // this one supports wildcards
         public void Add(string path, PoolItem item)
         {
-            var subpools = GetSubPoolsLazy(path);
+            var subpools = m_fs.GetNodesLazy(path, new SP());
             AddItem(item);
             foreach (var subpool in subpools)
             {
-                subpool.items.Add(item);
+                ((SP)subpool).items.Add(item);
             }
         }
 
         public void AddRange(string path, IEnumerable<PoolItem> items)
         {
-            var subpools = GetSubPoolsLazy(path);
+            var subpools = m_fs.GetNodesLazy(path, new SP());
             foreach (var item in items)
             {
                 AddItem(item);
@@ -166,51 +145,14 @@ namespace Core.Items
             {
                 foreach (var item in items)
                 {
-                    subpool.items.Add(item);
+                    ((SP)subpool).items.Add(item);
                 }
             }
-        }
-
-        protected List<SP> GetAllSubPools()
-        {
-            List<Node> currentNodes = new List<Node>() { m_baseDir };
-            while (!currentNodes.Any(e => e is SP))
-            {
-                var prevNodes = currentNodes;
-                currentNodes = new List<Node>();
-                foreach (var node in prevNodes)
-                {
-                    if (node is SP)
-                    {
-                        throw new System.Exception("Yikes");
-                    }
-                    foreach (var item in ((Directory)node).nodes.Values)
-                    {
-                        currentNodes.Add(item);
-                    }
-                }
-            }
-            return currentNodes.ConvertAll(e => (SP)e);
         }
 
         public Pool<SP, T> Copy()
         {
-            var copy = new Pool<SP, T>();
-            CopyDirectoryStructure(m_baseDir, copy.m_baseDir);
-            foreach (var pool in m_items.Values)
-            {
-                copy.AddItem((PoolItem)pool.Copy());
-            }
-            foreach (var subpool in copy.GetAllSubPools())
-            {
-                var prev = subpool.items;
-                subpool.items = new HashSet<PoolItem>();
-                foreach (var it in prev)
-                {
-                    subpool.items.Add(copy.m_items[it.id]);
-                }
-            }
-            return copy;
+            return new Pool<SP, T>(this);
         }
 
         protected void Exhaust(SubPool subPool)
@@ -218,7 +160,7 @@ namespace Core.Items
             foreach (var item in subPool.items)
             {
                 item.quantity = m_quantities[item.id];
-                subPool.ReshuffleDeck(rng);
+                subPool.ReshuffleDeck(m_rng);
             }
         }
 
@@ -232,20 +174,20 @@ namespace Core.Items
 
         public PoolItem GetNextItem(string path)
         {
-            var subPools = GetSubPoolsLazy(path);
+            var subPools = m_fs.GetFiles(path);
             foreach (var s in subPools)
             {
                 if (!s.IsReadyToGenerate)
                 {
-                    s.GenerateDeck(rng);
+                    s.GenerateDeck(m_rng);
                 }
             }
-            var subPool = subPools[rng.Next(0, subPools.Count - 1)];
-            var item = subPool.GetNextItem(rng);
+            var subPool = subPools[m_rng.Next(0, subPools.Count - 1)];
+            var item = subPool.GetNextItem(m_rng);
             if (item == null)
             {
                 Exhaust(subPool);
-                item = subPool.GetNextItem(rng);
+                item = subPool.GetNextItem(m_rng);
             }
             return item;
         }

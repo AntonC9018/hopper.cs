@@ -26,7 +26,7 @@ namespace Core.Stats
 
         public T Path(StatManager sm)
         {
-            return (T)sm.GetFileLazy(String, DefaultFile);
+            return (T)sm.FS.GetFileLazy(String, DefaultFile);
         }
     }
 }
