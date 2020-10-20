@@ -8,7 +8,7 @@ namespace Core.Stats.Basic
         public int pierce;
 
         public static Source BasicSource;
-        public static readonly IStatPath<Push> Path = new StatPath<Push>(
+        public static readonly StatPath<Push> Path = new StatPath<Push>(
             "push/base",
             new Push
             {
@@ -22,7 +22,7 @@ namespace Core.Stats.Basic
         public class Resistance : StatFile
         {
             public int pierce;
-            public static readonly IStatPath<Resistance> Path = new StatPath<Resistance>("push/res");
+            public static readonly StatPath<Resistance> Path = new StatPath<Resistance>("push/res");
         }
 
         public class Source : IHaveId
@@ -38,7 +38,7 @@ namespace Core.Stats.Basic
 
             public class Resistance : MapFile
             {
-                public static readonly IStatPath<Resistance> Path = new StatPath<Resistance>("push/src_res");
+                public static readonly StatPath<Resistance> Path = new StatPath<Resistance>("push/src_res");
             }
         }
     }

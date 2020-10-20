@@ -1,13 +1,15 @@
+using Core.FS;
+
 namespace Core.Stats
 {
-    public interface IStatPath<out T> where T : StatFile, new()
+    public interface IStatPath<out T> where T : File
     {
         string String { get; }
         T DefaultFile { get; }
         T Path(StatManager sm);
     }
 
-    public class StatPath<T> : IStatPath<T> where T : StatFile, new()
+    public class StatPath<T> : IStatPath<T> where T : File, new()
     {
         public string String { get; private set; }
         public T DefaultFile { get; private set; }
@@ -26,7 +28,7 @@ namespace Core.Stats
 
         public T Path(StatManager sm)
         {
-            return (T)sm.FS.GetFileLazy(String, DefaultFile);
+            return sm.Get<T>(this);
         }
     }
 }

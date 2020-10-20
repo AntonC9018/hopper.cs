@@ -212,30 +212,30 @@ namespace Hopper
             System.Console.WriteLine("Set player action");
             System.Console.WriteLine("\n ------ Modifier Demo ------ \n");
 
-            var mod = new StatModifier(Attack.Path, new Attack { damage = 1 });
+            var mod = Modifier.Create(Attack.Path, new Attack { damage = 1 });//new StatModifier(Attack.Path, new Attack { damage = 1 });
             var attack = player.Stats.Get(Attack.Path);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Adding modifier");
-            player.Stats.AddModifier(mod);
+            mod.AddSelf(player.Stats);
             attack = player.Stats.Get(Attack.Path);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
             System.Console.WriteLine("Removing modifier");
-            player.Stats.RemoveModifier(mod);
+            mod.RemoveSelf(player.Stats);
             attack = player.Stats.Get(Attack.Path);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
-            var mod2 = new ChainModifier(Attack.Path, new Chains.EvHandler<StatEvent>(
-                (StatEvent _ev) =>
+            var mod2 = Modifier.Create(Attack.Path, new Chains.EvHandler<StatEvent<Attack>>(
+                (StatEvent<Attack> eve) =>
                 {
                     System.Console.WriteLine("Called handler");
-                    ((Attack)_ev.file).damage *= 3;
+                    eve.file.damage *= 3;
                 })
             );
             System.Console.WriteLine("Adding modifier");
-            player.Stats.AddModifier(mod2);
+            mod2.AddSelf(player.Stats);
             attack = player.Stats.Get(Attack.Path);
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);

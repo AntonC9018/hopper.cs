@@ -5,7 +5,7 @@ namespace Core.Stats.Basic
         public int power;
         public int through;
 
-        public static readonly IStatPath<Move> Path = new StatPath<Move>(
+        public static readonly StatPath<Move> Path = new StatPath<Move>(
             "move/base",
             new Move
             {

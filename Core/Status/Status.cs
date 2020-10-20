@@ -16,7 +16,7 @@ namespace Core
     {
         public class Resistance : MapFile
         {
-            public static readonly IStatPath<Resistance> Path = new StatPath<Resistance>("status/res");
+            public static readonly StatPath<Resistance> Path = new StatPath<Resistance>("status/res");
         }
     }
 
@@ -90,7 +90,7 @@ namespace Core
 
         public StatusFile GetStat(Entity entity)
         {
-            return entity.Stats.Get(m_statPath);
+            return m_statPath.Path(entity.Stats);
         }
     }
 }

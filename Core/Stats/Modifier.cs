@@ -1,36 +1,78 @@
+using Core.FS;
 using Utils;
 
 namespace Core.Stats
 {
+    public interface IModifier
+    {
+        void AddSelf(StatManager sm);
+        void RemoveSelf(StatManager sm);
+    }
+
     public class Modifier
     {
         static IdGenerator s_idGenerator = new IdGenerator();
         public readonly int id = s_idGenerator.GetNextId();
-        public IStatPath<StatFile> path;
 
         public override int GetHashCode()
         {
             return id;
         }
-    }
 
-    public class StatModifier : Modifier
-    {
-        public StatFile file;
-        public StatModifier(IStatPath<StatFile> path, StatFile file)
+        public static StatModifier<T> Create<T>(StatPath<T> path, T file)
+            where T : StatFile, IAddableWith<T>, new()
         {
-            this.file = file;
-            base.path = path;
+            return new StatModifier<T>(path, file);
+        }
+
+        public static ChainModifier<T> Create<T>(StatPath<T> path, Chains.EvHandler<StatEvent<T>> handler)
+            where T : StatFile, IAddableWith<T>, new()
+        {
+            return new ChainModifier<T>(path, handler);
         }
     }
 
-    public class ChainModifier : Modifier
+    public class StatModifier<T> : Modifier, IModifier where T : File, IAddableWith<T>
     {
-        public Chains.EvHandler<StatEvent> handler;
-        public ChainModifier(IStatPath<StatFile> path, Chains.EvHandler<StatEvent> handler)
+        public T file;
+        public IStatPath<T> path;
+
+        public StatModifier(IStatPath<T> path, T file)
+        {
+            this.file = file;
+            this.path = path;
+        }
+
+        public void AddSelf(StatManager sm)
+        {
+            sm.AddStatModifier<T>(this);
+        }
+
+        public void RemoveSelf(StatManager sm)
+        {
+            sm.RemoveStatModifier<T>(this);
+        }
+    }
+
+    public class ChainModifier<T> : Modifier, IModifier where T : File
+    {
+        public Chains.EvHandler<StatEvent<T>> handler;
+        public IStatPath<T> path;
+
+        public ChainModifier(IStatPath<T> path, Chains.EvHandler<StatEvent<T>> handler)
         {
             this.handler = handler;
-            base.path = path;
+            this.path = path;
+        }
+
+        public void AddSelf(StatManager sm)
+        {
+            sm.AddChainModifier<T>(this);
+        }
+
+        public void RemoveSelf(StatManager sm)
+        {
+            sm.RemoveChainModifier<T>(this);
         }
     }
 }

@@ -3,14 +3,13 @@ using System.Collections.Generic;
 
 namespace Core.Stats
 {
-    public class MapFile : StatFile
+    public class MapFile : File, IAddableWith<MapFile>
     {
         public Dictionary<int, int> content = new Dictionary<int, int>();
 
-        public override void _Add(StatFile f, int sign)
+        public void _Add(MapFile otherFile, int sign)
         {
             // we assume it is the same type 
-            var otherFile = (MapFile)f;
             var otherArray = otherFile.content;
             for (int i = 0; i < content.Count; i++)
             {

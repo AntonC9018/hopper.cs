@@ -7,7 +7,7 @@ namespace Core.Stats.Basic
         public int pierce;
 
         public static Attack.Source Source = new Attack.Source();
-        public static readonly IStatPath<Dig> Path = new StatPath<Dig>(
+        public static readonly StatPath<Dig> Path = new StatPath<Dig>(
             "dig/base",
             new Dig
             {

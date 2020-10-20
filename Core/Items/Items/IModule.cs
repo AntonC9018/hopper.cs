@@ -36,26 +36,26 @@ namespace Core.Items
 
     public class ModifierModule
     {
-        private Modifier modifier;
+        private IModifier modifier;
 
-        public ModifierModule(Modifier modifier, int slot)
+        public ModifierModule(IModifier modifier, int slot)
         {
             this.modifier = modifier;
         }
 
         public void BeDestroyed(Entity entity)
         {
-            entity.Stats.RemoveModifier(modifier);
+            modifier.AddSelf(entity.Stats);
         }
 
         public void BeEquipped(Entity entity)
         {
-            entity.Stats.AddModifier(modifier);
+            modifier.AddSelf(entity.Stats);
         }
 
         public void BeUnequipped(Entity entity)
         {
-            entity.Stats.RemoveModifier(modifier);
+            modifier.RemoveSelf(entity.Stats);
         }
     }
 }

@@ -4,21 +4,27 @@ using Core.FS;
 
 namespace Core.Stats
 {
-    public class StatFileContainer : File
+    public class StatFileContainer<T> : File where T : File
     {
-        public Chain<StatEvent> chain;
-        public StatFile file;
+        public Chain<StatEvent<T>> chain;
+        public T file;
 
-        public StatFileContainer(StatFile file)
+        public StatFileContainer(T file)
         {
-            this.chain = new Chain<StatEvent>();
-            this.file = (StatFile)file.Copy();
+            this.chain = new Chain<StatEvent<T>>();
+            this.file = (T)file.Copy();
         }
 
         public override File Copy()
         {
-            var statNode = new StatFileContainer((StatFile)file.Copy());
-            return statNode;
+            return new StatFileContainer<T>((T)file.Copy());
+        }
+
+        public T Retrieve()
+        {
+            var ev = new StatEvent<T> { file = (T)file.Copy() };
+            chain.Pass(ev);
+            return ev.file;
         }
     }
 }

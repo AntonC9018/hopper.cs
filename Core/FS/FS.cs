@@ -7,7 +7,7 @@ namespace Core.FS
 {
     public class FS<D, F>
         where D : Directory, new()
-        where F : File<F>
+        where F : File
     {
         protected static readonly char s_separationChar = '/';
         protected virtual string[] Split(string path)

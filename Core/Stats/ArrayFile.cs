@@ -3,14 +3,13 @@ using System.Collections.Generic;
 
 namespace Core.Stats
 {
-    public class ArrayFile : StatFile
+    public class ArrayFile : File, IAddableWith<ArrayFile>
     {
         public List<int> content = new List<int>();
 
-        public override void _Add(StatFile f, int sign)
+        public void _Add(ArrayFile otherFile, int sign)
         {
             // we assume it is the same type 
-            var otherFile = (ArrayFile)f;
             var otherArray = otherFile.content;
             for (int i = 0; i < content.Count; i++)
             {

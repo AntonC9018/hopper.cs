@@ -8,9 +8,9 @@ namespace Core.Items
         private readonly int m_slot;
         public int Slot => m_slot;
         public int Id => m_id;
-        private Modifier modifier;
+        private IModifier modifier;
 
-        public ModifierItem(Modifier modifier, int slot)
+        public ModifierItem(IModifier modifier, int slot)
         {
             this.modifier = modifier;
             m_slot = slot;
@@ -19,17 +19,17 @@ namespace Core.Items
 
         public void BeDestroyed(Entity entity)
         {
-            entity.Stats.RemoveModifier(modifier);
+            modifier.AddSelf(entity.Stats);
         }
 
         public void BeEquipped(Entity entity)
         {
-            entity.Stats.AddModifier(modifier);
+            modifier.AddSelf(entity.Stats);
         }
 
         public void BeUnequipped(Entity entity)
         {
-            entity.Stats.RemoveModifier(modifier);
+            modifier.RemoveSelf(entity.Stats);
             entity.World.CreateDroppedItem(this, entity.Pos);
         }
     }

@@ -3,17 +3,18 @@ using System.Reflection;
 
 namespace Core.Stats
 {
-    public class StatFile : File
+    public interface IAddableWith<in T> where T : IAddableWith<T>
     {
-        public virtual void _Add(StatFile f, int sign)
+        void _Add(T f, int sign);
+    }
+
+    public class StatFile : File, IAddableWith<StatFile>
+    {
+        public void _Add(StatFile f, int sign)
         {
             // let's do it the dumbest way so that it works
             // maybe I'll figure out a better solution later
             var type = f.GetType();
-            if (type != this.GetType())
-            {
-                throw new System.Exception("Can't add files of different types");
-            }
             foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
                 var oldVal = (int)field.GetValue(this);

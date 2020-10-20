@@ -8,7 +8,7 @@ namespace Core.Stats.Basic
         public int pierce;
 
         public static Source BasicSource;
-        public static readonly IStatPath<Attack> Path = new StatPath<Attack>(
+        public static readonly StatPath<Attack> Path = new StatPath<Attack>(
             "atk/base",
             new Attack
             {
@@ -27,7 +27,7 @@ namespace Core.Stats.Basic
             public int maxDamage;
             public int pierce;
 
-            public static readonly IStatPath<Resistance> Path = new StatPath<Resistance>(
+            public static readonly StatPath<Resistance> Path = new StatPath<Resistance>(
                 "atk/res",
                 new Resistance
                 {
@@ -51,7 +51,7 @@ namespace Core.Stats.Basic
 
             public class Resistance : MapFile
             {
-                public static readonly IStatPath<Resistance> Path = new StatPath<Resistance>("atk/src_res");
+                public static readonly StatPath<Resistance> Path = new StatPath<Resistance>("atk/src_res");
             }
         }
     }
