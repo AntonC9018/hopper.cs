@@ -7,10 +7,6 @@ namespace Core.Stats
 {
     public class StatFS : FS<StatDir, StatFileContainer>
     {
-        protected override StatFileContainer CopyFileNode(File node)
-        {
-            return new StatFileContainer((StatFile)node.Copy());
-        }
     }
 
     public class StatManager
@@ -21,7 +17,6 @@ namespace Core.Stats
         private Dictionary<ChainModifier, Handle> m_chainModifierHandles
             = new Dictionary<ChainModifier, Handle>();
         private StatFS m_fs = new StatFS();
-        public StatFS FS => m_fs;
 
         public StatManager()
         {
@@ -101,9 +96,11 @@ namespace Core.Stats
                 RemoveChainModifier((ChainModifier)modifier);
         }
 
-        public T Get<T>(IStatPath<T> statPath) where T : StatFile, new()
+        public T Get<T>(StatPath<T> statPath) where T : StatFile, new()
         {
-            return statPath.Path(this);
+            var defaultValue = new StatFileContainer<T>(statPath.DefaultFile);
+            var file = m_fs.GetFileLazy(statPath.String, defaultValue).Retrieve<T>();
+
         }
     }
 }

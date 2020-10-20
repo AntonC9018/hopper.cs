@@ -1,11 +1,9 @@
-
 using Chains;
-using Core.FS;
 
 namespace Core.Stats
 {
-    public class StatEvent : EventBase
+    public class StatEvent<T> : EventBase where T : IStatFile<T>
     {
-        public File file;
+        public T file;
     }
 }

@@ -5,10 +5,9 @@ using Utils;
 
 namespace Core.FS
 {
-
     public class FS<D, F>
         where D : Directory, new()
-        where F : File
+        where F : File<F>
     {
         protected static readonly char s_separationChar = '/';
         protected virtual string[] Split(string path)
@@ -34,12 +33,12 @@ namespace Core.FS
 
         protected D GetDirectoryBySplitPath(IEnumerable<string> dirNames)
         {
-            Directory dir = m_baseDir;
+            D dir = m_baseDir;
             foreach (var dirName in dirNames)
             {
                 // getting a node should not require a virtual function
                 // since it is always just nodes in an array
-                dir = (Directory)dir.nodes[dirName];
+                dir = (D)dir.nodes[dirName];
             }
             return (D)dir;
         }
@@ -85,7 +84,7 @@ namespace Core.FS
 
         public List<F> GetFiles(string path) => GetNodes(path).ConvertAll(e => (F)e);
 
-        public List<Node> GetNodesLazy(string path, File defaultValue)
+        public List<Node> GetNodesLazy(string path, F defaultValue)
         {
             var splitPath = Split(path);
             List<Node> currentNodes = new List<Node> { m_baseDir };
@@ -112,7 +111,7 @@ namespace Core.FS
             return currentNodes;
         }
 
-        public List<F> GetFilesLazy(string path, File defaultValue)
+        public List<F> GetFilesLazy(string path, F defaultValue)
             => GetNodesLazy(path, defaultValue).ConvertAll(e => (F)e);
 
         protected IEnumerable<Node> ExpandPath(string pathItem, D currentDir)
@@ -130,7 +129,7 @@ namespace Core.FS
             }
         }
 
-        protected IEnumerable<Node> ExpandPathLazy(string pathItem, D currentDir, File substitute)
+        protected IEnumerable<Node> ExpandPathLazy(string pathItem, D currentDir, F substitute)
         {
             if (pathItem == "*")
             {
@@ -148,7 +147,7 @@ namespace Core.FS
                 }
                 else
                 {
-                    sub = CopyFileNode(substitute);
+                    sub = substitute.Copy();
                 }
 
                 if (!currentDir.nodes.ContainsKey(pathItem))
@@ -205,7 +204,7 @@ namespace Core.FS
             return node.nodes[fileName];
         }
 
-        public File GetFileLazy(string path, File initialValue)
+        public F GetFileLazy(string path, F initialValue)
         {
             var dirNames = Split(path);
             var dirPath = dirNames.Take(dirNames.Length - 1);
@@ -214,9 +213,9 @@ namespace Core.FS
             if (!node.nodes.ContainsKey(fileName))
             {
                 System.Console.WriteLine($"The system doesn't contain {path}");
-                node.nodes.Add(fileName, CopyFileNode(initialValue));
+                node.nodes.Add(fileName, initialValue.Copy());
             }
-            return node.GetFile(fileName);
+            return (F)node.nodes[fileName];
         }
 
         public F GetFile(string path)
@@ -225,7 +224,7 @@ namespace Core.FS
             var dirPath = dirNames.Take(dirNames.Length - 1);
             var node = GetDirectoryBySplitPath(dirPath);
             var fileName = dirNames[dirNames.Length - 1];
-            return (F)node.GetFile(fileName);
+            return (F)node.nodes[fileName];
         }
 
         public void Debug() => Debug(m_baseDir, 2);
@@ -254,15 +253,10 @@ namespace Core.FS
                 }
                 else
                 {
-                    var copy = CopyFileNode((F)kvp.Value);
+                    var copy = ((F)kvp.Value).Copy();
                     to.nodes.Add(kvp.Key, copy);
                 }
             }
-        }
-
-        protected virtual F CopyFileNode(File node)
-        {
-            return (F)node.Copy();
         }
     }
 }
