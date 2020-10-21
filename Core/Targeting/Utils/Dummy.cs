@@ -2,9 +2,9 @@ using Utils.Vector;
 
 namespace Core.Targeting
 {
-    public class DummyEntity : IWorldPosition
+    public class Dummy : IWorldPosition
     {
-        public DummyEntity(IntVector2 pos, World world)
+        public Dummy(IntVector2 pos, World world)
         {
             Pos = pos;
             World = world;

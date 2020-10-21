@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 namespace Core.Targeting
 {
-    public interface IProvideTargets<out T, in M>
+    public interface IProvideTargets<T, in M>
         where T : Target, new()
     {
-        List<Target> GetTargets(M meta);
-        IEnumerable<T> GetParticularTargets(M meta);
+        List<Target> GetTargets(TargetEvent<T> targetEvent, M meta);
+        IEnumerable<T> GetParticularTargets(TargetEvent<T> targetEvent, M meta);
     }
 }

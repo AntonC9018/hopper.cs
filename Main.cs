@@ -292,13 +292,9 @@ namespace Hopper
             );
             var weapon = TargetProvider.CreateAtk(pattern, Handlers.GeneralChain);
             System.Console.WriteLine($"Enemy is at {enemy.Pos}");
-            var ev = new AtkTargetEvent
-            {
-                dir = playerNextAction.direction,
-                spot = player,
-                attack = player.Stats.Get(Attack.Path)
-            };
-            var targets = weapon.GetParticularTargets(ev);
+            var ev = Target.CreateEvent<AtkTarget>(player, playerNextAction.direction);
+            var atk = player.Stats.Get(Attack.Path);
+            var targets = weapon.GetParticularTargets(ev, atk);
             foreach (var t in targets)
             {
                 System.Console.WriteLine($"Entity at {t.targetEntity.Pos} has been considered a potential target");

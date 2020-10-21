@@ -79,16 +79,15 @@ namespace Core.Items
             return m_itemSlots[slotId][0];
         }
 
-        public IEnumerable<T> GenerateTargets<T, E>(E targetEvent, int slotId)
+        public IEnumerable<T> GenerateTargets<T, M>(TargetEvent<T> targetEvent, M meta, int slotId)
             where T : Target, new()
-            where E : TargetEvent<T>
         {
-            var targetProvider = (ModularTargetingItem<T, E>)GetItemFromSlot(slotId);
+            var targetProvider = (ModularTargetingItem<T, M>)GetItemFromSlot(slotId);
             if (targetProvider == null)
             {
                 return new List<T>();
             }
-            return targetProvider.GetParticularTargets(targetEvent);
+            return targetProvider.GetParticularTargets(targetEvent, meta);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Test
             pierce = 1
         };
 
-        public class BombTarget : MultiTarget<AtkTarget, AtkTargetEvent>
+        public class BombTarget : MultiTarget<AtkTarget, Attack>
         {
             public override Layer TargetedLayer =>
                 Layer.DROPPED
@@ -31,24 +31,19 @@ namespace Test
             public override Layer SkipLayer => 0;
         }
 
-        public static IProvideTargets<AtkTarget, AtkTargetEvent> targetProvider =
-            TargetProvider.CreateMulti<AtkTarget, BombTarget, AtkTargetEvent>(
+        public static IProvideTargets<AtkTarget, Attack> targetProvider =
+            TargetProvider.CreateMulti<AtkTarget, BombTarget, Attack>(
                 Pattern.Under, Handlers.GeneralChain
             );
 
-        public static void Att(IntVector2 pos, IntVector2 dir, World world)
+        public static void Att(IntVector2 pos, IntVector2 knockbackDir, World world)
         {
-            var atkEvent = new AtkTargetEvent
-            {
-                spot = new DummyEntity(pos, world),
-                attack = BaseAtt,
-                dir = dir
-            };
-            var targets = targetProvider.GetParticularTargets(atkEvent);
+            var atkEvent = Target.CreateEvent<AtkTarget>(new Dummy(pos, world), knockbackDir);
+            var targets = targetProvider.GetParticularTargets(atkEvent, BaseAtt);
 
             foreach (var target in targets)
             {
-                target.targetEntity.Behaviors.Get<Attackable>().Activate(dir, BaseAtt);
+                target.targetEntity.Behaviors.Get<Attackable>().Activate(knockbackDir, BaseAtt);
             }
         }
     }

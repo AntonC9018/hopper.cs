@@ -42,8 +42,9 @@ namespace Core.Behaviors
                 ev.targets = inv == null
                     ? new List<DigTarget>()
                     : inv
-                        .GenerateTargets<DigTarget, DigTargetEvent>(
-                            new DigTargetEvent(ev), Inventory.ShovelSlot)
+                        .GenerateTargets(
+                            Target.CreateEvent<DigTarget>(ev),
+                            ev.dig, Inventory.ShovelSlot)
                         .ToList();
             }
         }

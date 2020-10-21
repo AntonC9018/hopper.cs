@@ -1,24 +1,16 @@
-using Core.Behaviors;
 using Core.Stats.Basic;
+using Utils.Vector;
 
 namespace Core.Targeting
 {
-    public class DigTargetEvent : TargetEvent<DigTarget>
-    {
-        public Dig dig;
 
-        public DigTargetEvent(Digging.Event ev) : base(ev)
-        {
-            dig = ev.dig;
-        }
-    }
-
-    public class DigTarget : Target, ITarget<DigTarget, DigTargetEvent>
+    public class DigTarget : Target, ITarget<DigTarget, Dig>
     {
+
         public Layer TargetedLayer => Layer.WALL;
         public Layer SkipLayer => 0;
 
-        public void CalculateTargetedEntity(DigTargetEvent ev, Cell cell)
+        public void CalculateTargetedEntity(TargetEvent<DigTarget> ev, Cell cell, Dig dig)
         {
             targetEntity = GetEntityDefault(cell, SkipLayer, TargetedLayer);
         }

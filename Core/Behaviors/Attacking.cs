@@ -64,8 +64,9 @@ namespace Core.Behaviors
                 ev.targets = inv == null
                     ? GenerateTargetsDefault(ev)
                     : inv
-                        .GenerateTargets<AtkTarget, AtkTargetEvent>(
-                            new AtkTargetEvent(ev), Inventory.WeaponSlot)
+                        .GenerateTargets(
+                            Target.CreateEvent<AtkTarget>(ev),
+                            ev.attack, Inventory.WeaponSlot)
                         .ToList();
             }
         }

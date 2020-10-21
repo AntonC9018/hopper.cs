@@ -3,25 +3,25 @@ using Utils.Vector;
 
 namespace Core.Targeting
 {
-    public interface ICalculator<out T, in Event>
+    public interface ICalculator<T, M>
         where T : Target
-        where Event : TargetEvent<T>
     {
         IEnumerable<T> CalculateTargets(
-            Event targetEvent,
+            TargetEvent<T> targetEvent,
             Piece initialPiece,
-            Piece rotatedPiece);
+            Piece rotatedPiece,
+            M meta);
     }
 
-    public class MultiCalculator<T, U, E> : ICalculator<T, E>
-        where T : Target, new()
-        where U : MultiTarget<T, E>, new()
-        where E : TargetEvent<T>
+    public class MultiCalculator<T, U, M> : ICalculator<T, M>
+        where T : Target, ITarget<T, M>, new()
+        where U : MultiTarget<T, M>, new()
     {
         public IEnumerable<T> CalculateTargets(
-            E targetEvent,
+            TargetEvent<T> targetEvent,
             Piece initialPiece,
-            Piece rotatedPiece)
+            Piece rotatedPiece,
+            M meta)
         {
             var target = new U
             {
@@ -30,18 +30,15 @@ namespace Core.Targeting
             };
 
             var cell = targetEvent.spot.GetCellRelative(rotatedPiece.pos);
-            return target.CalculateTargets(targetEvent, cell);
+            return target.CalculateTargets(targetEvent, cell, meta);
         }
     }
 
-    public class SimpleCalculator<T, E> : ICalculator<T, E>
-        where T : Target, ITarget<T, E>, new()
-        where E : TargetEvent<T>
+    public class SimpleCalculator<T, M> : ICalculator<T, M>
+        where T : Target, ITarget<T, M>, new()
     {
         public IEnumerable<T> CalculateTargets(
-            E targetEvent,
-            Piece initialPiece,
-            Piece rotatedPiece)
+            TargetEvent<T> targetEvent, Piece initialPiece, Piece rotatedPiece, M meta)
         {
             var target = new T
             {
@@ -49,7 +46,7 @@ namespace Core.Targeting
                 initialPiece = initialPiece
             };
             var cell = targetEvent.spot.GetCellRelative(rotatedPiece.pos);
-            target.CalculateTargetedEntity(targetEvent, cell);
+            target.CalculateTargetedEntity(targetEvent, cell, meta);
             yield return target;
         }
     }
