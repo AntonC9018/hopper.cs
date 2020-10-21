@@ -44,12 +44,13 @@ namespace Test
 
         private void AttackJustMe(Attacking.Event ev)
         {
-            var target = new Target
+            var target = new AtkTarget
             {
                 targetEntity = status.GetStore(ev).whoApplied,
-                direction = new IntVector2(0, 0)
+                direction = new IntVector2(0, 0),
+                atkCondition = Core.Stats.Basic.AtkCondition.ALWAYS
             };
-            ev.targets = new List<Target> { target };
+            ev.targets = new List<AtkTarget> { target };
         }
 
         private void SelfRemove(Tick.Event ev)

@@ -5,24 +5,48 @@ using Utils;
 
 namespace Core.Targeting
 {
-
-    public class TargetEvent<T> : CommonEvent where T : Target
+    public interface IWorldPosition
     {
-        public List<T> targets;
+        IntVector2 Pos { get; }
+        World World { get; }
+        Cell GetCellRelative(IntVector2 dir);
     }
 
-    public class TargetProvider<T> : IProvideTargets<T> where T : Target, new()
+    public class TargetEvent<T> : EventBase where T : Target
+    {
+        public List<T> targets;
+        public IntVector2 dir;
+        public IWorldPosition worldPosition;
+
+        public TargetEvent(CommonEvent ev)
+        {
+            dir = ev.action.direction;
+            worldPosition = ev.actor;
+        }
+
+        public TargetEvent(IntVector2 dir, IWorldPosition worldPosition)
+        {
+            this.dir = dir;
+            this.worldPosition = worldPosition;
+        }
+
+        public TargetEvent() { }
+    }
+
+    public class TargetProvider<T, E> : IProvideTargets<T, E>
+        where T : Target, new()
+        where E : TargetEvent<T>
     {
         private Pattern m_pattern;
-        private Chain<TargetEvent<T>> m_chain;
-        private System.Func<TargetEvent<T>, bool> m_stopFunc;
-        private ICalculator<T> m_calculator;
+        private Chain<E> m_chain;
+        private System.Func<E, bool> m_stopFunc;
+        private ICalculator<T, E> m_calculator;
 
         public TargetProvider(
             Pattern pattern,
-            Chain<TargetEvent<T>> chain,
-            System.Func<TargetEvent<T>, bool> stopFunc,
-            ICalculator<T> calculator)
+            Chain<E> chain,
+            System.Func<E, bool> stopFunc,
+            ICalculator<T, E> calculator)
         {
             this.m_pattern = pattern;
             this.m_chain = chain;
@@ -30,10 +54,10 @@ namespace Core.Targeting
             this.m_calculator = calculator;
         }
 
-        public IEnumerable<T> GetParticularTargets(CommonEvent commonEvent)
+        public IEnumerable<T> GetParticularTargets(E targetEvent)
         {
             var targets = new List<T>();
-            double angle = IntVector2.Right.AngleTo(commonEvent.action.direction);
+            double angle = IntVector2.Right.AngleTo(targetEvent.dir);
 
             for (int i = 0; i < this.m_pattern.pieces.Count; i++)
             {
@@ -41,26 +65,19 @@ namespace Core.Targeting
 
                 targets.AddRange(
                     m_calculator.CalculateTargets(
-                        commonEvent, this.m_pattern.pieces[i], piece
+                        targetEvent, this.m_pattern.pieces[i], piece
                     )
                 );
             }
 
-            var ev = new TargetEvent<T>
-            {
-                targets = targets,
-                actor = commonEvent.actor,
-                action = commonEvent.action
-            };
-
-            m_chain.Pass(ev, m_stopFunc);
-
-            return ev.targets;
+            targetEvent.targets = targets;
+            m_chain.Pass(targetEvent, m_stopFunc);
+            return targetEvent.targets;
         }
 
-        public List<Target> GetTargets(CommonEvent commonEvent)
+        public List<Target> GetTargets(E targetEvent)
         {
-            return GetParticularTargets(commonEvent).ConvertAllToList(t => (Target)t);
+            return GetParticularTargets(targetEvent).ConvertAllToList(t => (Target)t);
         }
     }
 }

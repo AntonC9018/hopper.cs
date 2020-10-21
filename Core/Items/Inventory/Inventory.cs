@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
 using Core.Targeting;
-using Newtonsoft.Json;
 
 namespace Core.Items
 {
@@ -79,14 +79,16 @@ namespace Core.Items
             return m_itemSlots[slotId][0];
         }
 
-        public List<Target> GenerateTargets(CommonEvent commonEvent, int slotId)
+        public IEnumerable<T> GenerateTargets<T, E>(E targetEvent, int slotId)
+            where T : Target, new()
+            where E : TargetEvent<T>
         {
-            var targetProvider = (ModularTargetingItem)GetItemFromSlot(slotId);
+            var targetProvider = (ModularTargetingItem<T, E>)GetItemFromSlot(slotId);
             if (targetProvider == null)
             {
-                return new List<Target>();
+                return new List<T>();
             }
-            return targetProvider.GetTargets(commonEvent);
+            return targetProvider.GetParticularTargets(targetEvent);
         }
     }
 }

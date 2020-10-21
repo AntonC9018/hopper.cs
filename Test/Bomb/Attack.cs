@@ -17,7 +17,7 @@ namespace Test
             pierce = 1
         };
 
-        public class BombTarget : MultiTarget<AtkTarget>
+        public class BombTarget : MultiTarget<AtkTarget, AtkTargetEvent>
         {
             public override Layer TargetedLayer =>
                 Layer.DROPPED
@@ -29,6 +29,11 @@ namespace Test
                 & Layer.WALL;
             public override Layer SkipLayer => 0;
         }
+
+        public IProvideTargets<AtkTarget, AtkTargetEvent> targetProvider =
+            TargetProvider.CreateMulti<AtkTarget, BombTarget, AtkTargetEvent>(
+                Pattern.Under, Handlers.GeneralChain
+            );
 
         public static void Att(Cell cell)
         {

@@ -4,6 +4,7 @@ using Core.Items;
 using Core.Targeting;
 using System.Runtime.Serialization;
 using Core.Stats.Basic;
+using System.Linq;
 
 namespace Core.Behaviors
 {
@@ -12,27 +13,27 @@ namespace Core.Behaviors
     {
         public class Event : CommonEvent
         {
-            public List<Target> targets;
+            public List<AtkTarget> targets;
             public Attack attack;
             public Push push;
         }
 
-        static List<Target> GenerateTargetsDefault(Event ev)
+        static List<AtkTarget> GenerateTargetsDefault(Event ev)
         {
             var entity = ev.actor
                 .GetCellRelative(ev.action.direction)
                 .GetEntityFromLayer(Layer.REAL);
 
             return entity == null
-                ? new List<Target>()
-                : new List<Target>(1)
+                ? new List<AtkTarget>()
+                : new List<AtkTarget>(1)
                 {
-                    new Target { targetEntity = entity, direction = ev.action.direction }
+                    new AtkTarget { targetEntity = entity, direction = ev.action.direction }
                 };
         }
 
         public bool Activate(Action action) => Activate(action, null);
-        public bool Activate(Action action, List<Target> targets)
+        public bool Activate(Action action, List<AtkTarget> targets)
         {
             var ev = new Event
             {
@@ -62,7 +63,10 @@ namespace Core.Behaviors
                 var inv = ev.actor.Inventory;
                 ev.targets = inv == null
                     ? GenerateTargetsDefault(ev)
-                    : inv.GenerateTargets(ev, Inventory.WeaponSlot);
+                    : inv
+                        .GenerateTargets<AtkTarget, AtkTargetEvent>(
+                            new AtkTargetEvent(ev), Inventory.WeaponSlot)
+                        .ToList();
             }
         }
 

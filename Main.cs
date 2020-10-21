@@ -290,11 +290,14 @@ namespace Hopper
                     reach = new List<int>()
                 }
             );
-            var weapon = TargetProvider
-                .CreateSimple(pattern, Handlers.GeneralChain);
-
+            var weapon = TargetProvider.CreateAtk(pattern, Handlers.GeneralChain);
             System.Console.WriteLine($"Enemy is at {enemy.Pos}");
-            var ev = new Attacking.Event { actor = player, action = playerNextAction };
+            var ev = new AtkTargetEvent
+            {
+                dir = playerNextAction.direction,
+                worldPosition = player,
+                attack = player.Stats.Get(Attack.Path)
+            };
             var targets = weapon.GetParticularTargets(ev);
             foreach (var t in targets)
             {

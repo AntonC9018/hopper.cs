@@ -100,12 +100,12 @@ namespace Core.Targeting
         }
 
 
-        public static Chain<TargetEvent<AtkTarget>> GeneralChain;
-        public static Chain<TargetEvent<DigTarget>> DigChain;
+        public static Chain<AtkTargetEvent> GeneralChain;
+        public static Chain<DigTargetEvent> DigChain;
 
         static Handlers()
         {
-            var generalHandlers = new List<System.Action<TargetEvent<AtkTarget>>>{
+            var generalHandlers = new List<System.Action<AtkTargetEvent>>{
                 DiscardNoEntity,
                 NextToAny,
                 DiscardUnreachable,
@@ -113,18 +113,18 @@ namespace Core.Targeting
                 DiscardNotClose,
                 TakeFirstNotSkip,
             };
-            GeneralChain = new Chain<TargetEvent<AtkTarget>>();
+            GeneralChain = new Chain<AtkTargetEvent>();
             foreach (var func in generalHandlers)
             {
                 GeneralChain.AddHandler(func);
             }
 
-            var digHandlers = new List<System.Action<TargetEvent<DigTarget>>>
+            var digHandlers = new List<System.Action<DigTargetEvent>>
             {
                 StopNoFirst,
                 DiscardNoEntity,
             };
-            DigChain = new Chain<TargetEvent<DigTarget>>();
+            DigChain = new Chain<DigTargetEvent>();
             foreach (var func in digHandlers)
             {
                 DigChain.AddHandler(func);

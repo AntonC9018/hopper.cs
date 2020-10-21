@@ -1,24 +1,30 @@
-using System.Collections.Generic;
 using Utils.Vector;
 
 namespace Core.Targeting
 {
+    public interface ITarget<in T, in E>
+        where T : Target
+        where E : TargetEvent<T>
+    {
+        void CalculateTargetedEntity(E ev, Cell cell);
+
+        Layer TargetedLayer { get; }
+        // => Layer.REAL | Layer.MISC | Layer.WALL;
+        Layer SkipLayer { get; }// => 0;
+    }
     public class Target
     {
         public Piece initialPiece;
         public IntVector2 direction;
         public Entity targetEntity;
 
-        public virtual void CalculateTargetedEntity(CommonEvent ev, Cell cell)
+        static protected Entity GetEntityDefault(Cell cell, Layer skip, Layer get)
         {
-            if (cell.GetEntityFromLayer(SkipLayer) == null)
+            if (cell.GetEntityFromLayer(skip) == null)
             {
-                targetEntity = cell.GetEntityFromLayer(TargetedLayer);
+                return cell.GetEntityFromLayer(get);
             }
+            return null;
         }
-
-        public virtual Layer TargetedLayer
-            => Layer.REAL | Layer.MISC | Layer.WALL;
-        public virtual Layer SkipLayer => 0;
     }
 }

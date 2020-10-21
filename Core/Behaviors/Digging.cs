@@ -4,6 +4,7 @@ using Core.Items;
 using Core.Targeting;
 using System.Runtime.Serialization;
 using Core.Stats.Basic;
+using System.Linq;
 
 namespace Core.Behaviors
 {
@@ -15,7 +16,7 @@ namespace Core.Behaviors
         public class Event : CommonEvent
         {
             public Dig dig;
-            public List<Target> targets;
+            public List<DigTarget> targets;
         }
 
         public bool Activate(Action action)
@@ -39,8 +40,11 @@ namespace Core.Behaviors
             {
                 var inv = ev.actor.Inventory;
                 ev.targets = inv == null
-                    ? new List<Target>()
-                    : inv.GenerateTargets(ev, Inventory.ShovelSlot);
+                    ? new List<DigTarget>()
+                    : inv
+                        .GenerateTargets<DigTarget, DigTargetEvent>(
+                            new DigTargetEvent(ev), Inventory.ShovelSlot)
+                        .ToList();
             }
         }
 

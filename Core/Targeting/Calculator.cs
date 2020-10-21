@@ -3,36 +3,43 @@ using Utils.Vector;
 
 namespace Core.Targeting
 {
-    public interface ICalculator<out T> where T : Target
+    public interface ICalculator<out T, in Event>
+        where T : Target
+        where Event : TargetEvent<T>
     {
         IEnumerable<T> CalculateTargets(
-            CommonEvent commonEvent,
+            Event targetEvent,
             Piece initialPiece,
             Piece rotatedPiece);
     }
 
-    public class MultiCalculator<T> : ICalculator<T> where T : Target, new()
+    public class MultiCalculator<T, U, E> : ICalculator<T, E>
+        where T : Target, new()
+        where U : MultiTarget<T, E>, new()
+        where E : TargetEvent<T>
     {
         public IEnumerable<T> CalculateTargets(
-            CommonEvent commonEvent,
+            E targetEvent,
             Piece initialPiece,
             Piece rotatedPiece)
         {
-            var target = new MultiTarget<T>
+            var target = new U
             {
                 direction = rotatedPiece.dir,
                 initialPiece = initialPiece
             };
 
-            var cell = commonEvent.actor.GetCellRelative(rotatedPiece.pos);
-            return target.CalculateTargets(commonEvent, cell);
+            var cell = targetEvent.worldPosition.GetCellRelative(rotatedPiece.pos);
+            return target.CalculateTargets(targetEvent, cell);
         }
     }
 
-    public class SimpleCalculator<T> : ICalculator<T> where T : Target, new()
+    public class SimpleCalculator<T, E> : ICalculator<T, E>
+        where T : Target, ITarget<T, E>, new()
+        where E : TargetEvent<T>
     {
         public IEnumerable<T> CalculateTargets(
-            CommonEvent commonEvent,
+            E targetEvent,
             Piece initialPiece,
             Piece rotatedPiece)
         {
@@ -41,8 +48,8 @@ namespace Core.Targeting
                 direction = rotatedPiece.dir,
                 initialPiece = initialPiece
             };
-            var cell = commonEvent.actor.GetCellRelative(rotatedPiece.pos);
-            target.CalculateTargetedEntity(commonEvent, cell);
+            var cell = targetEvent.worldPosition.GetCellRelative(rotatedPiece.pos);
+            target.CalculateTargetedEntity(targetEvent, cell);
             yield return target;
         }
     }

@@ -1,32 +1,46 @@
-using System.Collections.Generic;
 using Core.Behaviors;
 using Core.Stats.Basic;
-using Utils;
 
 namespace Core.Targeting
 {
-    public class AtkTarget : Target
+    public class AtkTargetEvent : TargetEvent<AtkTarget>
+    {
+        public Attack attack;
+
+        public AtkTargetEvent(Attacking.Event ev) : base(ev)
+        {
+            attack = ev.attack;
+        }
+
+        // public AtkTargetEvent(Attack attack, Action action, IWorldPosition entity)
+        //     : base(action.direction, entity)
+        // {
+        //     this.attack = attack;
+        // }
+
+        public AtkTargetEvent() { }
+    }
+
+    public class AtkTarget : Target, ITarget<AtkTarget, AtkTargetEvent>
     {
         public AtkCondition atkCondition = AtkCondition.NEVER;
+        public Layer TargetedLayer => Layer.REAL;
+        public Layer SkipLayer => Layer.WALL;
 
-        public override Layer TargetedLayer => Layer.REAL;
-        public override Layer SkipLayer => Layer.WALL;
-
-        public override void CalculateTargetedEntity(CommonEvent ev, Cell cell)
+        public void CalculateTargetedEntity(AtkTargetEvent ev, Cell cell)
         {
-            base.CalculateTargetedEntity(ev, cell);
+            targetEntity = GetEntityDefault(cell, SkipLayer, TargetedLayer);
 
             if (targetEntity != null && targetEntity.Behaviors.Has<Attackable>())
             {
-                atkCondition = CalculateCondition(targetEntity, (Attacking.Event)ev);
+                atkCondition = CalculateCondition(targetEntity, ev);
             }
         }
 
-        public static AtkCondition CalculateCondition(Entity entity, Attacking.Event ev)
+        public static AtkCondition CalculateCondition(Entity entity, AtkTargetEvent ev)
         {
             var attackable = entity.Behaviors.Get<Attackable>();
-            var attackingEvent = ev;
-            return attackable.GetAttackableness(attackingEvent);
+            return attackable.GetAttackableness(ev.attack);
         }
     }
 }

@@ -1,13 +1,13 @@
 using Utils.Vector;
 using Core.Items;
 using System.Runtime.Serialization;
-using System;
 using Core.Stats;
+using Core.Targeting;
 
 namespace Core
 {
     [DataContract]
-    public class Entity : IHaveId
+    public class Entity : IHaveId, IWorldPosition
     {
         [DataMember] public int Id => m_id;
         private int m_id;

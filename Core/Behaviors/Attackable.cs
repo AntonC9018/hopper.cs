@@ -61,17 +61,15 @@ namespace Core.Behaviors
         public class AttackablenessEvent : CommonEvent
         {
             public AtkCondition attackableness = AtkCondition.ALWAYS;
-            public Attacking.Event attackingEvent;
+            public Attack attack;
         }
 
-        // TODO: this should get passed the attacker and the info about the attack
-        // so Attacking.Event event        
-        public AtkCondition GetAttackableness(Attacking.Event attackingEvent)
+        public AtkCondition GetAttackableness(Attack atk)
         {
             var ev = new AttackablenessEvent
             {
                 actor = this.m_entity,
-                attackingEvent = attackingEvent
+                attack = atk
             };
             GetChain<AttackablenessEvent>(ChainName.Condition).Pass(ev);
             return ev.attackableness;
