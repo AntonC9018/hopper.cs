@@ -3,7 +3,7 @@ using Core.Targeting;
 
 namespace Core.Items
 {
-    public class ModularTargetingItem : ModularItem
+    public class ModularTargetingItem : ModularItem, IProvideTargets<Target>
     {
         private IProvideTargets<Target> m_targetProvider;
         public ModularTargetingItem(
@@ -13,6 +13,11 @@ namespace Core.Items
         : base(slot, modules)
         {
             m_targetProvider = targetProvider;
+        }
+
+        public IEnumerable<Target> GetParticularTargets(CommonEvent commonEvent)
+        {
+            return m_targetProvider.GetParticularTargets(commonEvent);
         }
 
         public List<Target> GetTargets(CommonEvent commonEvent)
