@@ -30,7 +30,11 @@ namespace Core.Targeting
             };
 
             var cell = targetEvent.spot.GetCellRelative(rotatedPiece.pos);
-            return target.CalculateTargets(targetEvent, cell, meta);
+            if (cell != null)
+            {
+                return target.CalculateTargets(targetEvent, cell, meta);
+            }
+            return new T[0];
         }
     }
 
@@ -46,8 +50,11 @@ namespace Core.Targeting
                 initialPiece = initialPiece
             };
             var cell = targetEvent.spot.GetCellRelative(rotatedPiece.pos);
-            target.CalculateTargetedEntity(targetEvent, cell, meta);
-            yield return target;
+            if (cell != null)
+            {
+                target.CalculateTargetedEntity(targetEvent, cell, meta);
+                yield return target;
+            }
         }
     }
 }
