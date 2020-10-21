@@ -46,7 +46,7 @@ namespace Core.Targeting
                 .Where(t => CanReach(t, weaponEvent.targets));
         }
 
-        public static bool CanReach<T>(T target, List<T> targets)
+        public static bool CanReach<T>(T target, IEnumerable<T> targets)
             where T : Target
         {
             var reach = target.initialPiece.reach;
@@ -98,7 +98,6 @@ namespace Core.Targeting
                 digEvent.propagate = false;
             }
         }
-
 
         public static Chain<AtkTargetEvent> GeneralChain;
         public static Chain<DigTargetEvent> DigChain;

@@ -78,7 +78,7 @@ namespace Core.Behaviors
                 action.direction = target.direction;
                 var attackable = target.targetEntity.Behaviors.Get<Attackable>();
                 // let it throw if this has not been accounted for
-                attackable.Activate(action, (Attack)ev.attack.Copy());
+                attackable.Activate(action.direction, (Attack)ev.attack.Copy());
             }
         }
 

@@ -58,7 +58,8 @@ namespace Core.Targeting
             Chain<AtkTargetEvent> chain
         )
         {
-            return new TargetProvider<AtkTarget, AtkTargetEvent>(pattern, chain, DefaultStop, new SimpleCalculator<AtkTarget, AtkTargetEvent>());
+            return new TargetProvider<AtkTarget, AtkTargetEvent>(
+                pattern, chain, DefaultStop, new SimpleCalculator<AtkTarget, AtkTargetEvent>());
         }
 
         public static TargetProvider<AtkTarget, AtkTargetEvent> CreateAtk(
@@ -67,7 +68,8 @@ namespace Core.Targeting
             System.Func<AtkTargetEvent, bool> stop
         )
         {
-            return new TargetProvider<AtkTarget, AtkTargetEvent>(pattern, chain, stop, new SimpleCalculator<AtkTarget, AtkTargetEvent>());
+            return new TargetProvider<AtkTarget, AtkTargetEvent>(
+                pattern, chain, stop, new SimpleCalculator<AtkTarget, AtkTargetEvent>());
         }
 
         public static TargetProvider<DigTarget, DigTargetEvent> CreateDig(
@@ -75,7 +77,8 @@ namespace Core.Targeting
             Chain<DigTargetEvent> chain
         )
         {
-            return new TargetProvider<DigTarget, DigTargetEvent>(pattern, chain, DefaultStop, new SimpleCalculator<DigTarget, DigTargetEvent>());
+            return new TargetProvider<DigTarget, DigTargetEvent>(
+                pattern, chain, DefaultStop, new SimpleCalculator<DigTarget, DigTargetEvent>());
         }
 
         public static TargetProvider<DigTarget, DigTargetEvent> CreateDig(
@@ -84,7 +87,8 @@ namespace Core.Targeting
             System.Func<DigTargetEvent, bool> stop
         )
         {
-            return new TargetProvider<DigTarget, DigTargetEvent>(pattern, chain, stop, new SimpleCalculator<DigTarget, DigTargetEvent>());
+            return new TargetProvider<DigTarget, DigTargetEvent>(
+                pattern, chain, stop, new SimpleCalculator<DigTarget, DigTargetEvent>());
         }
     }
 }

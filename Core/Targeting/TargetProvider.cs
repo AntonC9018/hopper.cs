@@ -16,18 +16,18 @@ namespace Core.Targeting
     {
         public List<T> targets;
         public IntVector2 dir;
-        public IWorldPosition worldPosition;
+        public IWorldPosition spot;
 
         public TargetEvent(CommonEvent ev)
         {
             dir = ev.action.direction;
-            worldPosition = ev.actor;
+            spot = ev.actor;
         }
 
         public TargetEvent(IntVector2 dir, IWorldPosition worldPosition)
         {
             this.dir = dir;
-            this.worldPosition = worldPosition;
+            this.spot = worldPosition;
         }
 
         public TargetEvent() { }

@@ -29,7 +29,7 @@ namespace Core.Targeting
                 initialPiece = initialPiece
             };
 
-            var cell = targetEvent.worldPosition.GetCellRelative(rotatedPiece.pos);
+            var cell = targetEvent.spot.GetCellRelative(rotatedPiece.pos);
             return target.CalculateTargets(targetEvent, cell);
         }
     }
@@ -48,7 +48,7 @@ namespace Core.Targeting
                 direction = rotatedPiece.dir,
                 initialPiece = initialPiece
             };
-            var cell = targetEvent.worldPosition.GetCellRelative(rotatedPiece.pos);
+            var cell = targetEvent.spot.GetCellRelative(rotatedPiece.pos);
             target.CalculateTargetedEntity(targetEvent, cell);
             yield return target;
         }

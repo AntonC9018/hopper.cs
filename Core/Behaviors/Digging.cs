@@ -54,7 +54,7 @@ namespace Core.Behaviors
             {
                 target.targetEntity.Behaviors
                     .Get<Attackable>()
-                    .Activate(ev.action, ev.dig.ToAttack());
+                    .Activate(ev.action.direction, ev.dig.ToAttack());
             }
         }
 

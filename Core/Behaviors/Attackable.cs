@@ -2,6 +2,7 @@ using Chains;
 using Utils;
 using System.Runtime.Serialization;
 using Core.Stats.Basic;
+using Utils.Vector;
 
 namespace Core.Behaviors
 {
@@ -12,15 +13,16 @@ namespace Core.Behaviors
         {
             public Entity entity;
             public Attack attack;
+            public IntVector2 dir;
             public Attack.Resistance resistance;
         }
 
-        public bool Activate(Action action, Attack attack)
+        public bool Activate(IntVector2 dir, Attack attack)
         {
             var ev = new Event
             {
                 actor = m_entity,
-                action = action,
+                dir = dir,
                 attack = attack
             };
             return CheckDoCycle<Event>(ev);

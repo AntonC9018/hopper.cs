@@ -295,7 +295,7 @@ namespace Hopper
             var ev = new AtkTargetEvent
             {
                 dir = playerNextAction.direction,
-                worldPosition = player,
+                spot = player,
                 attack = player.Stats.Get(Attack.Path)
             };
             var targets = weapon.GetParticularTargets(ev);

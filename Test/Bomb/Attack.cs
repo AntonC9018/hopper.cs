@@ -3,6 +3,7 @@ using Core;
 using Core.Behaviors;
 using Core.Stats.Basic;
 using Core.Targeting;
+using Utils.Vector;
 
 namespace Test
 {
@@ -30,14 +31,25 @@ namespace Test
             public override Layer SkipLayer => 0;
         }
 
-        public IProvideTargets<AtkTarget, AtkTargetEvent> targetProvider =
+        public static IProvideTargets<AtkTarget, AtkTargetEvent> targetProvider =
             TargetProvider.CreateMulti<AtkTarget, BombTarget, AtkTargetEvent>(
                 Pattern.Under, Handlers.GeneralChain
             );
 
-        public static void Att(Cell cell)
+        public static void Att(IntVector2 pos, IntVector2 dir, World world)
         {
+            var atkEvent = new AtkTargetEvent
+            {
+                spot = new DummyEntity(pos, world),
+                attack = BaseAtt,
+                dir = dir
+            };
+            var targets = targetProvider.GetParticularTargets(atkEvent);
 
+            foreach (var target in targets)
+            {
+                target.targetEntity.Behaviors.Get<Attackable>().Activate(dir, BaseAtt);
+            }
         }
     }
 }
