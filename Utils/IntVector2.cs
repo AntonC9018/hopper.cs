@@ -8,6 +8,7 @@ namespace Utils.Vector
     {
         public int x, y;
 
+        public static IntVector2 Zero = new IntVector2(0, 0);
         public static IntVector2 Right = new IntVector2(1, 0);
         public static IntVector2 Left = new IntVector2(-1, 0);
         public static IntVector2 Up = new IntVector2(0, -1);

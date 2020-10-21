@@ -68,7 +68,7 @@ namespace Core.Stats
         {
             if (m_chainModifierHandles.ContainsKey(modifier))
             {
-                var val = m_modifierCounts[modifier] - 1;
+                int val = m_modifierCounts[modifier] - 1;
                 m_modifierCounts[modifier] = val;
                 if (val > 0)
                     return;

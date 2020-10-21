@@ -3,12 +3,12 @@ using Core.Targeting;
 
 namespace Core.Items
 {
-    public class ModularTargetingItem : ModularItem, IProvideTargets
+    public class ModularTargetingItem : ModularItem
     {
-        private IProvideTargets m_targetProvider;
+        private IProvideTargets<Target> m_targetProvider;
         public ModularTargetingItem(
             int slot,
-            IProvideTargets targetProvider,
+            IProvideTargets<Target> targetProvider,
             params IModule[] modules)
         : base(slot, modules)
         {

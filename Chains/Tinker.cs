@@ -35,9 +35,13 @@ namespace Core
 
         public void Tink(Entity entity, T tinkerData)
         {
-            entity.Tinkers.Store(this, tinkerData);
-            if (tinkerData.count <= 1)
+            if (entity.Tinkers.IsTinked(this))
             {
+                GetStore(entity).count++;
+            }
+            else
+            {
+                entity.Tinkers.Store(this, tinkerData);
                 TinkHandlers(entity.Behaviors, tinkerData);
             }
         }
@@ -66,12 +70,16 @@ namespace Core
         public void Untink(Entity entity)
         {
             var data = GetStore(entity);
-            entity.Tinkers.RemoveStore(this);
+            data.count--;
+
             if (data.count == 0)
             {
+                entity.Tinkers.RemoveStore(this);
                 UntinkHandlers(data, entity.Behaviors);
             }
         }
+
+        public bool IsTinker(Entity entity) => entity.Tinkers.IsTinked(this);
 
         public T GetStore(Entity actor) => (T)actor.Tinkers.GetStore(this);
         public T GetStore(TinkerControl tinker) => (T)tinker.GetStore(this);

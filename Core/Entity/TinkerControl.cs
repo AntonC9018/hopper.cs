@@ -26,30 +26,17 @@ namespace Core
 
         public void Store(ITinker tinker, TinkerData tinkerData)
         {
-            if (IsTinked(tinker))
-            {
-                var store = m_tinkerStore[tinker.Id];
-                store.count++;
-            }
-            else
-            {
-                m_tinkerStore[tinker.Id] = tinkerData;
-            }
+            m_tinkerStore[tinker.Id] = tinkerData;
         }
 
         public void RemoveStore(ITinker tinker)
         {
-            var store = m_tinkerStore[tinker.Id];
-            store.count--;
-            if (store.count == 0)
-            {
-                m_tinkerStore.Remove(tinker.Id);
-            }
+            m_tinkerStore.Remove(tinker.Id);
         }
 
         public TinkerData GetStore(ITinker tinker)
         {
-            return m_tinkerStore.ContainsKey(tinker.Id) ? m_tinkerStore[tinker.Id] : null;
+            return m_tinkerStore[tinker.Id];
         }
     }
 }

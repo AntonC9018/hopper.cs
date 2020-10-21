@@ -81,7 +81,7 @@ namespace Core.Items
 
         public List<Target> GenerateTargets(CommonEvent commonEvent, int slotId)
         {
-            var targetProvider = (IProvideTargets)GetItemFromSlot(slotId);
+            var targetProvider = (IProvideTargets<Target>)GetItemFromSlot(slotId);
             if (targetProvider == null)
             {
                 return new List<Target>();

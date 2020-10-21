@@ -57,7 +57,6 @@ namespace Test
             var statusData = status.GetStore(ev.actor);
             if (statusData.whoApplied == null || statusData.whoApplied.IsDead)
             {
-                // ev.actor.Untink(tinker);
                 statusData.amount = 0;
             }
         }

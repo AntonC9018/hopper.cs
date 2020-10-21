@@ -275,8 +275,8 @@ namespace Hopper
 
 
             System.Console.WriteLine("\n ------ TargetProvider Demo ------ \n");
-            var pattern = new List<Piece>
-            {
+            var pattern = new Pattern
+            (
                 new Piece
                 {
                     pos = new IntVector2(1, 0),
@@ -289,13 +289,10 @@ namespace Hopper
                     dir = new IntVector2(1, 0),
                     reach = new List<int>()
                 }
-            };
-            var weapon = new TargetProvider<AtkTarget>
-            (
-                pattern: pattern,
-                chain: Handlers.GeneralChain,
-                stopFunc: e => !e.propagate || e.targets.Count == 0
             );
+            var weapon = TargetProvider
+                .CreateSimple(pattern, Handlers.GeneralChain);
+
             System.Console.WriteLine($"Enemy is at {enemy.Pos}");
             var ev = new Attacking.Event { actor = player, action = playerNextAction };
             var targets = weapon.GetParticularTargets(ev);

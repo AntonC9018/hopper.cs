@@ -86,5 +86,15 @@ namespace Utils
                 set.Add(it);
             }
         }
+
+        public static List<U> ConvertAllToList<T, U>(this IEnumerable<T> arr, System.Func<T, U> converter)
+        {
+            var result = new List<U>();
+            foreach (var el in arr)
+            {
+                result.Add(converter(el));
+            }
+            return result;
+        }
     }
 }

@@ -33,9 +33,9 @@ namespace Core
         // Returns true if it is still applied after the update 
         public virtual bool Update(Entity entity)
         {
-            var data = GetStore(entity);
-            if (data != null)
+            if (entity.Tinkers.IsTinked(this))
             {
+                var data = GetStore(entity);
                 data.amount--;
                 return data.amount == 0;
             }
@@ -44,8 +44,7 @@ namespace Core
 
         public virtual bool IsApplied(Entity entity)
         {
-            var data = GetStore(entity);
-            return data != null && data.amount > 0;
+            return entity.Tinkers.IsTinked(this) && GetStore(entity).amount > 0;
         }
 
         public virtual void Nullify(Entity entity)
@@ -68,11 +67,9 @@ namespace Core
         // A convenience method for calling the Statused decorator
         public bool TryApply(Entity target, T statusData, StatusFile stat)
         {
-            var existingData = GetStore(target);
-
-            if (existingData != null)
+            if (target.Tinkers.IsTinked(this))
             {
-                Reapply(existingData, statusData);
+                Reapply(GetStore(target), statusData);
                 return true;
             }
 
