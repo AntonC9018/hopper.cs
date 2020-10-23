@@ -1,5 +1,5 @@
 using Core.Behaviors;
-using Core.Stats.Basic;
+using Core.Targeting;
 
 namespace Core.Retouchers
 {

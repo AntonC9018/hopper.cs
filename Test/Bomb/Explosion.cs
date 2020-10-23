@@ -95,6 +95,7 @@ namespace Test
 
         public static void Explode(IntVector2 pos, int radius, World world)
         {
+            System.Console.WriteLine("Explosion");
             foreach (var vec in Spiral(-radius, -radius, radius, radius))
             {
                 IntVector2 current_pos = pos + vec;

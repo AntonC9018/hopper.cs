@@ -48,7 +48,7 @@ namespace Test
             {
                 targetEntity = status.GetStore(ev).whoApplied,
                 direction = new IntVector2(0, 0),
-                atkCondition = Core.Stats.Basic.AtkCondition.ALWAYS
+                atkCondition = AtkCondition.ALWAYS
             };
             ev.targets = new List<AtkTarget> { target };
         }

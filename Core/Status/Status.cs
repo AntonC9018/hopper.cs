@@ -17,6 +17,7 @@ namespace Core
         public class Resistance : MapFile
         {
             public static readonly StatPath<Resistance> Path = new StatPath<Resistance>("status/res");
+            protected override MapFile DefaultFile => Path.DefaultFile;
         }
     }
 
@@ -27,7 +28,7 @@ namespace Core
         public Status(IChainDef[] chainDefs, IStatPath<StatusFile> statPath, int defaultResValue) : base(chainDefs)
         {
             m_statPath = statPath;
-            Status.Resistance.Path.DefaultFile.content.Add(m_id, defaultResValue);
+            Status.Resistance.Path.DefaultFile.Add(m_id, defaultResValue);
         }
 
         // Returns true if it is still applied after the update 

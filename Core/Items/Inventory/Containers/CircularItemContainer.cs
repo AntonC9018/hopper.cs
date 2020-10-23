@@ -49,6 +49,6 @@ namespace Core.Items
                 .ToArray<IItem>();
             items = new CircularBuffer<IItem>(items.Capacity, remainingItems);
         }
-
+        public bool Contains(IItem item) => items.Contains(item);
     }
 }

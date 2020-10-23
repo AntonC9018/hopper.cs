@@ -14,6 +14,7 @@ namespace Core
     {
         void Untink(Entity entity);
         void Tink(Entity entity);
+        bool IsTinked(Entity entity);
     }
 
     public class Tinker<T> : ITinker where T : TinkerData, new()
@@ -22,7 +23,7 @@ namespace Core
         protected readonly int m_id;
         protected IChainDef[] m_chainDefinition;
 
-        public Tinker(IChainDef[] chainDefs)
+        public Tinker(params IChainDef[] chainDefs)
         {
             m_chainDefinition = chainDefs;
             m_id = IdMap.Tinker.Add(this);
@@ -79,8 +80,7 @@ namespace Core
             }
         }
 
-        public bool IsTinker(Entity entity) => entity.Tinkers.IsTinked(this);
-
+        public bool IsTinked(Entity entity) => entity.Tinkers.IsTinked(this);
         public T GetStore(Entity actor) => (T)actor.Tinkers.GetStore(this);
         public T GetStore(TinkerControl tinker) => (T)tinker.GetStore(this);
         public T GetStore(ActorEvent ev) => (T)ev.actor.Tinkers.GetStore(this);

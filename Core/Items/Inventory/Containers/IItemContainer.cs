@@ -9,5 +9,6 @@ namespace Core.Items
         IItem this[int index] { get; }
         List<IItem> PullOutExcess();
         IEnumerable<IItem> AllItems { get; }
+        bool Contains(IItem item);
     }
 }

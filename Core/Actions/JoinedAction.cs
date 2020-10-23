@@ -1,12 +1,10 @@
-using Utils.Vector;
-
 namespace Core
 {
     public class JoinedAction : Action
     {
         Action[] m_actions;
 
-        public JoinedAction(Action[] actions)
+        public JoinedAction(params Action[] actions)
         {
             m_actions = actions;
         }

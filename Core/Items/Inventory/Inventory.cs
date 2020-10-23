@@ -8,6 +8,7 @@ namespace Core.Items
     {
         public const int WeaponSlot = 0;
         public const int ShovelSlot = 1;
+        public const int EndlessSlot = 2;
 
         private Dictionary<int, IItemContainer> m_itemSlots;
 
@@ -34,8 +35,8 @@ namespace Core.Items
         public void Equip(IItem item)
         {
             var container = m_itemSlots[item.Slot];
-            container.Insert(item);
             item.BeEquipped(m_actor);
+            container.Insert(item);
             System.Console.WriteLine($"Picked up an item with id = {item.Id}");
         }
 
@@ -45,6 +46,14 @@ namespace Core.Items
             container.Remove(item);
             item.BeUnequipped(m_actor);
             System.Console.WriteLine($"Dropped item with id = {item.Id}");
+        }
+
+        public void Destroy(IItem item)
+        {
+            var container = m_itemSlots[item.Slot];
+            container.Remove(item);
+            item.BeDestroyed(m_actor);
+            System.Console.WriteLine($"Destroyed item with id = {item.Id}");
         }
 
         public void DropExcess()
@@ -89,5 +98,9 @@ namespace Core.Items
             }
             return targetProvider.GetParticularTargets(targetEvent, meta);
         }
+
+        public bool IsEquipped(IItem item) => m_itemSlots[item.Slot].Contains(item);
+
+
     }
 }

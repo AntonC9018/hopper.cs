@@ -3,6 +3,7 @@ using Utils;
 using System.Runtime.Serialization;
 using Core.Stats.Basic;
 using Utils.Vector;
+using Core.Targeting;
 
 namespace Core.Behaviors
 {

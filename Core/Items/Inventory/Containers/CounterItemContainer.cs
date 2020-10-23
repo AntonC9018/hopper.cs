@@ -7,14 +7,16 @@ namespace Core.Items
     {
         private Dictionary<IItem, int> itemCount = new Dictionary<IItem, int>();
 
-        public IEnumerable<IItem> AllItems{
-            get {
+        public IEnumerable<IItem> AllItems
+        {
+            get
+            {
                 foreach (var kvp in itemCount)
                 {
                     for (int i = 0; i < kvp.Value; i++)
                         yield return kvp.Key;
                 }
-            }  
+            }
         }
 
         public List<IItem> PullOutExcess() => new List<IItem>();
@@ -26,9 +28,7 @@ namespace Core.Items
             else
                 itemCount[item] = 1;
         }
-        public void Remove(IItem item)
-        {
-            itemCount[item]--;
-        }
+        public void Remove(IItem item) => itemCount[item]--;
+        public bool Contains(IItem item) => itemCount.ContainsKey(item);
     }
 }

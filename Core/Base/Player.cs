@@ -16,6 +16,7 @@ namespace Core
             // account for the weapon and the shovel slot
             inventory.AddContainer(Core.Items.Inventory.WeaponSlot, new CircularItemContainer(1));
             inventory.AddContainer(Core.Items.Inventory.ShovelSlot, new CircularItemContainer(1));
+            inventory.AddContainer(Core.Items.Inventory.EndlessSlot, new EndelssItemContanier());
         }
 
         [DataMember] private int SomeSavedMember;
@@ -28,11 +29,12 @@ namespace Core
             .AddBehavior<Attackable>()
             .AddBehavior<Damageable>()
             .AddBehavior<Attacking>()
-            .Retouch(Retouchers.Skip.EmptyAttack)
             .AddBehavior<Digging>()
+            .AddBehavior<Pushable>()
+            .Retouch(Retouchers.Skip.EmptyAttack)
             .Retouch(Retouchers.Skip.EmptyDig)
             .Retouch(Retouchers.Equip.OnDisplace)
-            .AddBehavior<Pushable>();
+            .Retouch(Retouchers.Reorient.OnActionSuccess);
         // .Retouch(Retouchers.Attackableness.Constant(AtkCondition.ALWAYS));
     }
 }

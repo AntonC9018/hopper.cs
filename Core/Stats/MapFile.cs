@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace Core.Stats
 {
-    public class MapFile : File, IAddableWith<MapFile>
+    public abstract class MapFile : File, IAddableWith<MapFile>
     {
-        public Dictionary<int, int> content = new Dictionary<int, int>();
+        private Dictionary<int, int> content = new Dictionary<int, int>();
+        protected abstract MapFile DefaultFile { get; }
 
         public void _Add(MapFile otherFile, int sign)
         {
@@ -24,10 +25,30 @@ namespace Core.Stats
             return newFile;
         }
 
+        // TODO: if the key is not present, reach out to the default value
+        // the default value can be a virtual property, which children would ove
         public int this[int id]
         {
-            get => content[id];
+            get
+            {
+                if (!content.ContainsKey(id))
+                {
+                    foreach (var kvp in DefaultFile.content)
+                    {
+                        if (!content.ContainsKey(kvp.Key))
+                        {
+                            content.Add(kvp.Key, kvp.Value);
+                        }
+                    }
+                }
+                return content[id];
+            }
             set => content[id] = value;
+        }
+
+        public void Add(int key, int val)
+        {
+            content.Add(key, val);
         }
     }
 }

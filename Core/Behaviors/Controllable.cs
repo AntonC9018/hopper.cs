@@ -40,6 +40,21 @@ namespace Core.Behaviors
 
         public class Event : StandartEvent
         {
+            public void SetAction(Action action, IntVector2 dir)
+            {
+                this.action = action.Copy();
+                this.action.direction = dir;
+            }
+
+            public void SetAction(Action action)
+            {
+                var prev = this.action;
+                this.action = action.Copy();
+                if (prev != null)
+                {
+                    this.action.direction = prev.direction;
+                }
+            }
         }
 
         public class Config : BehaviorConfig
@@ -65,11 +80,7 @@ namespace Core.Behaviors
 
         static System.Action<Event> Default(IntVector2 dir)
         {
-            return ev =>
-            {
-                ev.action = ev.actor.Behaviors.Get<Controllable>().config_defaultAction.Copy();
-                ev.action.direction = dir;
-            };
+            return ev => ev.SetAction(ev.actor.Behaviors.Get<Controllable>().config_defaultAction, dir);
         }
 
         public static readonly Dictionary<ChainName, ChainPaths<Controllable, Event>> Chains

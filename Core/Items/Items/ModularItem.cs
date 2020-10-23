@@ -21,7 +21,6 @@ namespace Core.Items
             {
                 mod.BeDestroyed(entity);
             }
-
         }
 
         public void BeEquipped(Entity entity)

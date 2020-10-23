@@ -11,5 +11,6 @@ namespace Core.Items
         public IItem this[int index] { get => items[index]; }
         public void Insert(IItem item) => items.Add(item);
         public void Remove(IItem item) => items.Remove(item);
+        public bool Contains(IItem item) => items.Contains(item);
     }
 }

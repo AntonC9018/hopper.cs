@@ -14,7 +14,7 @@ namespace Core.Behaviors
             public Config(System.Action<EventBase> doAction)
             {
                 DoAction = doAction;
-                CalculateAction = ent => ent.Behaviors.Get<Sequential>()?.CurrentAction;
+                CalculateAction = ent => ent.Behaviors.Get<Sequential>().CurrentAction;
             }
 
             public Config(System.Action<EventBase> doAction, System.Func<Entity, Action> calculateAction)

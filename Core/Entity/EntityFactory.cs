@@ -98,5 +98,11 @@ namespace Core
             m_behaviorSettings[typeof(U)].config = config;
             return this;
         }
+
+        public EntityFactory<T> AddSetupListener(System.Action<Entity> listener)
+        {
+            InitEvent += listener;
+            return this;
+        }
     }
 }
