@@ -16,7 +16,14 @@ namespace Core.Retouchers
         public static Retoucher OnAttack = Retoucher
             .SingleHandlered<Displaceable.Event>(Displaceable.Do, AnyReorient);
 
-        static void AnyReorient(CommonEvent ev)
+        static void AnyReorient(Displaceable.Event ev)
+        {
+            if (ev.dir != null)
+            {
+                ev.actor.Reorient(ev.dir);
+            }
+        }
+        static void AnyReorient(StandartEvent ev)
         {
             if (ev.action.direction != null)
             {

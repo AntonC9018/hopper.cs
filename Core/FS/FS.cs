@@ -258,5 +258,14 @@ namespace Core.FS
                 }
             }
         }
+
+        // public bool HasNode(string path)
+        // {
+        //     var dirNames = Split(path);
+        //     var dirPath = dirNames.Take(dirNames.Length - 1);
+        //     var node = GetDirectoryBySplitPath(dirPath);
+        //     var fileName = dirNames[dirNames.Length - 1];
+        //     return node.;
+        // }
     }
 }

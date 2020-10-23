@@ -17,7 +17,8 @@ namespace Utils
             }
             return l;
         }
-        public static List<T> FilterFromIndex<T>(this List<T> list, System.Func<T, bool> pred, int includeAllBefore = 0)
+        public static List<T> FilterFromIndex<T>(
+            this List<T> list, System.Func<T, bool> pred, int includeAllBefore)
         {
             var l = new List<T>();
             for (int i = 0; i < includeAllBefore; i++)

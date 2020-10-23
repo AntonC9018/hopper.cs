@@ -14,40 +14,50 @@ namespace Core.Targeting
         public static TargetProvider<T, M> CreateMulti<T, U, M>(
             Pattern pattern,
             Chain<TargetEvent<T>> chain,
-            System.Func<TargetEvent<T>, bool> stop
+            System.Func<TargetEvent<T>, bool> stop,
+            Layer skipLayer,
+            Layer targetedLayer
         )
             where T : Target, ITarget<T, M>, new()
             where U : MultiTarget<T, M>, new()
         {
-            return new TargetProvider<T, M>(pattern, chain, stop, new MultiCalculator<T, U, M>());
+            return new TargetProvider<T, M>(pattern, chain, stop, new MultiCalculator<T, U, M>(skipLayer,
+targetedLayer));
         }
 
         public static TargetProvider<T, M> CreateMulti<T, U, M>(
-             Pattern pattern,
-             Chain<TargetEvent<T>> chain
+            Pattern pattern,
+            Chain<TargetEvent<T>> chain,
+            Layer skipLayer,
+            Layer targetedLayer
         )
             where T : Target, ITarget<T, M>, new()
             where U : MultiTarget<T, M>, new()
         {
-            return CreateMulti<T, U, M>(pattern, chain, DefaultStop);
-        }
-
-        public static TargetProvider<T, M> CreateSimple<T, M>(
-            Pattern pattern,
-            Chain<TargetEvent<T>> chain)
-            where T : Target, ITarget<T, M>, new()
-        {
-            return new TargetProvider<T, M>(pattern, chain, DefaultStop, new SimpleCalculator<T, M>());
+            return CreateMulti<T, U, M>(pattern, chain, DefaultStop, skipLayer, targetedLayer);
         }
 
         public static TargetProvider<T, M> CreateSimple<T, M>(
             Pattern pattern,
             Chain<TargetEvent<T>> chain,
-            System.Func<TargetEvent<T>, bool> stop
+            Layer skipLayer,
+            Layer targetedLayer)
+            where T : Target, ITarget<T, M>, new()
+        {
+            return new TargetProvider<T, M>(pattern, chain, DefaultStop,
+                new SimpleCalculator<T, M>(skipLayer, targetedLayer));
+        }
+
+        public static TargetProvider<T, M> CreateSimple<T, M>(
+            Pattern pattern,
+            Chain<TargetEvent<T>> chain,
+            System.Func<TargetEvent<T>, bool> stop,
+            Layer skipLayer,
+            Layer targetedLayer
         )
             where T : Target, ITarget<T, M>, new()
         {
-            return new TargetProvider<T, M>(pattern, chain, stop, new SimpleCalculator<T, M>());
+            return new TargetProvider<T, M>(pattern, chain, stop, new SimpleCalculator<T, M>(skipLayer, targetedLayer));
         }
 
         public static TargetProvider<AtkTarget, Attack> CreateAtk(
@@ -56,7 +66,7 @@ namespace Core.Targeting
         )
         {
             return new TargetProvider<AtkTarget, Attack>(
-                pattern, chain, DefaultStop, new SimpleCalculator<AtkTarget, Attack>());
+                pattern, chain, DefaultStop, new SimpleCalculator<AtkTarget, Attack>(Layer.WALL, Layer.REAL));
         }
 
         public static TargetProvider<AtkTarget, Attack> CreateAtk(
@@ -66,7 +76,7 @@ namespace Core.Targeting
         )
         {
             return new TargetProvider<AtkTarget, Attack>(
-                pattern, chain, stop, new SimpleCalculator<AtkTarget, Attack>());
+                pattern, chain, stop, new SimpleCalculator<AtkTarget, Attack>(Layer.WALL, Layer.REAL));
         }
 
         public static TargetProvider<DigTarget, Dig> CreateDig(
@@ -75,7 +85,7 @@ namespace Core.Targeting
         )
         {
             return new TargetProvider<DigTarget, Dig>(
-                pattern, chain, DefaultStop, new SimpleCalculator<DigTarget, Dig>());
+                pattern, chain, DefaultStop, new SimpleCalculator<DigTarget, Dig>(0, Layer.WALL));
         }
 
         public static TargetProvider<DigTarget, Dig> CreateDig(
@@ -85,7 +95,7 @@ namespace Core.Targeting
         )
         {
             return new TargetProvider<DigTarget, Dig>(
-                pattern, chain, stop, new SimpleCalculator<DigTarget, Dig>());
+                pattern, chain, stop, new SimpleCalculator<DigTarget, Dig>(0, Layer.WALL));
         }
     }
 }

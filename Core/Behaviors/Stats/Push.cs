@@ -2,7 +2,7 @@ namespace Core.Stats.Basic
 {
     public class Push : StatFile
     {
-        public int source;
+        public int sourceId;
         public int power;
         public int distance;
         public int pierce;
@@ -12,7 +12,7 @@ namespace Core.Stats.Basic
             "push/base",
             new Push
             {
-                source = 0,
+                sourceId = 0,
                 power = 1,
                 distance = 1,
                 pierce = 1

@@ -1,25 +1,28 @@
 using System.Runtime.Serialization;
 using Chains;
 using Core.Stats.Basic;
+using Utils.Vector;
 
 namespace Core.Behaviors
 {
     [DataContract]
     public class Pushable : Behavior
     {
-        public class Event : CommonEvent
+        public class Event : ActorEvent
         {
             public Push push;
             public Push.Resistance resistance;
+            public IntVector2 dir;
         }
 
-        public bool Activate(Action action, Push push)
+
+        public bool Activate(IntVector2 dir, Push push)
         {
             var ev = new Event
             {
                 actor = m_entity,
-                action = action,
-                push = push
+                push = push,
+                dir = dir
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -32,7 +35,7 @@ namespace Core.Behaviors
         static void ResistSource(Event ev)
         {
             var sourceRes = ev.actor.Stats.Get(Push.Source.Resistance.Path);
-            if (sourceRes[ev.push.source] > ev.push.power)
+            if (sourceRes[ev.push.sourceId] > ev.push.power)
             {
                 ev.push.distance = 0;
             }
@@ -49,7 +52,7 @@ namespace Core.Behaviors
         static void BePushed(Event ev)
         {
             // TODO: set up properly
-            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action, new Move());
+            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.dir, new Move());
         }
 
         public static ChainPaths<Pushable, Event> Check;

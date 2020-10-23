@@ -38,7 +38,7 @@ namespace Core.Behaviors
     public class Controllable : Behavior
     {
 
-        public class Event : CommonEvent
+        public class Event : StandartEvent
         {
         }
 

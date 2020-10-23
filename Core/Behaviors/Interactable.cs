@@ -12,7 +12,7 @@ namespace Core.Behaviors
             public ContentConfig contentConfig;
         }
 
-        public class Event : CommonEvent
+        public class Event : ActorEvent
         {
             public IContent content;
         }

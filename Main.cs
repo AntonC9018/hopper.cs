@@ -21,26 +21,22 @@ namespace Hopper
         static void Main(string[] args)
         {
             // Serialize();
-            Demo();
+            // Demo();
             // Generate();
             // Release();
-            // var item = new TinkerItem(null);
+            Explode();
+        }
 
-            // var pool = SuperPool.CreateNormal<IItem>();
-
-            // pool.Add("zone0/rare/weapon", item.Id, 1);
-
-            // var list = new List<PoolItem>
-            // {
-            //     new PoolItem(item.Id, 1),
-            //     new PoolItem(item.Id, 2),
-            // };
-
-            // pool.AddRange("zone0/rare/weapon", list);
-
-            // var poolCopy = pool.Copy();
-            // pool.Debug();
-            // poolCopy.Debug();
+        public static void Explode()
+        {
+            // var defStat = new StatManager();
+            // defStat.GetRaw(Attack.Resistance.Path.String, new Attack.Resistance { pierce = 10 });
+            var world = new World(5, 5);
+            var player = world.SpawnPlayer(Player.CreateFactory(), new IntVector2(1, 1));
+            Explosion.Explode(new IntVector2(2, 2), 1, world);
+            // player.Stats.DefaultStats = defStat;
+            // player.Stats.GetRaw(Attack.Source.Resistance.Path).content[Explosion.Source.Id] = 10;
+            // player.Stats.GetRaw(Attack.Resistance.Path).pierce = 10;
         }
 
         public class TestContent : IContent
@@ -300,7 +296,6 @@ namespace Hopper
                 System.Console.WriteLine($"Entity at {t.targetEntity.Pos} has been considered a potential target");
             }
 
-
             System.Console.WriteLine("\n ------ Inventory Demo ------ \n");
             var inventory = (Inventory)player.Inventory;
 
@@ -418,9 +413,7 @@ namespace Hopper
             System.Console.WriteLine($"Player's new position: {player.Pos}");
             System.Console.WriteLine($"Spider's new position: {spider.Pos}");
 
-            var ma = moveAction.Copy();
-            ma.direction = new IntVector2(-1, -1);
-            player.Behaviors.Get<Displaceable>().Activate(ma, new Move());
+            player.Behaviors.Get<Displaceable>().Activate(new IntVector2(-1, -1), new Move());
             world.Loop();
             System.Console.WriteLine("Looped");
             System.Console.WriteLine($"Player's new position: {player.Pos}");
@@ -452,9 +445,9 @@ namespace Hopper
 
     public static class TestTinkerStuff
     {
-        static void TestMethod1(CommonEvent commonEvent)
+        static void TestMethod1(Displaceable.Event actorEvent)
         {
-            var data = tinker.GetStore(commonEvent);
+            var data = tinker.GetStore(actorEvent);
             System.Console.WriteLine($"Tinker says that i = {data.i}");
         }
         public static Tinker<TestTinkerData> tinker = Tinker<TestTinkerData>
@@ -463,9 +456,9 @@ namespace Hopper
 
     public static class TestStatusStuff
     {
-        static void TestMethod1(CommonEvent commonEvent)
+        static void TestMethod1(StandartEvent standartEvent)
         {
-            var data = status.GetStore(commonEvent);
+            var data = status.GetStore(standartEvent);
             System.Console.WriteLine($"Tinker says that amount = {data.amount}");
         }
         public static Status<StatusData> status = new Status<StatusData>(

@@ -19,7 +19,7 @@ namespace Test
     }
     public class Binding : Behavior, IStandartActivateable
     {
-        public class Event : CommonEvent
+        public class Event : StandartEvent
         {
             public StatusFile statusStat;
             public BindStatus bindStatus;

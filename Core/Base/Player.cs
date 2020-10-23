@@ -1,6 +1,7 @@
 using System.Runtime.Serialization;
 using Core.Behaviors;
 using Core.Items;
+using Core.Stats.Basic;
 
 namespace Core
 {
@@ -27,9 +28,11 @@ namespace Core
             .AddBehavior<Attackable>()
             .AddBehavior<Damageable>()
             .AddBehavior<Attacking>()
-            .Retouch(Core.Retouchers.Skip.EmptyAttack)
+            .Retouch(Retouchers.Skip.EmptyAttack)
             .AddBehavior<Digging>()
-            .Retouch(Core.Retouchers.Skip.EmptyDig)
-            .Retouch(Core.Retouchers.Equip.OnDisplace);
+            .Retouch(Retouchers.Skip.EmptyDig)
+            .Retouch(Retouchers.Equip.OnDisplace)
+            .AddBehavior<Pushable>();
+        // .Retouch(Retouchers.Attackableness.Constant(AtkCondition.ALWAYS));
     }
 }

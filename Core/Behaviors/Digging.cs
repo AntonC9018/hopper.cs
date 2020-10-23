@@ -13,7 +13,7 @@ namespace Core.Behaviors
     {
         public static Attack.Source DigAttackSource;
 
-        public class Event : CommonEvent
+        public class Event : StandartEvent
         {
             public Dig dig;
             public List<DigTarget> targets;

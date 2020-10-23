@@ -6,9 +6,8 @@ namespace Core.Behaviors
     [DataContract]
     public class Tick : Behavior
     {
-        public class Event : EventBase
+        public class Event : ActorEvent
         {
-            public Entity actor;
         }
 
         public void Activate()

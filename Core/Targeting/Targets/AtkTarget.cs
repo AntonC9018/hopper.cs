@@ -1,19 +1,20 @@
 using Core.Behaviors;
 using Core.Stats.Basic;
-using Utils.Vector;
 
 namespace Core.Targeting
 {
     public class AtkTarget : Target, ITarget<AtkTarget, Attack>
     {
         public AtkCondition atkCondition = AtkCondition.NEVER;
-        public Layer TargetedLayer => Layer.REAL;
-        public Layer SkipLayer => Layer.WALL;
 
-        public void CalculateTargetedEntity(TargetEvent<AtkTarget> ev, Cell cell, Attack attack)
+        public void CalculateTargetedEntity(
+            TargetEvent<AtkTarget> ev, Cell cell, Layer skipLayer, Layer targetedLayer)
         {
-            targetEntity = GetEntityDefault(cell, SkipLayer, TargetedLayer);
+            targetEntity = GetEntityDefault(cell, skipLayer, targetedLayer);
+        }
 
+        public void ProcessMeta(Attack attack)
+        {
             if (targetEntity != null && targetEntity.Behaviors.Has<Attackable>())
             {
                 atkCondition = CalculateCondition(targetEntity, attack);

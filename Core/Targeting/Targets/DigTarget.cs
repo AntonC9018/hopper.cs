@@ -1,18 +1,18 @@
 using Core.Stats.Basic;
-using Utils.Vector;
 
 namespace Core.Targeting
 {
 
     public class DigTarget : Target, ITarget<DigTarget, Dig>
     {
-
-        public Layer TargetedLayer => Layer.WALL;
-        public Layer SkipLayer => 0;
-
-        public void CalculateTargetedEntity(TargetEvent<DigTarget> ev, Cell cell, Dig dig)
+        public void CalculateTargetedEntity(
+            TargetEvent<DigTarget> ev, Cell cell, Layer skipLayer, Layer targetedLayer)
         {
-            targetEntity = GetEntityDefault(cell, SkipLayer, TargetedLayer);
+            targetEntity = GetEntityDefault(cell, skipLayer, targetedLayer);
+        }
+
+        public void ProcessMeta(Dig meta)
+        {
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Core.Behaviors
     [DataContract]
     public class Damageable : Behavior
     {
-        public int m_health = 2;
+        public int m_health = 5;
 
         public bool Activate(int damage)
         {

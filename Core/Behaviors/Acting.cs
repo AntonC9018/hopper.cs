@@ -48,7 +48,7 @@ namespace Core.Behaviors
             );
         }
 
-        public class Event : CommonEvent
+        public class Event : StandartEvent
         {
             public bool success = false;
         }

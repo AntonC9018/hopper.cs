@@ -5,11 +5,13 @@ namespace Core.Targeting
     public interface ITarget<T, M>
         where T : Target
     {
-        void CalculateTargetedEntity(TargetEvent<T> ev, Cell cell, M meta);
+        void CalculateTargetedEntity(
+            TargetEvent<T> ev,
+            Cell cell,
+            Layer skipLayer,
+            Layer targetedLayer);
 
-        Layer TargetedLayer { get; }
-        // => Layer.REAL | Layer.MISC | Layer.WALL;
-        Layer SkipLayer { get; }// => 0;
+        void ProcessMeta(M meta);
     }
 
     public class Target
@@ -26,7 +28,7 @@ namespace Core.Targeting
         }
 
         public static TargetEvent<T> CreateEvent<T>(
-            CommonEvent commonEvent)
+            StandartEvent commonEvent)
             where T : Target, new()
         {
             return new TargetEvent<T>

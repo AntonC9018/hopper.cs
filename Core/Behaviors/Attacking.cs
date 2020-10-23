@@ -11,7 +11,7 @@ namespace Core.Behaviors
     [DataContract]
     public class Attacking : Behavior, IStandartActivateable
     {
-        public class Event : CommonEvent
+        public class Event : StandartEvent
         {
             public List<AtkTarget> targets;
             public Attack attack;
@@ -75,11 +75,9 @@ namespace Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
-                var action = ev.action.Copy();
-                action.direction = target.direction;
                 var attackable = target.targetEntity.Behaviors.Get<Attackable>();
                 // let it throw if this has not been accounted for
-                attackable.Activate(action.direction, (Attack)ev.attack.Copy());
+                attackable.Activate(ev.action.direction, (Attack)ev.attack.Copy());
             }
         }
 
@@ -87,12 +85,10 @@ namespace Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
-                var action = ev.action.Copy();
-                action.direction = target.direction;
                 Pushable pushable = target.targetEntity.Behaviors.Get<Pushable>();
                 if (pushable != null)
                 {
-                    pushable.Activate(action, (Push)ev.push.Copy());
+                    pushable.Activate(target.direction, (Push)ev.push.Copy());
                 }
             }
         }

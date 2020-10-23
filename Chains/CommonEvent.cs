@@ -2,15 +2,12 @@ using Chains;
 
 namespace Core
 {
-    public class CommonEvent : EventBase
+    public class ActorEvent : EventBase
     {
         public Entity actor;
+    }
+    public class StandartEvent : ActorEvent
+    {
         public Action action;
-
-        // public CommonEvent(Entity actor, Action action)
-        // {
-        //     this.actor = actor;
-        //     this.action = action;
-        // }
     }
 }

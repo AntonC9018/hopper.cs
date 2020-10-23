@@ -8,19 +8,20 @@ namespace Core.Behaviors
     [DataContract]
     public class Displaceable : Behavior
     {
-        public class Event : CommonEvent
+        public class Event : ActorEvent
         {
             public Entity entity;
             public Move move;
             public IntVector2 newPos;
+            public IntVector2 dir;
         }
 
-        public bool Activate(Action action, Move move)
+        public bool Activate(IntVector2 dir, Move move)
         {
             var ev = new Event
             {
                 actor = m_entity,
-                action = action,
+                dir = dir,
                 move = move
             };
             return CheckDoCycle<Event>(ev);
@@ -32,7 +33,7 @@ namespace Core.Behaviors
 
             do
             {
-                var cell = ev.actor.GetCellRelative(ev.action.direction * i);
+                var cell = ev.actor.GetCellRelative(ev.dir * i);
 
                 if (cell == null || cell.GetEntityFromLayer(Layer.BLOCK) != null)
                     break;
@@ -40,7 +41,7 @@ namespace Core.Behaviors
             } while (i < ev.move.power);
             i--;
 
-            ev.newPos = ev.actor.GetPosRelative(ev.action.direction * i);
+            ev.newPos = ev.actor.GetPosRelative(ev.dir * i);
         }
 
         static void Displace(Event ev)

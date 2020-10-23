@@ -24,6 +24,7 @@ namespace Core
         public event System.Action BeforeFilterEvent;
 
         public int m_phase = 0;
+        public int m_numIters = 0;
 
         public WorldStateManager()
         {
@@ -53,6 +54,7 @@ namespace Core
             FilterDead();
 
             EndOfLoopEvent?.Invoke();
+            m_numIters++;
         }
 
         private void CalculateNextAction(Entity entity)

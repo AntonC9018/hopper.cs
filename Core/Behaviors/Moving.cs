@@ -8,7 +8,7 @@ namespace Core.Behaviors
     public class Moving : Behavior, IStandartActivateable
     {
 
-        public class Event : CommonEvent
+        public class Event : StandartEvent
         {
             public Move move;
         }
@@ -34,7 +34,7 @@ namespace Core.Behaviors
 
         static void Displace(Event ev)
         {
-            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action, ev.move);
+            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action.direction, ev.move);
         }
 
         public static ChainPaths<Moving, Event> Check;

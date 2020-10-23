@@ -9,13 +9,13 @@ namespace Core.Retouchers
         public static Retoucher OnDisplace = Retoucher
             .SingleHandlered<Displaceable.Event>(Displaceable.Do, PickUp);
 
-        static void PickUp(CommonEvent commonEvent)
+        static void PickUp(ActorEvent actorEvent)
         {
-            var droppedItems = commonEvent.actor.Cell.m_entities
+            var droppedItems = actorEvent.actor.Cell.m_entities
                 .Where(i => i.Layer == Layer.DROPPED)
                 .ConvertAll<DroppedItem>(i => (DroppedItem)i);
 
-            var inv = commonEvent.actor.Inventory;
+            var inv = actorEvent.actor.Inventory;
             if (inv != null)
             {
                 foreach (var droppedItem in droppedItems)

@@ -17,12 +17,14 @@ namespace Core.Stats
         private Dictionary<Modifier, Handle> m_chainModifierHandles
             = new Dictionary<Modifier, Handle>();
         private StatFS m_fs = new StatFS();
+        public StatManager DefaultStats { private get; set; }
 
-        public StatManager()
+        public StatManager(StatManager defaultStats = null)
         {
             m_chainModifierHandles = new Dictionary<Modifier, Handle>();
             m_modifierCounts = new Dictionary<Modifier, int>();
             m_fs = new StatFS();
+            DefaultStats = defaultStats;
         }
 
         public void AddStatModifier<T>(StatModifier<T> modifier) where T : File, IAddableWith<T>
@@ -80,6 +82,10 @@ namespace Core.Stats
 
         public T Get<T>(IStatPath<T> statPath) where T : File
         {
+            if (DefaultStats != null)
+            {
+                return Get(statPath.String, DefaultStats.Get(statPath.String, statPath.DefaultFile));
+            }
             return Get(statPath.String, statPath.DefaultFile);
         }
 
@@ -89,6 +95,24 @@ namespace Core.Stats
             var statFile = (StatFileContainer<T>)m_fs.GetFileLazy(path, defaultValue);
             var file = statFile.Retrieve();
             return file;
+        }
+
+        // This one is probably going to be used just for initial setup
+        // The question of attributing default, entity-specific stats is still open
+        public T GetRaw<T>(IStatPath<T> statPath) where T : File
+        {
+            if (DefaultStats != null)
+            {
+                return GetRaw(statPath.String, DefaultStats.Get(statPath.String, statPath.DefaultFile));
+            }
+            return GetRaw(statPath.String, statPath.DefaultFile);
+        }
+
+        public T GetRaw<T>(string path, T defaultFile) where T : File
+        {
+            var defaultValue = new StatFileContainer<T>(defaultFile);
+            var statFile = (StatFileContainer<T>)m_fs.GetFileLazy(path, defaultValue);
+            return statFile.file;
         }
     }
 }

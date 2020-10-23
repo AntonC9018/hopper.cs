@@ -9,7 +9,7 @@ namespace Core.Behaviors
     [DataContract]
     public class Attackable : Behavior
     {
-        public class Event : CommonEvent
+        public class Event : ActorEvent
         {
             public Entity entity;
             public Attack attack;
@@ -44,13 +44,21 @@ namespace Core.Behaviors
 
         static void Armor(Event ev)
         {
+            if (ev.attack.damage == 0)
+            {
+                return;
+            }
             if (ev.attack.pierce < ev.resistance.pierce)
+            {
                 ev.attack.damage = 0;
+            }
             else
+            {
                 ev.attack.damage = Maths.Clamp(
                     ev.attack.damage - ev.resistance.armor,
                     ev.resistance.minDamage,
                     ev.resistance.maxDamage);
+            }
         }
 
         static void TakeHit(Event ev)
@@ -60,7 +68,7 @@ namespace Core.Behaviors
         }
 
 
-        public class AttackablenessEvent : CommonEvent
+        public class AttackablenessEvent : StandartEvent
         {
             public AtkCondition attackableness = AtkCondition.ALWAYS;
             public Attack attack;

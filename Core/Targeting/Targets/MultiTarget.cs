@@ -1,16 +1,12 @@
 using System.Collections.Generic;
 using Utils;
-using Utils.Vector;
 
 namespace Core.Targeting
 {
-    public class MultiTarget<T, M> : Target, ITarget<T, M>
+    public class MultiTarget<T, M> : Target //, ITarget<T, M>
         where T : Target, ITarget<T, M>, new()
     {
-        public virtual Layer TargetedLayer => throw new System.NotImplementedException();
-        public virtual Layer SkipLayer => throw new System.NotImplementedException();
-
-        public IEnumerable<T> ToTargets(IList<Entity> targetedEntities)
+        public IEnumerable<T> ToTargets(IList<Entity> targetedEntities, M meta)
         {
             T[] result = new T[targetedEntities.Count];
             for (int i = 0; i < targetedEntities.Count; i++)
@@ -21,22 +17,21 @@ namespace Core.Targeting
                     direction = direction,
                     targetEntity = targetedEntities[i]
                 };
+                result[i].ProcessMeta(meta);
             }
             return result;
         }
 
-        public IEnumerable<T> CalculateTargets(TargetEvent<T> targetEvent, Cell cell, M meta)
+        public IEnumerable<T> CalculateTargets(
+            TargetEvent<T> targetEvent,
+            Cell cell,
+            M meta,
+            Layer skipLayer,
+            Layer targetedLayer)
         {
-            var targetedEntities = cell.m_entities.Where(
-                e => (e.Layer & SkipLayer) == 0
-                    && (e.Layer & TargetedLayer) != 0
-            );
-            return ToTargets(targetedEntities);
-        }
-
-        public void CalculateTargetedEntity(TargetEvent<T> ev, Cell cell, M meta)
-        {
-            throw new System.NotImplementedException();
+            var targetedEntities = cell.m_entities
+                .Where(e => (e.Layer & skipLayer) == 0 && (e.Layer & targetedLayer) != 0);
+            return ToTargets(targetedEntities, meta);
         }
     }
 }
