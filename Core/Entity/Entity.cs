@@ -121,6 +121,13 @@ namespace Core
         {
             return World.m_grid.GetCellAt(m_pos + offset);
         }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode() => m_id;
     }
 
 }

@@ -24,7 +24,20 @@ namespace Hopper
             // Demo();
             // Generate();
             // Release();
-            Explode();
+            // Explode();
+            // Bounce();
+        }
+
+        public static void Bounce()
+        {
+            var world = new World(5, 5);
+            var player = world.SpawnPlayer(Player.CreateFactory(), new IntVector2(1, 1));
+            var trap = world.SpawnEntity(BounceTrap.Factory, new IntVector2(1, 2));
+            trap.Reorient(new IntVector2(1, 0));
+            player.Behaviors.Get<Acting>().NextAction =
+                new BehaviorAction<Moving>().WithDir(new IntVector2(0, 1));
+            world.Loop();
+            System.Console.WriteLine($"Player is at {player.Pos}");
         }
 
         public static void Explode()

@@ -8,5 +8,10 @@ namespace Core
         public abstract bool Do(Entity e);
         public IntVector2 direction;
 
+        public Action WithDir(IntVector2 direction)
+        {
+            this.direction = direction;
+            return this;
+        }
     }
 }
