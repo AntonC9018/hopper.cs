@@ -23,10 +23,7 @@ namespace Test
         private static StatManager GetDefaultStats()
         {
             var stats = new StatManager();
-            var res = new Push.Source.Resistance();
-            res.Add(Explosion.AtkSource.Id, 10);
-            stats.GetRaw(Attack.Source.Resistance.Path.String, res);
-            stats.GetRaw(Push.Resistance.Path.String, new Push.Resistance { pierce = 0 });
+            stats.GetRaw(Push.Path.String, PushStat);
             return stats;
         }
 
@@ -38,7 +35,8 @@ namespace Test
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo,
                         e => action.Copy().WithDir(e.Orientation))
                 )
-                .AddBehavior<Bouncing>();
+                .AddBehavior<Bouncing>()
+                .AddSetupListener(e => e.Stats.DefaultStats = defaultStats);
         }
     }
 }
