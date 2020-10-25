@@ -64,7 +64,7 @@ namespace Core.Behaviors
 
             var builder = new ChainTemplateBuilder()
 
-                .AddTemplate<Event>(ChainName.Do)
+                .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(SetResistance, PriorityRanks.High)
                 .AddHandler(ResistSource, PriorityRanks.High)
                 .AddHandler(Armor, PriorityRanks.High)
