@@ -12,6 +12,7 @@ using Newtonsoft.Json.Serialization;
 using Core.Generation;
 using Core.Stats;
 using Core.Stats.Basic;
+using Core.History;
 
 // Hello World! program
 namespace Hopper
@@ -343,18 +344,15 @@ namespace Hopper
             System.Console.WriteLine($"There's {entities.Count} entities in the cell where the player is standing");
 
             System.Console.WriteLine("\n ------ History Demo ------ \n");
-            var enemyEventsByPhases = enemy.History.Phases;
-            var playerEventsByPhases = player.History.Phases;
-            for (int i = 0; i < playerEventsByPhases.Length; i++)
+            var enemyUpdates = enemy.History.Updates;
+            var playerUpdates = player.History.Updates;
+            foreach (var updateInfo in enemyUpdates)
             {
-                foreach (var historyEvent in enemyEventsByPhases[i])
-                {
-                    System.Console.WriteLine($"Enemy did {historyEvent.updateCode.ToString()}. Position after: {historyEvent.stateAfter.pos}");
-                }
-                foreach (var historyEvent in playerEventsByPhases[i])
-                {
-                    System.Console.WriteLine($"Player did {historyEvent.updateCode.ToString()}. Position after: {historyEvent.stateAfter.pos}");
-                }
+                System.Console.WriteLine($"Enemy did {System.Enum.GetName(typeof(UpdateCode), updateInfo.updateCode)}. Position after: {updateInfo.stateAfter.pos}");
+            }
+            foreach (var updateInfo in playerUpdates)
+            {
+                System.Console.WriteLine($"Player did {System.Enum.GetName(typeof(UpdateCode), updateInfo.updateCode)}. Position after: {updateInfo.stateAfter.pos}");
             }
 
             System.Console.WriteLine("\n ------ Equip on Displace Demo ------ \n");

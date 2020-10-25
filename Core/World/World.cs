@@ -9,8 +9,8 @@ namespace Core
         public GridManager m_grid;
         public WorldStateManager m_state;
 
-        public static int s_numPhases = System.Enum.GetNames(typeof(Layer)).Length;
-        public static int s_numEntityTypes => s_numPhases;
+        public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
+        public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
 
         public int Id => m_id;
         private int m_id;
@@ -27,6 +27,11 @@ namespace Core
         public void Loop()
         {
             m_state.Loop();
+        }
+
+        public int GetNextTimeFrame()
+        {
+            return m_state.GetNextTimeFrame();
         }
 
         public Entity SpawnEntity(IEntityFactory entityFactory, IntVector2 pos)

@@ -54,6 +54,9 @@ namespace Test
             }
         }
 
+        public delegate void ExplosionHandler(IntVector2 pos, World world);
+        public static event ExplosionHandler ExplosionEvent;
+
         public static void ExplodeCell(IntVector2 pos, IntVector2 knockbackDir, World world)
         {
             var atkEvent = Target.CreateEvent<AtkTarget>(new Dummy(pos, world), knockbackDir);
@@ -64,7 +67,8 @@ namespace Test
                 target.targetEntity.Behaviors.Get<Attackable>().Activate(knockbackDir, BaseAtk);
                 target.targetEntity.Behaviors.Get<Pushable>().Activate(knockbackDir, BasePush);
             }
-            // TODO: spawn particles through some mechanism 
+            // spawn particles through some mechanism 
+            ExplosionEvent?.Invoke(pos, world);
         }
 
         public static IEnumerable<IntVector2> Spiral(int start_x, int start_y, int end_x, int end_y)

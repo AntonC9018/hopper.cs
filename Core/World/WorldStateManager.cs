@@ -8,7 +8,7 @@ namespace Core
     public class WorldStateManager
     {
         private List<Entity>[] m_entities
-            = new List<Entity>[World.s_numEntityTypes];
+            = new List<Entity>[World.NumLayers];
 
         // note that players never get into the lists from above
         private List<Entity> m_players = new List<Entity>();
@@ -23,8 +23,17 @@ namespace Core
         public event System.Action EndOfLoopEvent;
         public event System.Action BeforeFilterEvent;
 
-        public int m_phase = 0;
-        public int m_numIters = 0;
+        private Phase m_currentPhase = Phase.PLAYER;
+        public Phase CurrentPhase => m_currentPhase;
+
+        private int m_iterCount = 0;
+        public int InterationCount => m_iterCount;
+
+        private int m_currentTimeFrame = 0;
+        public int GetNextTimeFrame()
+        {
+            return m_currentTimeFrame++;
+        }
 
         public WorldStateManager()
         {
@@ -47,6 +56,8 @@ namespace Core
 
         public void Loop()
         {
+            m_currentTimeFrame = 0;
+            m_currentPhase = Phase.PLAYER;
             ActivatePlayers();
             CalculateActionOnEntities();
             ActivateEntities();
@@ -54,7 +65,7 @@ namespace Core
             FilterDead();
 
             EndOfLoopEvent?.Invoke();
-            m_numIters++;
+            m_iterCount++;
         }
 
         private void CalculateNextAction(Entity entity)
@@ -78,6 +89,7 @@ namespace Core
             {
                 Activate(player);
             }
+            m_currentPhase++;
         }
 
         private void CalculateActionOnEntities()
@@ -92,19 +104,20 @@ namespace Core
         {
             for (int i = 0; i < m_entities.Length; i++)
             {
-                m_phase = i;
+                m_currentPhase++;
                 foreach (var e in m_entities[i])
                     Activate(e);
             }
-            m_phase = 0;
         }
 
         private void TickAll()
         {
+            m_currentPhase = Phase.TICK_PLAYER;
             foreach (var player in m_players)
             {
                 player.Behaviors.Get<Tick>().Activate();
             }
+            m_currentPhase = Phase.TICK_REAL;
             foreach (var es in m_entities)
             {
                 foreach (var e in es)

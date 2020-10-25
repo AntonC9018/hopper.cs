@@ -17,7 +17,7 @@ namespace Core.Targeting
     public class Target
     {
         public static TargetEvent<T> CreateEvent<T>(
-            IWorldPosition entity, IntVector2 dir)
+            IWorldSpot entity, IntVector2 dir)
             where T : Target, new()
         {
             return new TargetEvent<T>

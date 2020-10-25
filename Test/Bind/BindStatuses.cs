@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Chains;
 using Core;
 using Core.Behaviors;
+using Core.History;
 using Core.Targeting;
 using Utils.Vector;
 
@@ -68,7 +69,7 @@ namespace Test
             if (statusData.whoApplied != null)
             {
                 statusData.whoApplied.Pos = ev.actor.Pos;
-                statusData.whoApplied.History.Add(statusData.whoApplied, History.UpdateCode.displaced_do);
+                statusData.whoApplied.History.Add(statusData.whoApplied, UpdateCode.displaced_do);
             }
         }
 

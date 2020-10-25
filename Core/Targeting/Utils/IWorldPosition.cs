@@ -2,7 +2,7 @@ using Utils.Vector;
 
 namespace Core.Targeting
 {
-    public interface IWorldPosition
+    public interface IWorldSpot
     {
         IntVector2 Pos { get; }
         World World { get; }

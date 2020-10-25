@@ -3,11 +3,12 @@ using Core.Items;
 using System.Runtime.Serialization;
 using Core.Stats;
 using Core.Targeting;
+using Core.History;
 
 namespace Core
 {
     [DataContract]
-    public class Entity : IHaveId, IWorldPosition
+    public class Entity : IHaveId, IWorldSpot, ITrackable<EntityState>
     {
         [DataMember] public int Id => m_id;
         private int m_id;
@@ -38,7 +39,12 @@ namespace Core
         public World World { get; private set; }
         public StatManager Stats { get; private set; }
 
-        public History History { get; private set; }
+        public History<EntityState> History { get; private set; }
+
+        EntityState ITrackable<EntityState>.GetState()
+        {
+            return new EntityState(this);
+        }
 
         public Entity()
         {
@@ -46,7 +52,7 @@ namespace Core
             Behaviors = new BehaviorControl();
             Tinkers = new TinkerControl(this);
             Stats = new StatManager();
-            History = new History();
+            History = new History<EntityState>();
         }
 
         public void _SetId(int id)
@@ -128,6 +134,7 @@ namespace Core
         }
 
         public override int GetHashCode() => m_id;
+
     }
 
 }

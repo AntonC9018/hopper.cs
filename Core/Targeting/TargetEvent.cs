@@ -8,6 +8,6 @@ namespace Core.Targeting
     {
         public List<T> targets;
         public IntVector2 dir;
-        public IWorldPosition spot;
+        public IWorldSpot spot;
     }
 }
