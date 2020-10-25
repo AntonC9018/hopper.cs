@@ -13,7 +13,7 @@ namespace Core
         // note that players never get into the lists from above
         private List<Entity> m_players = new List<Entity>();
 
-        public IReadOnlyList<Entity> Players => m_players.AsReadOnly();
+        public ReadOnlyCollection<Entity> Players => m_players.AsReadOnly();
         public ReadOnlyCollection<List<Entity>> Entities => System.Array.AsReadOnly(m_entities);
 
         // Subscribe to this event only from the entity
@@ -31,6 +31,10 @@ namespace Core
 
         private int m_currentTimeFrame = 0;
         public int GetNextTimeFrame() => m_currentTimeFrame++;
+
+        private int[] m_timeStampPhaseLimits = new int[World.NumPhases];
+        public ReadOnlyCollection<int> TimeStampPhaseLimit
+            => System.Array.AsReadOnly(m_timeStampPhaseLimits);
 
         public WorldStateManager()
         {
@@ -53,8 +57,6 @@ namespace Core
 
         public void Loop()
         {
-            m_currentTimeFrame = 0;
-            m_currentPhase = Phase.PLAYER;
             ActivatePlayers();
             CalculateActionOnEntities();
             ActivateEntities();
@@ -86,7 +88,7 @@ namespace Core
             {
                 Activate(player);
             }
-            m_currentPhase++;
+            AdvancePhase();
         }
 
         private void CalculateActionOnEntities()
@@ -101,7 +103,7 @@ namespace Core
         {
             for (int i = 0; i < m_entities.Length; i++)
             {
-                m_currentPhase++;
+                AdvancePhase();
                 foreach (var e in m_entities[i])
                     Activate(e);
             }
@@ -109,12 +111,12 @@ namespace Core
 
         private void TickAll()
         {
-            m_currentPhase = Phase.TICK_PLAYER;
+            SetPhase(Phase.TICK_PLAYER);
             foreach (var player in m_players)
             {
                 player.Behaviors.Get<Tick>().Activate();
             }
-            m_currentPhase = Phase.TICK_REAL;
+            SetPhase(Phase.TICK_REAL);
             foreach (var es in m_entities)
             {
                 foreach (var e in es)
@@ -141,6 +143,24 @@ namespace Core
                 }
                 m_entities[i] = newEntities;
             }
+        }
+
+        private void ResetPhase()
+        {
+            m_currentTimeFrame = 0;
+            m_currentPhase = Phase.PLAYER;
+        }
+
+        private void AdvancePhase()
+        {
+            m_timeStampPhaseLimits[(int)m_currentPhase] = m_currentTimeFrame;
+            m_currentPhase++;
+        }
+
+        private void SetPhase(Phase phase)
+        {
+            m_timeStampPhaseLimits[(int)m_currentPhase] = m_currentTimeFrame;
+            m_currentPhase = phase;
         }
     }
 }
