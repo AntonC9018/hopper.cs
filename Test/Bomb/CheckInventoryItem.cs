@@ -18,13 +18,17 @@ namespace Test
         public override void BeDestroyed(Entity entity)
         {
             if (IsNotEquipped(entity))
+            {
                 base.BeDestroyed(entity);
+            }
         }
 
         public override void BeEquipped(Entity entity)
         {
             if (IsNotEquipped(entity) && !m_tinker.IsTinked(entity))
+            {
                 base.BeEquipped(entity);
+            }
         }
     }
 }

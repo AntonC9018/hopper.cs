@@ -16,7 +16,7 @@ namespace Core
         DROPPED = 0b_1000_0000
     }
 
-    public static class LayerCombos
+    public static class ExtendedLayer
     {
         public static Layer BLOCK = Layer.REAL | Layer.WALL | Layer.MISC;
     }
@@ -56,6 +56,7 @@ namespace Core
         {
             return m_entities[0];
         }
+
         public Entity GetEntityFromLayer(Layer layer)
         {
             return m_entities.FindLast(e => (e.Layer & layer) != 0);

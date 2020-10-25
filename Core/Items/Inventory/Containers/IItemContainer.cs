@@ -4,8 +4,8 @@ namespace Core.Items
 {
     public interface IItemContainer
     {
-        void Insert(IItem item);
-        void Remove(IItem item);
+        void Insert(DecomposedItem di);
+        void Remove(DecomposedItem di);
         IItem this[int index] { get; }
         List<IItem> PullOutExcess();
         IEnumerable<IItem> AllItems { get; }

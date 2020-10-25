@@ -16,7 +16,7 @@ namespace Core
             // account for the weapon and the shovel slot
             inventory.AddContainer(Core.Items.Inventory.WeaponSlot, new CircularItemContainer(1));
             inventory.AddContainer(Core.Items.Inventory.ShovelSlot, new CircularItemContainer(1));
-            inventory.AddContainer(Core.Items.Inventory.EndlessSlot, new EndelssItemContanier());
+            inventory.AddContainer(Core.Items.Inventory.CounterSlot, new CounterItemContainer());
         }
 
         [DataMember] private int SomeSavedMember;

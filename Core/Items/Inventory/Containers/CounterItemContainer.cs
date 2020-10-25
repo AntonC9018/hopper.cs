@@ -21,14 +21,24 @@ namespace Core.Items
 
         public List<IItem> PullOutExcess() => new List<IItem>();
         public IItem this[int index] => throw new System.Exception("This doesn't make sense");
-        public void Insert(IItem item)
+
+        public void Insert(DecomposedItem di)
         {
-            if (itemCount.ContainsKey(item))
-                itemCount[item]++;
+            if (itemCount.ContainsKey(di.item))
+                itemCount[di.item] += di.count;
             else
-                itemCount[item] = 1;
+                itemCount.Add(di.item, di.count);
         }
-        public void Remove(IItem item) => itemCount[item]--;
+
+        public void Remove(DecomposedItem di)
+        {
+            int newVal = itemCount[di.item] -= di.count;
+            if (newVal <= 0)
+            {
+                itemCount.Remove(di.item);
+            }
+        }
+
         public bool Contains(IItem item) => itemCount.ContainsKey(item);
     }
 }

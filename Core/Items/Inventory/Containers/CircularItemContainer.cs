@@ -36,17 +36,25 @@ namespace Core.Items
             return exc;
         }
         public IItem this[int index] { get => items[index]; }
-        public void Insert(IItem item)
+        public void Insert(DecomposedItem di)
         {
-            var ex = items.PushBack(item);
+            if (di.count != 1)
+            {
+                throw new System.Exception("Packed items are not supported in circular item containers");
+            }
+            var ex = items.PushBack(di.item);
             if (ex != null)
                 excess.Add(ex);
         }
-        public void Remove(IItem item)
+        public void Remove(DecomposedItem di)
         {
+            if (di.count != 1)
+            {
+                throw new System.Exception("Packed items are not supported in circular item containers");
+            }
             var remainingItems = items
-                .Where<IItem>(i => i.Id != item.Id)
-                .ToArray<IItem>();
+                .Where(i => i != di.item)
+                .ToArray();
             items = new CircularBuffer<IItem>(items.Capacity, remainingItems);
         }
         public bool Contains(IItem item) => items.Contains(item);

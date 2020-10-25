@@ -110,6 +110,7 @@ namespace Core.Behaviors
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(ApplyAttack)
+                .AddHandler(ApplyPush)
                 .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacking_do))
 
                 .End();

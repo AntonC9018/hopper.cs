@@ -1,16 +1,15 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace Core.Items
 {
-    public class EndelssItemContanier : IItemContainer
+    public class UniqueEndelssItemContanier : IItemContainer
     {
-        private List<IItem> items = new List<IItem>();
+        private HashSet<IItem> items = new HashSet<IItem>();
         public IEnumerable<IItem> AllItems => items;
         public List<IItem> PullOutExcess() => new List<IItem>();
-        public IItem this[int index] { get => items[index]; }
-        public void Insert(IItem item) => items.Add(item);
-        public void Remove(IItem item) => items.Remove(item);
+        public IItem this[int index] { get => throw new System.Exception("Not supported"); }
+        public void Insert(DecomposedItem di) => items.Add(di.item);
+        public void Remove(DecomposedItem di) => items.Remove(di.item);
         public bool Contains(IItem item) => items.Contains(item);
     }
 }

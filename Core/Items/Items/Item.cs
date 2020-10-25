@@ -40,5 +40,7 @@ namespace Core.Items
         {
             return new ModularTargetingItem<T, M>(slot, targetProvider, modules);
         }
+
+        public virtual DecomposedItem Decompose() => new DecomposedItem(this);
     }
 }

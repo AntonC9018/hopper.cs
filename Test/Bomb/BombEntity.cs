@@ -53,6 +53,7 @@ namespace Test
                 .AddBehavior<Attackable>()
                 .Retouch(Attackableness.Constant(AtkCondition.IF_NEXT_TO))
                 .AddBehavior<Pushable>()
+                .AddBehavior<Displaceable>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(steps))
                 .SetDefaultStats(defaultStats);

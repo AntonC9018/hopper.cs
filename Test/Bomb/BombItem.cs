@@ -11,7 +11,14 @@ namespace Test
         public static SimpleAction placeBombAction = new SimpleAction(
             (e, a) =>
             {
-                e.World.SpawnEntity(BombEntity.Factory, e.Pos + a.direction);
+                if (e.GetCellRelative(a.direction)?.GetEntityFromLayer(ExtendedLayer.BLOCK) == null)
+                {
+                    e.World.SpawnEntity(BombEntity.Factory, e.Pos + a.direction);
+                }
+                else
+                {
+                    e.World.SpawnEntity(BombEntity.Factory, e.Pos);
+                }
                 e.Inventory.Destroy(item);
             }
         );
@@ -24,8 +31,8 @@ namespace Test
                 .End().ToStatic()
         );
 
-        public static CheckInventoryItem item = new CheckInventoryItem(tinker, Inventory.EndlessSlot);
-        public static MultiItem item_x3 = new MultiItem(item, 3);
+        public static CheckInventoryItem item = new CheckInventoryItem(tinker, Inventory.CounterSlot);
+        public static PackedItem item_x3 = new PackedItem(item, 3);
 
     }
 }
