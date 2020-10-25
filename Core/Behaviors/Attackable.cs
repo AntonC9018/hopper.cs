@@ -13,18 +13,30 @@ namespace Core.Behaviors
         public class Event : ActorEvent
         {
             public Entity entity;
-            public Attack attack;
+            public Params atkParams;
             public IntVector2 dir;
             public Attack.Resistance resistance;
         }
 
-        public bool Activate(IntVector2 dir, Attack attack)
+        public class Params
+        {
+            public Attack attack;
+            public Entity attacker;
+
+            public Params(Attack attack, Entity attacker)
+            {
+                this.attack = (Attack)attack.Copy();
+                this.attacker = attacker;
+            }
+        }
+
+        public bool Activate(IntVector2 dir, Params attackableParams)
         {
             var ev = new Event
             {
                 actor = m_entity,
                 dir = dir,
-                attack = attack
+                atkParams = attackableParams
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -37,26 +49,26 @@ namespace Core.Behaviors
         static void ResistSource(Event ev)
         {
             var sourceRes = ev.actor.Stats.Get(Attack.Source.Resistance.Path);
-            if (sourceRes[ev.attack.sourceId] > ev.attack.power)
+            if (sourceRes[ev.atkParams.attack.sourceId] > ev.atkParams.attack.power)
             {
-                ev.attack.damage = 0;
+                ev.atkParams.attack.damage = 0;
             }
         }
 
         static void Armor(Event ev)
         {
-            if (ev.attack.damage == 0)
+            if (ev.atkParams.attack.damage == 0)
             {
                 return;
             }
-            if (ev.attack.pierce < ev.resistance.pierce)
+            if (ev.atkParams.attack.pierce < ev.resistance.pierce)
             {
-                ev.attack.damage = 0;
+                ev.atkParams.attack.damage = 0;
             }
             else
             {
-                ev.attack.damage = Maths.Clamp(
-                    ev.attack.damage - ev.resistance.armor,
+                ev.atkParams.attack.damage = Maths.Clamp(
+                    ev.atkParams.attack.damage - ev.resistance.armor,
                     ev.resistance.minDamage,
                     ev.resistance.maxDamage);
             }
@@ -64,8 +76,9 @@ namespace Core.Behaviors
 
         static void TakeHit(Event ev)
         {
-            ev.actor.Behaviors.Get<Damageable>()?.Activate(ev.attack.damage);
-            System.Console.WriteLine($"Taken {ev.attack.damage} damage");
+            System.Console.WriteLine($"Attacking {ev.actor.ToString()}");
+            ev.actor.Behaviors.Get<Damageable>()?.Activate(ev.atkParams.attack.damage);
+            System.Console.WriteLine($"Taken {ev.atkParams.attack.damage} damage");
         }
 
 

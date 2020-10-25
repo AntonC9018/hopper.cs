@@ -36,8 +36,8 @@ namespace Test
             | Layer.WALL;
         private static Layer SkipLayer = 0;
 
-        private static IProvideTargets<AtkTarget, Attack> targetProvider =
-            TargetProvider.CreateMulti<AtkTarget, Attack>(
+        private static IProvideTargets<AtkTarget, Attackable.Params> targetProvider =
+            TargetProvider.CreateMulti<AtkTarget, Attackable.Params>(
                 Pattern.Under, Handlers.GeneralChain, SkipLayer, TargetedLayer
             );
 
@@ -57,14 +57,19 @@ namespace Test
         public delegate void ExplosionHandler(IntVector2 pos, World world);
         public static event ExplosionHandler ExplosionEvent;
 
+        private static Attackable.Params CreateMeta()
+        {
+            return new Attackable.Params((Attack)BaseAtk.Copy(), null);
+        }
+
         public static void ExplodeCell(IntVector2 pos, IntVector2 knockbackDir, World world)
         {
             var atkEvent = Target.CreateEvent<AtkTarget>(new Dummy(pos, world), knockbackDir);
-            var targets = targetProvider.GetParticularTargets(atkEvent, BaseAtk);
+            var targets = targetProvider.GetParticularTargets(atkEvent, CreateMeta());
 
             foreach (var target in targets)
             {
-                target.targetEntity.Behaviors.Get<Attackable>().Activate(knockbackDir, BaseAtk);
+                target.targetEntity.Behaviors.Get<Attackable>().Activate(knockbackDir, CreateMeta());
                 target.targetEntity.Behaviors.Get<Pushable>().Activate(knockbackDir, BasePush);
             }
             // spawn particles through some mechanism 

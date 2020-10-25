@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Core.Behaviors;
+using Core.Stats.Basic;
 using Core.Targeting;
 
 namespace Core.Items
@@ -25,6 +27,20 @@ namespace Core.Items
         public List<Target> GetTargets(TargetEvent<T> targetEvent, M meta)
         {
             return m_targetProvider.GetTargets(targetEvent, meta);
+        }
+    }
+
+    public class ModularWeapon : ModularTargetingItem<AtkTarget, Attackable.Params>
+    {
+        public ModularWeapon(int slot, IProvideTargets<AtkTarget, Attackable.Params> targetProvider, params IModule[] modules) : base(slot, targetProvider, modules)
+        {
+        }
+    }
+
+    public class ModularShovel : ModularTargetingItem<DigTarget, Dig>
+    {
+        public ModularShovel(int slot, IProvideTargets<DigTarget, Dig> targetProvider, params IModule[] modules) : base(slot, targetProvider, modules)
+        {
         }
     }
 }

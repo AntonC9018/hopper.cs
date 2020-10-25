@@ -22,12 +22,32 @@ namespace Hopper
         static void Main(string[] args)
         {
             // Serialize();
-            Demo();
+            // Demo();
             // Generate();
             // Release();
             // Explode();
             // Bounce();
             // GoldTest();
+            GhostTest();
+        }
+
+
+        public static void GhostTest()
+        {
+            var world = new World(5, 5);
+            var p_fact = new EntityFactory<Entity>()
+                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
+                .AddBehavior<Attacking>();
+            var player = world.SpawnPlayer(p_fact, new IntVector2(1, 1));
+            player.Stats.GetRaw(Attack.Path).damage = 10;
+
+            var ghost = world.SpawnEntity(Ghost.CreateFactory(), player.Pos + IntVector2.Right);
+            player.Behaviors.Get<Acting>().NextAction =
+                new BehaviorAction<Attacking>().WithDir(IntVector2.Right);
+
+            world.Loop();
+
+            System.Console.WriteLine($"Player's new position {player.Pos}");
         }
 
         public static void GoldTest()
@@ -325,7 +345,7 @@ namespace Hopper
             System.Console.WriteLine($"Enemy is at {enemy.Pos}");
             var ev = Target.CreateEvent<AtkTarget>(player, playerNextAction.direction);
             var atk = player.Stats.Get(Attack.Path);
-            var targets = weapon.GetParticularTargets(ev, atk);
+            var targets = weapon.GetParticularTargets(ev, new Attackable.Params(atk, player));
             foreach (var t in targets)
             {
                 System.Console.WriteLine($"Entity at {t.targetEntity.Pos} has been considered a potential target");

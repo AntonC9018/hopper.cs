@@ -1,4 +1,5 @@
 using Chains;
+using Core.Behaviors;
 using Core.Stats.Basic;
 
 namespace Core.Targeting
@@ -87,23 +88,23 @@ namespace Core.Targeting
             return new TargetProvider<T, M>(pattern, chain, stop, new SimpleCalculator<T, M>(skipLayer, targetedLayer));
         }
 
-        public static TargetProvider<AtkTarget, Attack> CreateAtk(
+        public static TargetProvider<AtkTarget, Attackable.Params> CreateAtk(
             Pattern pattern,
             Chain<TargetEvent<AtkTarget>> chain
         )
         {
-            return new TargetProvider<AtkTarget, Attack>(
-                pattern, chain, DefaultStop, new SimpleCalculator<AtkTarget, Attack>(Layer.WALL, Layer.REAL));
+            return new TargetProvider<AtkTarget, Attackable.Params>(
+                pattern, chain, DefaultStop, new SimpleCalculator<AtkTarget, Attackable.Params>(Layer.WALL, Layer.REAL));
         }
 
-        public static TargetProvider<AtkTarget, Attack> CreateAtk(
+        public static TargetProvider<AtkTarget, Attackable.Params> CreateAtk(
             Pattern pattern,
             Chain<TargetEvent<AtkTarget>> chain,
             System.Func<TargetEvent<AtkTarget>, bool> stop
         )
         {
-            return new TargetProvider<AtkTarget, Attack>(
-                pattern, chain, stop, new SimpleCalculator<AtkTarget, Attack>(Layer.WALL, Layer.REAL));
+            return new TargetProvider<AtkTarget, Attackable.Params>(
+                pattern, chain, stop, new SimpleCalculator<AtkTarget, Attackable.Params>(Layer.WALL, Layer.REAL));
         }
 
         public static TargetProvider<DigTarget, Dig> CreateDig(

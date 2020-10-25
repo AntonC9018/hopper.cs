@@ -66,7 +66,8 @@ namespace Core.Behaviors
                     : inv
                         .GenerateTargets(
                             Target.CreateEvent<AtkTarget>(ev),
-                            ev.attack, Inventory.WeaponSlot)
+                            new Attackable.Params(ev.attack, ev.actor),
+                            Inventory.WeaponSlot)
                         .ToList();
             }
         }
@@ -77,7 +78,8 @@ namespace Core.Behaviors
             {
                 var attackable = target.targetEntity.Behaviors.Get<Attackable>();
                 // let it throw if this has not been accounted for
-                attackable.Activate(ev.action.direction, (Attack)ev.attack.Copy());
+                attackable.Activate(ev.action.direction,
+                    new Attackable.Params((Attack)ev.attack.Copy(), ev.actor));
             }
         }
 

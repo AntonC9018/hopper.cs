@@ -10,8 +10,8 @@ namespace Core.Targeting
         SKIP = 2,
         IF_NEXT_TO = 3
     }
-    
-    public class AtkTarget : Target, ITarget<AtkTarget, Attack>
+
+    public class AtkTarget : Target, ITarget<AtkTarget, Attackable.Params>
     {
         public AtkCondition atkCondition = AtkCondition.NEVER;
 
@@ -21,18 +21,18 @@ namespace Core.Targeting
             targetEntity = GetEntityDefault(cell, skipLayer, targetedLayer);
         }
 
-        public void ProcessMeta(Attack attack)
+        public void ProcessMeta(Attackable.Params atkParams)
         {
             if (targetEntity != null && targetEntity.Behaviors.Has<Attackable>())
             {
-                atkCondition = CalculateCondition(targetEntity, attack);
+                atkCondition = CalculateCondition(targetEntity, atkParams);
             }
         }
 
-        public static AtkCondition CalculateCondition(Entity entity, Attack attack)
+        public static AtkCondition CalculateCondition(Entity entity, Attackable.Params atkParams)
         {
             var attackable = entity.Behaviors.Get<Attackable>();
-            return attackable.GetAttackableness(attack);
+            return attackable.GetAttackableness(atkParams.attack);
         }
     }
 }

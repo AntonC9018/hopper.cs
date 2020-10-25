@@ -28,7 +28,7 @@ namespace Test
 
         static void PreventDamage(Attackable.Event ev)
         {
-            ev.attack.damage = 0;
+            ev.atkParams.attack.damage = 0;
         }
     }
 }
