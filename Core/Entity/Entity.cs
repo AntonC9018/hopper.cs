@@ -135,6 +135,9 @@ namespace Core
 
         public override int GetHashCode() => m_id;
 
+        public int GetFactoryId()
+        {
+            return IdMap.Entity.MapMetadata(m_id).factoryId;
+        }
     }
-
 }
