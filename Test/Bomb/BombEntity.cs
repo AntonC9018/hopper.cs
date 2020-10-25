@@ -16,14 +16,14 @@ namespace Test
     // the history object.
     public class BombEntity : Entity
     {
-        public static SimpleAction explodeAction = new SimpleAction(
+        private static SimpleAction defaultExplodeAction = new SimpleAction(
             (e, _) => Explosion.Explode(e.Pos, 1, e.World));
-        public static SimpleAction dieAction = new SimpleAction(
+        private static SimpleAction dieAction = new SimpleAction(
             (e, _) => e.Die());
-        public static JoinedAction dieAndExplodeAction =
-            new JoinedAction(dieAction, explodeAction);
+        private static JoinedAction dieAndExplodeAction =
+            new JoinedAction(dieAction, defaultExplodeAction);
 
-        public static Step[] steps = new Step[]
+        private static Step[] steps = new Step[]
         {
             new Step
             {
@@ -36,16 +36,15 @@ namespace Test
             }
         };
 
-        public static StatManager defaultStats = GetDefaultStats();
-
-        private static StatManager GetDefaultStats()
+        private static DefaultStats defaultStats = GetDefaultStats();
+        private static DefaultStats GetDefaultStats()
         {
-            var stats = new StatManager();
             var res = new Attack.Source.Resistance();
             res.Add(Explosion.AtkSource.Id, 10);
-            stats.GetRaw(Attack.Source.Resistance.Path.String, res);
-            stats.GetRaw(Push.Resistance.Path.String, new Push.Resistance { pierce = 0 });
-            return stats;
+
+            return new DefaultStats()
+                .Set(Attack.Source.Resistance.Path, res)
+                .Set(Push.Resistance.Path, new Push.Resistance { pierce = 0 });
         }
 
         public static EntityFactory<BombEntity> CreateFactory()
@@ -56,7 +55,7 @@ namespace Test
                 .AddBehavior<Pushable>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(steps))
-                .AddSetupListener(bomb => bomb.Stats.DefaultStats = defaultStats);
+                .SetDefaultStats(defaultStats);
         }
 
         public static EntityFactory<BombEntity> Factory = CreateFactory();

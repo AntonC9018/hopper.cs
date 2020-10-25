@@ -10,24 +10,21 @@ namespace Test
             System.Console.WriteLine($"Tinker is null? : {tinker == null}");
         }
 
+        private bool IsNotEquipped(Entity entity)
+        {
+            return entity.Inventory.IsEquipped(this) == false;
+        }
+
         public override void BeDestroyed(Entity entity)
         {
-            if (entity.Inventory.IsEquipped(this) == false)
+            if (IsNotEquipped(entity))
                 base.BeDestroyed(entity);
         }
 
         public override void BeEquipped(Entity entity)
         {
-            if ((entity.Inventory.IsEquipped(this) || m_tinker.IsTinked(entity)) == false)
+            if (IsNotEquipped(entity) && !m_tinker.IsTinked(entity))
                 base.BeEquipped(entity);
-        }
-
-        public override void BeUnequipped(Entity entity)
-        {
-            if (entity.Inventory.IsEquipped(this) == false)
-                base.BeDestroyed(entity);
-
-            entity.World.CreateDroppedItem(this, entity.Pos);
         }
     }
 }

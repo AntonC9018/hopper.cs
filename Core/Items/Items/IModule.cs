@@ -45,7 +45,7 @@ namespace Core.Items
 
         public void BeDestroyed(Entity entity)
         {
-            modifier.AddSelf(entity.Stats);
+            modifier.RemoveSelf(entity.Stats);
         }
 
         public void BeEquipped(Entity entity)

@@ -1,4 +1,0 @@
-/*
-The Idea is like imagine a bomb 
-
-*/

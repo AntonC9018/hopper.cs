@@ -19,12 +19,10 @@ namespace Test
             distance = 1
         };
 
-        public static StatManager defaultStats = GetDefaultStats();
-        private static StatManager GetDefaultStats()
+        public static DefaultStats defaultStats = GetDefaultStats();
+        private static DefaultStats GetDefaultStats()
         {
-            var stats = new StatManager();
-            stats.GetRaw(Push.Path.String, PushStat);
-            return stats;
+            return new DefaultStats().Set(Push.Path, PushStat);
         }
 
         public static EntityFactory<BounceTrap> Factory = CreateFactory();
@@ -36,7 +34,7 @@ namespace Test
                         e => action.Copy().WithDir(e.Orientation))
                 )
                 .AddBehavior<Bouncing>()
-                .AddSetupListener(e => e.Stats.DefaultStats = defaultStats);
+                .SetDefaultStats(defaultStats);
         }
     }
 }

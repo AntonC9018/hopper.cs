@@ -104,5 +104,10 @@ namespace Core
             InitEvent += listener;
             return this;
         }
+
+        public EntityFactory<T> SetDefaultStats(Core.Stats.DefaultStats stats)
+        {
+            return AddSetupListener(e => e.Stats.DefaultStats = stats.StatManager);
+        }
     }
 }

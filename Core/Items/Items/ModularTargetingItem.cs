@@ -3,17 +3,6 @@ using Core.Targeting;
 
 namespace Core.Items
 {
-    public static class Item
-    {
-        public static ModularTargetingItem<T, M> CreateModularTargeting<T, M>(int slot,
-            IProvideTargets<T, M> targetProvider,
-            params IModule[] modules)
-                where T : Target, new()
-        {
-            return new ModularTargetingItem<T, M>(slot, targetProvider, modules);
-        }
-    }
-
     public class ModularTargetingItem<T, M> : ModularItem, IProvideTargets<T, M>
         where T : Target, new()
     {

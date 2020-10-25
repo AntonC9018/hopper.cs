@@ -3,23 +3,20 @@ using Core.Items;
 
 namespace Test
 {
-    public class MultiItem : IItem
+    public class MultiItem : Item
     {
         private IItem m_storedItem;
-        private int m_id;
         private int m_count;
 
-        public int Slot => m_storedItem.Slot;
-        public int Id => m_id;
+        public override int Slot => m_storedItem.Slot;
 
-        public MultiItem(IItem storedItem, int count)
+        public MultiItem(IItem storedItem, int count) : base()
         {
             m_storedItem = storedItem;
             m_count = count;
-            m_id = IdMap.Items.Add(this);
         }
 
-        public void BeDestroyed(Entity entity)
+        public override void BeDestroyed(Entity entity)
         {
             for (int i = 0; i < m_count; i++)
             {
@@ -27,19 +24,11 @@ namespace Test
             }
         }
 
-        public void BeEquipped(Entity entity)
+        public override void BeEquipped(Entity entity)
         {
             for (int i = 0; i < m_count; i++)
             {
                 m_storedItem.BeEquipped(entity);
-            }
-        }
-
-        public void BeUnequipped(Entity entity)
-        {
-            for (int i = 0; i < m_count; i++)
-            {
-                m_storedItem.BeUnequipped(entity);
             }
         }
     }

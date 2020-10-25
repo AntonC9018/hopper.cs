@@ -1,21 +1,18 @@
 namespace Core.Items
 {
-    public class ModularItem : IItem
+    public class ModularItem : Item
     {
-        private readonly int m_id;
         private readonly int m_slot;
-        public int Slot => m_slot;
-        public int Id => m_id;
+        public override int Slot => m_slot;
         private IModule[] m_modules;
 
-        public ModularItem(int slot, params IModule[] modules)
+        public ModularItem(int slot, params IModule[] modules) : base()
         {
             m_modules = modules;
             m_slot = slot;
-            m_id = IdMap.Items.Add(this);
         }
 
-        public void BeDestroyed(Entity entity)
+        public override void BeDestroyed(Entity entity)
         {
             foreach (var mod in m_modules)
             {
@@ -23,7 +20,7 @@ namespace Core.Items
             }
         }
 
-        public void BeEquipped(Entity entity)
+        public override void BeEquipped(Entity entity)
         {
             foreach (var mod in m_modules)
             {
@@ -31,13 +28,13 @@ namespace Core.Items
             }
         }
 
-        public void BeUnequipped(Entity entity)
+        public override void BeUnequipped(Entity entity)
         {
             foreach (var mod in m_modules)
             {
                 mod.BeUnequipped(entity);
             }
-            entity.World.CreateDroppedItem(this, entity.Pos);
+            CreateDropped(entity);
         }
     }
 }

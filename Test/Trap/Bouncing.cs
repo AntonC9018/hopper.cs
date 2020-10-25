@@ -18,9 +18,7 @@ namespace Test
 
         private void PushTarget(Entity oneBeingBounced)
         {
-            if (m_entity.IsDead == false
-                && !m_alreadyBouncedEntities.Contains(oneBeingBounced)
-                && (oneBeingBounced.Layer & m_targetedLayer) != 0)
+            if (ShouldPush(oneBeingBounced))
             {
                 oneBeingBounced.Behaviors.Get<Pushable>()
                     ?.Activate(
@@ -30,11 +28,18 @@ namespace Test
             m_entityOnTop = oneBeingBounced;
         }
 
+        private bool ShouldPush(Entity oneBeingBounced)
+        {
+            return m_entity.IsDead == false
+                && !m_alreadyBouncedEntities.Contains(oneBeingBounced)
+                && (oneBeingBounced.Layer & m_targetedLayer) != 0;
+        }
+
         private void GetUnpushed(Entity leavingEntity)
         {
             if (leavingEntity == m_entityOnTop)
             {
-                m_entityOnTop = null;
+                m_entityOnTop = m_entity.Cell.GetEntityFromLayer(m_targetedLayer);
             }
         }
 

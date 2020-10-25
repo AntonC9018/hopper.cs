@@ -11,6 +11,32 @@ namespace Core.Targeting
             return (e.propagate == false) || e.targets.Count == 0;
         }
 
+        public static TargetProvider<T, M> CreateMulti<T, M>(
+            Pattern pattern,
+            Chain<TargetEvent<T>> chain,
+            System.Func<TargetEvent<T>, bool> stop,
+            Layer skipLayer,
+            Layer targetedLayer
+        )
+            where T : Target, ITarget<T, M>, new()
+        {
+            return new TargetProvider<T, M>(
+                pattern, chain, stop,
+                new MultiCalculator<T, MultiTarget<T, M>, M>(skipLayer, targetedLayer));
+        }
+
+        public static TargetProvider<T, M> CreateMulti<T, M>(
+            Pattern pattern,
+            Chain<TargetEvent<T>> chain,
+            Layer skipLayer,
+            Layer targetedLayer
+        )
+            where T : Target, ITarget<T, M>, new()
+        {
+            return CreateMulti<T, M>(
+                pattern, chain, DefaultStop, skipLayer, targetedLayer);
+        }
+
         public static TargetProvider<T, M> CreateMulti<T, U, M>(
             Pattern pattern,
             Chain<TargetEvent<T>> chain,
@@ -21,8 +47,9 @@ namespace Core.Targeting
             where T : Target, ITarget<T, M>, new()
             where U : MultiTarget<T, M>, new()
         {
-            return new TargetProvider<T, M>(pattern, chain, stop, new MultiCalculator<T, U, M>(skipLayer,
-targetedLayer));
+            return new TargetProvider<T, M>(
+                pattern, chain, stop,
+                new MultiCalculator<T, U, M>(skipLayer, targetedLayer));
         }
 
         public static TargetProvider<T, M> CreateMulti<T, U, M>(

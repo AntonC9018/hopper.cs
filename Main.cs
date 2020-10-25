@@ -21,7 +21,7 @@ namespace Hopper
         static void Main(string[] args)
         {
             // Serialize();
-            // Demo();
+            Demo();
             // Generate();
             // Release();
             // Explode();
@@ -314,18 +314,18 @@ namespace Hopper
 
             var cyclicContainer = new CircularItemContainer(1);
             // indeces 0 and 1 are reserved for weapon and shovel respectively
-            inventory.AddContainer(2, cyclicContainer);
+            inventory.AddContainer(4, cyclicContainer);
 
             var tinker = Tinker<TinkerData>.SingleHandlered<Attacking.Event>(
                 Attacking.Check,
                 e => System.Console.WriteLine("Hello from tinker applied by item")
             );
-            var item = new TinkerItem(tinker, 2);
+            var item = new TinkerItem(tinker, 4);
 
             // inventory.Equip(item) ->         // the starting point
             // item.BeEquipped(entity) ->       // it's interface method
-            // entity.Tink(item.tinker) ->      // it adds data to its list
-            // tinker.Tink(entity)              // creates tinker data
+            // tinker.Tink(entity)  ->          // adds the handlers
+            // entity.Tinkers.SetStore()        // creates the tinker data
             inventory.Equip(item);
 
             world.Loop();
@@ -334,9 +334,9 @@ namespace Hopper
             // creates excess as the size is 1
             inventory.Equip(item);
             // inventory.DropExcess() ->
-            // item.BeUnequipped() ->
-            // entity.Untink() +
-            // world.CreateDroppedItem(id, pos)
+            // item.BeUnequipped()    ->
+            // tinker.Untink() -> entity.Tinkers.RemoveStore()
+            // + world.CreateDroppedItem(id, pos)
             inventory.DropExcess();
 
             var entities = world.m_grid.GetCellAt(player.Pos).m_entities;

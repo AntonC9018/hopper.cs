@@ -32,7 +32,7 @@ namespace Core.Retouchers
         {
             var block = ev.actor
                 .GetCellRelative(ev.action.direction)
-                .GetEntityFromLayer(Layer.BLOCK);
+                .GetEntityFromLayer(LayerCombos.BLOCK);
             ev.propagate = block == null;
         }
 

@@ -2,35 +2,26 @@ using Core.Stats;
 
 namespace Core.Items
 {
-    public class ModifierItem : IItem
+    public class ModifierItem : Item
     {
-        private readonly int m_id;
         private readonly int m_slot;
-        public int Slot => m_slot;
-        public int Id => m_id;
+        public override int Slot => m_slot;
         private IModifier modifier;
 
-        public ModifierItem(IModifier modifier, int slot)
+        public ModifierItem(IModifier modifier, int slot) : base()
         {
             this.modifier = modifier;
             m_slot = slot;
-            m_id = IdMap.Items.Add(this);
         }
 
-        public void BeDestroyed(Entity entity)
-        {
-            modifier.AddSelf(entity.Stats);
-        }
-
-        public void BeEquipped(Entity entity)
-        {
-            modifier.AddSelf(entity.Stats);
-        }
-
-        public void BeUnequipped(Entity entity)
+        public override void BeDestroyed(Entity entity)
         {
             modifier.RemoveSelf(entity.Stats);
-            entity.World.CreateDroppedItem(this, entity.Pos);
+        }
+
+        public override void BeEquipped(Entity entity)
+        {
+            modifier.AddSelf(entity.Stats);
         }
     }
 }

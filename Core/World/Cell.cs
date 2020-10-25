@@ -13,12 +13,26 @@ namespace Core
         GOLD = 0b_0001_0000,
         FLOOR = 0b_0010_0000,
         TRAP = 0b_0100_0000,
-        DROPPED = 0b_1000_0000,
-        BLOCK = REAL | WALL | MISC,
+        DROPPED = 0b_1000_0000
+    }
+
+    public static class LayerCombos
+    {
+        public static Layer BLOCK = Layer.REAL | Layer.WALL | Layer.MISC;
     }
 
     public static class LayerExtensions
     {
+        public static string GetName(this Layer layer)
+        {
+            return System.Enum.GetName(typeof(Layer), layer);
+        }
+
+        public static Layer ToLayer(this int num)
+        {
+            return (Layer)(1 << (num - 1));
+        }
+
         public static int ToIndex(this Layer layer)
         {
             int i = 0;
