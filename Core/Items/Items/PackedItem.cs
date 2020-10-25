@@ -1,7 +1,4 @@
-using Core;
-using Core.Items;
-
-namespace Test
+namespace Core.Items
 {
     // The problem is that the item has no control over the wat it's added in the inventory
     // thing is, it is added by it's ID. If we had e.g. a triple bomb item we would expect it
