@@ -62,6 +62,7 @@ namespace Core
             ActivateEntities();
             TickAll();
             FilterDead();
+            EndPhase();
 
             EndOfLoopEvent?.Invoke();
             m_iterCount++;
@@ -153,14 +154,19 @@ namespace Core
 
         private void AdvancePhase()
         {
-            m_timeStampPhaseLimits[(int)m_currentPhase] = m_currentTimeFrame;
+            EndPhase();
             m_currentPhase++;
         }
 
         private void SetPhase(Phase phase)
         {
-            m_timeStampPhaseLimits[(int)m_currentPhase] = m_currentTimeFrame;
+            EndPhase();
             m_currentPhase = phase;
+        }
+
+        private void EndPhase()
+        {
+            m_timeStampPhaseLimits[(int)m_currentPhase] = m_currentTimeFrame;
         }
     }
 }
