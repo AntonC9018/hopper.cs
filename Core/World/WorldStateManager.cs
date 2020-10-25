@@ -30,10 +30,7 @@ namespace Core
         public int InterationCount => m_iterCount;
 
         private int m_currentTimeFrame = 0;
-        public int GetNextTimeFrame()
-        {
-            return m_currentTimeFrame++;
-        }
+        public int GetNextTimeFrame() => m_currentTimeFrame++;
 
         public WorldStateManager()
         {
@@ -130,7 +127,19 @@ namespace Core
             BeforeFilterEvent?.Invoke();
             for (int i = 0; i < m_entities.Length; i++)
             {
-                m_entities[i] = m_entities[i].Where(e => e.IsDead == false);
+                var newEntities = new List<Entity>();
+                foreach (var entity in m_entities[i])
+                {
+                    if (entity.IsDead)
+                    {
+                        IdMap.Entity.Remove(entity.Id);
+                    }
+                    else
+                    {
+                        newEntities.Add(entity);
+                    }
+                }
+                m_entities[i] = newEntities;
             }
         }
     }

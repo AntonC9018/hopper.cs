@@ -98,7 +98,6 @@ namespace Core
         {
             IsDead = true;
             RemoveFromGrid();
-            IdMap.Entity.Remove(m_id);
         }
 
         public Entity GetClosestPlayer()
