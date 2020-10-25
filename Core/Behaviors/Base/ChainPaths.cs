@@ -39,7 +39,7 @@ namespace Core.Behaviors
         }
         public Chain<Event> ChainPath(IProvideBehavior startingFrom)
         {
-            return startingFrom.Get<Beh>().GetChain<Event>(name);
+            return startingFrom.Get<Beh>()?.GetChain<Event>(name);
         }
 
         public ChainTemplate<Event> TemplatePath(IProvideBehaviorFactory startingFrom)

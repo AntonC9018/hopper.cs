@@ -20,7 +20,7 @@ namespace Core
     public class Tinker<T> : ITinker where T : TinkerData, new()
     {
         public int Id => m_id;
-        protected readonly int m_id;
+        private int m_id;
         protected IChainDef[] m_chainDefinition;
 
         public Tinker(params IChainDef[] chainDefs)

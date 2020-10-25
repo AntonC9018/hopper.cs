@@ -65,7 +65,7 @@ namespace Core.Behaviors
         static Digging()
         {
             Check = new ChainPaths<Digging, Event>(ChainName.Check);
-            Do = new ChainPaths<Digging, Event>(ChainName.Check);
+            Do = new ChainPaths<Digging, Event>(ChainName.Do);
 
             var builder = new ChainTemplateBuilder()
 

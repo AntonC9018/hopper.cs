@@ -26,7 +26,7 @@ namespace Test
         private static void AddNoMove(ChainDefBuilder builder)
         {
             builder.AddDef<Moving.Event>(Moving.Check)
-                   .AddHandler(StopMove);
+                   .AddHandler(Utils.Handlers.StopMove);
         }
 
         public ChainDefBuilder CreateBaseBuilder()
@@ -71,11 +71,6 @@ namespace Test
                 statusData.whoApplied.Pos = ev.actor.Pos;
                 statusData.whoApplied.History.Add(statusData.whoApplied, UpdateCode.displaced_do);
             }
-        }
-
-        private static void StopMove(Moving.Event ev)
-        {
-            ev.propagate = false;
         }
     }
 }

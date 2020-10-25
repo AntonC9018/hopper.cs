@@ -10,6 +10,10 @@ namespace Core.Items
         {
             m_modules = modules;
             m_slot = slot;
+            foreach (var module in modules)
+            {
+                module.Init(this);
+            }
         }
 
         public override void BeDestroyed(Entity entity)

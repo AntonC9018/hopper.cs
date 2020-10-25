@@ -42,5 +42,10 @@ namespace Core.Items
         }
 
         public virtual DecomposedItem Decompose() => new DecomposedItem(this);
+
+        public void Init(IItem item)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

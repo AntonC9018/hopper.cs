@@ -99,7 +99,7 @@ namespace Core.Generation
             int min_orthogonal_offset = -useful_child_width + options.min_hallway_width;
             int max_orthogonal_offset = useful_parent_width - options.min_hallway_width;
 
-            Queue<int> offsets_queue = Utils.Functions.ShuffledRangeQueue(
+            Queue<int> offsets_queue = Functions.ShuffledRangeQueue(
                 min_orthogonal_offset, max_orthogonal_offset, rng);
 
             while (offsets_queue.Count != 0)

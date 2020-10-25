@@ -61,7 +61,7 @@ namespace Core.Behaviors
             {
                 return;
             }
-            if (ev.atkParams.attack.pierce < ev.resistance.pierce)
+            if (ev.resistance.pierce > ev.atkParams.attack.pierce)
             {
                 ev.atkParams.attack.damage = 0;
             }

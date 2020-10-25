@@ -28,9 +28,76 @@ namespace Hopper
             // Explode();
             // Bounce();
             // GoldTest();
-            GhostTest();
+            // GhostTest();
+            // SlideTest();
+            // ShieldTest();
         }
 
+        public static void ShieldTest()
+        {
+            var shield = new ModularItem(3, ShieldModule.CreateFront(2));
+            var enemyFactory = new EntityFactory<Entity>().AddBehavior<Attackable>();
+            var playerFactory = new EntityFactory<Entity>()
+                .AddBehavior<Attacking>()
+                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo));
+            var world = new World(5, 5);
+            var player = world.SpawnPlayer(playerFactory, new IntVector2(1, 1));
+            player.Reorient(new IntVector2(1, 0));
+            var enemy = world.SpawnEntity(enemyFactory, new IntVector2(2, 1));
+            enemy.Reorient(new IntVector2(-1, 0));
+            shield.BeEquipped(enemy);
+            var attackAction = new BehaviorAction<Attacking>();
+            player.Behaviors.Get<Acting>().NextAction = attackAction.WithDir(new IntVector2(1, 0));
+            world.Loop();
+            player.Stats.GetRaw(Attack.Path).pierce += 2;
+            player.Behaviors.Get<Acting>().NextAction = attackAction.WithDir(new IntVector2(1, 0));
+            world.Loop();
+        }
+
+        public static void SlideTest()
+        {
+            var world = new World(5, 5);
+            var p_fact = new EntityFactory<Entity>()
+                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
+                .AddBehavior<Attacking>()
+                .AddBehavior<Moving>()
+                .AddBehavior<Displaceable>()
+                .AddBehavior<Statused>()
+                .Retouch(Core.Retouchers.Reorient.OnDisplace)
+                .Retouch(Core.Retouchers.Skip.EmptyAttack);
+
+            var player = world.SpawnPlayer(p_fact, new IntVector2(1, 1));
+            var ice_fact = IceFloor.CreateFactory();
+            var ice1 = world.SpawnEntity(ice_fact, new IntVector2(2, 1));
+            var ice2 = world.SpawnEntity(ice_fact, new IntVector2(3, 1));
+            var action = new CompositeAction(
+                new BehaviorAction<Attacking>(),
+                new BehaviorAction<Moving>()
+            );
+            void SetAction(IntVector2 vec) => player.Behaviors.Get<Acting>().NextAction
+                = action.Copy().WithDir(vec);
+            void Print()
+            {
+                System.Console.WriteLine($"Is status applied? {SlideStatus.Status.IsApplied(player)}");
+                System.Console.WriteLine($"Position: {player.Pos}");
+            }
+
+            SetAction(IntVector2.Right);
+            world.Loop();
+            Print();
+
+            SetAction(IntVector2.Down);
+            world.Loop();
+            Print();
+
+            SetAction(IntVector2.Down);
+            world.Loop();
+            Print();
+
+            SetAction(IntVector2.Down);
+            world.Loop();
+            Print();
+        }
 
         public static void GhostTest()
         {

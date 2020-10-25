@@ -60,11 +60,11 @@ namespace Core.Behaviors
         static Pushable()
         {
             Check = new ChainPaths<Pushable, Event>(ChainName.Check);
-            Do = new ChainPaths<Pushable, Event>(ChainName.Check);
+            Do = new ChainPaths<Pushable, Event>(ChainName.Do);
 
             var builder = new ChainTemplateBuilder()
 
-                .AddTemplate<Event>(ChainName.Check)
+                .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(SetResistance, PriorityRanks.High)
                 .AddHandler(ResistSource, PriorityRanks.High)
                 .AddHandler(Armor, PriorityRanks.High)

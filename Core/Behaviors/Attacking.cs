@@ -102,7 +102,7 @@ namespace Core.Behaviors
         static Attacking()
         {
             Check = new ChainPaths<Attacking, Event>(ChainName.Check);
-            Do = new ChainPaths<Attacking, Event>(ChainName.Check);
+            Do = new ChainPaths<Attacking, Event>(ChainName.Do);
 
             var builder = new ChainTemplateBuilder()
 

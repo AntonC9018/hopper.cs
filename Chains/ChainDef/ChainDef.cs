@@ -20,6 +20,12 @@ namespace Chains
         public Handle[] AddHandlers(IProvideBehavior entity)
         {
             var chain = path(entity);
+            // TODO: think if this should be the intended behavior
+            // since this may be pretty dangerous at times
+            if (chain == null)
+            {
+                return new Handle[0];
+            }
             var handles = new Handle[handlers.Length];
             for (int i = 0; i < handlers.Length; i++)
             {

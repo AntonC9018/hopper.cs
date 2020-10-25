@@ -7,55 +7,64 @@ namespace Core.Items
         void BeEquipped(Entity entity);
         void BeUnequipped(Entity entity);
         void BeDestroyed(Entity entity);
+        void Init(IItem item);
     }
 
     public class TinkerModule : IModule
     {
-        private ITinker tinker;
+        protected ITinker m_tinker;
 
         public TinkerModule(ITinker tinker)
         {
-            this.tinker = tinker;
+            m_tinker = tinker;
         }
 
         public void BeDestroyed(Entity entity)
         {
-            tinker.Untink(entity);
+            m_tinker.Untink(entity);
         }
 
         public void BeEquipped(Entity entity)
         {
-            tinker.Tink(entity);
+            m_tinker.Tink(entity);
         }
 
         public void BeUnequipped(Entity entity)
         {
-            tinker.Untink(entity);
+            m_tinker.Untink(entity);
+        }
+
+        public virtual void Init(IItem item)
+        {
         }
     }
 
-    public class ModifierModule
+    public class ModifierModule : IModule
     {
-        private IModifier modifier;
+        protected IModifier m_modifier;
 
         public ModifierModule(IModifier modifier, int slot)
         {
-            this.modifier = modifier;
+            this.m_modifier = modifier;
         }
 
         public void BeDestroyed(Entity entity)
         {
-            modifier.RemoveSelf(entity.Stats);
+            m_modifier.RemoveSelf(entity.Stats);
         }
 
         public void BeEquipped(Entity entity)
         {
-            modifier.AddSelf(entity.Stats);
+            m_modifier.AddSelf(entity.Stats);
         }
 
         public void BeUnequipped(Entity entity)
         {
-            modifier.RemoveSelf(entity.Stats);
+            m_modifier.RemoveSelf(entity.Stats);
+        }
+
+        public virtual void Init(IItem item)
+        {
         }
     }
 }

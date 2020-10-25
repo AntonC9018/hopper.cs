@@ -8,7 +8,7 @@ namespace Core
     {
         bool Update(Entity entity);
         bool IsApplied(Entity entity);
-        void Nullify(Entity entity);
+        // void Nullify(Entity entity);
         bool TryApply(Entity applicant, Entity target);
     }
 
@@ -28,17 +28,17 @@ namespace Core
         public Status(IChainDef[] chainDefs, IStatPath<StatusFile> statPath, int defaultResValue) : base(chainDefs)
         {
             m_statPath = statPath;
-            Status.Resistance.Path.DefaultFile.Add(m_id, defaultResValue);
+            Status.Resistance.Path.DefaultFile.Add(Id, defaultResValue);
         }
 
-        // Returns true if it is still applied after the update 
+        // Returns false if it is still applied after the update 
+        // Returns true if the status should be removed
         public virtual bool Update(Entity entity)
         {
             if (entity.Tinkers.IsTinked(this))
             {
                 var data = GetStore(entity);
-                data.amount--;
-                return data.amount == 0;
+                return --data.amount == 0;
             }
             return true;
         }
@@ -46,11 +46,6 @@ namespace Core
         public virtual bool IsApplied(Entity entity)
         {
             return entity.Tinkers.IsTinked(this) && GetStore(entity).amount > 0;
-        }
-
-        public virtual void Nullify(Entity entity)
-        {
-            Untink(entity);
         }
 
         public bool TryApply(Entity applicant, Entity target)

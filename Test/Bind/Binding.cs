@@ -15,8 +15,8 @@ namespace Test
         }
 
         public static readonly StatPath<Bind> Path = new StatPath<Bind>("status/bind");
-
     }
+
     public class Binding : Behavior, IStandartActivateable
     {
         public class Event : StandartEvent
