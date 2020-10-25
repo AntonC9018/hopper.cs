@@ -17,7 +17,7 @@ namespace Core.Items
         public int amount;
 
         // enemy
-        public IEntityFactory factory;
+        public IFactory<Entity> factory;
 
         // item
         public IItem item;

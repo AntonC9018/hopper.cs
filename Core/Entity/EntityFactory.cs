@@ -10,9 +10,7 @@ namespace Core
         public BehaviorConfig config;
     }
 
-
-
-    public class EntityFactory<T> : IEntityFactory, IProvideBehaviorFactory
+    public class EntityFactory<T> : IFactory<T>, IProvideBehaviorFactory
         where T : Entity, new()
     {
 
@@ -53,7 +51,7 @@ namespace Core
             return m_retouchers.ContainsKey(retoucher.Id);
         }
 
-        public Entity Instantiate()
+        public T Instantiate()
         {
             var entity = InstantiateLogic();
             int id = IdMap.Entity.Add(entity, new FactoryLink { factoryId = m_id });
@@ -61,16 +59,16 @@ namespace Core
             return entity;
         }
 
-        public Entity ReInstantiate(int id)
+        public T ReInstantiate(int id)
         {
             var entity = InstantiateLogic();
             entity._SetId(id);
             return entity;
         }
 
-        private Entity InstantiateLogic()
+        private T InstantiateLogic()
         {
-            Entity entity = new T();
+            T entity = new T();
             // Instantiate and save behaviors
             foreach (var kvp in m_behaviorSettings)
             {

@@ -27,6 +27,27 @@ namespace Hopper
             // Release();
             // Explode();
             // Bounce();
+            // GoldTest();
+        }
+
+        public static void GoldTest()
+        {
+            var world = new World(5, 5);
+            var p_fact = Player.CreateFactory().Retouch(Gold.PickUpRetoucher);
+            var player = world.SpawnPlayer(p_fact, new IntVector2(1, 1));
+
+            var gold = Gold.Drop(player.Pos + IntVector2.Right, 1, world);
+            var gold2 = Gold.Drop(player.Pos + IntVector2.Right, 1, world);
+
+            System.Console.WriteLine($"Gold1 == Gold2? {gold == gold2}");
+            System.Console.WriteLine($"Gold amount: {gold.Amount}");
+
+            player.Behaviors.Get<Acting>().NextAction =
+                new BehaviorAction<Moving>().WithDir(IntVector2.Right);
+            world.Loop();
+
+            System.Console.WriteLine($"Is gold dead? {gold.IsDead}");
+            System.Console.WriteLine($"Gold amount: {gold.Amount}");
         }
 
         public static void Bounce()

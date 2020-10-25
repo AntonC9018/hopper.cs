@@ -6,9 +6,9 @@ namespace Core.Items
     public class EntityContent : IContent
     {
         [DataMember]
-        private IEntityFactory factory;
+        private IFactory<Entity> factory;
 
-        public EntityContent(IEntityFactory factory)
+        public EntityContent(IFactory<Entity> factory)
         {
             this.factory = factory;
         }

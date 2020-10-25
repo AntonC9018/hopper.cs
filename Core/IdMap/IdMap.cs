@@ -21,7 +21,8 @@ namespace Core
 
         public static SetupIdMap<ITinker> Tinker = new SetupIdMap<ITinker>();
         public static SetupIdMap<Retoucher> Retoucher = new SetupIdMap<Retoucher>();
-        public static SetupIdMap<IEntityFactory> EntityFactory = new SetupIdMap<IEntityFactory>();
+        public static SetupIdMap<IFactory<Entity>> EntityFactory =
+            new SetupIdMap<IFactory<Entity>>();
         public static SetupIdMap<IItem> Items = new SetupIdMap<IItem>();
         public static SetupIdMap<Attack.Source> AttackSources = new SetupIdMap<Attack.Source>();
         public static SetupIdMap<Push.Source> PushSources = new SetupIdMap<Push.Source>();
@@ -30,7 +31,7 @@ namespace Core
         {
             { typeof(ITinker), Tinker },
             { typeof(Retoucher), Retoucher},
-            { typeof(IEntityFactory), EntityFactory },
+            { typeof(IFactory<Entity>), EntityFactory },
             { typeof(IItem), Items },
             { typeof(Attack.Source), AttackSources },
             { typeof(Push.Source), PushSources }

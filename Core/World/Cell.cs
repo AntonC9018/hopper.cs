@@ -1,5 +1,6 @@
 using Utils.Vector;
 using System.Collections.Generic;
+using Utils;
 
 namespace Core
 {
@@ -60,6 +61,11 @@ namespace Core
         public Entity GetEntityFromLayer(Layer layer)
         {
             return m_entities.FindLast(e => (e.Layer & layer) != 0);
+        }
+
+        public List<Entity> GetAllFromLayer(Layer layer)
+        {
+            return m_entities.Where(e => (e.Layer & layer) != 0);
         }
 
         public void FireEnterEvent(Entity entity)

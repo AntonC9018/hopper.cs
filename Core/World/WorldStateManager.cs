@@ -57,6 +57,7 @@ namespace Core
 
         public void Loop()
         {
+            ResetPhase();
             ActivatePlayers();
             CalculateActionOnEntities();
             ActivateEntities();

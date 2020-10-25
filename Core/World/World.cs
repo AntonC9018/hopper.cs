@@ -34,7 +34,7 @@ namespace Core
             return m_state.GetNextTimeFrame();
         }
 
-        public Entity SpawnEntity(IEntityFactory entityFactory, IntVector2 pos)
+        public T SpawnEntity<T>(IFactory<T> entityFactory, IntVector2 pos) where T : Entity
         {
             var entity = entityFactory.Instantiate();
             entity.Init(pos, this);
@@ -43,7 +43,7 @@ namespace Core
             return entity;
         }
 
-        public Entity SpawnPlayer(IEntityFactory entityFactory, IntVector2 pos)
+        public T SpawnPlayer<T>(IFactory<T> entityFactory, IntVector2 pos) where T : Entity
         {
             var entity = entityFactory.Instantiate();
             entity.Init(pos, this);

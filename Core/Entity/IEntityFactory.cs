@@ -1,11 +1,9 @@
-using Core.Behaviors;
-
 namespace Core
 {
-    public interface IEntityFactory : IHaveId
+    public interface IFactory<out T> : IHaveId
     {
-        Entity Instantiate();
-        Entity ReInstantiate(int id);
+        T Instantiate();
+        T ReInstantiate(int id);
     }
     // public interface IEntityFactory
     // {

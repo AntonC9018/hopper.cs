@@ -22,7 +22,7 @@ namespace Core
 
             int id = (int)jobj.GetValue("Id");
             int factoryId = IdMap.Entity.MapMetadata(id).factoryId;
-            IEntityFactory factory = IdMap.EntityFactory.Map(factoryId);
+            IFactory<Entity> factory = IdMap.EntityFactory.Map(factoryId);
             Entity entity = factory.ReInstantiate(id);
             serializer.Populate(jobj.CreateReader(), entity);
 
