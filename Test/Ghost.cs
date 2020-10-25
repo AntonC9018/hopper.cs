@@ -11,10 +11,16 @@ namespace Test
             new BehaviorAction<Moving>()
         );
 
+        private static Layer m_teleportedLayer = Layer.REAL | Layer.DROPPED | Layer.GOLD;
+
         private static void Teleport(Attackable.Event ev)
         {
             if (ev.actor.IsDead && ev.atkParams.attacker != null)
             {
+                foreach (var ent in ev.actor.Cell.GetAllFromLayer(m_teleportedLayer))
+                {
+                    ent.ResetPosInGrid(ev.atkParams.attacker.Pos);
+                }
                 ev.atkParams.attacker.ResetPosInGrid(ev.actor.Pos);
                 // TODO: add update to history
             }
