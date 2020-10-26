@@ -19,7 +19,7 @@ namespace Core.Items
 
         public void Release(Entity entity)
         {
-            entity.World.CreateDroppedItem(item, entity.Pos);
+            entity.World.SpawnDroppedItem(item, entity.Pos);
         }
     }
 }

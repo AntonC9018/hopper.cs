@@ -51,7 +51,6 @@ namespace Core.Behaviors
 
         static void BePushed(Event ev)
         {
-            // TODO: set up properly
             ev.actor.Behaviors.Get<Displaceable>().Activate(ev.dir, new Move());
         }
 

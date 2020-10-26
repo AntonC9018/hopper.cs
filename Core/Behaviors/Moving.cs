@@ -27,7 +27,6 @@ namespace Core.Behaviors
         {
             if (ev.move == null)
             {
-                // TODO: set stats for move
                 ev.move = ev.actor.Stats.Get(Move.Path);
             }
         }

@@ -478,7 +478,7 @@ namespace Hopper
             var tinker2 = new Tinker<TinkerData>(chainDefs2);
             var item2 = new TinkerItem(tinker2, 3);
 
-            var droppedItem2 = world.CreateDroppedItem(item2, player.Pos + IntVector2.Down);
+            var droppedItem2 = world.SpawnDroppedItem(item2, player.Pos + IntVector2.Down);
 
             /*
             this only works because we did

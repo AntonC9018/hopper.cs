@@ -37,7 +37,6 @@ namespace Test
 
         private void Register(Binding.Event ev)
         {
-            // TODO: maybe instead of doing one at a time, check all bind statuses?
             bool success = status.IsApplied(ev.applyTo);
 
             if (success)

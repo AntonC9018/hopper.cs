@@ -23,7 +23,7 @@ namespace Core.Items
 
         protected void CreateDropped(Entity entity)
         {
-            entity.World.CreateDroppedItem(this, entity.Pos);
+            entity.World.SpawnDroppedItem(this, entity.Pos);
         }
 
         // By default, destroy + drop

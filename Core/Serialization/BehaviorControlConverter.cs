@@ -53,7 +53,7 @@ namespace Core
             foreach (var kvp in behaviors)
             {
                 var behToken = JToken.FromObject(kvp.Value);
-                // TODO: maybe store the string in the object idk
+                
                 if (behToken.Children().Count() != 0)
                 {
                     var data = new BehaviorData(kvp.Key.ToString(), kvp.Value);
