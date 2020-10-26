@@ -34,28 +34,37 @@ namespace Core
             return m_state.GetNextTimeFrame();
         }
 
-        public T SpawnEntity<T>(IFactory<T> entityFactory, IntVector2 pos) where T : Entity
+        public event System.Action<Entity> SpawnEvent;
+
+        private T SpawnEntityNoEvent<T>(IFactory<T> entityFactory, IntVector2 pos) where T : Entity
         {
             var entity = entityFactory.Instantiate();
             entity.Init(pos, this);
-            m_state.AddEntity(entity);
             m_grid.Reset(entity);
+            return entity;
+        }
+
+        public T SpawnEntity<T>(IFactory<T> entityFactory, IntVector2 pos) where T : Entity
+        {
+            var entity = SpawnEntityNoEvent(entityFactory, pos);
+            m_state.AddEntity(entity);
+            SpawnEvent?.Invoke(entity);
             return entity;
         }
 
         public T SpawnPlayer<T>(IFactory<T> entityFactory, IntVector2 pos) where T : Entity
         {
-            var entity = entityFactory.Instantiate();
-            entity.Init(pos, this);
+            var entity = SpawnEntityNoEvent(entityFactory, pos);
             m_state.AddPlayer(entity);
-            m_grid.Reset(entity);
+            SpawnEvent?.Invoke(entity);
             return entity;
         }
 
         public Entity CreateDroppedItem(IItem item, IntVector2 pos)
         {
-            var entity = (DroppedItem)SpawnEntity(DroppedItem.Factory, pos);
+            var entity = SpawnEntityNoEvent(DroppedItem.Factory, pos);
             entity.Item = item;
+            SpawnEvent?.Invoke(entity);
             return entity;
         }
     }
