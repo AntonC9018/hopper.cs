@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Utils
+namespace Core.Utils
 {
     // may not be the most performant solution, but it removes a lot of boilerplate 
     // https://stackoverflow.com/a/4944547/9731532

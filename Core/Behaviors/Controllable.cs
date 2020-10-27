@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Chains;
 using System.Reflection;
-using Utils.Vector;
+using Core.Utils.Vector;
 using System.Runtime.Serialization;
 
 namespace Core.Behaviors

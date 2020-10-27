@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Utils
+namespace Core.Utils
 {
     public static class Functions
     {

@@ -2,7 +2,7 @@ using Chains;
 using Core;
 using Core.Stats;
 using Newtonsoft.Json;
-using Utils;
+using Core.Utils;
 
 namespace Test
 {

@@ -1,8 +1,8 @@
 using Chains;
-using Utils;
+using Core.Utils;
 using System.Runtime.Serialization;
 using Core.Stats.Basic;
-using Utils.Vector;
+using Core.Utils.Vector;
 using Core.Targeting;
 
 namespace Core.Behaviors

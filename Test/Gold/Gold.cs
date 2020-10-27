@@ -1,6 +1,6 @@
 using Core;
 using Core.Behaviors;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Test
 {

@@ -1,7 +1,7 @@
 using System;
 using Chains;
 using Core.Behaviors;
-using Utils;
+using Core.Utils;
 
 namespace Core
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Utils
+namespace Core.Utils
 {
     public static class ListExtension
     {
@@ -36,7 +36,7 @@ namespace Utils
             return l;
         }
 
-        public static T Find<T>(this IList<T> list, System.Predicate<T> pred)
+        public static T Find<T>(this IReadOnlyList<T> list, System.Predicate<T> pred)
         {
             foreach (var el in list)
             {
@@ -46,7 +46,7 @@ namespace Utils
             return default(T);
         }
 
-        public static T FindLast<T>(this IList<T> list, System.Predicate<T> pred)
+        public static T FindLast<T>(this IReadOnlyList<T> list, System.Predicate<T> pred)
         {
             for (int i = list.Count - 1; i >= 0; i--)
             {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Core.Behaviors;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Core
 {

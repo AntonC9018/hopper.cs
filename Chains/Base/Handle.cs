@@ -1,4 +1,4 @@
-using Utils.MyLinkedList;
+using Core.Utils.MyLinkedList;
 
 namespace Chains
 {

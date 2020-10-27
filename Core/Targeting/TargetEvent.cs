@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Utils.Vector;
+using Core.Utils.Vector;
 using Chains;
 
 namespace Core.Targeting

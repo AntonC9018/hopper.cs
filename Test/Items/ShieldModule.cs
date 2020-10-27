@@ -2,7 +2,7 @@
 using Core;
 using Core.Behaviors;
 using Core.Items;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Test
 {

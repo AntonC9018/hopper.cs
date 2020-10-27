@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Core.Behaviors
 {

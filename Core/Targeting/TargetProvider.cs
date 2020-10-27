@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Utils.Vector;
+using Core.Utils.Vector;
 using Chains;
-using Utils;
+using Core.Utils;
 
 namespace Core.Targeting
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Utils.Vector
+namespace Core.Utils.Vector
 {
     public class Vector2
     {

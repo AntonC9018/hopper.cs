@@ -1,5 +1,5 @@
 using Core;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Test
 {

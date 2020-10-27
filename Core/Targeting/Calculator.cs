@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Core.Targeting
 {

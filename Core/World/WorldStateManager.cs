@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Core.Behaviors;
-using Utils;
+using Core.Utils;
 
 namespace Core
 {

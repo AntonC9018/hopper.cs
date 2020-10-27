@@ -2,7 +2,7 @@ using System.Runtime.Serialization;
 using Core;
 using Core.Behaviors;
 using Newtonsoft.Json;
-using Utils;
+using Core.Utils;
 
 namespace Test
 {

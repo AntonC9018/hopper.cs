@@ -7,7 +7,7 @@ namespace Core.History
     public class History<T>
     {
         private List<UpdateInfo<T>> m_updates;
-        public ReadOnlyCollection<UpdateInfo<T>> Updates => m_updates.AsReadOnly();
+        public IReadOnlyList<UpdateInfo<T>> Updates => m_updates.AsReadOnly();
 
         public History()
         {

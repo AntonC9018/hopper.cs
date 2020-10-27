@@ -4,7 +4,7 @@ using Core;
 using Core.Behaviors;
 using Core.History;
 using Core.Targeting;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Test
 {

@@ -1,4 +1,4 @@
-using Utils.Vector;
+using Core.Utils.Vector;
 using Core.Items;
 using System.Runtime.Serialization;
 using Core.Stats;
@@ -98,6 +98,7 @@ namespace Core
         {
             IsDead = true;
             RemoveFromGrid();
+            History.Add(this, UpdateCode.dead);
         }
 
         public Entity GetClosestPlayer()

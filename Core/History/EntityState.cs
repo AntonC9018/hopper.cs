@@ -1,4 +1,4 @@
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Core.History
 {
@@ -11,6 +11,12 @@ namespace Core.History
         {
             pos = entity.Pos;
             orientation = entity.Orientation;
+        }
+
+        public EntityState(IntVector2 pos, IntVector2 orientation)
+        {
+            this.pos = pos;
+            this.orientation = orientation;
         }
     }
 }

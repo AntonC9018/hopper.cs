@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using Chains;
 using Core.Stats.Basic;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Core.Behaviors
 {

@@ -1,6 +1,6 @@
 using Core.Behaviors;
 using Core.Items;
-using Utils;
+using Core.Utils;
 
 namespace Core.Retouchers
 {

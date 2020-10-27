@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Chains;
-using Utils;
+using Core.Utils;
 
 namespace Core.Behaviors
 {

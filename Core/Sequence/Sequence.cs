@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Core
 {

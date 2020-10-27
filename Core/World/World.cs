@@ -1,6 +1,6 @@
 using System;
 using Core.Items;
-using Utils.Vector;
+using Core.Utils.Vector;
 
 namespace Core
 {

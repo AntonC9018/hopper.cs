@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Utils;
-using Utils.Vector;
+using Core.Utils;
+using Core.Utils.Vector;
 
 namespace Core.Generation
 {

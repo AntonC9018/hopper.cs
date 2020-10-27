@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Utils.Vector
+namespace Core.Utils.Vector
 {
     public class IntVector2
     {

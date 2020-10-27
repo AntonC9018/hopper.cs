@@ -12,6 +12,6 @@ namespace Core.History
         pushed_do,
         statused_do,
         Hurt,
-        Dead
+        dead
     }
 }

@@ -1,4 +1,4 @@
-using Utils.Vector;
+using Core.Utils.Vector;
 using System.Collections.Generic;
 
 namespace Core

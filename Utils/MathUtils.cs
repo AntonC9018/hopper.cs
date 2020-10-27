@@ -1,6 +1,6 @@
 using System;
 
-namespace Utils
+namespace Core.Utils
 {
     public static class Maths
     {

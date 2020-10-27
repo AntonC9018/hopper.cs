@@ -1,5 +1,5 @@
 using Chains;
-using Utils.Vector;
+using Core.Utils.Vector;
 using System.Runtime.Serialization;
 using Core.Stats.Basic;
 

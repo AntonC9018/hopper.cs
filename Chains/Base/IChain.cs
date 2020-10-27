@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Utils.MyLinkedList;
+using Core.Utils.MyLinkedList;
 
 namespace Chains
 {
