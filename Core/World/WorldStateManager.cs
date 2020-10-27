@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Core.Behaviors;
@@ -58,6 +59,7 @@ namespace Core
         public void Loop()
         {
             ResetPhase();
+            ClearHistory();
             ActivatePlayers();
             CalculateActionOnEntities();
             ActivateEntities();
@@ -67,6 +69,19 @@ namespace Core
 
             EndOfLoopEvent?.Invoke();
             m_iterCount++;
+        }
+
+        private void ClearHistory()
+        {
+            foreach (var player in m_players)
+            {
+                player.History.Clear();
+            }
+            for (int i = 0; i < m_entities.Length; i++)
+            {
+                foreach (var e in m_entities[i])
+                    e.History.Clear();
+            }
         }
 
         private void CalculateNextAction(Entity entity)

@@ -17,6 +17,7 @@ namespace Utils
             }
             return l;
         }
+
         public static List<T> FilterFromIndex<T>(
             this List<T> list, System.Func<T, bool> pred, int includeAllBefore)
         {
@@ -34,6 +35,27 @@ namespace Utils
             }
             return l;
         }
+
+        public static T Find<T>(this IList<T> list, System.Predicate<T> pred)
+        {
+            foreach (var el in list)
+            {
+                if (pred(el))
+                    return el;
+            }
+            return default(T);
+        }
+
+        public static T FindLast<T>(this IList<T> list, System.Predicate<T> pred)
+        {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (pred(list[i]))
+                    return list[i];
+            }
+            return default(T);
+        }
+
         public static void Shuffle<T>(this IList<T> list, Random rng)
         {
             int n = list.Count;
