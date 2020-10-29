@@ -3,6 +3,8 @@ using Core;
 using Core.Stats;
 using Newtonsoft.Json;
 using Core.Utils;
+using Core.Behaviors;
+using System;
 
 namespace Test
 {
@@ -21,12 +23,6 @@ namespace Test
 
     public class BindStatus : Status<BindData>
     {
-        public BindStatus(IChainDef[] chainDefs, IStatPath<StatusFile> statusPath, IChainDef[] spice, int defaultResValue = 1)
-            : base(null, statusPath, defaultResValue)
-        {
-            this.m_chainDefinition = spice == null ? chainDefs : chainDefs.Concat(spice);
-        }
-
         public BindStatus(IChainDef[] chainDefs, IStatPath<StatusFile> statusPath, int defaultResValue = 1)
             : base(chainDefs, statusPath, defaultResValue)
         {

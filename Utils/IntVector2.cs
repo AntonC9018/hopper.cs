@@ -242,5 +242,23 @@ namespace Core.Utils.Vector
                 y = y > 0 ? y : -y
             };
         }
+
+        public static bool operator ==(IntVector2 rhs, IntVector2 lhs)
+        {
+            if (ReferenceEquals(rhs, null))
+            {
+                return ReferenceEquals(lhs, null);
+            }
+            return rhs.Equals(lhs);
+        }
+
+        public static bool operator !=(IntVector2 rhs, IntVector2 lhs)
+        {
+            if (ReferenceEquals(rhs, null))
+            {
+                return !ReferenceEquals(lhs, null);
+            }
+            return !rhs.Equals(lhs);
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace Test
         private void BlockDirection(Attackable.Event ev)
         {
             var blockDir = GetRotatedRelativeDir(ev.actor);
-            if (ev.dir.Equals(-blockDir))
+            if (ev.dir == -blockDir)
             {
                 ev.resistance.pierce += m_pierceIncrease;
             }
@@ -45,7 +45,7 @@ namespace Test
         private void AbsorbDamageAndBreak(Attackable.Event ev)
         {
             var blockDir = GetRotatedRelativeDir(ev.actor);
-            if (ev.atkParams.attack.damage > 0 && ev.dir.Equals(-blockDir))
+            if (ev.atkParams.attack.damage > 0 && ev.dir == -blockDir)
             {
                 // TODO: dummy inventory that just calls the equip methods on item
                 ev.actor.Inventory?.Destroy(m_item);

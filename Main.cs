@@ -577,7 +577,7 @@ namespace Hopper
     {
         static void TestMethod1(StandartEvent standartEvent)
         {
-            var data = status.GetStore(standartEvent);
+            var data = status.Tinker.GetStore(standartEvent);
             System.Console.WriteLine($"Tinker says that amount = {data.amount}");
         }
         public static Status<StatusData> status = new Status<StatusData>(

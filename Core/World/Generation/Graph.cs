@@ -46,7 +46,7 @@ namespace Core.Generation
                     || position.y >= dimensions.y
                     || position.x < 0
                     || position.y < 0
-                    || nodes.Any(nd => nd.position.Equals(position)))
+                    || nodes.Any(nd => nd.position == position))
                 {
                     continue;
                 }

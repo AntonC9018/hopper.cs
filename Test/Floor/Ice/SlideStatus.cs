@@ -18,38 +18,43 @@ namespace Test
             return floor != null && floor.Behaviors.Has<Sliding>();
         }
 
-        public override bool Update(Entity entity)
+        public override void Update(Entity entity)
         {
-            if (entity.Tinkers.IsTinked(this))
+            if (m_tinker.IsTinked(entity))
             {
-                var store = GetStore(entity);
+                var store = m_tinker.GetStore(entity);
 
                 if (HasIceUnder(entity) == false)
                 {
-                    Untink(entity);
-                    store.amount = 0;
+                    m_tinker.Untink(entity);
                 }
-
-                return store.amount == 0;
             }
-            return true;
         }
 
         private static void SlideInstead(ActorEvent ev)
         {
-            var store = Status.GetStore(ev.actor);
-            var displaceable = ev.actor.Behaviors.Get<Displaceable>();
+            var store = Status.Tinker.GetStore(ev.actor);
+            var displaceable = ev.actor.Behaviors.TryGet<Displaceable>();
             var move = (Move)Move.Path.DefaultFile.Copy();
             var prevPos = ev.actor.Pos;
             displaceable?.Activate(store.initialDirection, move);
 
             // bumped into something
-            if (prevPos.Equals(ev.actor.Pos))
+            if (prevPos == ev.actor.Pos)
             {
                 store.amount = 0;
             }
 
             ev.propagate = false;
+        }
+
+        private static void SlideIfActionNull(ActorEvent ev)
+        {
+            if (ev.actor.Behaviors.TryGet<Acting>()?.NextAction == null)
+            {
+                SlideInstead(ev);
+                ev.propagate = true;
+            }
         }
 
         private static ChainDefBuilder builder = new ChainDefBuilder()
@@ -59,6 +64,8 @@ namespace Test
             .AddHandler(SlideInstead, PriorityRanks.High)
             .AddDef(Moving.Do)
             .AddHandler(SlideInstead, PriorityRanks.High)
+            .AddDef(Tick.Chain)
+            .AddHandler(SlideIfActionNull, PriorityRanks.High)
             .End();
 
         public static SlideStatus Status = new SlideStatus(1);

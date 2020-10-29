@@ -86,13 +86,13 @@ namespace Core
 
         private void CalculateNextAction(Entity entity)
         {
-            entity.Behaviors.Get<Acting>()?.CalculateNextAction();
+            entity.Behaviors.TryGet<Acting>()?.CalculateNextAction();
         }
 
         private void Activate(Entity entity)
         {
             if (entity.IsDead) return;
-            var acting = entity.Behaviors.Get<Acting>();
+            var acting = entity.Behaviors.TryGet<Acting>();
             if (acting != null && !acting.b_didAction)
             {
                 acting.Activate();

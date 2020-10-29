@@ -63,7 +63,8 @@ namespace Core.Behaviors
         {
             foreach (var status in m_appliedStatuses.ToList())
             {
-                if (status.Update(m_entity))
+                status.Update(m_entity);
+                if (status.IsApplied(m_entity) == false)
                 {
                     m_appliedStatuses.Remove(status);
                 }

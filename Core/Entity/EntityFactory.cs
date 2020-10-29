@@ -16,7 +16,7 @@ namespace Core
 
         public int Id => m_id;
         private int m_id;
-        public event System.Action<Entity> InitEvent;
+        public event System.Action<T> SetupEvent;
 
         public EntityFactory()
         {
@@ -77,7 +77,7 @@ namespace Core
                 var behavior = setting.factory.Instantiate(entity, setting.config);
                 entity.Behaviors.Add(type, behavior);
             }
-            InitEvent?.Invoke(entity);
+            SetupEvent?.Invoke(entity);
             return entity;
         }
 
@@ -97,9 +97,17 @@ namespace Core
             return this;
         }
 
-        public EntityFactory<T> AddSetupListener(System.Action<Entity> listener)
+        public EntityFactory<T> AddSetupListener(System.Action<T> listener)
         {
-            InitEvent += listener;
+            SetupEvent += listener;
+            return this;
+        }
+
+        public EntityFactory<T> AddInitListener(System.Action<T> listener)
+        {
+            // call the listener once the entity gets assigned 
+            // a position in the world for the first time
+            SetupEvent += (e => e.InitEvent += () => listener(e));
             return this;
         }
 

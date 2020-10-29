@@ -87,9 +87,9 @@ namespace Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
-                Pushable pushable = target.targetEntity.Behaviors.Get<Pushable>();
-                if (pushable != null)
+                if (target.targetEntity.Behaviors.Has<Pushable>())
                 {
+                    Pushable pushable = target.targetEntity.Behaviors.Get<Pushable>();
                     pushable.Activate(target.direction, (Push)ev.push.Copy());
                 }
             }

@@ -41,6 +41,11 @@ namespace Core
 
         public History<EntityState> History { get; private set; }
 
+        // this event is fired once the entity gets assigned 
+        // the world and its initial position in the world
+        public event System.Action InitEvent;
+        public event System.Action DieEvent;
+
         EntityState ITrackable<EntityState>.GetState()
         {
             return new EntityState(this);
@@ -64,11 +69,10 @@ namespace Core
         {
             m_pos = pos;
             World = world;
-        }
 
-        public void Init(World world)
-        {
-            World = world;
+            // fire the init event and destroy it, since it should only be called once
+            InitEvent?.Invoke();
+            InitEvent = null;
         }
 
         // Utility methods
@@ -96,6 +100,8 @@ namespace Core
 
         public void Die()
         {
+            DieEvent?.Invoke();
+
             IsDead = true;
             RemoveFromGrid();
             History.Add(this, UpdateCode.dead);

@@ -6,6 +6,7 @@ namespace Core.Behaviors
     public interface IProvideBehavior
     {
         T Get<T>() where T : Behavior, new();
+        T TryGet<T>() where T : Behavior, new();
         bool Has<T>() where T : Behavior, new();
     }
     public interface IProvideBehaviorFactory
@@ -39,7 +40,7 @@ namespace Core.Behaviors
         }
         public Chain<Event> ChainPath(IProvideBehavior startingFrom)
         {
-            return startingFrom.Get<Beh>()?.GetChain<Event>(name);
+            return startingFrom.TryGet<Beh>()?.GetChain<Event>(name);
         }
 
         public ChainTemplate<Event> TemplatePath(IProvideBehaviorFactory startingFrom)

@@ -47,7 +47,7 @@ namespace Test
         {
             var target = new AtkTarget
             {
-                targetEntity = status.GetStore(ev).whoApplied,
+                targetEntity = status.Tinker.GetStore(ev).whoApplied,
                 direction = new IntVector2(0, 0),
                 atkCondition = AtkCondition.ALWAYS
             };
@@ -56,7 +56,7 @@ namespace Test
 
         private void SelfRemove(Tick.Event ev)
         {
-            var statusData = status.GetStore(ev.actor);
+            var statusData = status.Tinker.GetStore(ev.actor);
             if (statusData.whoApplied == null || statusData.whoApplied.IsDead)
             {
                 statusData.amount = 0;
@@ -65,7 +65,7 @@ namespace Test
 
         private void DisplaceMe(Displaceable.Event ev)
         {
-            var statusData = status.GetStore(ev);
+            var statusData = status.Tinker.GetStore(ev);
             if (statusData.whoApplied != null)
             {
                 statusData.whoApplied.Pos = ev.actor.Pos;

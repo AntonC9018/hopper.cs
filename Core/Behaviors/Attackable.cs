@@ -77,7 +77,7 @@ namespace Core.Behaviors
         static void TakeHit(Event ev)
         {
             System.Console.WriteLine($"Attacking {ev.actor.ToString()}");
-            ev.actor.Behaviors.Get<Damageable>()?.Activate(ev.atkParams.attack.damage);
+            ev.actor.Behaviors.TryGet<Damageable>()?.Activate(ev.atkParams.attack.damage);
             System.Console.WriteLine($"Taken {ev.atkParams.attack.damage} damage");
         }
 

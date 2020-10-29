@@ -10,8 +10,7 @@ namespace Test
     public class Bouncing : Behavior, IStandartActivateable
     {
         private HashSet<Entity> m_alreadyBouncedEntities;
-        private System.Action<Entity> m_appliedHandlerEnter;
-        private System.Action<Entity> m_appliedHandlerLeave;
+        private bool m_isApplied;
         private Layer m_targetedLayer = Layer.REAL;
 
         [DataMember] private Entity m_entityOnTop; // TODO: use the right serializer
@@ -20,7 +19,7 @@ namespace Test
         {
             if (ShouldPush(oneBeingBounced))
             {
-                oneBeingBounced.Behaviors.Get<Pushable>()
+                oneBeingBounced.Behaviors.TryGet<Pushable>()
                     ?.Activate(
                         m_entity.Orientation,
                         m_entity.Stats.Get(Push.Path));
@@ -45,14 +44,12 @@ namespace Test
 
         private void Reset(Tick.Event ev)
         {
-            if (m_appliedHandlerEnter != null)
+            if (m_isApplied)
             {
-                m_entity.Cell.EnterEvent -= m_appliedHandlerEnter;
+                m_entity.Cell.EnterEvent -= PushTarget;
                 m_alreadyBouncedEntities.Clear();
-                m_appliedHandlerEnter = null;
-
-                m_entity.Cell.LeaveEvent -= m_appliedHandlerLeave;
-                m_appliedHandlerLeave = null;
+                m_entity.Cell.LeaveEvent -= GetUnpushed;
+                m_isApplied = false;
             }
             m_entityOnTop = m_entity.Cell.GetEntityFromLayer(m_targetedLayer);
         }
@@ -66,10 +63,9 @@ namespace Test
 
         public bool Activate(Action action)
         {
-            m_appliedHandlerEnter = PushTarget;
-            m_appliedHandlerLeave = GetUnpushed;
-            m_entity.Cell.EnterEvent += m_appliedHandlerEnter;
-            m_entity.Cell.LeaveEvent += m_appliedHandlerLeave;
+            m_isApplied = true;
+            m_entity.Cell.EnterEvent += PushTarget;
+            m_entity.Cell.LeaveEvent += GetUnpushed;
 
             var entity = m_entity.Cell.GetEntityFromLayer(m_targetedLayer);
             if (entity != null && entity != m_entityOnTop)

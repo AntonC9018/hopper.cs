@@ -15,7 +15,7 @@ namespace Core
             if (thing == null)
                 return false;
 
-            var acting = thing.Behaviors.Get<Acting>();
+            var acting = thing.Behaviors.TryGet<Acting>();
 
             if (acting == null || acting.b_didAction || acting.b_doingAction)
                 return false;

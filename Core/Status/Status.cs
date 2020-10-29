@@ -6,7 +6,7 @@ namespace Core
 {
     public interface IStatus : IHaveId
     {
-        bool Update(Entity entity);
+        void Update(Entity entity);
         bool IsApplied(Entity entity);
         // void Nullify(Entity entity);
         bool TryApply(Entity applicant, Entity target);
@@ -21,31 +21,44 @@ namespace Core
         }
     }
 
-    public class Status<T> : Tinker<T>, IStatus where T : StatusData, new()
+    public class Status<T> : IStatus where T : StatusData, new()
     {
         private IStatPath<StatusFile> m_statPath;
+        protected Tinker<T> m_tinker;
+        public int Id => m_tinker.Id;
+        public Tinker<T> Tinker => m_tinker;
 
-        public Status(IChainDef[] chainDefs, IStatPath<StatusFile> statPath, int defaultResValue) : base(chainDefs)
+        public Status(IChainDef[] chainDefs, IStatPath<StatusFile> statPath, int defaultResValue)
         {
             m_statPath = statPath;
+            m_tinker = new Tinker<T>(chainDefs);
             Status.Resistance.Path.DefaultFile.Add(Id, defaultResValue);
         }
 
         // Returns false if it is still applied after the update 
         // Returns true if the status should be removed
-        public virtual bool Update(Entity entity)
+        public virtual void Update(Entity entity)
         {
-            if (entity.Tinkers.IsTinked(this))
+            if (entity.Tinkers.IsTinked(m_tinker))
             {
-                var data = GetStore(entity);
-                return --data.amount == 0;
+                var data = m_tinker.GetStore(entity);
+                DecrementAmount(data);
+
+                if (data.amount == 0)
+                {
+                    m_tinker.Untink(entity);
+                }
             }
-            return true;
+        }
+
+        protected virtual void DecrementAmount(T store)
+        {
+            store.amount--;
         }
 
         public virtual bool IsApplied(Entity entity)
         {
-            return entity.Tinkers.IsTinked(this) && GetStore(entity).amount > 0;
+            return m_tinker.IsTinked(entity) && m_tinker.GetStore(entity).amount > 0;
         }
 
         public bool TryApply(Entity applicant, Entity target)
@@ -63,9 +76,13 @@ namespace Core
         // A convenience method for calling the Statused decorator
         public bool TryApply(Entity target, T statusData, StatusFile stat)
         {
-            if (target.Tinkers.IsTinked(this))
+            if (target.Behaviors.Has<Statused>() == false)
             {
-                Reapply(GetStore(target), statusData);
+                return false;
+            }
+            if (m_tinker.IsTinked(target))
+            {
+                Reapply(m_tinker.GetStore(target), statusData);
                 return true;
             }
 
@@ -75,7 +92,7 @@ namespace Core
 
             if (success)
             {
-                Tink(target, statusData);
+                m_tinker.Tink(target, statusData);
             }
 
             return success;

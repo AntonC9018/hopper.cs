@@ -70,7 +70,7 @@ namespace Test
             foreach (var target in targets)
             {
                 target.targetEntity.Behaviors.Get<Attackable>().Activate(knockbackDir, CreateMeta());
-                target.targetEntity.Behaviors.Get<Pushable>().Activate(knockbackDir, BasePush);
+                target.targetEntity.Behaviors.TryGet<Pushable>()?.Activate(knockbackDir, BasePush);
             }
             // spawn particles through some mechanism 
             ExplosionEvent?.Invoke(pos, world);

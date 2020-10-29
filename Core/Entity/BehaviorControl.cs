@@ -21,6 +21,11 @@ namespace Core
 
         public T Get<T>() where T : Behavior, new()
         {
+            return (T)m_behaviors[typeof(T)];
+        }
+
+        public T TryGet<T>() where T : Behavior, new()
+        {
             if (m_behaviors.ContainsKey(typeof(T)))
                 return (T)m_behaviors[typeof(T)];
             return null;
