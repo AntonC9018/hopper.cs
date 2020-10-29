@@ -27,7 +27,7 @@ namespace Test
         {
             new Step
             {
-                repeat = 3,
+                repeat = 20,
                 action = null
             },
             new Step
@@ -56,6 +56,7 @@ namespace Test
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(steps))
+                .AddBehavior<Statused>()
                 .SetDefaultStats(defaultStats);
         }
 

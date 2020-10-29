@@ -33,6 +33,7 @@ namespace Test
             | Layer.PROJECTILE
             | Layer.REAL
             | Layer.TRAP
+            | Layer.FLOOR
             | Layer.WALL;
         private static Layer SkipLayer = 0;
 

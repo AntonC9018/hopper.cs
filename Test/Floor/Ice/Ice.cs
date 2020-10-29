@@ -13,6 +13,7 @@ namespace Test
         {
             return new EntityFactory<IceFloor>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo, e => SlideAction))
+                .AddBehavior<Attackable>() // bombs can destroy it
                 .AddBehavior<Sliding>();
         }
     }

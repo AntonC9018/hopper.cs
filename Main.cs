@@ -316,12 +316,12 @@ namespace Hopper
 
             enemy.Init(new IntVector2(1, 2), world);
             world.m_state.AddEntity(enemy);
-            world.m_grid.Reset(enemy);
+            world.m_grid.Reset(enemy, enemy.Pos);
             System.Console.WriteLine("Enemy set in world");
 
             player.Init(new IntVector2(1, 1), world);
             world.m_state.AddPlayer(player);
-            world.m_grid.Reset(player);
+            world.m_grid.Reset(player, player.Pos);
             System.Console.WriteLine("Player set in world");
 
             var playerNextAction = attackMoveAction.Copy();

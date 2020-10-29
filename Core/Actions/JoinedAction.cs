@@ -1,8 +1,10 @@
+using System.Linq;
+
 namespace Core
 {
     public class JoinedAction : Action
     {
-        Action[] m_actions;
+        private Action[] m_actions;
 
         public JoinedAction(params Action[] actions)
         {
@@ -23,6 +25,16 @@ namespace Core
                 success = a.Do(e) || success;
             }
             return success;
+        }
+
+        public override bool ContainsAction(System.Type type)
+        {
+            return m_actions.Any(a => a.ContainsAction(type));
+        }
+
+        public override bool ContainsAction(Action action)
+        {
+            return m_actions.Any(a => a.ContainsAction(action));
         }
     }
 }

@@ -44,9 +44,15 @@ namespace Core.Behaviors
             ev.newPos = ev.actor.GetPosRelative(ev.dir * i);
         }
 
-        static void Displace(Event ev)
+        static void DisplaceRemove(Event ev)
         {
-            ev.actor.ResetPosInGrid(ev.newPos);
+            ev.actor.RemoveFromGrid();
+            ev.actor.Pos = ev.newPos;
+        }
+
+        static void DisplaceAddBack(Event ev)
+        {
+            ev.actor.ResetInGrid();
         }
 
         public static ChainPaths<Displaceable, Event> Check;
@@ -63,8 +69,10 @@ namespace Core.Behaviors
                 .AddHandler(ConvertFromMove, PriorityRanks.High)
 
                 .AddTemplate<Event>(ChainName.Do)
-                .AddHandler(Displace)
+                .AddHandler(DisplaceRemove)
                 .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.displaced_do))
+                .AddHandler(DisplaceAddBack)
+
 
                 .End();
 

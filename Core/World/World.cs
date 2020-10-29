@@ -4,6 +4,8 @@ using Core.Utils.Vector;
 
 namespace Core
 {
+    public delegate void BringIntoGrid();
+
     public class World : IHaveId
     {
         public GridManager m_grid;
@@ -54,36 +56,72 @@ namespace Core
         //
         // public event System.Action<int> SpawnParticleEvent;
 
-        private T SpawnEntityNoEvent<T>(IFactory<T> entityFactory, IntVector2 pos) where T : Entity
+        private T SpawnEntityNoEvent<T>(
+            IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
             var entity = entityFactory.Instantiate();
-            entity.Init(pos, this);
-            m_grid.Reset(entity);
+            entity.Init(pos, orientation, this);
+            m_grid.Reset(entity, entity.Pos);
             return entity;
         }
 
-        public T SpawnEntity<T>(IFactory<T> entityFactory, IntVector2 pos) where T : Entity
+        public System.Action SpawnHangingEntity<T>(
+            IFactory<T> entityFactory, IntVector2 pos) where T : Entity
         {
-            var entity = SpawnEntityNoEvent(entityFactory, pos);
+            var entity = entityFactory.Instantiate();
+            entity.Init(pos, this);
+            SpawnEntityEvent?.Invoke(entity);
+
+            return () =>
+            {
+                m_grid.Reset(entity, entity.Pos);
+            };
+        }
+
+        public T SpawnEntity<T>(
+            IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+        {
+            var entity = SpawnEntityNoEvent(entityFactory, pos, orientation);
             m_state.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }
 
-        public T SpawnPlayer<T>(IFactory<T> entityFactory, IntVector2 pos) where T : Entity
+        public T SpawnEntity<T>(
+            IFactory<T> entityFactory, IntVector2 pos) where T : Entity
         {
-            var entity = SpawnEntityNoEvent(entityFactory, pos);
+            return SpawnEntity(entityFactory, pos, IntVector2.Zero);
+        }
+
+
+        public T SpawnPlayer<T>(
+            IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+        {
+            var entity = SpawnEntityNoEvent(entityFactory, pos, orientation);
             m_state.AddPlayer(entity);
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }
 
-        public Entity SpawnDroppedItem(IItem item, IntVector2 pos)
+        public T SpawnPlayer<T>(
+            IFactory<T> entityFactory, IntVector2 pos) where T : Entity
         {
-            var entity = SpawnEntityNoEvent(DroppedItem.Factory, pos);
+            return SpawnPlayer(entityFactory, pos, IntVector2.Zero);
+        }
+
+
+        public DroppedItem SpawnDroppedItem(
+            IItem item, IntVector2 pos, IntVector2 orientation)
+        {
+            var entity = SpawnEntityNoEvent(DroppedItem.Factory, pos, orientation);
             entity.Item = item;
             SpawnEntityEvent?.Invoke(entity);
             return entity;
+        }
+
+        public DroppedItem SpawnDroppedItem(IItem item, IntVector2 pos)
+        {
+            return SpawnDroppedItem(item, pos, IntVector2.Zero);
         }
 
         // public void SpawnParticle(int id)

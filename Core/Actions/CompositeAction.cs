@@ -1,10 +1,10 @@
-using Core.Utils.Vector;
+using System.Linq;
 
 namespace Core
 {
     public class CompositeAction : Action
     {
-        Action[] m_actions;
+        private Action[] m_actions;
 
         public CompositeAction(params Action[] actions)
         {
@@ -27,6 +27,16 @@ namespace Core
                 }
             }
             return false;
+        }
+
+        public override bool ContainsAction(System.Type type)
+        {
+            return m_actions.Any(a => a.ContainsAction(type));
+        }
+
+        public override bool ContainsAction(Action action)
+        {
+            return m_actions.Any(a => a.ContainsAction(action));
         }
     }
 }

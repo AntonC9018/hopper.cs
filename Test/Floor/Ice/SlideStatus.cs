@@ -12,12 +12,6 @@ namespace Test
         {
         }
 
-        private bool HasIceUnder(Entity entity)
-        {
-            var floor = entity.Cell.GetEntityFromLayer(Layer.FLOOR);
-            return floor != null && floor.Behaviors.Has<Sliding>();
-        }
-
         public override void Update(Entity entity)
         {
             if (m_tinker.IsTinked(entity))
@@ -31,29 +25,55 @@ namespace Test
             }
         }
 
+        private bool HasIceUnder(Entity entity)
+        {
+            var floor = entity.Cell.GetEntityFromLayer(Layer.FLOOR);
+            return floor != null && floor.Behaviors.Has<Sliding>();
+        }
+
+        // if we change direction during sliding, apply the newest one
+        protected override void Reapply(SlideData existingData, SlideData newData)
+        {
+            existingData.initialDirection = newData.initialDirection;
+        }
+
         private static void SlideInstead(ActorEvent ev)
         {
             var store = Status.Tinker.GetStore(ev.actor);
-            var displaceable = ev.actor.Behaviors.TryGet<Displaceable>();
-            var move = (Move)Move.Path.DefaultFile.Copy();
             var prevPos = ev.actor.Pos;
-            displaceable?.Activate(store.initialDirection, move);
 
-            // bumped into something
-            if (prevPos == ev.actor.Pos)
+            var displaceable = ev.actor.Behaviors.TryGet<Displaceable>();
+
+            if (displaceable != null)
             {
-                store.amount = 0;
+                var move = (Move)Move.Path.DefaultFile.Copy();
+                displaceable.Activate(store.initialDirection, move);
+                ev.propagate = false;
             }
 
-            ev.propagate = false;
+            // bumped into something or couldn't move at all
+            if (prevPos == ev.actor.Pos)
+            {
+                Status.Tinker.Untink(ev.actor);
+            }
         }
 
         private static void SlideIfActionNull(ActorEvent ev)
         {
-            if (ev.actor.Behaviors.TryGet<Acting>()?.NextAction == null)
+            var nextAction = ev.actor.Behaviors.TryGet<Acting>()?.NextAction;
+            if (nextAction == null // if it were null, no action was tried
+
+                // if it weren't one of these, no sliding has been done either
+                || !nextAction.ContainsAction(typeof(BehaviorAction<Attacking>))
+                || !nextAction.ContainsAction(typeof(BehaviorAction<Digging>))
+                || !nextAction.ContainsAction(typeof(BehaviorAction<Moving>)))
             {
                 SlideInstead(ev);
                 ev.propagate = true;
+            }
+            if (Status.Tinker.IsTinked(ev.actor) && !Sliding.IsWayFree(ev.actor))
+            {
+                Status.Tinker.Untink(ev.actor);
             }
         }
 

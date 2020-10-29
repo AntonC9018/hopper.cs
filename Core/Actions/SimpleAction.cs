@@ -25,5 +25,16 @@ namespace Core
         {
             return Try(e, this);
         }
+
+        public override bool ContainsAction(System.Type type)
+        {
+            return false;
+        }
+
+        public override bool ContainsAction(Action action)
+        {
+            return this == action;
+            // return base.ContainsAction(action) && Try == ((SimpleAction)action).Try;
+        }
     }
 }

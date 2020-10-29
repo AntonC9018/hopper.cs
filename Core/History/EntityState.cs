@@ -19,4 +19,9 @@ namespace Core.History
             this.orientation = orientation;
         }
     }
+
+    public static class EntityStateHistoryExtensions
+    {
+        
+    }
 }

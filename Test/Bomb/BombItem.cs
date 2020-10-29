@@ -11,14 +11,18 @@ namespace Test
         public static SimpleAction placeBombAction = new SimpleAction(
             (e, a) =>
             {
+                var targetPos = e.Pos;
                 if (e.GetCellRelative(a.direction)?.GetEntityFromLayer(ExtendedLayer.BLOCK) == null)
                 {
-                    e.World.SpawnEntity(BombEntity.Factory, e.Pos + a.direction);
+                    targetPos += a.direction;
                 }
-                else
-                {
-                    e.World.SpawnEntity(BombEntity.Factory, e.Pos);
-                }
+
+                // Place the bomb in the world only after the reals move
+                // This is maybe too overcomplicated, I'm not sure if we need this.
+                // System.Action activate = e.World.SpawnHangingEntity(BombEntity.Factory, targetPos);
+                // e.World.m_state.OncePhaseStarts(Phase.REAL, activate);
+                e.World.SpawnEntity(BombEntity.Factory, targetPos);
+
                 e.Inventory.Destroy(item);
             }
         );

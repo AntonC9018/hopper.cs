@@ -23,6 +23,8 @@ namespace Core
         // This event is replicated on the entity, to control this.
         public event System.Action EndOfLoopEvent;
         public event System.Action BeforeFilterEvent;
+        public event System.Action<Phase> EndOfPhaseEvent;
+        public event System.Action<Phase> StartOfPhaseEvent;
 
         private Phase m_currentPhase = Phase.PLAYER;
         public Phase CurrentPhase => m_currentPhase;
@@ -183,6 +185,35 @@ namespace Core
         private void EndPhase()
         {
             m_timeStampPhaseLimits[(int)m_currentPhase] = m_currentTimeFrame;
+            EndOfPhaseEvent?.Invoke(m_currentPhase);
+        }
+
+        public void OncePhaseStarts(Phase phase, System.Action callback)
+        {
+            System.Action<Phase> handler = null;
+            handler = (p) =>
+            {
+                if (p == phase)
+                {
+                    callback();
+                    StartOfPhaseEvent -= handler;
+                }
+            };
+            StartOfPhaseEvent += handler;
+        }
+
+        public void OncePhaseEnds(Phase phase, System.Action callback)
+        {
+            System.Action<Phase> handler = null;
+            handler = (p) =>
+            {
+                if (p == phase)
+                {
+                    callback();
+                    EndOfPhaseEvent -= handler;
+                }
+            };
+            EndOfPhaseEvent += handler;
         }
     }
 }

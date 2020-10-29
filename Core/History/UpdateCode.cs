@@ -7,6 +7,9 @@ namespace Core.History
     {
         private static List<UpdateCode> updateCodes = new List<UpdateCode>();
 
+        // this one is always added to the history once it is cleared.
+        public static readonly UpdateCode control = new UpdateCode("control");
+
         public static readonly UpdateCode attacking_do = new UpdateCode("attacking_do");
         public static readonly UpdateCode attacked_do = new UpdateCode("attacked_do");
         public static readonly UpdateCode displaced_do = new UpdateCode("displaced_do");

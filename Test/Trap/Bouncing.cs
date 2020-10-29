@@ -24,8 +24,6 @@ namespace Test
             // automatically update the whether an entity left on top of us
             m_entity.InitEvent += (() => m_entity.Cell.LeaveEvent += GetUnpushed);
             m_entity.DieEvent += (() => m_entity.Cell.LeaveEvent -= GetUnpushed);
-
-            Tick.Chain.ChainPath(entity.Behaviors).AddHandler(Reset);
         }
 
         public bool Activate(Action action)
@@ -34,8 +32,7 @@ namespace Test
             // unless the entity gets off of us, which is managed by the leave handler
             if (m_hasEntityBeenOnTop)
             {
-                m_isEnterListenerApplied = true;
-                m_entity.Cell.EnterEvent += PushTarget;
+                StartListening();
                 return true;
             }
 
@@ -46,8 +43,7 @@ namespace Test
             // other traps may push a person onto us.
             if (entity == null)
             {
-                m_isEnterListenerApplied = true;
-                m_entity.Cell.EnterEvent += PushTarget;
+                StartListening();
             }
 
             // otherwise, push the thing which is on top of us.
@@ -57,6 +53,15 @@ namespace Test
             }
 
             return true;
+        }
+
+        private void StartListening()
+        {
+            m_isEnterListenerApplied = true;
+            m_entity.Cell.EnterEvent += PushTarget;
+
+            // only push in our phase
+            m_entity.World.m_state.EndOfPhaseEvent += Reset;
         }
 
         private void PushTarget(Entity oneBeingBounced)
@@ -95,11 +100,12 @@ namespace Test
 
         }
 
-        private void Reset(Tick.Event ev)
+        private void Reset(Phase phase)
         {
             if (m_isEnterListenerApplied)
             {
                 m_entity.Cell.EnterEvent -= PushTarget;
+                m_entity.World.m_state.EndOfPhaseEvent -= Reset;
                 m_isEnterListenerApplied = false;
             }
             m_hasBounced = false;

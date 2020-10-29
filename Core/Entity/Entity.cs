@@ -16,9 +16,9 @@ namespace Core
         [DataMember(Name = "pos")]
         protected IntVector2 m_pos;
         [DataMember(Name = "orientation")]
-        protected IntVector2 m_orientation = IntVector2.UnitX;
+        protected IntVector2 m_orientation = IntVector2.Zero;
         public IntVector2 Pos { get => m_pos; set => m_pos = value; }
-        public IntVector2 Orientation { get => m_orientation; }
+        public IntVector2 Orientation { get => m_orientation; set => m_orientation = value; }
 
         public virtual Layer Layer => Layer.REAL;
         public virtual bool IsPlayer => false;
@@ -67,8 +67,16 @@ namespace Core
 
         public void Init(IntVector2 pos, World world)
         {
+            Init(m_pos, m_orientation, world);
+        }
+
+        public void Init(IntVector2 pos, IntVector2 orientation, World world)
+        {
+            m_orientation = orientation;
             m_pos = pos;
             World = world;
+
+            History.InitControl(this);
 
             // fire the init event and destroy it, since it should only be called once
             InitEvent?.Invoke();
@@ -79,8 +87,8 @@ namespace Core
         public void ResetPosInGrid(IntVector2 newPos)
         {
             RemoveFromGrid();
+            World.m_grid.Reset(this, newPos);
             m_pos = newPos;
-            ResetInGrid();
         }
 
         public void RemoveFromGrid()
@@ -90,7 +98,7 @@ namespace Core
 
         public void ResetInGrid()
         {
-            World.m_grid.Reset(this);
+            World.m_grid.Reset(this, m_pos);
         }
 
         public void Reorient(IntVector2 orientation)
