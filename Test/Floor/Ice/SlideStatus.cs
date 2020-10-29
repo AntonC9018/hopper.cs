@@ -42,13 +42,16 @@ namespace Test
             var store = Status.Tinker.GetStore(ev.actor);
             var prevPos = ev.actor.Pos;
 
-            var displaceable = ev.actor.Behaviors.TryGet<Displaceable>();
-
-            if (displaceable != null)
+            if (Sliding.IsWayFree(ev.actor))
             {
-                var move = (Move)Move.Path.DefaultFile.Copy();
-                displaceable.Activate(store.initialDirection, move);
-                ev.propagate = false;
+                var displaceable = ev.actor.Behaviors.TryGet<Displaceable>();
+
+                if (displaceable != null)
+                {
+                    var move = (Move)Move.Path.DefaultFile.Copy();
+                    displaceable.Activate(store.initialDirection, move);
+                    ev.propagate = false;
+                }
             }
 
             // bumped into something or couldn't move at all
@@ -61,6 +64,7 @@ namespace Test
         private static void SlideIfActionNull(ActorEvent ev)
         {
             var nextAction = ev.actor.Behaviors.TryGet<Acting>()?.NextAction;
+
             if (nextAction == null // if it were null, no action was tried
 
                 // if it weren't one of these, no sliding has been done either
@@ -71,7 +75,8 @@ namespace Test
                 SlideInstead(ev);
                 ev.propagate = true;
             }
-            if (Status.Tinker.IsTinked(ev.actor) && !Sliding.IsWayFree(ev.actor))
+
+            else if (Status.Tinker.IsTinked(ev.actor) && !Sliding.IsWayFree(ev.actor))
             {
                 Status.Tinker.Untink(ev.actor);
             }
