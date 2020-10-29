@@ -25,7 +25,7 @@ namespace Core.Behaviors
         {
         }
 
-        public static IEnumerable<ChainName> Members
+        public static IEnumerable<InputMapping> Members
         {
             get
             {
@@ -33,7 +33,7 @@ namespace Core.Behaviors
                 var fields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
 
                 foreach (var field in fields)
-                    yield return (ChainName)field.GetValue(null);
+                    yield return (InputMapping)field.GetValue(null);
             }
         }
     }
