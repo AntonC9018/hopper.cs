@@ -196,11 +196,7 @@ namespace Core.Utils.Vector
 
         public static bool operator !=(Vector2 rhs, Vector2 lhs)
         {
-            if (ReferenceEquals(rhs, null))
-            {
-                return !ReferenceEquals(lhs, null);
-            }
-            return !rhs.Equals(lhs);
+            return !(rhs == lhs);
         }
     }
 }

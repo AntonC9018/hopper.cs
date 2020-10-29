@@ -26,7 +26,7 @@ namespace Core.Generation
 
         public IntVector2 GetDimensionVector(IntVector2 direction)
         {
-            return direction.HagamardProduct(dimensions);
+            return direction.HadamardProduct(dimensions);
         }
 
         public int GetDimension(IntVector2 direction)
@@ -36,7 +36,7 @@ namespace Core.Generation
 
         public IntVector2 GetDimensionMinusOneVector(IntVector2 direction)
         {
-            return direction.HagamardProduct(DimensionsMinusOne);
+            return direction.HadamardProduct(DimensionsMinusOne);
         }
 
         public int GetDimensionMinusOne(IntVector2 direction)

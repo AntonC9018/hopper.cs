@@ -220,7 +220,7 @@ namespace Core.Utils.Vector
         public static implicit operator Vector2(IntVector2 v)
             => new Vector2(v.x, v.y);
 
-        public IntVector2 HagamardProduct(IntVector2 vector2)
+        public IntVector2 HadamardProduct(IntVector2 vector2)
         {
             return new IntVector2
             {
@@ -254,11 +254,7 @@ namespace Core.Utils.Vector
 
         public static bool operator !=(IntVector2 rhs, IntVector2 lhs)
         {
-            if (ReferenceEquals(rhs, null))
-            {
-                return !ReferenceEquals(lhs, null);
-            }
-            return !rhs.Equals(lhs);
+            return !(rhs == lhs);
         }
     }
 }
