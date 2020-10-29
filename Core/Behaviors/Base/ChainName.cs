@@ -1,42 +1,27 @@
+using System.Collections.Generic;
 using Core.Utils;
 
 namespace Core.Behaviors
 {
-    // https://stackoverflow.com/a/2807561
-    public struct ChainName
+    public class ChainName : ScalableEnum
     {
-        static IdGenerator s_idGenerator = new IdGenerator();
-        readonly int value;
-        public ChainName(int value)
+        private static List<ChainName> chainNames = new List<ChainName>();
+
+        public static readonly ChainName Check = new ChainName("Check");
+        public static readonly ChainName Do = new ChainName("Do");
+        public static readonly ChainName Success = new ChainName("Success");
+        public static readonly ChainName Fail = new ChainName("Fail");
+        public static readonly ChainName Condition = new ChainName("Condition");
+        public static readonly ChainName Default = new ChainName("Default");
+
+        public ChainName(string name) : base(name, chainNames.Count)
         {
-            this.value = value;
-        }
-        public static implicit operator int(ChainName sport)
-        {
-            return sport.value;
-        }
-        public static implicit operator ChainName(int sport)
-        {
-            return new ChainName(sport);
-        }
-        public static int NextNew()
-        {
-            return s_idGenerator.GetNextId();
-        }
-        public override int GetHashCode()
-        {
-            return value;
-        }
-        public override bool Equals(object obj)
-        {
-            return value == ((ChainName)obj).value;
+            chainNames.Add(this);
         }
 
-        public readonly static ChainName Check = NextNew();
-        public readonly static ChainName Do = NextNew();
-        public readonly static ChainName Success = NextNew();
-        public readonly static ChainName Fail = NextNew();
-        public readonly static ChainName Condition = NextNew();
-        public readonly static ChainName Default = NextNew();
+        public static implicit operator ChainName(int value)
+        {
+            return chainNames[value];
+        }
     }
 }

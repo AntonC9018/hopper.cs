@@ -26,7 +26,7 @@ namespace Test
         // adds a mapping to the controller
         public static ITinker tinker = new Tinker<TinkerData>(
             new ChainDefBuilder()
-                .AddDef(Controllable.Chains[InputMappings.Weapon_0])
+                .AddDef(Controllable.Chains[InputMapping.Weapon_0])
                 .AddHandler((ev) => ev.SetAction(placeBombAction.Copy(), ev.actor.Orientation))
                 .End().ToStatic()
         );

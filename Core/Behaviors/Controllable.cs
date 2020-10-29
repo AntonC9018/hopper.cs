@@ -6,26 +6,30 @@ using System.Runtime.Serialization;
 
 namespace Core.Behaviors
 {
-    public static class InputMappings
+    public class InputMapping : ChainName
     {
-        public readonly static ChainName Up = ChainName.NextNew();
-        public readonly static ChainName Down = ChainName.NextNew();
-        public readonly static ChainName Left = ChainName.NextNew();
-        public readonly static ChainName Right = ChainName.NextNew();
-        public readonly static ChainName Action_0 = ChainName.NextNew();
-        public readonly static ChainName Action_1 = ChainName.NextNew();
-        public readonly static ChainName Special_0 = ChainName.NextNew();
-        public readonly static ChainName Special_1 = ChainName.NextNew();
-        public readonly static ChainName Item_0 = ChainName.NextNew();
-        public readonly static ChainName Item_1 = ChainName.NextNew();
-        public readonly static ChainName Weapon_0 = ChainName.NextNew();
-        public readonly static ChainName Weapon_1 = ChainName.NextNew();
+        public readonly static InputMapping Up = new InputMapping("Up");
+        public readonly static InputMapping Down = new InputMapping("Down");
+        public readonly static InputMapping Left = new InputMapping("Left");
+        public readonly static InputMapping Right = new InputMapping("Right");
+        public readonly static InputMapping Action_0 = new InputMapping("Action_0");
+        public readonly static InputMapping Action_1 = new InputMapping("Action_1");
+        public readonly static InputMapping Special_0 = new InputMapping("Special_0");
+        public readonly static InputMapping Special_1 = new InputMapping("Special_1");
+        public readonly static InputMapping Item_0 = new InputMapping("Item_0");
+        public readonly static InputMapping Item_1 = new InputMapping("Item_1");
+        public readonly static InputMapping Weapon_0 = new InputMapping("Weapon_0");
+        public readonly static InputMapping Weapon_1 = new InputMapping("Weapon_1");
+
+        public InputMapping(string name) : base(name)
+        {
+        }
 
         public static IEnumerable<ChainName> Members
         {
             get
             {
-                var type = typeof(InputMappings);
+                var type = typeof(InputMapping);
                 var fields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
 
                 foreach (var field in fields)
@@ -71,10 +75,10 @@ namespace Core.Behaviors
             base.Init(entity, null);
         }
 
-        public Action ConvertInputToAction(ChainName chainName)
+        public Action ConvertInputToAction(InputMapping input)
         {
             var ev = new Event { actor = m_entity };
-            GetChain<Event>(chainName).Pass(ev);
+            GetChain<Event>(input).Pass(ev);
             return ev.action;
         }
 
@@ -83,8 +87,8 @@ namespace Core.Behaviors
             return ev => ev.SetAction(ev.actor.Behaviors.Get<Controllable>().config_defaultAction, dir);
         }
 
-        public static readonly Dictionary<ChainName, ChainPaths<Controllable, Event>> Chains
-            = new Dictionary<ChainName, ChainPaths<Controllable, Event>>();
+        public static readonly Dictionary<InputMapping, ChainPaths<Controllable, Event>> Chains
+            = new Dictionary<InputMapping, ChainPaths<Controllable, Event>>();
 
         static Controllable()
         {
@@ -92,26 +96,26 @@ namespace Core.Behaviors
 
             // set up all chain paths for the input mappings
             // set up all templates
-            foreach (ChainName name in InputMappings.Members)
+            foreach (InputMapping name in InputMapping.Members)
             {
                 builder.AddTemplate<Event>(name);
                 Chains[name] = new ChainPaths<Controllable, Event>(name);
             }
 
             builder
-                .GetTemplate<Event>(InputMappings.Up)
+                .GetTemplate<Event>(InputMapping.Up)
                 .AddHandler(Default(IntVector2.Up), PriorityRanks.Lowest)
                 .End()
 
-                .GetTemplate<Event>(InputMappings.Right)
+                .GetTemplate<Event>(InputMapping.Right)
                 .AddHandler(Default(IntVector2.Right), PriorityRanks.Lowest)
                 .End()
 
-                .GetTemplate<Event>(InputMappings.Down)
+                .GetTemplate<Event>(InputMapping.Down)
                 .AddHandler(Default(IntVector2.Down), PriorityRanks.Lowest)
                 .End()
 
-                .GetTemplate<Event>(InputMappings.Left)
+                .GetTemplate<Event>(InputMapping.Left)
                 .AddHandler(Default(IntVector2.Left), PriorityRanks.Lowest)
                 .End();
 

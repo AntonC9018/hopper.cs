@@ -1,17 +1,29 @@
+using System.Collections.Generic;
+using Core.Utils;
+
 namespace Core.History
 {
-    // Don't know what this will be exactly
-    // these values are placeholders
-    // It may be a good idea to associate one update to each decorator
-    public enum UpdateCode
+    public class UpdateCode : ScalableEnum
     {
-        attacking_do,
-        attacked_do,
-        displaced_do,
-        move_do,
-        pushed_do,
-        statused_do,
-        Hurt,
-        dead
+        private static List<UpdateCode> updateCodes = new List<UpdateCode>();
+
+        public static readonly UpdateCode attacking_do = new UpdateCode("attacking_do");
+        public static readonly UpdateCode attacked_do = new UpdateCode("attacked_do");
+        public static readonly UpdateCode displaced_do = new UpdateCode("displaced_do");
+        public static readonly UpdateCode move_do = new UpdateCode("move_do");
+        public static readonly UpdateCode pushed_do = new UpdateCode("pushed_do");
+        public static readonly UpdateCode statused_do = new UpdateCode("statused_do");
+        public static readonly UpdateCode hurt = new UpdateCode("hurt");
+        public static readonly UpdateCode dead = new UpdateCode("dead");
+
+        public UpdateCode(string name) : base(name, updateCodes.Count)
+        {
+            updateCodes.Add(this);
+        }
+
+        public static implicit operator UpdateCode(int value)
+        {
+            return updateCodes[value];
+        }
     }
 }
