@@ -65,17 +65,14 @@ namespace Core
             return entity;
         }
 
-        public System.Action SpawnHangingEntity<T>(
-            IFactory<T> entityFactory, IntVector2 pos) where T : Entity
+        public T SpawnHangingEntity<T>(
+            IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
             var entity = entityFactory.Instantiate();
-            entity.Init(pos, this);
+            entity.Init(pos, orientation, this);
+            m_state.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);
-
-            return () =>
-            {
-                m_grid.Reset(entity, entity.Pos);
-            };
+            return entity;
         }
 
         public T SpawnEntity<T>(

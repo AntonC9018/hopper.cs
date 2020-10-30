@@ -108,10 +108,11 @@ namespace Core
 
         public void Die()
         {
-            DieEvent?.Invoke();
-
             IsDead = true;
             RemoveFromGrid();
+
+            DieEvent?.Invoke();
+
             History.Add(this, UpdateCode.dead);
         }
 

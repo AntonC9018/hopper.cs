@@ -111,6 +111,13 @@ namespace Core
             return this;
         }
 
+        public EntityFactory<T> AddDieListener(System.Action<T> listener)
+        {
+            // call the listener once the entity dies
+            SetupEvent += (e => e.DieEvent += () => listener(e));
+            return this;
+        }
+
         public EntityFactory<T> SetDefaultStats(Core.Stats.DefaultStats stats)
         {
             return AddSetupListener(e => e.Stats.DefaultStats = stats.StatManager);

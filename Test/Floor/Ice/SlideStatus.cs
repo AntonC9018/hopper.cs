@@ -20,7 +20,7 @@ namespace Test
 
                 if (HasIceUnder(entity) == false)
                 {
-                    m_tinker.Untink(entity);
+                    Remove(entity);
                 }
             }
         }
@@ -49,7 +49,7 @@ namespace Test
             // remove the sliding status if there is anything in the way
             if (Sliding.IsWayFree(ev.actor) == false)
             {
-                Status.Tinker.Untink(ev.actor);
+                Status.Remove(ev.actor);
             }
         }
 

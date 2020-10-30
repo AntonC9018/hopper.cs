@@ -46,7 +46,7 @@ namespace Core
 
                 if (data.amount == 0)
                 {
-                    m_tinker.Untink(entity);
+                    Remove(entity);
                 }
             }
         }
@@ -67,12 +67,6 @@ namespace Core
         public bool TryApply(Entity applicant, Entity target, T statusData)
             => TryApply(target, statusData, GetStat(applicant));
 
-        // By default, just update the amount
-        protected virtual void Reapply(T existingData, T newData)
-        {
-            existingData.amount = newData.amount;
-        }
-
         // A convenience method for calling the Statused decorator
         public bool TryApply(Entity target, T statusData, StatusFile stat)
         {
@@ -92,15 +86,31 @@ namespace Core
 
             if (success)
             {
-                m_tinker.Tink(target, statusData);
+                Apply(target, statusData);
             }
 
             return success;
         }
 
+        // By default, just update the amount
+        protected virtual void Reapply(T existingData, T newData)
+        {
+            existingData.amount = newData.amount;
+        }
+
         public StatusFile GetStat(Entity entity)
         {
             return m_statPath.Path(entity.Stats);
+        }
+
+        protected virtual void Apply(Entity target, T statusData)
+        {
+            m_tinker.Tink(target, statusData);
+        }
+
+        public virtual void Remove(Entity entity)
+        {
+            m_tinker.Untink(entity);
         }
     }
 }
