@@ -65,7 +65,7 @@ namespace Test
 
         public static void ExplodeCell(IntVector2 pos, IntVector2 knockbackDir, World world)
         {
-            var atkEvent = Target.CreateEvent<AtkTarget>(new Dummy(pos, world), knockbackDir);
+            var atkEvent = Target.CreateEvent<AtkTarget>(new Core.Targeting.Dummy(pos, world), knockbackDir);
             var targets = targetProvider.GetParticularTargets(atkEvent, CreateMeta());
 
             foreach (var target in targets)
