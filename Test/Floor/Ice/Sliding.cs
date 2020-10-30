@@ -8,7 +8,7 @@ namespace Test
 {
     public class Sliding : Behavior, IStandartActivateable
     {
-        private Layer m_targetedLayer = Layer.REAL;
+        public static Layer TargetedLayer = Layer.REAL;
 
         public override void Init(Entity entity, BehaviorConfig config)
         {
@@ -19,7 +19,7 @@ namespace Test
 
         public bool Activate(Action action)
         {
-            var real = m_entity.Cell.GetEntityFromLayer(m_targetedLayer);
+            var real = m_entity.Cell.GetEntityFromLayer(TargetedLayer);
             if (real != null)
             {
                 ApplySliding(real);
@@ -32,19 +32,22 @@ namespace Test
             if (ShouldApplySliding(entity))
             {
                 // an alternative way of getting the vector of movement
-                // probably should be used if the retoucher `Reorient.OnDisplace` has been applied.
+                // probably should be used if the retoucher `Reorient.OnDisplace` has not been applied.
                 // IntVector2 posBefore = entity.History.GetStateBefore(UpdateCode.displaced_do).pos;
                 // IntVector2 initialDirection = entity.Pos - posBefore;
                 IntVector2 initialDirection = entity.Orientation;
 
-                SlideStatus.Status.TryApply(
-                    m_entity, entity, new SlideData(initialDirection));
+                if (initialDirection != IntVector2.Zero)
+                {
+                    SlideStatus.Status.TryApply(
+                        m_entity, entity, new SlideData(initialDirection));
+                }
             }
         }
 
         private bool ShouldApplySliding(Entity entity)
         {
-            return (entity.Layer & m_targetedLayer) != 0
+            return entity.IsOfLayer(TargetedLayer)
                 && IsWayFree(entity)
                 && MovedThisTurn(entity);
         }

@@ -39,58 +39,92 @@ namespace Test
 
         private static void SlideInstead(ActorEvent ev)
         {
-            var store = Status.Tinker.GetStore(ev.actor);
-            var prevPos = ev.actor.Pos;
+            // make all other entities that we're sliding into 
+            // potentially slide out of the way first
+            MakeEntitiesOnTheWaySlide(ev);
 
-            if (Sliding.IsWayFree(ev.actor))
-            {
-                var displaceable = ev.actor.Behaviors.TryGet<Displaceable>();
+            // try to slide ourselves
+            SlideIfDidnt(ev.actor);
 
-                if (displaceable != null)
-                {
-                    var move = (Move)Move.Path.DefaultFile.Copy();
-                    displaceable.Activate(store.initialDirection, move);
-                    ev.propagate = false;
-                }
-            }
-
-            // bumped into something or couldn't move at all
-            if (prevPos == ev.actor.Pos)
+            // remove the sliding status if there is anything in the way
+            if (Sliding.IsWayFree(ev.actor) == false)
             {
                 Status.Tinker.Untink(ev.actor);
             }
         }
 
-        private static void SlideIfActionNull(ActorEvent ev)
+        private static void MakeEntitiesOnTheWaySlide(ActorEvent ev)
         {
-            var nextAction = ev.actor.Behaviors.TryGet<Acting>()?.NextAction;
+            var store = Status.Tinker.GetStore(ev.actor);
 
-            if (nextAction == null // if it were null, no action was tried
+            var entitiesOnTheWay = ev.actor
+                .GetCellRelative(store.initialDirection)
+                .GetAllFromLayer(Sliding.TargetedLayer);
 
-                // if it weren't one of these, no sliding has been done either
-                || !nextAction.ContainsAction(typeof(BehaviorAction<Attacking>))
-                || !nextAction.ContainsAction(typeof(BehaviorAction<Digging>))
-                || !nextAction.ContainsAction(typeof(BehaviorAction<Moving>)))
+            foreach (var thing in entitiesOnTheWay)
             {
-                SlideInstead(ev);
-                ev.propagate = true;
+                if (Status.IsApplied(thing))
+                {
+                    SlideIfDidnt(thing);
+                }
             }
+        }
 
-            else if (Status.Tinker.IsTinked(ev.actor) && !Sliding.IsWayFree(ev.actor))
+        private static void SlideIfDidnt(Entity actor)
+        {
+            var store = Status.Tinker.GetStore(actor);
+            if (store.didSlide == false)
             {
-                Status.Tinker.Untink(ev.actor);
+                Slide(actor, store);
+            }
+        }
+
+        private static void Slide(Entity actor, SlideData store)
+        {
+            store.didSlide = true;
+
+            var displaceable = actor.Behaviors.TryGet<Displaceable>();
+
+            if (displaceable != null)
+            {
+                var move = (Move)Move.Path.DefaultFile.Copy();
+                displaceable.Activate(store.initialDirection, move);
+            }
+        }
+
+        private static void NoAction(ActorEvent ev)
+        {
+            ev.propagate = false;
+        }
+
+        private static void ResetDidSlide(ActorEvent ev)
+        {
+            if (Status.Tinker.IsTinked(ev.actor))
+            {
+                Status.Tinker.GetStore(ev.actor).didSlide = false;
             }
         }
 
         private static ChainDefBuilder builder = new ChainDefBuilder()
+
             .AddDef(Attacking.Do)
-            .AddHandler(SlideInstead, PriorityRanks.High)
+            .AddHandler(NoAction, PriorityRanks.High)
+
             .AddDef(Digging.Do)
-            .AddHandler(SlideInstead, PriorityRanks.High)
+            .AddHandler(NoAction, PriorityRanks.High)
+
             .AddDef(Moving.Do)
+            .AddHandler(NoAction, PriorityRanks.High)
+
+            .AddDef(Acting.Success)
             .AddHandler(SlideInstead, PriorityRanks.High)
+
+            .AddDef(Acting.Fail)
+            .AddHandler(SlideInstead, PriorityRanks.High)
+
             .AddDef(Tick.Chain)
-            .AddHandler(SlideIfActionNull, PriorityRanks.High)
+            .AddHandler(ResetDidSlide, PriorityRanks.High)
+
             .End();
 
         public static SlideStatus Status = new SlideStatus(1);

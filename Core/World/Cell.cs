@@ -24,6 +24,11 @@ namespace Core
 
     public static class LayerExtensions
     {
+        public static bool IsOfLayer(this Entity entity, Layer layer)
+        {
+            return (entity.Layer & layer) != 0;
+        }
+
         public static string GetName(this Layer layer)
         {
             return System.Enum.GetName(typeof(Layer), layer);

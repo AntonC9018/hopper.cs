@@ -63,6 +63,7 @@ namespace Core.Behaviors
         {
             foreach (var status in m_appliedStatuses.ToList())
             {
+                System.Console.WriteLine("Updating that stat");
                 status.Update(m_entity);
                 if (status.IsApplied(m_entity) == false)
                 {
@@ -103,9 +104,9 @@ namespace Core.Behaviors
                 .AddHandler(SetResistance, PriorityRanks.High)
                 .AddHandler(ResistSomeStatuses, PriorityRanks.Low)
 
-                // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
 
-                .End();
+                // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
+               .End();
 
             BehaviorFactory<Statused>.s_builder = builder;
         }

@@ -6,6 +6,7 @@ namespace Test
     public class SlideData : StatusData
     {
         public IntVector2 initialDirection;
+        public bool didSlide;
 
         public SlideData()
         {
@@ -15,6 +16,7 @@ namespace Test
         {
             this.initialDirection = initialDirection;
             this.amount = 1;
+            this.didSlide = true;
         }
     }
 }

@@ -57,6 +57,7 @@ namespace Test
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(steps))
                 .AddBehavior<Statused>()
+                .Retouch(Core.Retouchers.Reorient.OnDisplace)
                 .SetDefaultStats(defaultStats);
         }
 
