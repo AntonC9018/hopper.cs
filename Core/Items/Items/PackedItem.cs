@@ -10,7 +10,7 @@ namespace Core.Items
         private IItem m_storedItem;
         private int m_count;
 
-        public override int Slot => m_storedItem.Slot;
+        public override ISlot Slot => m_storedItem.Slot;
 
         public PackedItem(IItem storedItem, int count) : base()
         {

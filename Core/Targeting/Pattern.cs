@@ -3,8 +3,14 @@ using Core.Utils.Vector;
 
 namespace Core.Targeting
 {
-    public class Pattern
+    public interface IPattern
     {
+        IEnumerable<Piece> Pieces { get; }
+    }
+
+    public class Pattern : IPattern
+    {
+        public IEnumerable<Piece> Pieces => pieces;
         public IList<Piece> pieces;
 
         public Pattern(params Piece[] pieces)

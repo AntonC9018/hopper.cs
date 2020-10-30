@@ -4,11 +4,11 @@ namespace Core.Items
 {
     public class ModifierItem : Item
     {
-        private readonly int m_slot;
-        public override int Slot => m_slot;
+        private readonly Slot<IItemContainer> m_slot;
+        public override ISlot Slot => m_slot;
         private IModifier modifier;
 
-        public ModifierItem(IModifier modifier, int slot) : base()
+        public ModifierItem(IModifier modifier, Slot<IItemContainer> slot) : base()
         {
             this.modifier = modifier;
             m_slot = slot;

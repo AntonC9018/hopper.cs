@@ -1,16 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
 using Core.Targeting;
 
 namespace Core.Items
 {
     public class Inventory : IInventory
     {
-        public const int WeaponSlot = 0;
-        public const int ShovelSlot = 1;
-        public const int CounterSlot = 2;
-
-        private Dictionary<int, IItemContainer> m_itemSlots;
+        private Dictionary<ISlot, IItemContainer> m_itemSlots;
 
         private Entity m_actor;
 
@@ -26,9 +21,19 @@ namespace Core.Items
             }
         }
 
+        public Inventory(Entity entity, Dictionary<ISlot, IItemContainer> slots)
+        {
+            m_itemSlots = slots;
+            m_actor = entity;
+        }
+
         public Inventory(Entity entity)
         {
-            m_itemSlots = new Dictionary<int, IItemContainer>();
+            m_itemSlots = new Dictionary<ISlot, IItemContainer>(Slot._Slots.Count);
+            foreach (var slot in Slot._Slots)
+            {
+                m_itemSlots.Add(slot, slot.CreateContainer());
+            }
             m_actor = entity;
         }
 
@@ -69,13 +74,18 @@ namespace Core.Items
             }
         }
 
-        public void AddContainer(int slotId, IItemContainer container)
+        public void AddContainer<T>(Slot<T> slot) where T : IItemContainer
         {
-            if (m_itemSlots.ContainsKey(slotId))
+            AddContainer(slot, (T)slot.CreateContainer());
+        }
+
+        public void AddContainer<T>(Slot<T> slot, T container) where T : IItemContainer
+        {
+            if (m_itemSlots.ContainsKey(slot))
             {
-                throw new System.Exception($"Container for key {slotId} has already been defined");
+                throw new System.Exception($"Container for key {slot} has already been defined");
             }
-            m_itemSlots[slotId] = container;
+            m_itemSlots[slot] = container;
         }
 
         public bool CanEquipItem(IItem item)
@@ -83,15 +93,16 @@ namespace Core.Items
             return m_itemSlots.ContainsKey(item.Slot);
         }
 
-        public IItem GetItemFromSlot(int slotId)
+        public IItem GetItemFromSlot(ISlot slot)
         {
-            return m_itemSlots[slotId][0];
+            return m_itemSlots[slot][0];
         }
 
-        public IEnumerable<T> GenerateTargets<T, M>(TargetEvent<T> targetEvent, M meta, int slotId)
+        public IEnumerable<T> GenerateTargets<T, M>(
+            TargetEvent<T> targetEvent, M meta, ISlot slot)
             where T : Target, new()
         {
-            var targetProvider = (ModularTargetingItem<T, M>)GetItemFromSlot(slotId);
+            var targetProvider = (ModularTargetingItem<T, M>)GetItemFromSlot(slot);
             if (targetProvider == null)
             {
                 return new List<T>();

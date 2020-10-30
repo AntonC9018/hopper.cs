@@ -35,7 +35,7 @@ namespace Test
                 .End().ToStatic()
         );
 
-        public static CheckInventoryItem item = new CheckInventoryItem(tinker, Inventory.CounterSlot);
+        public static CheckInventoryItem item = new CheckInventoryItem(tinker, Slot.Counter);
         public static PackedItem item_x3 = new PackedItem(item, 3);
 
     }

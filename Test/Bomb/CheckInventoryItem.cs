@@ -5,7 +5,7 @@ namespace Test
 {
     public class CheckInventoryItem : TinkerItem
     {
-        public CheckInventoryItem(ITinker tinker, int slot = 0) : base(tinker, slot)
+        public CheckInventoryItem(ITinker tinker, ISlot slot) : base(tinker, slot)
         {
             System.Console.WriteLine($"Tinker is null? : {tinker == null}");
         }

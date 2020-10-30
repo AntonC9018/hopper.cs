@@ -5,7 +5,7 @@ namespace Core.Items
     public class Item : IItem
     {
         private readonly int m_id;
-        public virtual int Slot => throw new System.NotImplementedException();
+        public virtual ISlot Slot => throw new System.NotImplementedException();
         public virtual int Id => m_id;
 
         public Item()
@@ -33,7 +33,8 @@ namespace Core.Items
             CreateDropped(entity);
         }
 
-        public static ModularTargetingItem<T, M> CreateModularTargeting<T, M>(int slot,
+        public static ModularTargetingItem<T, M> CreateModularTargeting<T, M>(
+            Slot<IItemContainer> slot,
             IProvideTargets<T, M> targetProvider,
             params IModule[] modules)
                 where T : Target, new()

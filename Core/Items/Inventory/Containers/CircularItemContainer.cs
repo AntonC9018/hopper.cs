@@ -5,7 +5,7 @@ using Core.Utils.CircularBuffer;
 
 namespace Core.Items
 {
-    public class CircularItemContainer : IItemContainer, IResizable
+    public class CircularItemContainer : IResizableContainer
     {
         private CircularBuffer<IItem> items;
         private List<IItem> excess;

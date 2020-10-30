@@ -8,13 +8,13 @@ namespace Core.Targeting
     public class TargetProvider<T, M> : IProvideTargets<T, M>
         where T : Target, new()
     {
-        private Pattern m_pattern;
+        private IPattern m_pattern;
         private Chain<TargetEvent<T>> m_chain;
         private System.Func<TargetEvent<T>, bool> m_stopFunc;
         private ICalculator<T, M> m_calculator;
 
         public TargetProvider(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<T>> chain,
             System.Func<TargetEvent<T>, bool> stopFunc,
             ICalculator<T, M> calculator)
@@ -30,13 +30,13 @@ namespace Core.Targeting
             var targets = new List<T>();
             double angle = IntVector2.Right.AngleTo(targetEvent.dir);
 
-            for (int i = 0; i < this.m_pattern.pieces.Count; i++)
+            foreach (var piece in m_pattern.Pieces)
             {
-                var piece = this.m_pattern.pieces[i].Rotate(angle);
+                var rotatedPiece = piece.Rotate(angle);
 
                 targets.AddRange(
                     m_calculator.CalculateTargets(
-                        targetEvent, this.m_pattern.pieces[i], piece, meta
+                        targetEvent, piece, rotatedPiece, meta
                     )
                 );
             }

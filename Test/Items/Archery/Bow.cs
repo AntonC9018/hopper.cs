@@ -4,105 +4,99 @@ using Core.Behaviors;
 using Core.History;
 using Core.Items;
 using Core.Stats.Basic;
-using Core.Utils.Vector;
 
 namespace Test
 {
     public class BowTinkerData : TinkerData
     {
-        public bool isCharged = false;
+        public int numCharges = 0;
     }
 
-    public static class Bow
-    {
-        public static SimpleAction ChargeAction = new SimpleAction(ToggleCharging);
-        public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
 
-        public static void ToggleCharging(Entity entity, Action action)
+    public class Bow
+    {
+        // use this function to get a module for your item
+        public static TinkerModule CreateModule(Shooting shooting)
         {
-            var store = ShootTinker.GetStore(entity);
-            store.isCharged = !store.isCharged;
+            return new Bow(shooting).ShootingModule;
+        }
+        // TODO: either add more functions to generate more types of these
+        // or make Bow's members all public.
+
+
+        // public Tinker<BowTinkerData> Tinker => m_shootTinker;
+        public readonly TinkerModule ShootingModule;
+
+        private Tinker<BowTinkerData> m_shootTinker;
+        private SimpleAction m_chargeAction;
+        private Action m_shootAction;
+        private Shooting m_shooting;
+
+        private Bow(Shooting shooting)
+        {
+            m_shootTinker = new Tinker<BowTinkerData>(
+                new ChainDefBuilder()
+                    .AddHandler_ToAllVectorInputs(SetShootAction)
+                    .AddDef(Controllable.Chains[InputMapping.Weapon_1])
+                    .AddHandler(SetChargeHandler)
+                    .End().ToStatic()
+            );
+            m_shooting = shooting;
+            m_chargeAction = new SimpleAction(ToggleCharging);
+            m_shootAction = new SimpleAction(Shoot);
+            ShootingModule = new TinkerModule(m_shootTinker);
+        }
+
+        private void Shoot(Entity entity, Action action)
+        {
+            var store = m_shootTinker.GetStore(entity);
+            if (store.numCharges > 0)
+            {
+                store.numCharges--;
+                m_shooting.Shoot(entity, action);
+            }
+        }
+
+        private void ToggleCharging(Entity entity, Action action)
+        {
+            var store = m_shootTinker.GetStore(entity);
+            store.numCharges = 1 - store.numCharges;
             entity.History.Add(entity, ToggledChargingUpdate);
         }
 
-        public static void SetChargeHandler(Controllable.Event ev)
+        private void SetChargeHandler(Controllable.Event ev)
         {
-            ev.action = ChargeAction;
+            ev.action = m_chargeAction;
         }
 
-        public static SimpleAction ShootAction = new SimpleAction(Shoot);
-
-        private static Layer SkipLayer = Layer.WALL;
-        private static Layer TargetedLayer = Layer.REAL;
-        private static bool StopOnFailedAttack = true;
-
-        private static Attack.Source ArrowSource = new Attack.Source();
-        private static Attack ArrowAttack = new Attack
+        private void SetShootAction(Controllable.Event ev)
         {
-            sourceId = ArrowSource.Id,
-            power = 1,
-            pierce = 1,
-            damage = 1
-        };
-
-        public static readonly UpdateCode ShootingUpdate = new UpdateCode("shooting");
-
-        public static void Shoot(Entity entity, Action action)
-        {
-            ShootTinker.GetStore(entity).isCharged = false;
-
-            entity.Reorient(action.direction);
-            entity.History.Add(entity, ShootingUpdate);
-
-            IntVector2 currentOffsetVec = action.direction;
-
-            while (true)
+            var store = m_shootTinker.GetStore(ev);
+            if (store.numCharges > 0)
             {
-                var cell = entity.GetCellRelative(currentOffsetVec);
-
-                // off the world or a block is on the way
-                if (cell == null || cell.GetEntityFromLayer(SkipLayer) != null)
-                {
-                    return;
-                }
-
-                var target = cell.GetEntityFromLayer(TargetedLayer);
-                if (target != null && target.Behaviors.Has<Attackable>())
-                {
-                    var success = target.Behaviors.Get<Attackable>().Activate(
-                        action.direction, new Attackable.Params(ArrowAttack, entity));
-
-                    if (StopOnFailedAttack && success == false)
-                    {
-                        return;
-                    }
-                }
-
-                currentOffsetVec += action.direction;
+                ev.action = m_shootAction.WithDir(ev.action.direction);
             }
         }
 
-        public static void SetShootAction(Controllable.Event ev)
+        public static readonly ModularItem DefaultItem;
+        public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
+        public static readonly ISlot Slot = Core.Items.Slot.RangeWeapon;
+        public static readonly Attack.Source ArrowSource = new Attack.Source();
+
+        static Bow()
         {
-            var store = ShootTinker.GetStore(ev);
-            if (store.isCharged)
+            var defaultArrowAttack = new Attack
             {
-                ev.action = ShootAction.WithDir(ev.action.direction);
-            }
+                sourceId = ArrowSource.Id,
+                power = 1,
+                pierce = 1,
+                damage = 1
+            };
+            var defaultShooting = new StaticShooting(
+                Layer.REAL, Layer.WALL, defaultArrowAttack, null, true
+            );
+            var module = CreateModule(defaultShooting);
+            DefaultItem = new ModularItem(Slot, module);
         }
-
-        public static Tinker<BowTinkerData> ShootTinker = new Tinker<BowTinkerData>(
-            new ChainDefBuilder()
-                .AddHandler_ToAllVectorInputs(SetShootAction)
-                .AddDef(Controllable.Chains[InputMapping.Weapon_1])
-                .AddHandler(SetChargeHandler)
-                .End().ToStatic()
-        );
-
-        // TODO: generate these
-        public static int SlotId = 4;
-
-        public static ModularItem Item =
-            new ModularItem(SlotId, new TinkerModule(ShootTinker));
     }
 }

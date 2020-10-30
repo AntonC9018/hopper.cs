@@ -2,7 +2,7 @@ namespace Core.Items
 {
     public interface IItem : IHaveId, IModule
     {
-        int Slot { get; }
+        ISlot Slot { get; }
         DecomposedItem Decompose();
     }
 }

@@ -67,7 +67,7 @@ namespace Core.Behaviors
                         .GenerateTargets(
                             Target.CreateEvent<AtkTarget>(ev),
                             new Attackable.Params(ev.attack, ev.actor),
-                            Inventory.WeaponSlot)
+                            Slot.Weapon)
                         .ToList();
             }
         }

@@ -35,7 +35,8 @@ namespace Hopper
 
         public static void ShieldTest()
         {
-            var shield = new ModularItem(3, ShieldModule.CreateFront(2));
+            var slot = new SizedSlot<CircularItemContainer>("blocking", 1);
+            var shield = new ModularItem(slot, ShieldModule.CreateFront(2));
             var enemyFactory = new EntityFactory<Entity>().AddBehavior<Attackable>();
             var playerFactory = new EntityFactory<Entity>()
                 .AddBehavior<Attacking>()
@@ -218,10 +219,11 @@ namespace Hopper
             var player = playerFactory.Instantiate();
             World world = new World(1, 1);
             player.Init(new IntVector2(1, 1), world);
-            var item = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }));
-            var item2 = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), 1);
+            var slot = new SizedSlot<CircularItemContainer>("stuff", 5);
+            var item = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
+            var item2 = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
             var packed = IdMap.Items.PackModMap();
-            ((Inventory)player.Inventory).AddContainer(3, new CircularItemContainer(5));
+            ((Inventory)player.Inventory).AddContainer(slot, new CircularItemContainer(5));
             player.Inventory.Equip(item);
             player.Inventory.Equip(item2);
 
@@ -421,15 +423,15 @@ namespace Hopper
             System.Console.WriteLine("\n ------ Inventory Demo ------ \n");
             var inventory = (Inventory)player.Inventory;
 
-            var cyclicContainer = new CircularItemContainer(1);
-            // indeces 0 and 1 are reserved for weapon and shovel respectively
-            inventory.AddContainer(4, cyclicContainer);
+            var slot = new SizedSlot<CircularItemContainer>("stuff2", 1);
+
+            inventory.AddContainer(slot);
 
             var tinker = Tinker<TinkerData>.SingleHandlered<Attacking.Event>(
                 Attacking.Check,
                 e => System.Console.WriteLine("Hello from tinker applied by item")
             );
-            var item = new TinkerItem(tinker, 4);
+            var item = new TinkerItem(tinker, slot);
 
             // inventory.Equip(item) ->         // the starting point
             // item.BeEquipped(entity) ->       // it's interface method
@@ -471,12 +473,12 @@ namespace Hopper
             playerMoveAction.direction = IntVector2.Down;
             player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
 
-            var cyclicContainer2 = new CircularItemContainer(1);
-            inventory.AddContainer(3, cyclicContainer);
+            var slot2 = new SizedSlot<CircularItemContainer>("stuff3", 1);
+            inventory.AddContainer(slot2);
 
             var chainDefs2 = new IChainDef[0];
             var tinker2 = new Tinker<TinkerData>(chainDefs2);
-            var item2 = new TinkerItem(tinker2, 3);
+            var item2 = new TinkerItem(tinker2, slot2);
 
             var droppedItem2 = world.SpawnDroppedItem(item2, player.Pos + IntVector2.Down);
 

@@ -2,11 +2,11 @@ namespace Core.Items
 {
     public class TinkerItem : Item
     {
-        private readonly int m_slot;
-        public override int Slot => m_slot;
+        private readonly ISlot m_slot;
+        public override ISlot Slot => m_slot;
         protected ITinker m_tinker;
 
-        public TinkerItem(ITinker tinker, int slot = 0) : base()
+        public TinkerItem(ITinker tinker, ISlot slot) : base()
         {
             this.m_tinker = tinker;
             m_slot = slot;

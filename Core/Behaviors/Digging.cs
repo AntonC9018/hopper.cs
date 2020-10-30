@@ -44,7 +44,7 @@ namespace Core.Behaviors
                     : inv
                         .GenerateTargets(
                             Target.CreateEvent<DigTarget>(ev),
-                            ev.dig, Inventory.ShovelSlot)
+                            ev.dig, Slot.Shovel)
                         .ToList();
             }
         }

@@ -6,4 +6,8 @@ namespace Core.Items
     {
         [JsonIgnore] int Size { get; set; }
     }
+
+    public interface IResizableContainer : IResizable, IItemContainer
+    {
+    }
 }
