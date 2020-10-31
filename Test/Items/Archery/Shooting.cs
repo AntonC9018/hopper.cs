@@ -45,7 +45,7 @@ namespace Test
                 var cell = entity.GetCellRelative(currentOffsetVec);
 
                 // off the world or a block is in the way
-                if (cell == null || cell.GetEntityFromLayer(m_skipLayer) != null)
+                if (cell == null || cell.HasBlock(action.direction, m_skipLayer))
                 {
                     break;
                 }

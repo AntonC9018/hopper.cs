@@ -12,7 +12,7 @@ namespace Test
             (e, a) =>
             {
                 var targetPos = e.Pos;
-                if (e.GetCellRelative(a.direction)?.GetEntityFromLayer(ExtendedLayer.BLOCK) == null)
+                if (e.HasBlockRelative(a.direction) == false)
                 {
                     targetPos += a.direction;
                 }

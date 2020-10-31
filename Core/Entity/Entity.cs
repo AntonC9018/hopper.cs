@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using Core.Stats;
 using Core.Targeting;
 using Core.History;
+using System;
 
 namespace Core
 {
@@ -32,6 +33,7 @@ namespace Core
 
         // These field store persistent state
         [DataMember] public IInventory Inventory { get; protected set; }
+
         [DataMember(Order = 1)] public BehaviorControl Behaviors { get; private set; }
         [DataMember(Order = 2)] public TinkerControl Tinkers { get; private set; }
 
@@ -141,6 +143,22 @@ namespace Core
         public Cell GetCellRelative(IntVector2 offset)
         {
             return World.m_grid.GetCellAt(m_pos + offset);
+        }
+
+        public bool HasBlockRelative(IntVector2 offset)
+        {
+            var cell = GetCellRelative(offset);
+            if (cell == null) return true;
+            return cell.HasBlock(offset.Sign(), ExtendedLayer.BLOCK);
+        }
+
+        public Entity GetTargetRelative_IfNotBlocked(IntVector2 direction, Layer layer)
+        {
+            if (Cell.HasDirectionalBlock(direction))
+            {
+                return null;
+            }
+            return GetCellRelative(direction).GetEntityFromLayer(layer);
         }
 
         public override bool Equals(object obj)

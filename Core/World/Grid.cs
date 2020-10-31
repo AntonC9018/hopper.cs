@@ -16,10 +16,7 @@ namespace Core
             {
                 for (int j = 0; j < height; j++)
                 {
-                    m_grid[i, j] = new Cell
-                    {
-                        m_pos = new IntVector2(i, j)
-                    };
+                    m_grid[i, j] = new Cell(new IntVector2(j, i), this);
                 }
             }
             m_width = width;

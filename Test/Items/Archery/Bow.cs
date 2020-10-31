@@ -93,7 +93,7 @@ namespace Test
                 damage = 1
             };
             var defaultShooting = new StaticShooting(
-                Layer.REAL, Layer.WALL, defaultArrowAttack, null, true
+                Layer.REAL, Layer.WALL | Layer.DIRECTIONAL_WALL, defaultArrowAttack, null, true
             );
             var module = CreateModule(defaultShooting);
             DefaultItem = new ModularItem(Slot, module);

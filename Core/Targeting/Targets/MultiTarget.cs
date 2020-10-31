@@ -29,8 +29,12 @@ namespace Core.Targeting
             Layer skipLayer,
             Layer targetedLayer)
         {
+            if (!cell.HasBlock(targetEvent.dir, skipLayer))
+            {
+                return new T[0];
+            }
             var targetedEntities = cell.m_entities
-                .Where(e => (e.Layer & skipLayer) == 0 && (e.Layer & targetedLayer) != 0);
+                .Where(e => e.IsOfLayer(targetedLayer));
             return ToTargets(targetedEntities, meta);
         }
     }

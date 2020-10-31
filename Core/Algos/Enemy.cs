@@ -8,9 +8,7 @@ namespace Core
     {
         static bool AskMove(Acting.Event ev)
         {
-            Entity thing = ev.actor
-                .GetCellRelative(ev.action.direction)
-                .GetEntityFromLayer(Layer.REAL);
+            Entity thing = ev.actor.GetTargetRelative_IfNotBlocked(ev.action.direction, Layer.REAL);
 
             if (thing == null)
                 return false;

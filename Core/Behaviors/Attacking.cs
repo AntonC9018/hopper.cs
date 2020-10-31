@@ -20,9 +20,7 @@ namespace Core.Behaviors
 
         static List<AtkTarget> GenerateTargetsDefault(Event ev)
         {
-            var entity = ev.actor
-                .GetCellRelative(ev.action.direction)
-                .GetEntityFromLayer(Layer.REAL);
+            var entity = ev.actor.GetTargetRelative_IfNotBlocked(ev.action.direction, Layer.REAL);
 
             return entity == null
                 ? new List<AtkTarget>()

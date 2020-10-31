@@ -33,9 +33,7 @@ namespace Core.Behaviors
 
             do
             {
-                var cell = ev.actor.GetCellRelative(ev.dir * i);
-
-                if (cell == null || cell.GetEntityFromLayer(ExtendedLayer.BLOCK) != null)
+                if (ev.actor.HasBlockRelative(ev.dir * i))
                     break;
                 i++;
             } while (i < ev.move.power);

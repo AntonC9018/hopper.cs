@@ -24,6 +24,7 @@ namespace Core
             m_grid = new GridManager(width, height);
             m_state = new WorldStateManager();
             m_id = IdMap.World.Add(this);
+            PhaseLayerExtensions.ThrowIfPhasesAreWrong();
         }
 
         public void Loop()

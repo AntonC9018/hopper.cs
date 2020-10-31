@@ -30,10 +30,7 @@ namespace Core.Retouchers
 
         static void SkipBlocked(Moving.Event ev)
         {
-            var block = ev.actor
-                .GetCellRelative(ev.action.direction)
-                .GetEntityFromLayer(ExtendedLayer.BLOCK);
-            ev.propagate = block == null;
+            ev.propagate = ev.actor.HasBlockRelative(ev.action.direction) == false;
         }
 
         static void SkipNoPlayer(Attacking.Event ev)

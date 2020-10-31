@@ -54,8 +54,7 @@ namespace Test
 
         public static bool IsWayFree(Entity entity)
         {
-            return entity.GetCellRelative(entity.Orientation)
-                .GetEntityFromLayer(ExtendedLayer.BLOCK) == null;
+            return entity.HasBlockRelative(entity.Orientation);
         }
 
         private bool MovedThisTurn(Entity entity)
