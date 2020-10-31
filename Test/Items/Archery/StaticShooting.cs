@@ -35,7 +35,7 @@ namespace Test
         }
 
         // returns true if we shall continue
-        protected bool ShootOnce_StaticStats(Entity attacker, Entity attacked, IntVector2 direction)
+        private bool ShootOnce_StaticStats(Entity attacker, Entity attacked, IntVector2 direction)
         {
             if (attacked != null && attacked.Behaviors.Has<Attackable>())
             {

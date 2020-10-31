@@ -27,7 +27,7 @@ namespace Test
             }
         }
 
-        protected bool ShootOnce_NormalAttack(Entity attacker, Entity attacked, Action action)
+        private bool ShootOnce_NormalAttack(Entity attacker, Entity attacked, Action action)
         {
             if (attacked != null && attacked.Behaviors.Has<Attackable>())
             {

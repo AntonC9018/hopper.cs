@@ -21,7 +21,7 @@ namespace Test
         {
             var cell = world.m_grid.GetCellAt(pos);
             if (cell == null) return null;
-            var gold = (Gold)cell.GetEntityFromLayer(Layer.GOLD);
+            var gold = (Gold)cell.GetAnyEntityFromLayer(Layer.GOLD);
             if (gold == null)
             {
                 gold = world.SpawnEntity(factory, pos);

@@ -22,6 +22,7 @@ namespace Core
         public IntVector2 Orientation { get => m_orientation; set => m_orientation = value; }
 
         public virtual Layer Layer => Layer.REAL;
+        public virtual bool IsDirected => false;
         public virtual bool IsPlayer => false;
         public Cell Cell => World.m_grid.GetCellAt(m_pos);
 
@@ -152,14 +153,14 @@ namespace Core
             return cell.HasBlock(offset.Sign(), ExtendedLayer.BLOCK);
         }
 
-        public Entity GetTargetRelative_IfNotBlocked(IntVector2 direction, Layer layer)
-        {
-            if (Cell.HasDirectionalBlock(direction))
-            {
-                return null;
-            }
-            return GetCellRelative(direction).GetEntityFromLayer(layer);
-        }
+        // public Entity GetTargetRelative_IfNotBlocked(IntVector2 direction, Layer layer)
+        // {
+        //     if (Cell.HasDirectionalBlock(direction))
+        //     {
+        //         return null;
+        //     }
+        //     return GetCellRelative(direction).GetAnyEntityFromLayer(layer);
+        // }
 
         public override bool Equals(object obj)
         {

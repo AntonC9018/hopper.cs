@@ -19,10 +19,10 @@ namespace Test
 
         public bool Activate(Action action)
         {
-            var real = m_entity.Cell.GetEntityFromLayer(TargetedLayer);
-            if (real != null)
+            var entity = m_entity.Cell.GetUndirectedEntityFromLayer(TargetedLayer);
+            if (entity != null)
             {
-                ApplySliding(real);
+                ApplySliding(entity);
             }
             return true;
         }
@@ -48,13 +48,14 @@ namespace Test
         private bool ShouldApplySliding(Entity entity)
         {
             return entity.IsOfLayer(TargetedLayer)
+                && entity.IsDirected == false
                 && IsWayFree(entity)
                 && MovedThisTurn(entity);
         }
 
         public static bool IsWayFree(Entity entity)
         {
-            return entity.HasBlockRelative(entity.Orientation);
+            return entity.HasBlockRelative(entity.Orientation) == false;
         }
 
         private bool MovedThisTurn(Entity entity)

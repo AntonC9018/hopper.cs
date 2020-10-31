@@ -42,13 +42,13 @@ namespace Core.Targeting
         public IntVector2 direction;
         public Entity targetEntity;
 
-        static protected Entity GetEntityDefault(Cell cell, Layer skip, Layer get)
+        static protected Entity GetEntityDefault(Cell cell, IntVector2 direction, Layer skip, Layer get)
         {
-            if (cell.GetEntityFromLayer(skip) == null)
+            if (cell.HasBlock(direction, skip))
             {
-                return cell.GetEntityFromLayer(get);
+                return null;
             }
-            return null;
+            return cell.GetEntityFromLayer(direction, get);
         }
     }
 }

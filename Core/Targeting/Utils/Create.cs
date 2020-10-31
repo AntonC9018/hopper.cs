@@ -94,7 +94,7 @@ namespace Core.Targeting
         )
         {
             return new TargetProvider<AtkTarget, Attackable.Params>(
-                pattern, chain, DefaultStop, new SimpleCalculator<AtkTarget, Attackable.Params>(Layer.WALL | Layer.DIRECTIONAL_WALL, Layer.REAL));
+                pattern, chain, DefaultStop, new SimpleCalculator<AtkTarget, Attackable.Params>(Layer.WALL, Layer.REAL));
         }
 
         public static TargetProvider<AtkTarget, Attackable.Params> CreateAtk(
@@ -104,7 +104,7 @@ namespace Core.Targeting
         )
         {
             return new TargetProvider<AtkTarget, Attackable.Params>(
-                pattern, chain, stop, new SimpleCalculator<AtkTarget, Attackable.Params>(Layer.WALL | Layer.DIRECTIONAL_WALL, Layer.REAL));
+                pattern, chain, stop, new SimpleCalculator<AtkTarget, Attackable.Params>(Layer.WALL, Layer.REAL));
         }
 
         public static TargetProvider<DigTarget, Dig> CreateDig(

@@ -1,6 +1,7 @@
 using Core.Utils.Vector;
 using System.Collections.Generic;
 using Core.Utils;
+using System.Linq;
 
 namespace Core
 {
@@ -14,16 +15,12 @@ namespace Core
         GOLD = 0b_0001_0000,
         FLOOR = 0b_0010_0000,
         TRAP = 0b_0100_0000,
-        DROPPED = 0b_1000_0000,
-
-        // this is a directional block. which direction it blocks is defined
-        // by which direction it is looking at
-        DIRECTIONAL_WALL = 0b_0000_0001_0000_0000
+        DROPPED = 0b_1000_0000
     }
 
     public static class ExtendedLayer
     {
-        public static Layer BLOCK = Layer.REAL | Layer.WALL | Layer.MISC | Layer.DIRECTIONAL_WALL;
+        public static Layer BLOCK = Layer.REAL | Layer.WALL | Layer.MISC;
     }
 
     public static class LayerExtensions
@@ -82,54 +79,143 @@ namespace Core
             return m_entities[0];
         }
 
-        public Entity GetEntityFromLayer(Layer layer)
+        public Entity GetAnyEntityFromLayer(Layer layer)
         {
-            return m_entities.FindLast(e => (e.Layer & layer) != 0);
+            return m_entities.FindLast(e => e.IsOfLayer(layer));
         }
 
         public List<Entity> GetAllFromLayer(Layer layer)
         {
-            return m_entities.Where(e => (e.Layer & layer) != 0);
+            return m_entities.Where(e => e.IsOfLayer(layer));
         }
 
-        public bool HasDirectionalBlock(IntVector2 direction)
+        /*
+                            ______________
+            We are given   |              |
+            the pos of     |   Entity2    |
+            this final     |              |
+            cell     --->  | --Barrier2-- |
+                           |______________|
+                           | --Barrier1-- |
+                           |     ^        |
+                    Cell   |     |        |
+                    Outline|   Entity1    |
+                           |______________|
+            
+            So imagine entity1 calls this method. It queries coordinates of the cell
+            at the top and provides the direction. We must first go back to the cell
+            this entity is at, checking if there are any barriers (directed entities).
+            Second we check the barriers of the second block, which are on the opposite
+            direction of the cell to the one given (the entity1 looks up, but we check
+            to see if the block is down). Next we get the contents of the queried cell
+            itself.
+
+        */
+        public Entity GetEntityFromLayer(IntVector2 direction, Layer layer)
+        {
+            return GetAllFromLayer(direction, layer).FirstOrDefault();
+        }
+
+        // this one looks for the fitting barriers
+        public Entity GetDirectedEntityFromLayer(IntVector2 direction, Layer layer)
+        {
+            return GetAllDirectedFromLayer(direction, layer).FirstOrDefault();
+        }
+
+        public Entity GetUndirectedEntityFromLayer(Layer layer)
+        {
+            return m_entities.FindLast(e => e.IsOfLayer(layer) && e.IsDirected == false);
+        }
+
+        public IEnumerable<Entity> GetAllFromLayer(IntVector2 direction, Layer layer)
+        {
+            var prevCell = m_grid.GetCellAt(-direction + m_pos);
+            if (prevCell != null)
+            {
+                foreach (var entity in prevCell.GetAllDirectedFromLayer(direction, layer))
+                {
+                    yield return entity;
+                }
+            }
+
+            for (int i = m_entities.Count - 1; i >= 0; i--)
+            {
+                if (m_entities[i].IsOfLayer(layer))
+                {
+                    if (m_entities[i].IsDirected && m_entities[i].Orientation != -direction)
+                    {
+                        continue;
+                    }
+                    yield return m_entities[i];
+                }
+            }
+        }
+
+        public IEnumerable<Entity> GetAllDirectedFromLayer(IntVector2 direction, Layer layer)
+        {
+            for (int i = m_entities.Count - 1; i >= 0; i--)
+            {
+                if (m_entities[i].IsDirected
+                    && m_entities[i].IsOfLayer(layer)
+                    && m_entities[i].Orientation == direction)
+                {
+                    yield return m_entities[i];
+                }
+            }
+        }
+
+        /*
+            this one is similar to the behavior described above, except in a situation like this:
+
+            a diagonal direction
+              \  |
+               \ | <-- barrier 2           
+            ____\|   
+              ^
+              |            
+            barrier 1
+
+            it would return `true`.
+        */
+        public bool HasBlock(IntVector2 direction, Layer layer)
+        {
+            var prevCell = m_grid.GetCellAt(-direction + m_pos);
+            if (prevCell != null && prevCell.HasDirectionalBlock(direction, layer))
+            {
+                System.Console.WriteLine("Has directional block prev");
+                return true;
+            }
+            if (HasDirectionalBlock(-direction, layer))
+            {
+                System.Console.WriteLine("Has directional block current");
+                return true;
+            }
+            return GetUndirectedEntityFromLayer(layer) != null;
+        }
+
+        public bool HasDirectionalBlock(IntVector2 direction, Layer layer)
         {
             var dir = direction.Copy();
-            foreach (var directionalBlock in GetAllFromLayer(Layer.DIRECTIONAL_WALL))
+            foreach (var entity in m_entities)
             {
-                // block diagonal movement if corner blocks are present
-                if (directionalBlock.Orientation.x == dir.x)
+                if (entity.IsDirected && entity.IsOfLayer(layer))
                 {
-                    dir.x = 0;
-                }
-                if (directionalBlock.Orientation.y == dir.y)
-                {
-                    dir.y = 0;
-                }
-                if (dir == IntVector2.Zero)
-                {
-                    return true;
+                    // block diagonal movement if corner barriers are present
+                    if (entity.Orientation.x == dir.x)
+                    {
+                        dir.x = 0;
+                    }
+                    if (entity.Orientation.y == dir.y)
+                    {
+                        dir.y = 0;
+                    }
+                    if (dir == IntVector2.Zero)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
-        }
-
-        public bool HasBlock(IntVector2 direction, Layer layer)
-        {
-            if (Layer.DIRECTIONAL_WALL.IsOfLayer(layer))
-            {
-                layer -= Layer.DIRECTIONAL_WALL;
-                var prevCell = m_grid.GetCellAt(-direction + m_pos);
-                if (prevCell != null && prevCell.HasDirectionalBlock(direction))
-                {
-                    return true;
-                }
-                if (HasDirectionalBlock(-direction))
-                {
-                    return true;
-                }
-            }
-            return GetEntityFromLayer(layer) != null;
         }
 
         public void FireEnterEvent(Entity entity)

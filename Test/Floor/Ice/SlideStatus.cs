@@ -27,7 +27,7 @@ namespace Test
 
         private bool HasIceUnder(Entity entity)
         {
-            var floor = entity.Cell.GetEntityFromLayer(Layer.FLOOR);
+            var floor = entity.Cell.GetAnyEntityFromLayer(Layer.FLOOR);
             return floor != null && floor.Behaviors.Has<Sliding>();
         }
 

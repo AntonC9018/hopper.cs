@@ -7,6 +7,8 @@ using Core.Utils.Vector;
 
 namespace Test
 {
+    // TODO: add an option for shooting just the first entity. 
+    // currently, it pierces through them all.
     public abstract class Shooting
     {
         public static readonly UpdateCode UpdateCode = new UpdateCode("shooting");
@@ -50,9 +52,7 @@ namespace Test
                     break;
                 }
 
-                var target = cell.GetEntityFromLayer(m_targetedLayer);
-
-                yield return target;
+                yield return cell.GetEntityFromLayer(action.direction, m_targetedLayer);
 
                 currentOffsetVec += action.direction;
             }

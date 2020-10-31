@@ -18,7 +18,7 @@ namespace Core.Targeting
         public void CalculateTargetedEntity(
             TargetEvent<AtkTarget> ev, Cell cell, Layer skipLayer, Layer targetedLayer)
         {
-            targetEntity = GetEntityDefault(cell, skipLayer, targetedLayer);
+            targetEntity = GetEntityDefault(cell, ev.dir, skipLayer, targetedLayer);
         }
 
         public void ProcessMeta(Attackable.Params atkParams)

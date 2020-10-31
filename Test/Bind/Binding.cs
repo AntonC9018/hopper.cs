@@ -57,7 +57,7 @@ namespace Test
         {
             if (ev.applyTo == null)
             {
-                ev.applyTo = ev.actor.GetTargetRelative_IfNotBlocked(ev.action.direction, Layer.REAL);
+                ev.applyTo = ev.actor.Cell.GetEntityFromLayer(ev.action.direction, Layer.REAL);
             }
         }
 

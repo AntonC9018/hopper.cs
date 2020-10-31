@@ -11,9 +11,8 @@ namespace Core
         FLOOR = 6,
         TRAP = 7,
         DROPPED = 8,
-        DIRECTIONAL_WALL = 9,
-        TICK_PLAYER = 10,
-        TICK_REAL = 11
+        TICK_PLAYER = 9,
+        TICK_REAL = 10
     }
 
     public static class PhaseLayerExtensions
@@ -60,10 +59,6 @@ namespace Core
             if (Layer.DROPPED.ToIndex() + 1 != (int)Phase.DROPPED)
             {
                 throw new System.Exception("DROPPED is not where it should be");
-            }
-            if (Layer.DIRECTIONAL_WALL.ToIndex() + 1 != (int)Phase.DIRECTIONAL_WALL)
-            {
-                throw new System.Exception("DIRECTIONAL_WALL is not where it should be");
             }
         }
     }

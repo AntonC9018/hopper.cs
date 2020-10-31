@@ -37,7 +37,7 @@ namespace Test
             }
 
             // otherwise, try to bounce
-            var entity = m_entity.Cell.GetEntityFromLayer(m_targetedLayer);
+            var entity = m_entity.Cell.GetUndirectedEntityFromLayer(m_targetedLayer);
 
             // if there's nobody to target, watch the cell, since
             // other traps may push a person onto us.
@@ -49,7 +49,8 @@ namespace Test
             // otherwise, push the thing which is on top of us.
             else
             {
-                PushTarget(entity);
+                TryPushTarget(entity);
+                m_hasBounced = false;
             }
 
             return true;
@@ -58,13 +59,13 @@ namespace Test
         private void StartListening()
         {
             m_isEnterListenerApplied = true;
-            m_entity.Cell.EnterEvent += PushTarget;
+            m_entity.Cell.EnterEvent += TryPushTarget;
 
             // only push in our phase
             m_entity.World.m_state.EndOfPhaseEvent += Reset;
         }
 
-        private void PushTarget(Entity oneBeingBounced)
+        private void TryPushTarget(Entity oneBeingBounced)
         {
             if (ShouldPush(oneBeingBounced))
             {
@@ -88,23 +89,23 @@ namespace Test
             return m_hasBounced == false
                 && m_hasEntityBeenOnTop == false // the previous entity has left
                 && m_entity.IsDead == false
-                && (oneBeingBounced.Layer & m_targetedLayer) != 0;
+                && oneBeingBounced.IsOfLayer(m_targetedLayer)
+                && oneBeingBounced.IsDirected == false;
         }
 
         private void GetUnpushed(Entity leavingEntity)
         {
             // we don't push the entity in the next iteration 
             // if they end up on top of us in this iteration
-            var ent = m_entity.Cell.GetEntityFromLayer(m_targetedLayer);
+            var ent = m_entity.Cell.GetUndirectedEntityFromLayer(m_targetedLayer);
             m_hasEntityBeenOnTop = ent != null;
-
         }
 
         private void Reset(Phase phase)
         {
             if (m_isEnterListenerApplied)
             {
-                m_entity.Cell.EnterEvent -= PushTarget;
+                m_entity.Cell.EnterEvent -= TryPushTarget;
                 m_entity.World.m_state.EndOfPhaseEvent -= Reset;
                 m_isEnterListenerApplied = false;
             }

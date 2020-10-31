@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Core.Utils;
 
 namespace Core.Targeting
@@ -6,20 +7,19 @@ namespace Core.Targeting
     public class MultiTarget<T, M> : Target //, ITarget<T, M>
         where T : Target, ITarget<T, M>, new()
     {
-        public IEnumerable<T> ToTargets(IList<Entity> targetedEntities, M meta)
+        public IEnumerable<T> ToTargets(IEnumerable<Entity> targetedEntities, M meta)
         {
-            T[] result = new T[targetedEntities.Count];
-            for (int i = 0; i < targetedEntities.Count; i++)
+            foreach (var entity in targetedEntities)
             {
-                result[i] = new T
+                var result = new T
                 {
                     initialPiece = initialPiece,
                     direction = direction,
-                    targetEntity = targetedEntities[i]
+                    targetEntity = entity
                 };
-                result[i].ProcessMeta(meta);
+                result.ProcessMeta(meta);
+                yield return result;
             }
-            return result;
         }
 
         public IEnumerable<T> CalculateTargets(
@@ -29,13 +29,11 @@ namespace Core.Targeting
             Layer skipLayer,
             Layer targetedLayer)
         {
-            if (!cell.HasBlock(targetEvent.dir, skipLayer))
+            if (cell.HasBlock(targetEvent.dir, skipLayer) == false)
             {
                 return new T[0];
             }
-            var targetedEntities = cell.m_entities
-                .Where(e => e.IsOfLayer(targetedLayer));
-            return ToTargets(targetedEntities, meta);
+            return ToTargets(cell.GetAllFromLayer(targetEvent.dir, targetedLayer).ToList(), meta);
         }
     }
 }

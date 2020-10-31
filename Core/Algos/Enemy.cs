@@ -1,6 +1,7 @@
 using Core.Utils.Vector;
 using Chains;
 using Core.Behaviors;
+using System.Linq;
 
 namespace Core
 {
@@ -8,19 +9,21 @@ namespace Core
     {
         static bool AskMove(Acting.Event ev)
         {
-            Entity thing = ev.actor.GetTargetRelative_IfNotBlocked(ev.action.direction, Layer.REAL);
+            var e = ev.actor.Cell.GetAllFromLayer(ev.action.direction, Layer.REAL);
+            bool success = false;
+            foreach (var entity in e)
+            {
+                var acting = entity.Behaviors.TryGet<Acting>();
 
-            if (thing == null)
-                return false;
-
-            var acting = thing.Behaviors.TryGet<Acting>();
-
-            if (acting == null || acting.b_didAction || acting.b_doingAction)
-                return false;
-
-            acting.Activate();
-
-            return true;
+                if (acting != null
+                    && acting.b_didAction == false
+                    && acting.b_doingAction == false)
+                {
+                    acting.Activate();
+                    success = true;
+                }
+            }
+            return success;
         }
 
         static bool Iterate(Acting.Event ev)
