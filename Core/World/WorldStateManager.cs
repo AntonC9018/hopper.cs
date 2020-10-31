@@ -123,8 +123,8 @@ namespace Core
             for (int i = 0; i < m_entities.Length; i++)
             {
                 AdvancePhase();
-                foreach (var e in m_entities[i])
-                    Activate(e);
+                for (int j = m_entities[i].Count - 1; j >= 0; j--)
+                    Activate(m_entities[i][j]);
             }
         }
 

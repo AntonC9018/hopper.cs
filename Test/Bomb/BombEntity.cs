@@ -16,12 +16,12 @@ namespace Test
     // the history object.
     public class BombEntity : Entity
     {
-        private static SimpleAction defaultExplodeAction = new SimpleAction(
+        public static readonly SimpleAction DefaultExplodeAction = new SimpleAction(
             (e, _) => Explosion.Explode(e.Pos, 1, e.World));
-        private static SimpleAction dieAction = new SimpleAction(
+        public static readonly SimpleAction DieAction = new SimpleAction(
             (e, _) => e.Die());
-        private static JoinedAction dieAndExplodeAction =
-            new JoinedAction(dieAction, defaultExplodeAction);
+        public static readonly JoinedAction DieAndExplodeAction =
+            new JoinedAction(DieAction, DefaultExplodeAction);
 
         private static Step[] steps = new Step[]
         {
@@ -32,7 +32,7 @@ namespace Test
             },
             new Step
             {
-                action = dieAndExplodeAction
+                action = DieAndExplodeAction
             }
         };
 

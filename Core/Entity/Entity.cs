@@ -119,23 +119,6 @@ namespace Core
             History.Add(this, UpdateCode.dead);
         }
 
-        public Entity GetClosestPlayer()
-        {
-            float minDist = 0;
-            Entity closestPlayer = null;
-            foreach (var player in World.m_state.Players)
-            {
-                float curDist = (m_pos - player.m_pos).SqMag;
-
-                if (closestPlayer == null || curDist < minDist)
-                {
-                    minDist = curDist;
-                    closestPlayer = player;
-                }
-            }
-            return closestPlayer;
-        }
-
         public IntVector2 GetPosRelative(IntVector2 offset)
         {
             return m_pos + offset;

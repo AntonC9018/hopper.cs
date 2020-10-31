@@ -5,6 +5,7 @@ namespace Core
 {
     public static partial class Movs
     {
+
         public static List<IntVector2> Basic(Entity e, Action a)
         {
             Entity player = e.GetClosestPlayer();
