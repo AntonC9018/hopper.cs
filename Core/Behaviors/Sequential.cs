@@ -10,41 +10,49 @@ namespace Core.Behaviors
     {
         public class Config : BehaviorConfig
         {
-            public Step[] stepData;
+            public readonly System.Func<ISequence> GetSequence;
 
-            public Config(Step[] _stepData)
+            public Config(System.Func<ISequence> GetSequence)
             {
-                if (_stepData == null)
+                this.GetSequence = GetSequence;
+            }
+
+            public Config(Step[] stepData)
+            {
+                if (stepData == null)
                 {
                     throw new System.Exception("Step Data must be specified in order to use Sequenced behavior");
                 }
-                stepData = _stepData;
+                GetSequence = () => new Sequence(stepData);
             }
         }
 
         [DataMember]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        private Sequence m_sequence;
+        private ISequence m_sequence;
 
-        public Action CurrentAction
-        { get { return m_sequence.CurrentAction; } }
+        public Action CurrentAction => m_sequence.CurrentAction;
 
         public override void Init(Entity entity, BehaviorConfig config)
         {
+            m_entity = entity;
+
             var conf = (Config)config;
-            m_sequence = new Sequence
-            {
-                stepData = conf.stepData,
-                actor = entity
-            };
+            m_sequence = conf.GetSequence();
+
             Tick.Chain.ChainPath(entity.Behaviors).AddHandler(
-                e => m_sequence.TickAction()
+                e => m_sequence.TickAction(m_entity)
             );
         }
 
         public List<IntVector2> GetMovs()
         {
-            return m_sequence.GetMovs();
+            return m_sequence.GetMovs(m_entity);
+        }
+
+        public void ApplyCurrentAlgo(Acting.Event ev)
+        {
+            ((Sequence)m_sequence).ApplyCurrentAlgo(ev);
         }
     }
 }

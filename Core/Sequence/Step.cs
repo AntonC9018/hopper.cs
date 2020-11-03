@@ -26,6 +26,7 @@ namespace Core
         public InsideChangeFunction enterFunction = null;
         public InsideChangeFunction exitFunction = null;
         public MovsFunc movs = null;
+        public System.Action<Acting.Event> algo = null;
 
         public int CheckSuccessAndGetRelativeIndex(Entity e)
         {
@@ -47,7 +48,7 @@ namespace Core
 
             if (acting != null)
             {
-                if (acting.b_didActionSucceed)
+                if (acting.DidActionSucceed)
                 {
                     return relativeStepIndexSuccess;
                 }

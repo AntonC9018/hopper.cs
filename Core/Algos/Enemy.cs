@@ -1,7 +1,5 @@
-using Core.Utils.Vector;
 using Chains;
 using Core.Behaviors;
-using System.Linq;
 
 namespace Core
 {
@@ -16,8 +14,8 @@ namespace Core
                 var acting = entity.Behaviors.TryGet<Acting>();
 
                 if (acting != null
-                    && acting.b_didAction == false
-                    && acting.b_doingAction == false)
+                    && acting.DidAction == false
+                    && acting.DoingAction == false)
                 {
                     acting.Activate();
                     success = true;
@@ -47,9 +45,15 @@ namespace Core
 
             var dirs = ev.actor.Behaviors.Get<Sequential>().GetMovs();
 
+            // if movs if null, consider the action succeeding all the time
+            if (dirs == null)
+            {
+                ev.success = true;
+                return;
+            }
+
             foreach (var dir in dirs)
             {
-                // var action = ev.action.Copy();
                 ev.action.direction = dir;
                 if (Iterate(ev))
                 {

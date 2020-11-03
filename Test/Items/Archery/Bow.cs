@@ -16,7 +16,7 @@ namespace Test
     public class Bow
     {
         // use this function to get a module for your item
-        public static TinkerModule CreateModule(Shooting shooting)
+        public static TinkerModule CreateModule(INormalShooting shooting)
         {
             return new Bow(shooting).ShootingModule;
         }
@@ -30,9 +30,9 @@ namespace Test
         private Tinker<BowTinkerData> m_shootTinker;
         private SimpleAction m_chargeAction;
         private Action m_shootAction;
-        private Shooting m_shooting;
+        private INormalShooting m_shooting;
 
-        private Bow(Shooting shooting)
+        private Bow(INormalShooting shooting)
         {
             m_shootTinker = new Tinker<BowTinkerData>(
                 new ChainDefBuilder()
@@ -92,7 +92,7 @@ namespace Test
                 pierce = 1,
                 damage = 1
             };
-            var defaultShooting = new StaticShooting(
+            var defaultShooting = new AnonShooting(
                 Layer.REAL, Layer.WALL, defaultArrowAttack, null, true
             );
             var module = CreateModule(defaultShooting);

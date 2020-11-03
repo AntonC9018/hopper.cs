@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using Core;
 using Core.Behaviors;
 using Core.Targeting;
+using Core.Utils.Vector;
 
 namespace Test
 {
-    public class NormalShooting : Shooting
+    public class NormalShooting : ShootingShared, INormalShooting
     {
         public NormalShooting(
             Layer targetedLayer,
@@ -16,18 +17,7 @@ namespace Test
         {
         }
 
-        protected override void ShootSpecific(Entity entity, Action action)
-        {
-            foreach (var target in GetShootTargets(entity, action))
-            {
-                if (ShootOnce_NormalAttack(entity, target, action) == false)
-                {
-                    return;
-                }
-            }
-        }
-
-        private bool ShootOnce_NormalAttack(Entity attacker, Entity attacked, Action action)
+        private void ShootOnceNormal(Entity attacker, Entity attacked, Action action)
         {
             if (attacked != null && attacked.Behaviors.Has<Attackable>())
             {
@@ -36,13 +26,17 @@ namespace Test
 
                 var success = attacker.Behaviors.Get<Attacking>()
                     .Activate(action, new List<AtkTarget>(1) { atkTarget });
-
-                if (m_stopOnFailedAttack && success == false)
-                {
-                    return false;
-                }
             }
-            return true;
+        }
+
+        public ShootingInfo Shoot(Entity entity, Action action)
+        {
+            var info = GetInitialShootInfo(entity, action.direction);
+            foreach (var target in info.attacked_targets)
+            {
+                ShootOnceNormal(entity, target, action);
+            }
+            return info;
         }
     }
 }

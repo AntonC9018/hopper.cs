@@ -95,7 +95,7 @@ namespace Core
         {
             if (entity.IsDead) return;
             var acting = entity.Behaviors.TryGet<Acting>();
-            if (acting != null && !acting.b_didAction)
+            if (acting != null && !acting.DidAction)
             {
                 acting.Activate();
             }

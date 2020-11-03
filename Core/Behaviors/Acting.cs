@@ -11,22 +11,22 @@ namespace Core.Behaviors
             public System.Func<Entity, Action> CalculateAction;
             public System.Action<Acting.Event> DoAction;
 
-            public Config(System.Action<EventBase> doAction)
+            public Config(System.Action<Acting.Event> doAction)
             {
                 DoAction = doAction;
                 CalculateAction = ent => ent.Behaviors.Get<Sequential>().CurrentAction;
             }
 
-            public Config(System.Action<EventBase> doAction, System.Func<Entity, Action> calculateAction)
+            public Config(System.Action<Acting.Event> doAction, System.Func<Entity, Action> calculateAction)
             {
                 CalculateAction = calculateAction;
                 DoAction = doAction;
             }
         }
 
-        public bool b_didAction = false;
-        public bool b_doingAction = false;
-        public bool b_didActionSucceed = false;
+        public bool DidAction { get; private set; }
+        public bool DoingAction { get; private set; }
+        public bool DidActionSucceed { get; private set; }
         public Action NextAction { get; set; }
         private System.Func<Entity, Action> config_CalculateAction;
         private System.Action<Event> config_DoActionFunc;
@@ -40,8 +40,8 @@ namespace Core.Behaviors
             Tick.Chain.ChainPath(entity.Behaviors).AddHandler(
                 e =>
                 {
-                    b_didAction = false;
-                    b_doingAction = false;
+                    DidAction = false;
+                    DoingAction = false;
                     NextAction = null;
                 },
                 PriorityRanks.Low
@@ -63,13 +63,13 @@ namespace Core.Behaviors
 
             if (NextAction == null)
             {
-                b_didAction = true;
-                b_didActionSucceed = true;
+                DidAction = true;
+                DidActionSucceed = true;
                 GetChain<Event>(ChainName.Success).Pass(ev);
                 return true;
             }
 
-            b_doingAction = true;
+            DoingAction = true;
             GetChain<Event>(ChainName.Check).Pass(ev);
 
             if (ev.propagate)
@@ -79,15 +79,15 @@ namespace Core.Behaviors
             }
 
             ev.propagate = true;
-            b_didActionSucceed = ev.success;
+            DidActionSucceed = ev.success;
 
             if (ev.success)
                 GetChain<Event>(ChainName.Success).Pass(ev);
             else
                 GetChain<Event>(ChainName.Fail).Pass(ev);
 
-            b_didAction = true;
-            b_doingAction = false;
+            DidAction = true;
+            DoingAction = false;
 
             return ev.success;
         }

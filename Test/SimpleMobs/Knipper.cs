@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Core;
 using Core.Behaviors;
+using Core.Utils.Vector;
 
 namespace Test
 {
@@ -26,23 +28,29 @@ namespace Test
             {
                 successFunction = IsPlayerClose(1, 2),
                 action = new BehaviorAction<Moving>(),
-                movs = Movs.Basic
+                movs = Movs.Basic,
+                algo = Algos.EnemyAlgo
             },
             // 1: wait 1 bit. if near player, start exploding
             new Step
             {
                 successFunction = IsPlayerClose(-1, 1)
             },
-            // 2: 1 bit delay before the inevitable explosion
+            // 2: exploding, possibly not explode if the player is gone
+            new Step
+            {
+                successFunction = IsPlayerClose(-1, 1),
+            },
+            // 3: 1 bit delay before the inevitable explosion
             new Step
             {
                 relativeStepIndexSuccess = 1
             },
-            // 3: die and explode
+            // 4: die and explode
             new Step
             {
                 action = BombEntity.DieAndExplodeAction,
-                movs = Movs.Straight
+                algo = Algos.SimpleAlgo
             }
         };
 
@@ -53,7 +61,7 @@ namespace Test
                 .AddBehavior<Attackable>()
                 .AddBehavior<Pushable>()
                 .AddBehavior<Sequential>(new Sequential.Config(steps))
-                .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
+                .AddBehavior<Acting>(new Acting.Config(Algos.StepBased))
                 .AddBehavior<Moving>()
                 .AddBehavior<Damageable>()
                 .AddBehavior<Displaceable>();

@@ -1,17 +1,22 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Core.Behaviors;
 using Core.Utils.Vector;
 
 namespace Core
 {
     [DataContract]
-    public class Sequence
+    public class Sequence : ISequence
     {
-        public Step[] stepData;
-        public Entity actor;
+        private Step[] stepData;
 
-        [DataMember] int currentStepIndex = 0;
-        [DataMember] int currentRepeatCount = 0;
+        public Sequence(Step[] stepData)
+        {
+            this.stepData = stepData;
+        }
+
+        [DataMember] private int currentStepIndex = 0;
+        [DataMember] private int currentRepeatCount = 0;
 
         public Action CurrentAction
         {
@@ -21,7 +26,7 @@ namespace Core
             }
         }
 
-        public void TickAction()
+        public void TickAction(Entity actor)
         {
             currentRepeatCount++;
             Step currentStep = stepData[currentStepIndex];
@@ -41,9 +46,14 @@ namespace Core
             }
         }
 
-        public List<IntVector2> GetMovs()
+        public List<IntVector2> GetMovs(Entity actor)
         {
             return stepData[currentStepIndex].GetMovs(actor);
+        }
+
+        public void ApplyCurrentAlgo(Acting.Event ev)
+        {
+            stepData[currentStepIndex].algo(ev);
         }
     }
 }
