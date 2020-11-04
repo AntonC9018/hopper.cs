@@ -9,8 +9,8 @@ namespace Test
 
         static Step[] CreateSequenceData()
         {
-            var moveAction = new BehaviorAction<Moving>();
             var attackAction = new BehaviorAction<Attacking>();
+            var moveAction = new BehaviorAction<Moving>();
             var attackMoveAction = new CompositeAction(
                 new Action[] { attackAction, moveAction }
             );

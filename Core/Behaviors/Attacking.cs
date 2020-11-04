@@ -21,7 +21,8 @@ namespace Core.Behaviors
 
         private static List<AtkTarget> GenerateTargetsDefault(Event ev)
         {
-            var entity = ev.actor.Cell.GetEntityFromLayer(ev.action.direction, Layer.REAL);
+            var entity = ev.actor.GetCellRelative(ev.action.direction)
+                .GetEntityFromLayer(ev.action.direction, Layer.REAL);
 
             return entity == null
                 ? new List<AtkTarget>()
@@ -75,6 +76,7 @@ namespace Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
+                System.Console.WriteLine($"Attacking {target.targetEntity}");
                 ApplyAttack(target.targetEntity, target.piece.dir, (Attack)ev.attack.Copy(), ev.actor);
             }
         }
@@ -97,8 +99,12 @@ namespace Core.Behaviors
         public static bool TryApplyAttack(
             Entity attacked, IntVector2 direction, Attack attack, Entity attacker)
         {
-            return attacked.Behaviors.TryGet<Attackable>()
-                .Activate(direction, new Attackable.Params(attack, attacker));
+            if (attacked.Behaviors.Has<Attackable>())
+            {
+                return attacked.Behaviors.Get<Attackable>()
+                    .Activate(direction, new Attackable.Params(attack, attacker));
+            }
+            return false;
         }
 
         public static bool ApplyAttack(

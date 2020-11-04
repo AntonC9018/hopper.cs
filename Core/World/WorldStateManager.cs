@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Core.Behaviors;
-using Core.Utils;
 
 namespace Core
 {
@@ -14,17 +12,14 @@ namespace Core
         // note that players never get into the lists from above
         private List<Entity> m_players = new List<Entity>();
 
-        public ReadOnlyCollection<Entity> Players => m_players.AsReadOnly();
-        public ReadOnlyCollection<List<Entity>> Entities => System.Array.AsReadOnly(m_entities);
+        public IReadOnlyList<Entity> Players => m_players.AsReadOnly();
+        public IReadOnlyList<List<Entity>> Entities => System.Array.AsReadOnly(m_entities);
 
-        // Subscribe to this event only from the entity
-        // This easily prevents memory leaks. How?
-        // The handlers added to this event are strong pointers.
-        // This event is replicated on the entity, to control this.
+        public event System.Action StartOfLoopEvent;
         public event System.Action EndOfLoopEvent;
         public event System.Action BeforeFilterEvent;
-        public event System.Action<Phase> EndOfPhaseEvent;
         public event System.Action<Phase> StartOfPhaseEvent;
+        public event System.Action<Phase> EndOfPhaseEvent;
 
         private Phase m_currentPhase = Phase.PLAYER;
         public Phase CurrentPhase => m_currentPhase;
@@ -36,7 +31,7 @@ namespace Core
         public int GetNextTimeFrame() => m_currentTimeFrame++;
 
         private int[] m_timeStampPhaseLimits = new int[World.NumPhases];
-        public ReadOnlyCollection<int> TimeStampPhaseLimit
+        public IReadOnlyList<int> TimeStampPhaseLimit
             => System.Array.AsReadOnly(m_timeStampPhaseLimits);
 
         public WorldStateManager()
@@ -60,6 +55,8 @@ namespace Core
 
         public void Loop()
         {
+            StartOfLoopEvent?.Invoke();
+
             ResetPhase();
             ClearHistory();
             ActivatePlayers();
@@ -112,10 +109,11 @@ namespace Core
 
         private void CalculateActionOnEntities()
         {
-            // Ideally, the acting decorators should be at one location in memory
             for (int i = 0; i < m_entities.Length; i++)
+            {
                 foreach (var e in m_entities[i])
                     CalculateNextAction(e);
+            }
         }
 
         private void ActivateEntities()

@@ -15,7 +15,7 @@ namespace Core.Targeting
 
         public Cell GetCellRelative(IntVector2 dir)
         {
-            return World.m_grid.GetCellAt(Pos + dir);
+            return World.Grid.GetCellAt(Pos + dir);
         }
     }
 }

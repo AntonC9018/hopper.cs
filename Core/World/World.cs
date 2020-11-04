@@ -8,8 +8,8 @@ namespace Core
 
     public class World : IHaveId
     {
-        public GridManager m_grid;
-        public WorldStateManager m_state;
+        public GridManager Grid { get; private set; }
+        public WorldStateManager State { get; private set; }
 
         public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
         public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
@@ -17,24 +17,22 @@ namespace Core
         public int Id => m_id;
         private int m_id;
 
-        public World() { }
-
         public World(int width, int height)
         {
-            m_grid = new GridManager(width, height);
-            m_state = new WorldStateManager();
+            Grid = new GridManager(width, height);
+            State = new WorldStateManager();
             m_id = IdMap.World.Add(this);
             PhaseLayerExtensions.ThrowIfPhasesAreWrong();
         }
 
         public void Loop()
         {
-            m_state.Loop();
+            State.Loop();
         }
 
         public int GetNextTimeFrame()
         {
-            return m_state.GetNextTimeFrame();
+            return State.GetNextTimeFrame();
         }
 
         public event System.Action<Entity> SpawnEntityEvent;
@@ -62,7 +60,7 @@ namespace Core
         {
             var entity = entityFactory.Instantiate();
             entity.Init(pos, orientation, this);
-            m_grid.Reset(entity, entity.Pos);
+            Grid.Reset(entity, entity.Pos);
             return entity;
         }
 
@@ -71,7 +69,7 @@ namespace Core
         {
             var entity = entityFactory.Instantiate();
             entity.Init(pos, orientation, this);
-            m_state.AddEntity(entity);
+            State.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }
@@ -80,7 +78,7 @@ namespace Core
             IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
             var entity = SpawnEntityNoEvent(entityFactory, pos, orientation);
-            m_state.AddEntity(entity);
+            State.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }
@@ -96,7 +94,7 @@ namespace Core
             IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
             var entity = SpawnEntityNoEvent(entityFactory, pos, orientation);
-            m_state.AddPlayer(entity);
+            State.AddPlayer(entity);
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }

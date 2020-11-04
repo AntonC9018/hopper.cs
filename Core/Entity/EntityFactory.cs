@@ -69,6 +69,7 @@ namespace Core
         private T InstantiateLogic()
         {
             T entity = new T();
+
             // Instantiate and save behaviors
             foreach (var kvp in m_behaviorSettings)
             {

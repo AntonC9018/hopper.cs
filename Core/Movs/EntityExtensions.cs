@@ -6,7 +6,7 @@ namespace Core
         {
             float minDist = 0;
             Entity closestPlayer = null;
-            foreach (var player in entity.World.m_state.Players)
+            foreach (var player in entity.World.State.Players)
             {
                 float curDist = (entity.Pos - player.Pos).SqMag;
 

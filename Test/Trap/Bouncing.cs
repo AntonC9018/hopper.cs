@@ -62,7 +62,7 @@ namespace Test
             m_entity.Cell.EnterEvent += TryPushTarget;
 
             // only push in our phase
-            m_entity.World.m_state.EndOfPhaseEvent += Reset;
+            m_entity.World.State.EndOfPhaseEvent += Reset;
         }
 
         private void TryPushTarget(Entity oneBeingBounced)
@@ -106,7 +106,7 @@ namespace Test
             if (m_isEnterListenerApplied)
             {
                 m_entity.Cell.EnterEvent -= TryPushTarget;
-                m_entity.World.m_state.EndOfPhaseEvent -= Reset;
+                m_entity.World.State.EndOfPhaseEvent -= Reset;
                 m_isEnterListenerApplied = false;
             }
             m_hasBounced = false;

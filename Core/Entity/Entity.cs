@@ -24,7 +24,7 @@ namespace Core
         public virtual Layer Layer => Layer.REAL;
         public virtual bool IsDirected => false;
         public virtual bool IsPlayer => false;
-        public Cell Cell => World.m_grid.GetCellAt(m_pos);
+        public Cell Cell => World.Grid.GetCellAt(m_pos);
 
         // state
         // isDead is set to true when the entity needs to be filtered out 
@@ -90,18 +90,18 @@ namespace Core
         public void ResetPosInGrid(IntVector2 newPos)
         {
             RemoveFromGrid();
-            World.m_grid.Reset(this, newPos);
+            World.Grid.Reset(this, newPos);
             m_pos = newPos;
         }
 
         public void RemoveFromGrid()
         {
-            World.m_grid.Remove(this);
+            World.Grid.Remove(this);
         }
 
         public void ResetInGrid()
         {
-            World.m_grid.Reset(this, m_pos);
+            World.Grid.Reset(this, m_pos);
         }
 
         public void Reorient(IntVector2 orientation)
@@ -126,7 +126,7 @@ namespace Core
 
         public Cell GetCellRelative(IntVector2 offset)
         {
-            return World.m_grid.GetCellAt(m_pos + offset);
+            return World.Grid.GetCellAt(m_pos + offset);
         }
 
         public bool HasBlockRelative(IntVector2 offset)

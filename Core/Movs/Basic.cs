@@ -37,13 +37,6 @@ namespace Core
                 if (diff_ones.y != 0) { list.Add(diff_y); }
             }
 
-            foreach (var dir in list)
-            {
-                System.Console.WriteLine(dir);
-            }
-
-
-
             // var rel = CalculateRelativeness(e, player);
 
             // if (e.Orientation.x > 0)

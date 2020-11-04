@@ -19,7 +19,7 @@ namespace Test
 
         public static Gold Drop(IntVector2 pos, int amount, World world, IFactory<Gold> factory)
         {
-            var cell = world.m_grid.GetCellAt(pos);
+            var cell = world.Grid.GetCellAt(pos);
             if (cell == null) return null;
             var gold = (Gold)cell.GetAnyEntityFromLayer(Layer.GOLD);
             if (gold == null)

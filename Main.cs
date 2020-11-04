@@ -251,11 +251,7 @@ namespace Hopper
 
             System.Console.WriteLine("\n ------ Definition + Instantiation Demo ------ \n");
 
-            World world = new World
-            {
-                m_grid = new GridManager(5, 5),
-                m_state = new WorldStateManager()
-            };
+            World world = new World(5, 5);
             System.Console.WriteLine("Created world");
 
             // Statused.RegisterStatus(TestStatusTinkerStuff.status, 1);
@@ -317,13 +313,13 @@ namespace Hopper
             System.Console.WriteLine("Instantiated Enemy");
 
             enemy.Init(new IntVector2(1, 2), world);
-            world.m_state.AddEntity(enemy);
-            world.m_grid.Reset(enemy, enemy.Pos);
+            world.State.AddEntity(enemy);
+            world.Grid.Reset(enemy, enemy.Pos);
             System.Console.WriteLine("Enemy set in world");
 
             player.Init(new IntVector2(1, 1), world);
-            world.m_state.AddPlayer(player);
-            world.m_grid.Reset(player, player.Pos);
+            world.State.AddPlayer(player);
+            world.Grid.Reset(player, player.Pos);
             System.Console.WriteLine("Player set in world");
 
             var playerNextAction = attackMoveAction.Copy();
@@ -450,7 +446,7 @@ namespace Hopper
             // + world.CreateDroppedItem(id, pos)
             inventory.DropExcess();
 
-            var entities = world.m_grid.GetCellAt(player.Pos).m_entities;
+            var entities = world.Grid.GetCellAt(player.Pos).m_entities;
             System.Console.WriteLine($"There's {entities.Count} entities in the cell where the player is standing");
 
             System.Console.WriteLine("\n ------ History Demo ------ \n");
@@ -491,7 +487,7 @@ namespace Hopper
             System.Console.WriteLine($"Player's position before moving: {player.Pos}");
             world.Loop();
             System.Console.WriteLine($"Player's new position: {player.Pos}");
-            System.Console.WriteLine($"There's {world.m_grid.GetCellAt(player.Pos).m_entities.Count} entities in the cell where the player is standing");
+            System.Console.WriteLine($"There's {world.Grid.GetCellAt(player.Pos).m_entities.Count} entities in the cell where the player is standing");
 
 
             System.Console.WriteLine("\n ------ Tinker static reference Demo ------ \n");
