@@ -120,15 +120,15 @@ namespace Core
         {
             for (int i = 0; i < m_entities.Length; i++)
             {
-                AdvancePhase();
                 for (int j = m_entities[i].Count - 1; j >= 0; j--)
                     Activate(m_entities[i][j]);
+                AdvancePhase();
             }
         }
 
         private void TickAll()
         {
-            SetPhase(Phase.TICK_PLAYER);
+            // SetPhase(Phase.TICK_PLAYER);
             foreach (var player in m_players)
             {
                 player.Behaviors.Get<Tick>().Activate();
