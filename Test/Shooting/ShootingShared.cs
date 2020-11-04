@@ -23,12 +23,28 @@ namespace Test
             m_stopAfterFirstAttack = stopAfterFirstAttack;
         }
 
-        protected void ShootingPrelude(Entity entity, Action action)
+        public static void ShootingPrelude(Entity entity, Action action)
         {
             entity.Reorient(action.direction);
             entity.History.Add(entity, UpdateCode);
         }
-
+        /*
+            So the targets provider became really messy once I tried to generalize it
+            The algorithm just isn't suited for some types of problems
+            For example, here we would:
+                    1. generate the targets on the fly, which is messy in the target provider
+                    2. stop generating the targets, once a block is met, which is impossible
+                    with the target provider, since it does two passes: one for getting
+                    all the possile targets and the other one for cleaning them up.
+                    3. get info on the positions checked, which is again impossible with
+                    the target provider, since it removes the targets which didn't target
+                    an entity and if you make it to not do that, then what is the point
+                    of `target` provider?
+            I can't come up with a good abstraction for this yet, so I'm going to implement it
+            separately for shooting here and we'll see later. Implementing inefficient hacks
+            to the current target provider algorithm for first makes me feel bad and for second
+            overcomplicates an already bloated piece of code.
+        */
         protected ShootingInfo GetInitialShootInfo(IWorldSpot spot, IntVector2 direction)
         {
             IntVector2 currentOffsetVec = direction;
@@ -59,17 +75,6 @@ namespace Test
 
                 currentOffsetVec += direction;
             }
-        }
-
-        protected bool ShootAtAnon(Entity attacked, IntVector2 direction, Attack attack)
-        {
-            return attacked.Behaviors.Get<Attackable>()
-                .Activate(direction, new Attackable.Params(attack, null));
-        }
-
-        protected void PushBack(Entity attacked, IntVector2 direction, Push push)
-        {
-            attacked.Behaviors.Get<Pushable>().Activate(direction, push);
         }
     }
 }

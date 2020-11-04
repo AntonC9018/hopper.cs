@@ -28,21 +28,18 @@ namespace Core.Targeting
         public IEnumerable<T> GetParticularTargets(TargetEvent<T> targetEvent, M meta)
         {
             var targets = new List<T>();
-            double angle = IntVector2.Right.AngleTo(targetEvent.dir);
 
-            foreach (var piece in m_pattern.Pieces)
+            foreach (var rotatedPiece in m_pattern.GetPieces(targetEvent.spot, targetEvent.dir))
             {
-                var rotatedPiece = piece.Rotate(angle);
+                var calculatedTargets = m_calculator.CalculateTargets(
+                    targetEvent, rotatedPiece, meta);
 
-                targets.AddRange(
-                    m_calculator.CalculateTargets(
-                        targetEvent, piece, rotatedPiece, meta
-                    )
-                );
+                targets.AddRange(calculatedTargets);
             }
 
             targetEvent.targets = targets;
             m_chain.Pass(targetEvent, m_stopFunc);
+
             return targetEvent.targets;
         }
 

@@ -1,5 +1,6 @@
 using Core.Behaviors;
 using Core.Stats.Basic;
+using Core.Utils.Vector;
 
 namespace Core.Targeting
 {
@@ -14,6 +15,20 @@ namespace Core.Targeting
     public class AtkTarget : Target, ITarget<AtkTarget, Attackable.Params>
     {
         public AtkCondition atkCondition = AtkCondition.NEVER;
+
+        public AtkTarget()
+        {
+        }
+
+        public AtkTarget(Entity targetEntity, IntVector2 dir)
+        {
+            this.targetEntity = targetEntity;
+            this.piece = new Piece
+            {
+                index = 0,
+                dir = dir
+            };
+        }
 
         public void CalculateTargetedEntity(
             TargetEvent<AtkTarget> ev, Cell cell, Layer skipLayer, Layer targetedLayer)

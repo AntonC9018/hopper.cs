@@ -13,7 +13,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<T, M> CreateMulti<T, M>(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<T>> chain,
             System.Func<TargetEvent<T>, bool> stop,
             Layer skipLayer,
@@ -27,7 +27,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<T, M> CreateMulti<T, M>(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<T>> chain,
             Layer skipLayer,
             Layer targetedLayer
@@ -39,7 +39,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<T, M> CreateMulti<T, U, M>(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<T>> chain,
             System.Func<TargetEvent<T>, bool> stop,
             Layer skipLayer,
@@ -54,7 +54,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<T, M> CreateMulti<T, U, M>(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<T>> chain,
             Layer skipLayer,
             Layer targetedLayer
@@ -66,7 +66,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<T, M> CreateSimple<T, M>(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<T>> chain,
             Layer skipLayer,
             Layer targetedLayer)
@@ -77,7 +77,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<T, M> CreateSimple<T, M>(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<T>> chain,
             System.Func<TargetEvent<T>, bool> stop,
             Layer skipLayer,
@@ -89,7 +89,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<AtkTarget, Attackable.Params> CreateAtk(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<AtkTarget>> chain
         )
         {
@@ -98,7 +98,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<AtkTarget, Attackable.Params> CreateAtk(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<AtkTarget>> chain,
             System.Func<TargetEvent<AtkTarget>, bool> stop
         )
@@ -108,7 +108,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<DigTarget, Dig> CreateDig(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<DigTarget>> chain
         )
         {
@@ -117,7 +117,7 @@ namespace Core.Targeting
         }
 
         public static TargetProvider<DigTarget, Dig> CreateDig(
-            Pattern pattern,
+            IPattern pattern,
             Chain<TargetEvent<DigTarget>> chain,
             System.Func<TargetEvent<DigTarget>, bool> stop
         )

@@ -5,6 +5,7 @@ using Core.Targeting;
 using System.Runtime.Serialization;
 using Core.Stats.Basic;
 using System.Linq;
+using Core.Utils.Vector;
 
 namespace Core.Behaviors
 {
@@ -18,7 +19,7 @@ namespace Core.Behaviors
             public Push push;
         }
 
-        static List<AtkTarget> GenerateTargetsDefault(Event ev)
+        private static List<AtkTarget> GenerateTargetsDefault(Event ev)
         {
             var entity = ev.actor.Cell.GetEntityFromLayer(ev.action.direction, Layer.REAL);
 
@@ -26,7 +27,7 @@ namespace Core.Behaviors
                 ? new List<AtkTarget>()
                 : new List<AtkTarget>(1)
                 {
-                    new AtkTarget { targetEntity = entity, direction = ev.action.direction }
+                    new AtkTarget(entity, ev.action.direction)
                 };
         }
 
@@ -42,7 +43,7 @@ namespace Core.Behaviors
             return CheckDoCycle<Event>(ev);
         }
 
-        static void SetBase(Event ev)
+        private static void SetBase(Event ev)
         {
             if (ev.attack == null)
             {
@@ -54,7 +55,7 @@ namespace Core.Behaviors
             }
         }
 
-        static void SetTargets(Event ev)
+        private static void SetTargets(Event ev)
         {
             if (ev.targets == null)
             {
@@ -70,29 +71,60 @@ namespace Core.Behaviors
             }
         }
 
-        static void ApplyAttack(Event ev)
+        private static void ApplyAttack(Event ev)
         {
             foreach (var target in ev.targets)
             {
-                var attackable = target.targetEntity.Behaviors.Get<Attackable>();
-                // let it throw if this has not been accounted for
-                attackable.Activate(ev.action.direction,
-                    new Attackable.Params((Attack)ev.attack.Copy(), ev.actor));
+                ApplyAttack(target.targetEntity, target.piece.dir, (Attack)ev.attack.Copy(), ev.actor);
             }
         }
 
-        static void ApplyPush(Event ev)
+        // TODO: refactor
+        public static bool TryAttackWithConditionCheck(
+            Entity attacked, IntVector2 direction, Attack attack, Entity attacker)
         {
-            foreach (var target in ev.targets)
+            if (attacked.Behaviors.Has<Attackable>())
             {
-                if (target.targetEntity.Behaviors.Has<Pushable>())
+                var attackable = attacked.Behaviors.Get<Attackable>();
+                if (attackable.IsAttackable(attack, attacker))
                 {
-                    Pushable pushable = target.targetEntity.Behaviors.Get<Pushable>();
-                    pushable.Activate(target.direction, (Push)ev.push.Copy());
+                    attackable.Activate(direction, new Attackable.Params(attack, attacker));
                 }
             }
+            return false;
         }
 
+        public static bool TryApplyAttack(
+            Entity attacked, IntVector2 direction, Attack attack, Entity attacker)
+        {
+            return attacked.Behaviors.TryGet<Attackable>()
+                .Activate(direction, new Attackable.Params(attack, attacker));
+        }
+
+        public static bool ApplyAttack(
+            Entity attacked, IntVector2 direction, Attack attack, Entity attacker)
+        {
+            return attacked.Behaviors.Get<Attackable>()
+                .Activate(direction, new Attackable.Params(attack, attacker));
+        }
+
+        private static void ApplyPush(Event ev)
+        {
+            foreach (var target in ev.targets)
+            {
+                TryApplyPush(target.targetEntity, target.piece.dir, (Push)ev.push.Copy());
+            }
+        }
+
+        public static void TryApplyPush(Entity attacked, IntVector2 direction, Push push)
+        {
+            attacked.Behaviors.TryGet<Pushable>()?.Activate(direction, push);
+        }
+
+        public static void ApplyPush(Entity attacked, IntVector2 direction, Push push)
+        {
+            attacked.Behaviors.Get<Pushable>().Activate(direction, push);
+        }
 
         public static ChainPaths<Attacking, Event> Check;
         public static ChainPaths<Attacking, Event> Do;

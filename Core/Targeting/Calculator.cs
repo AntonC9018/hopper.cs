@@ -7,10 +7,7 @@ namespace Core.Targeting
         where T : Target
     {
         IEnumerable<T> CalculateTargets(
-            TargetEvent<T> targetEvent,
-            Piece initialPiece,
-            Piece rotatedPiece,
-            M meta);
+            TargetEvent<T> targetEvent, Piece rotatedPiece, M meta);
     }
 
     public class MultiCalculator<T, U, M> : ICalculator<T, M>
@@ -28,17 +25,15 @@ namespace Core.Targeting
 
         public IEnumerable<T> CalculateTargets(
             TargetEvent<T> targetEvent,
-            Piece initialPiece,
-            Piece rotatedPiece,
+            Piece piece,
             M meta)
         {
             var target = new U
             {
-                direction = rotatedPiece.dir,
-                initialPiece = initialPiece
+                piece = piece
             };
 
-            var cell = targetEvent.spot.GetCellRelative(rotatedPiece.pos);
+            var cell = targetEvent.spot.GetCellRelative(piece.pos);
             if (cell != null)
             {
                 return target.CalculateTargets(targetEvent, cell, meta, m_skipLayer, m_targetedLayer);
@@ -60,14 +55,13 @@ namespace Core.Targeting
         }
 
         public IEnumerable<T> CalculateTargets(
-            TargetEvent<T> targetEvent, Piece initialPiece, Piece rotatedPiece, M meta)
+            TargetEvent<T> targetEvent, Piece piece, M meta)
         {
             var target = new T
             {
-                direction = rotatedPiece.dir,
-                initialPiece = initialPiece
+                piece = piece,
             };
-            var cell = targetEvent.spot.GetCellRelative(rotatedPiece.pos);
+            var cell = targetEvent.spot.GetCellRelative(piece.pos);
             if (cell != null)
             {
                 target.CalculateTargetedEntity(targetEvent, cell, m_skipLayer, m_targetedLayer);

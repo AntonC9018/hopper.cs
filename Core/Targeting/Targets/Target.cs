@@ -38,8 +38,7 @@ namespace Core.Targeting
             };
         }
 
-        public Piece initialPiece;
-        public IntVector2 direction;
+        public Piece piece;
         public Entity targetEntity;
 
         static protected Entity GetEntityDefault(Cell cell, IntVector2 direction, Layer skip, Layer get)

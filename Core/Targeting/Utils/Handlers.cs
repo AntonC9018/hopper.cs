@@ -11,7 +11,7 @@ namespace Core.Targeting
         public static void NextToAny(TargetEvent<AtkTarget> weaponEvent)
         {
             var first = weaponEvent.targets[0];
-            if (first.initialPiece.index == 0 && first.atkCondition != AtkCondition.NEVER)
+            if (first.piece.index == 0 && first.atkCondition != AtkCondition.NEVER)
                 return;
 
             if (weaponEvent.targets.Any(
@@ -49,7 +49,7 @@ namespace Core.Targeting
         public static bool CanReach<T>(T target, IEnumerable<T> targets)
             where T : Target
         {
-            var reach = target.initialPiece.reach;
+            var reach = target.piece.reach;
 
             // always reachable
             if (reach == null)
@@ -58,10 +58,10 @@ namespace Core.Targeting
             // reachable only if all the ones before are empty
             if (reach.Count == 0)
                 // is of lowest index
-                return !targets.Any(t => t.initialPiece.index < target.initialPiece.index);
+                return !targets.Any(t => t.piece.index < target.piece.index);
 
             // reachable if no specified indeces are present
-            return !targets.Any(t => reach.Contains(t.initialPiece.index));
+            return !targets.Any(t => reach.Contains(t.piece.index));
         }
 
         public static void DiscardNotClose(TargetEvent<AtkTarget> weaponEvent)

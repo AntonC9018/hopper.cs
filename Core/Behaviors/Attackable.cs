@@ -99,6 +99,13 @@ namespace Core.Behaviors
             return ev.attackableness;
         }
 
+        public bool IsAttackable(Attack attack, Entity attacker)
+        {
+            var condition = GetAttackableness(attack);
+            return condition == AtkCondition.ALWAYS || condition == AtkCondition.IF_NEXT_TO
+                && (attacker == null || (attacker.Pos - m_entity.Pos).Abs().ComponentSum() <= 1);
+        }
+
         public static ChainPaths<Attackable, Event> Check;
         public static ChainPaths<Attackable, Event> Do;
         public static ChainPaths<Attackable, AttackablenessEvent> Condition;

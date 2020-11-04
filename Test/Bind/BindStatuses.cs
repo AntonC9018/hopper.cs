@@ -45,12 +45,7 @@ namespace Test
 
         private void AttackJustMe(Attacking.Event ev)
         {
-            var target = new AtkTarget
-            {
-                targetEntity = status.Tinker.GetStore(ev).whoApplied,
-                direction = new IntVector2(0, 0),
-                atkCondition = AtkCondition.ALWAYS
-            };
+            var target = new AtkTarget(status.Tinker.GetStore(ev).whoApplied, IntVector2.Zero);
             ev.targets = new List<AtkTarget> { target };
         }
 

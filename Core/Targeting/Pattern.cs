@@ -5,13 +5,21 @@ namespace Core.Targeting
 {
     public interface IPattern
     {
-        IEnumerable<Piece> Pieces { get; }
+        IEnumerable<Piece> GetPieces(IWorldSpot spot, IntVector2 dir);
     }
 
     public class Pattern : IPattern
     {
-        public IEnumerable<Piece> Pieces => pieces;
-        public IList<Piece> pieces;
+        public IEnumerable<Piece> GetPieces(IWorldSpot spot, IntVector2 dir)
+        {
+            double angle = IntVector2.Right.AngleTo(dir);
+            foreach (var piece in pieces)
+            {
+                yield return piece.Rotate(angle);
+            }
+        }
+
+        private IList<Piece> pieces;
 
         public Pattern(params Piece[] pieces)
         {

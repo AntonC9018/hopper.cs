@@ -13,8 +13,7 @@ namespace Core.Targeting
             {
                 var result = new T
                 {
-                    initialPiece = initialPiece,
-                    direction = direction,
+                    piece = piece,
                     targetEntity = entity
                 };
                 result.ProcessMeta(meta);

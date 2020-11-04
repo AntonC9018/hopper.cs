@@ -10,6 +10,10 @@ namespace Test
     {
         private Attack m_attack;
         private Push m_push;
+
+        private TargetProvider<AtkTarget, Attackable.Params> m_targetProvider;
+
+
         public AnonShooting(
             Layer targetedLayer,
             Layer skipLayer,
@@ -23,20 +27,6 @@ namespace Test
             m_push = push;
         }
 
-        // returns true if we shall continue
-        private void ShootOnceAnon(Entity attacked, IntVector2 direction)
-        {
-            if (attacked != null && attacked.Behaviors.Has<Attackable>())
-            {
-                var success = ShootAtAnon(attacked, direction, m_attack);
-
-                if (m_push != null)
-                {
-                    PushBack(attacked, direction, m_push);
-                }
-            }
-        }
-
         public ShootingInfo Shoot(Entity entity, Action action)
         {
             return ShootAnon((IWorldSpot)entity, action.direction);
@@ -45,11 +35,22 @@ namespace Test
         public ShootingInfo ShootAnon(IWorldSpot spot, IntVector2 direction)
         {
             var info = GetInitialShootInfo(spot, direction);
+
             foreach (var target in info.attacked_targets)
             {
                 ShootOnceAnon(target, direction);
             }
+
             return info;
+        }
+
+        private void ShootOnceAnon(Entity attacked, IntVector2 direction)
+        {
+            Attacking.TryApplyAttack(attacked, direction, m_attack, null);
+            if (m_push != null)
+            {
+                Attacking.TryApplyPush(attacked, direction, m_push);
+            }
         }
     }
 }
