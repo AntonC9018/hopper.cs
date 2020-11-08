@@ -29,12 +29,12 @@ namespace Core.Behaviors
             return CheckDoCycle<Event>(ev);
         }
 
-        static void SetDig(Event ev)
+        private static void SetDig(Event ev)
         {
             ev.dig = ev.actor.Stats.Get(Dig.Path);
         }
 
-        static void SetTargets(Event ev)
+        private static void SetTargets(Event ev)
         {
             if (ev.targets == null)
             {
@@ -49,7 +49,7 @@ namespace Core.Behaviors
             }
         }
 
-        static void Attack(Event ev)
+        private static void Attack(Event ev)
         {
             foreach (var target in ev.targets)
             {
@@ -60,8 +60,8 @@ namespace Core.Behaviors
             }
         }
 
-        public static ChainPaths<Digging, Event> Check;
-        public static ChainPaths<Digging, Event> Do;
+        public static readonly ChainPaths<Digging, Event> Check;
+        public static readonly ChainPaths<Digging, Event> Do;
         static Digging()
         {
             Check = new ChainPaths<Digging, Event>(ChainName.Check);

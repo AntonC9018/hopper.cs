@@ -15,7 +15,6 @@ namespace Core.Behaviors
             public IntVector2 dir;
         }
 
-
         public bool Activate(IntVector2 dir, Push push)
         {
             var ev = new Event
@@ -54,8 +53,8 @@ namespace Core.Behaviors
             ev.actor.Behaviors.Get<Displaceable>().Activate(ev.dir, new Move());
         }
 
-        public static ChainPaths<Pushable, Event> Check;
-        public static ChainPaths<Pushable, Event> Do;
+        public static readonly ChainPaths<Pushable, Event> Check;
+        public static readonly ChainPaths<Pushable, Event> Do;
         static Pushable()
         {
             Check = new ChainPaths<Pushable, Event>(ChainName.Check);

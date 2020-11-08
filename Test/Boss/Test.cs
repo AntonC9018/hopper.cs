@@ -1,5 +1,6 @@
 using Core;
 using Core.Behaviors;
+using Core.Utils.Vector;
 
 namespace Test
 {
@@ -30,7 +31,7 @@ namespace Test
             },
             new Step
             {
-                repeat = 3
+                repeat = 3,
             },
             new Step
             {
@@ -44,7 +45,7 @@ namespace Test
             int toSpawn = entity.m_whelpMax - entity.m_whelpCount;
             for (int i = 0; i < toSpawn; i++)
             {
-                var pos = entity.Pos - action.direction * i;
+                var pos = entity.Pos - action.direction * (i + 1);
                 if (entity.World.Grid.IsOutOfBounds(pos) == false)
                 {
                     var whelp = entity.World.SpawnEntity(Whelp.Factory, pos, action.direction);
@@ -53,6 +54,25 @@ namespace Test
                 entity.m_whelpCount++;
             }
         }
+
+        private static void TurnToPlayer(Entity entity)
+        {
+            var player = entity.GetClosestPlayer();
+            var diff = player.Pos - entity.Pos;
+            var sign = diff.Sign();
+            var abs = diff.Abs();
+            if (abs.x > abs.y)
+            {
+                entity.Orientation = new IntVector2(sign.x, 0);
+            }
+            if (abs.y > abs.x)
+            {
+                entity.Orientation = new IntVector2(0, sign.y);
+            }
+        }
+
+        private static Retoucher TurnToPlayerRetoucher = Retoucher
+            .SingleHandlered(Acting.Success, ev => TurnToPlayer(ev.actor));
 
         public class Whelp : Entity
         {
@@ -84,10 +104,11 @@ namespace Test
                 .AddBehavior<Attackable>()
                 .AddBehavior<Moving>()
                 .AddBehavior<Displaceable>()
-                .AddBehavior<Damageable>()
+                .AddBehavior<Damageable>(new Damageable.Config(1))
                 .Retouch(Core.Retouchers.Skip.NoPlayer)
                 .Retouch(Core.Retouchers.Skip.BlockedMove)
-                .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
+                // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
+                .Retouch(TurnToPlayerRetoucher)
                 .AddBehavior<Sequential>(new Sequential.Config(Steps));
         }
 
@@ -97,10 +118,11 @@ namespace Test
             .AddBehavior<Attackable>()
             .AddBehavior<Moving>()
             .AddBehavior<Displaceable>()
-            .AddBehavior<Damageable>()
+            .AddBehavior<Damageable>(new Damageable.Config(5))
             .Retouch(Core.Retouchers.Skip.NoPlayer)
             .Retouch(Core.Retouchers.Skip.BlockedMove)
-            .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
+            // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
+            .Retouch(TurnToPlayerRetoucher)
             .AddBehavior<Sequential>(new Sequential.Config(Steps));
     }
 }

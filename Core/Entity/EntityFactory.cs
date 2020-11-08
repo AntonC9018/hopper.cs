@@ -6,8 +6,8 @@ namespace Core
 {
     public class BehaviorSetting
     {
-        public BehaviorFactory factory;
-        public BehaviorConfig config;
+        public IBehaviorFactory factory;
+        public object config;
     }
 
     public class EntityFactory<T> : IFactory<T>, IProvideBehaviorFactory
@@ -30,7 +30,7 @@ namespace Core
         private Dictionary<int, Retoucher> m_retouchers =
             new Dictionary<int, Retoucher>();
 
-        public EntityFactory<T> AddBehavior<Beh>(BehaviorConfig conf = null)
+        public EntityFactory<T> AddBehavior<Beh>(object conf = null)
             where Beh : Behavior, new()
         {
             var factory = new BehaviorFactory<Beh>();
@@ -92,7 +92,7 @@ namespace Core
             return m_behaviorSettings.ContainsKey(typeof(U));
         }
 
-        public EntityFactory<T> ReconfigureBehavior<U>(BehaviorConfig config) where U : Behavior, new()
+        public EntityFactory<T> ReconfigureBehavior<U>(object config) where U : Behavior, new()
         {
             m_behaviorSettings[typeof(U)].config = config;
             return this;

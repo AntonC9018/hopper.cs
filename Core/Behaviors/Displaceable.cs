@@ -27,7 +27,7 @@ namespace Core.Behaviors
             return CheckDoCycle<Event>(ev);
         }
 
-        static void ConvertFromMove(Event ev)
+        private static void ConvertFromMove(Event ev)
         {
             int i = 1;
 
@@ -42,19 +42,19 @@ namespace Core.Behaviors
             ev.newPos = ev.actor.GetPosRelative(ev.dir * i);
         }
 
-        static void DisplaceRemove(Event ev)
+        private static void DisplaceRemove(Event ev)
         {
             ev.actor.RemoveFromGrid();
             ev.actor.Pos = ev.newPos;
         }
 
-        static void DisplaceAddBack(Event ev)
+        private static void DisplaceAddBack(Event ev)
         {
             ev.actor.ResetInGrid();
         }
 
-        public static ChainPaths<Displaceable, Event> Check;
-        public static ChainPaths<Displaceable, Event> Do;
+        public static readonly ChainPaths<Displaceable, Event> Check;
+        public static readonly ChainPaths<Displaceable, Event> Do;
 
         static Displaceable()
         {

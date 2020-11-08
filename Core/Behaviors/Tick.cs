@@ -16,7 +16,7 @@ namespace Core.Behaviors
             GetChain<Event>(ChainName.Default).Pass(ev);
         }
 
-        public static ChainPaths<Tick, Event> Chain;
+        public static readonly ChainPaths<Tick, Event> Chain;
         static Tick()
         {
             Chain = new ChainPaths<Tick, Event>(ChainName.Default);

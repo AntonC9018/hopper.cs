@@ -1,13 +1,7 @@
-using System.Collections.Generic;
-using Chains;
-using Core.Utils;
-
 namespace Core.Behaviors
 {
-    public abstract class BehaviorFactory
+    public interface IBehaviorFactory
     {
-        protected Dictionary<ChainName, IChainTemplate> m_templates =
-            new Dictionary<ChainName, IChainTemplate>();
-        public abstract Behavior Instantiate(Entity entity, BehaviorConfig conf);
+        Behavior Instantiate(Entity entity, object conf);
     }
 }

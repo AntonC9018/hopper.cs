@@ -1,4 +1,5 @@
 using Chains;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -38,7 +39,7 @@ namespace Core.Behaviors
             return true;
         }
 
-        public virtual void Init(Entity entity, BehaviorConfig config)
+        internal void _SetEntity(Entity entity)
         {
             m_entity = entity;
         }
@@ -47,10 +48,5 @@ namespace Core.Behaviors
         {
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
         }
-    }
-
-
-    public abstract class BehaviorConfig
-    {
     }
 }

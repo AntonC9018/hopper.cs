@@ -8,7 +8,7 @@ namespace Core.Behaviors
     [DataContract]
     public class Sequential : Behavior
     {
-        public class Config : BehaviorConfig
+        public class Config
         {
             public readonly System.Func<ISequence> GetSequence;
 
@@ -33,14 +33,11 @@ namespace Core.Behaviors
 
         public Action CurrentAction => m_sequence.CurrentAction;
 
-        public override void Init(Entity entity, BehaviorConfig config)
+        private void Init(Config config)
         {
-            m_entity = entity;
+            m_sequence = config.GetSequence();
 
-            var conf = (Config)config;
-            m_sequence = conf.GetSequence();
-
-            Tick.Chain.ChainPath(entity.Behaviors).AddHandler(
+            Tick.Chain.ChainPath(m_entity.Behaviors).AddHandler(
                 e => m_sequence.TickAction(m_entity)
             );
         }

@@ -41,12 +41,12 @@ namespace Core.Behaviors
             return CheckDoCycle<Event>(ev);
         }
 
-        static void SetResistance(Event ev)
+        private static void SetResistance(Event ev)
         {
             ev.resistance = ev.actor.Stats.Get(Attack.Resistance.Path);
         }
 
-        static void ResistSource(Event ev)
+        private static void ResistSource(Event ev)
         {
             var sourceRes = ev.actor.Stats.Get(Attack.Source.Resistance.Path);
             if (sourceRes[ev.atkParams.attack.sourceId] > ev.atkParams.attack.power)
@@ -55,7 +55,7 @@ namespace Core.Behaviors
             }
         }
 
-        static void Armor(Event ev)
+        private static void Armor(Event ev)
         {
             if (ev.atkParams.attack.damage == 0)
             {
@@ -74,7 +74,7 @@ namespace Core.Behaviors
             }
         }
 
-        static void TakeHit(Event ev)
+        private static void TakeHit(Event ev)
         {
             System.Console.WriteLine($"Attacking {ev.actor.ToString()}");
             ev.actor.Behaviors.TryGet<Damageable>()?.Activate(ev.atkParams.attack.damage);
@@ -106,9 +106,9 @@ namespace Core.Behaviors
                 && (attacker == null || (attacker.Pos - m_entity.Pos).Abs().ComponentSum() <= 1);
         }
 
-        public static ChainPaths<Attackable, Event> Check;
-        public static ChainPaths<Attackable, Event> Do;
-        public static ChainPaths<Attackable, AttackablenessEvent> Condition;
+        public static readonly ChainPaths<Attackable, Event> Check;
+        public static readonly ChainPaths<Attackable, Event> Do;
+        public static readonly ChainPaths<Attackable, AttackablenessEvent> Condition;
 
         static Attackable()
         {

@@ -30,13 +30,12 @@ namespace Core.Behaviors
         [DataMember]
         private HashSet<IStatus> m_appliedStatuses;
 
-        public override void Init(Entity entity, BehaviorConfig config)
+        private void Init(object _)
         {
-            m_entity = entity;
             m_appliedStatuses = new HashSet<IStatus>();
 
             // this should be refactored into a retoucher
-            Tick.Chain.ChainPath(entity.Behaviors).AddHandler(
+            Tick.Chain.ChainPath(m_entity.Behaviors).AddHandler(
                 e => UpdateStatuses()
             );
         }
@@ -92,7 +91,7 @@ namespace Core.Behaviors
                 .ToArray();
         }
 
-        public static ChainPaths<Statused, Event> Check;
+        public static readonly ChainPaths<Statused, Event> Check;
         static Statused()
         {
             Check = new ChainPaths<Statused, Event>(ChainName.Check);

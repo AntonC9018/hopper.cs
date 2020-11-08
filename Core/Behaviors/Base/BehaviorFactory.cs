@@ -1,16 +1,22 @@
+using System.Collections.Generic;
+using System.Reflection;
 using Chains;
 
 namespace Core.Behaviors
 {
-    public class BehaviorFactory<Beh> : BehaviorFactory, IProvidesChainTemplate
+    public class BehaviorFactory<Beh> : IBehaviorFactory, IProvidesChainTemplate
            where Beh : Behavior, new()
     {
+        protected Dictionary<ChainName, IChainTemplate> m_templates =
+            new Dictionary<ChainName, IChainTemplate>();
         public static ChainTemplateBuilder s_builder;
+        private static MethodInfo InitMethodInfo;
 
         static BehaviorFactory()
         {
             var type = typeof(Beh);
             System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
+            InitMethodInfo = type.GetMethod("Init", BindingFlags.Instance | BindingFlags.NonPublic);
         }
         public BehaviorFactory()
         {
@@ -22,13 +28,13 @@ namespace Core.Behaviors
             return (ChainTemplate<Event>)m_templates[name];
         }
 
-        public override Behavior Instantiate(Entity entity, BehaviorConfig conf)
+        public Behavior Instantiate(Entity entity, object conf)
         {
             Behavior behavior = new Beh();
+            behavior._SetEntity(entity);
             behavior.GenerateChains(m_templates);
-            behavior.Init(entity, conf);
+            InitMethodInfo?.Invoke(behavior, new object[] { conf });
             return behavior;
         }
-
     }
 }

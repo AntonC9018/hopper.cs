@@ -7,7 +7,7 @@ namespace Core.Behaviors
     [DataContract]
     public partial class Interactable : Behavior
     {
-        public class Config : BehaviorConfig
+        public class Config
         {
             public ContentConfig contentConfig;
         }
@@ -21,14 +21,13 @@ namespace Core.Behaviors
         // since the content is going to overwritten afterwards while populating the object.
         public IContent m_content;
 
-        public override void Init(Entity entity, BehaviorConfig config)
+        private void Init(Config config)
         {
             if (config != null)
             {
                 m_content = ContentProvider.DefaultProvider
-                    .CreateContent(((Config)config).contentConfig);
+                    .CreateContent(config.contentConfig);
             }
-            base.Init(entity, config);
         }
 
         public bool Activate()
@@ -42,11 +41,11 @@ namespace Core.Behaviors
         }
 
         // for now, let the default response be `die` 
-        static void Die(Event ev) => ev.actor.Die();
-        static void Release(Event ev) => ev.content?.Release(ev.actor);
+        private static void Die(Event ev) => ev.actor.Die();
+        private static void Release(Event ev) => ev.content?.Release(ev.actor);
 
-        public static ChainPaths<Interactable, Event> Check;
-        public static ChainPaths<Interactable, Event> Do;
+        public static readonly ChainPaths<Interactable, Event> Check;
+        public static readonly ChainPaths<Interactable, Event> Do;
 
         static Interactable()
         {

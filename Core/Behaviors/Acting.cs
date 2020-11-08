@@ -6,7 +6,7 @@ namespace Core.Behaviors
     [DataContract]
     public class Acting : Behavior
     {
-        public class Config : BehaviorConfig
+        public class Config
         {
             public System.Func<Entity, Action> CalculateAction;
             public System.Action<Acting.Event> DoAction;
@@ -31,13 +31,11 @@ namespace Core.Behaviors
         private System.Func<Entity, Action> config_CalculateAction;
         private System.Action<Event> config_DoActionFunc;
 
-        public override void Init(Entity entity, BehaviorConfig conf)
+        private void Init(Config config)
         {
-            var config = (Config)conf;
-            m_entity = entity;
             config_CalculateAction = config.CalculateAction;
             config_DoActionFunc = config.DoAction;
-            Tick.Chain.ChainPath(entity.Behaviors).AddHandler(
+            Tick.Chain.ChainPath(m_entity.Behaviors).AddHandler(
                 e =>
                 {
                     DidAction = false;
@@ -100,11 +98,9 @@ namespace Core.Behaviors
             }
         }
 
-
-        // initialize here
-        public static ChainPaths<Acting, Event> Check;
-        public static ChainPaths<Acting, Event> Fail;
-        public static ChainPaths<Acting, Event> Success;
+        public static readonly ChainPaths<Acting, Event> Check;
+        public static readonly ChainPaths<Acting, Event> Fail;
+        public static readonly ChainPaths<Acting, Event> Success;
 
         static Acting()
         {

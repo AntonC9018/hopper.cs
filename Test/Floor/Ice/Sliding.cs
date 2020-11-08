@@ -10,11 +10,10 @@ namespace Test
     {
         public static Layer TargetedLayer = Layer.REAL;
 
-        public override void Init(Entity entity, BehaviorConfig config)
+        private void Init(object _)
         {
-            m_entity = entity;
-            entity.InitEvent += (() => m_entity.Cell.EnterEvent += ApplySliding);
-            entity.DieEvent += (() => m_entity.Cell.EnterEvent -= ApplySliding);
+            m_entity.InitEvent += (() => m_entity.Cell.EnterEvent += ApplySliding);
+            m_entity.DieEvent += (() => m_entity.Cell.EnterEvent -= ApplySliding);
         }
 
         public bool Activate(Action action)

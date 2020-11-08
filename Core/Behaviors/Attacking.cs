@@ -81,7 +81,6 @@ namespace Core.Behaviors
             }
         }
 
-        // TODO: refactor
         public static bool TryAttackWithConditionCheck(
             Entity attacked, IntVector2 direction, Attack attack, Entity attacker)
         {
@@ -132,8 +131,8 @@ namespace Core.Behaviors
             attacked.Behaviors.Get<Pushable>().Activate(direction, push);
         }
 
-        public static ChainPaths<Attacking, Event> Check;
-        public static ChainPaths<Attacking, Event> Do;
+        public static readonly ChainPaths<Attacking, Event> Check;
+        public static readonly ChainPaths<Attacking, Event> Do;
 
         static Attacking()
         {

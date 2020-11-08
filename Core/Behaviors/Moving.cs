@@ -23,7 +23,7 @@ namespace Core.Behaviors
             return CheckDoCycle<Event>(ev);
         }
 
-        static void SetBase(Event ev)
+        private static void SetBase(Event ev)
         {
             if (ev.move == null)
             {
@@ -31,13 +31,13 @@ namespace Core.Behaviors
             }
         }
 
-        static void Displace(Event ev)
+        private static void Displace(Event ev)
         {
             ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action.direction, ev.move);
         }
 
-        public static ChainPaths<Moving, Event> Check;
-        public static ChainPaths<Moving, Event> Do;
+        public static readonly ChainPaths<Moving, Event> Check;
+        public static readonly ChainPaths<Moving, Event> Do;
 
         static Moving()
         {

@@ -61,18 +61,16 @@ namespace Core.Behaviors
             }
         }
 
-        public class Config : BehaviorConfig
+        public class Config
         {
             public Action defaultAction;
         }
 
         public Action config_defaultAction;
 
-        public override void Init(Entity entity, BehaviorConfig _config)
+        private void Init(Config config)
         {
-            var config = (Config)_config;
             config_defaultAction = config.defaultAction;
-            base.Init(entity, null);
         }
 
         public Action ConvertInputToAction(InputMapping input)

@@ -26,17 +26,16 @@ namespace Test
             public Entity applyTo;
         }
 
-        public class Config : BehaviorConfig
+        public class Config
         {
             public BindStatus bindStatus;
         }
 
         public BindStatus config_bindStatus;
 
-        public override void Init(Entity entity, BehaviorConfig config)
+        private void Init(Config config)
         {
-            config_bindStatus = ((Config)config).bindStatus;
-            m_entity = entity;
+            config_bindStatus = config.bindStatus;
         }
 
         public bool Activate(Action action) => Activate(action, null);
@@ -71,8 +70,8 @@ namespace Test
             ev.propagate = ev.bindStatus.TryApply(ev.applyTo, new BindData(ev.actor), ev.statusStat);
         }
 
-        public static ChainPaths<Binding, Event> Check;
-        public static ChainPaths<Binding, Event> Do;
+        public static readonly ChainPaths<Binding, Event> Check;
+        public static readonly ChainPaths<Binding, Event> Do;
         static Binding()
         {
             Check = new ChainPaths<Binding, Event>(ChainName.Check);

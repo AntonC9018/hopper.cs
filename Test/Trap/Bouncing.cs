@@ -16,11 +16,9 @@ namespace Test
         [DataMember] private bool m_hasEntityBeenOnTop;
 
 
-        public override void Init(Entity entity, BehaviorConfig config)
+        private void Init(object _)
         {
             m_hasBounced = false;
-            m_entity = entity;
-
             // automatically update the whether an entity left on top of us
             m_entity.InitEvent += (() => m_entity.Cell.LeaveEvent += GetUnpushed);
             m_entity.DieEvent += (() => m_entity.Cell.LeaveEvent -= GetUnpushed);
