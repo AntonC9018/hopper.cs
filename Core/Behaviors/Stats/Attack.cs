@@ -45,7 +45,7 @@ namespace Core.Stats.Basic
 
             public Source(int defaultResValue = 1)
             {
-                m_id = IdMap.AttackSources.Add(this);
+                m_id = Registry.Default.AttackSources.Add(this);
                 Resistance.Path.DefaultFile.Add(m_id, defaultResValue);
             }
 

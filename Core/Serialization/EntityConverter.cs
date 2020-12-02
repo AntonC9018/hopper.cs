@@ -21,8 +21,8 @@ namespace Core
             JObject jobj = JObject.Load(reader);
 
             int id = (int)jobj.GetValue("Id");
-            int factoryId = IdMap.Entity.MapMetadata(id).factoryId;
-            IFactory<Entity> factory = IdMap.EntityFactory.Map(factoryId);
+            int factoryId = Registry.Default.Entity.MapMetadata(id).factoryId;
+            IFactory<Entity> factory = Registry.Default.EntityFactory.Map(factoryId);
             Entity entity = factory.ReInstantiate(id);
             serializer.Populate(jobj.CreateReader(), entity);
 

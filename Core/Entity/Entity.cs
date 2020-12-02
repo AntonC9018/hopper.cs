@@ -154,7 +154,7 @@ namespace Core
 
         public int GetFactoryId()
         {
-            return IdMap.Entity.MapMetadata(m_id).factoryId;
+            return Registry.Default.Entity.MapMetadata(m_id).factoryId;
         }
     }
 }

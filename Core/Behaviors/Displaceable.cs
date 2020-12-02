@@ -71,7 +71,6 @@ namespace Core.Behaviors
                 .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.displaced_do))
                 .AddHandler(DisplaceAddBack)
 
-
                 .End();
 
             BehaviorFactory<Displaceable>.s_builder = builder;

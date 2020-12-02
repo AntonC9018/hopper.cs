@@ -20,7 +20,7 @@ namespace Core
 
         public EntityFactory()
         {
-            m_id = IdMap.EntityFactory.Add(this);
+            m_id = Registry.Default.EntityFactory.Add(this);
             AddBehavior<Tick>();
         }
 
@@ -54,7 +54,7 @@ namespace Core
         public T Instantiate()
         {
             var entity = InstantiateLogic();
-            int id = IdMap.Entity.Add(entity, new FactoryLink { factoryId = m_id });
+            int id = Registry.Default.Entity.Add(entity, new FactoryLink { factoryId = m_id });
             entity._SetId(id);
             return entity;
         }

@@ -222,7 +222,7 @@ namespace Hopper
             var slot = new SizedSlot<CircularItemContainer>("stuff", 5);
             var item = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
             var item2 = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
-            var packed = IdMap.Items.PackModMap();
+            var packed = Registry.Default.Items.PackModMap();
             ((Inventory)player.Inventory).AddContainer(slot, new CircularItemContainer(5));
             player.Inventory.Equip(item);
             player.Inventory.Equip(item2);
@@ -255,8 +255,8 @@ namespace Hopper
             System.Console.WriteLine("Created world");
 
             // Statused.RegisterStatus(TestStatusTinkerStuff.status, 1);
-            var packed = IdMap.Tinker.PackModMap();
-            IdMap.Tinker.SetServerMap(packed);
+            var packed = Registry.Default.Tinker.PackModMap();
+            Registry.Default.Tinker.SetServerMap(packed);
 
             var playerFactory = new EntityFactory<Player>();
             playerFactory.AddBehavior<Attackable>();

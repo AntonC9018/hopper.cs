@@ -57,7 +57,7 @@ namespace Core.Items
                 {
                     return null;
                 }
-                var factory = IdMap.EntityFactory.Map(poolItem.id);
+                var factory = Registry.Default.EntityFactory.Map(poolItem.id);
                 return new EntityContent(factory);
             }
 
@@ -73,7 +73,7 @@ namespace Core.Items
                 {
                     return null;
                 }
-                var factory = IdMap.Items.Map(poolItem.id);
+                var factory = Registry.Default.Items.Map(poolItem.id);
                 return new ItemContent(factory);
             }
 

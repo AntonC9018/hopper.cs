@@ -26,7 +26,7 @@ namespace Core
         public Tinker(params IChainDef[] chainDefs)
         {
             m_chainDefinition = chainDefs;
-            m_id = IdMap.Tinker.Add(this);
+            m_id = Registry.Default.Tinker.Add(this);
         }
 
         public void Tink(Entity entity)

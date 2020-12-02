@@ -14,7 +14,7 @@ namespace Core
         public Retoucher(ITemplateChainDef[] chainDefinitions)
         {
             this.m_chainDefinitions = chainDefinitions;
-            m_id = IdMap.Retoucher.Add(this);
+            m_id = Registry.Default.Retoucher.Add(this);
         }
 
         // beacuse I'm sick of boilerplate for simple stuff

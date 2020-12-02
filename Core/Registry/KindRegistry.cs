@@ -3,7 +3,7 @@ using Core.Utils;
 
 namespace Core
 {
-    public class SetupIdMap<T> : ISetupIdMap where T : IHaveId
+    public class KindRegistry<T> : IKindRegistry where T : IHaveId
     {
         // contains all items listed by mods in the order they were intialized.
         // we assume initialization takes place in the same sequence on both 

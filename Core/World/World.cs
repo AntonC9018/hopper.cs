@@ -21,7 +21,7 @@ namespace Core
         {
             Grid = new GridManager(width, height);
             State = new WorldStateManager();
-            m_id = IdMap.World.Add(this);
+            m_id = Registry.Default.World.Add(this);
             PhaseLayerExtensions.ThrowIfPhasesAreWrong();
         }
 

@@ -151,7 +151,7 @@ namespace Core
                 {
                     if (entity.IsDead)
                     {
-                        IdMap.Entity.Remove(entity.Id);
+                        Registry.Default.Entity.Remove(entity.Id);
                     }
                     else
                     {

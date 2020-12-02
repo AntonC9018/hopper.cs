@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public interface IRuntimeIdMap
+    public interface IInstanceRegistry
     {
     }
 
-    public class RuntimeIdMap<T, Meta> : IRuntimeIdMap
+    public class InstanceRegistry<T, Meta> : IInstanceRegistry
     {
         protected Dictionary<int, T> m_map =
             new Dictionary<int, T>();
@@ -47,7 +47,7 @@ namespace Core
         }
     }
 
-    public class RuntimeIdMap<T> : IRuntimeIdMap
+    public class InstanceRegistry<T> : IInstanceRegistry
     {
         protected Dictionary<int, T> m_map =
             new Dictionary<int, T>();

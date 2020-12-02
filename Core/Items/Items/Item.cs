@@ -10,7 +10,7 @@ namespace Core.Items
 
         public Item()
         {
-            m_id = IdMap.Items.Add(this);
+            m_id = Registry.Default.Items.Add(this);
         }
 
         public virtual void BeDestroyed(Entity entity)

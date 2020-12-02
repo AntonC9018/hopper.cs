@@ -8,7 +8,7 @@ namespace Core
         public override T ReadJson(JsonReader reader, System.Type objectType, T existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
             var id = reader.ReadAsInt32() ?? 0;
-            return IdMap.Map<T>(id);
+            return Registry.Default.GetKind<T>(id);
         }
 
         public override void WriteJson(JsonWriter writer, T value, JsonSerializer serializer)
