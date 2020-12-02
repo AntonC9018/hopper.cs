@@ -23,6 +23,8 @@ namespace Test
                     movs = Movs.Basic
                 },
                 new Step()
+                {
+                }
             };
 
             return stepData;

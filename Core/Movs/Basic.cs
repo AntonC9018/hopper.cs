@@ -124,15 +124,17 @@ namespace Core
             }
             void Add(int x, int y) => list.Add(new IntVector2(x, y));
             var diff = (player.Pos - e.Pos).Sign();
+            var orientation = e.Orientation == IntVector2.Zero ? diff : e.Orientation;
+
             if (diff.x == 0)
             {
-                Add(e.Orientation.x, diff.y);
-                Add(-e.Orientation.x, diff.y);
+                Add(orientation.x, diff.y);
+                Add(-orientation.x, diff.y);
             }
             else if (diff.y == 0)
             {
-                Add(diff.x, e.Orientation.y);
-                Add(diff.x, -e.Orientation.y);
+                Add(diff.x, orientation.y);
+                Add(diff.x, -orientation.y);
             }
             else
             {

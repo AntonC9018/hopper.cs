@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using Core;
 using Core.Behaviors;
 using Core.Stats.Basic;
+using Core.Utils.Vector;
 
 namespace Test
 {
@@ -26,6 +27,11 @@ namespace Test
 
         public bool Activate(Action action)
         {
+            if (m_entity.Orientation == IntVector2.Zero)
+            {
+                throw new System.Exception("The one pushing should have a direction to have any effect");
+            }
+
             // if anybody has been standing on top since the previous loop, don't bounce
             // unless the entity gets off of us, which is managed by the leave handler
             if (m_hasEntityBeenOnTop)

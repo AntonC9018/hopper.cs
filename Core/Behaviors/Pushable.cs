@@ -50,7 +50,11 @@ namespace Core.Behaviors
 
         static void BePushed(Event ev)
         {
-            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.dir, new Move());
+            if (ev.push.distance > 0)
+            {
+                ev.actor.Behaviors.Get<Displaceable>()
+                    .Activate(ev.dir, ev.push.ConvertToMove());
+            }
         }
 
         public static readonly ChainPaths<Pushable, Event> Check;

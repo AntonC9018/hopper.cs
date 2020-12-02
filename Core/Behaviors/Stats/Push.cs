@@ -7,6 +7,15 @@ namespace Core.Stats.Basic
         public int distance;
         public int pierce;
 
+        public Move ConvertToMove()
+        {
+            return new Move
+            {
+                power = distance,
+                through = 0
+            };
+        }
+
         public static Source BasicSource = new Source();
         public static readonly StatPath<Push> Path = new StatPath<Push>(
             "push/base",
