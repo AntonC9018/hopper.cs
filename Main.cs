@@ -548,7 +548,7 @@ namespace Hopper
                 new Controllable.Config { defaultAction = attackMoveAction });
             player.Behaviors.Add(typeof(Controllable), input);
 
-            var outputAction0 = input.ConvertInputToAction(InputMapping.Up);
+            var outputAction0 = input.ConvertVectorToAction(IntVector2.Up);
             System.Console.WriteLine($"Fed Up. Output: {outputAction0.direction}");
             var outputAction1 = input.ConvertInputToAction(InputMapping.Special_0);
             System.Console.WriteLine($"Fed Special_0. Output is null?: {outputAction1 == null}");

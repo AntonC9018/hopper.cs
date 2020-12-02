@@ -38,36 +38,10 @@ namespace Test
         {
             return builder
 
-                .AddDef(Controllable.Chains[InputMapping.Up])
-                .AddHandler(handler, priority)
-
-                .AddDef(Controllable.Chains[InputMapping.Down])
-                .AddHandler(handler, priority)
-
-                .AddDef(Controllable.Chains[InputMapping.Left])
-                .AddHandler(handler, priority)
-
-                .AddDef(Controllable.Chains[InputMapping.Right])
+                .AddDef(Controllable.Chains[InputMapping.Vector])
                 .AddHandler(handler, priority)
 
                 .End();
         }
-
-        // public static ChainDefBuilder Add_HandlerWithDirection_ToAllVectorInputs(
-        //     this ChainDefBuilder builder,
-        //     System.Func<IntVector2, System.Action<Controllable.Event>> handlerGenerator,
-        //     PriorityRanks priority = PriorityRanks.Default)
-        // {
-        //     return builder
-        //         .AddDef(Controllable.Chains[InputMapping.])
-        //         .AddHandler(handler, priority)
-
-        //         .AddDef(Digging.Do)
-        //         .AddHandler(handler, priority)
-
-        //         .AddDef(Moving.Do)
-        //         .AddHandler(handler, priority)
-        //         .End();
-        // }
     }
 }

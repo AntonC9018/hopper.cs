@@ -8,10 +8,11 @@ namespace Core.Behaviors
 {
     public class InputMapping : ChainName
     {
-        public readonly static InputMapping Up = new InputMapping("Up");
-        public readonly static InputMapping Down = new InputMapping("Down");
-        public readonly static InputMapping Left = new InputMapping("Left");
-        public readonly static InputMapping Right = new InputMapping("Right");
+        // public readonly static InputMapping Up = new InputMapping("Up");
+        // public readonly static InputMapping Down = new InputMapping("Down");
+        // public readonly static InputMapping Left = new InputMapping("Left");
+        // public readonly static InputMapping Right = new InputMapping("Right");
+        public readonly static InputMapping Vector = new InputMapping("Vector");
         public readonly static InputMapping Action_0 = new InputMapping("Action_0");
         public readonly static InputMapping Action_1 = new InputMapping("Action_1");
         public readonly static InputMapping Special_0 = new InputMapping("Special_0");
@@ -80,6 +81,14 @@ namespace Core.Behaviors
             return ev.action;
         }
 
+        public Action ConvertVectorToAction(IntVector2 direction)
+        {
+            var ev = new Event { actor = m_entity };
+            ev.SetAction(config_defaultAction, direction);
+            GetChain<Event>(InputMapping.Vector).Pass(ev);
+            return ev.action;
+        }
+
         static System.Action<Event> Default(IntVector2 dir)
         {
             return ev => ev.SetAction(ev.actor.Behaviors.Get<Controllable>().config_defaultAction, dir);
@@ -99,23 +108,6 @@ namespace Core.Behaviors
                 builder.AddTemplate<Event>(name);
                 Chains[name] = new ChainPaths<Controllable, Event>(name);
             }
-
-            builder
-                .GetTemplate<Event>(InputMapping.Up)
-                .AddHandler(Default(IntVector2.Up), PriorityRanks.Highest)
-                .End()
-
-                .GetTemplate<Event>(InputMapping.Right)
-                .AddHandler(Default(IntVector2.Right), PriorityRanks.Highest)
-                .End()
-
-                .GetTemplate<Event>(InputMapping.Down)
-                .AddHandler(Default(IntVector2.Down), PriorityRanks.Highest)
-                .End()
-
-                .GetTemplate<Event>(InputMapping.Left)
-                .AddHandler(Default(IntVector2.Left), PriorityRanks.Highest)
-                .End();
 
             BehaviorFactory<Controllable>.s_builder = builder;
         }
