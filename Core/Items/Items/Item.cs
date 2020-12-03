@@ -39,16 +39,6 @@ namespace Core.Items
             CreateDropped(entity);
         }
 
-        public static ModularTargetingItem<T, M> CreateModularTargeting<T, M>(
-            ItemMetadata meta,
-            Slot<IItemContainer> slot,
-            IProvideTargets<T, M> targetProvider,
-            params IModule[] modules)
-                where T : Target, new()
-        {
-            return new ModularTargetingItem<T, M>(meta, slot, targetProvider, modules);
-        }
-
         public virtual DecomposedItem Decompose() => new DecomposedItem(this);
 
         public void Init(IItem item)

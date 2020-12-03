@@ -1,5 +1,3 @@
-using Core.Utils.Vector;
-
 namespace Core
 {
     public class WorldEventPath<T>

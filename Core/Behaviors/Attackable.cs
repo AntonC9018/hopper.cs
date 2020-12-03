@@ -88,7 +88,7 @@ namespace Core.Behaviors
             public Attack attack;
         }
 
-        public AtkCondition GetAttackableness(Attack atk)
+        public AtkCondition GetAtkCondition(Attack atk)
         {
             var ev = new AttackablenessEvent
             {
@@ -101,7 +101,7 @@ namespace Core.Behaviors
 
         public bool IsAttackable(Attack attack, Entity attacker)
         {
-            var condition = GetAttackableness(attack);
+            var condition = GetAtkCondition(attack);
             return condition == AtkCondition.ALWAYS || condition == AtkCondition.IF_NEXT_TO
                 && (attacker == null || (attacker.Pos - m_entity.Pos).Abs().ComponentSum() <= 1);
         }

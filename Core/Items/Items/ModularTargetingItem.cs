@@ -2,48 +2,45 @@ using System.Collections.Generic;
 using Core.Behaviors;
 using Core.Stats.Basic;
 using Core.Targeting;
+using Core.Utils.Vector;
 
 namespace Core.Items
 {
-    public class ModularTargetingItem<T, M> : ModularItem, IProvideTargets<T, M>
-        where T : Target, new()
+    public class ModularWeapon : ModularItem, IAtkTargetProvider
     {
-        private IProvideTargets<T, M> m_targetProvider;
+        private IAtkTargetProvider m_targetProvider;
 
-        public ModularTargetingItem(
+        public ModularWeapon(
             ItemMetadata meta,
-            ISlot slot,
-            IProvideTargets<T, M> targetProvider,
+            IAtkTargetProvider targetProvider,
             params IModule[] modules)
-        : base(meta, slot, modules)
+            : base(meta, Core.Items.Slot.Weapon, modules)
         {
             m_targetProvider = targetProvider;
         }
 
-        public IEnumerable<T> GetParticularTargets(TargetEvent<T> targetEvent, M meta)
+        public IEnumerable<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack)
         {
-            return m_targetProvider.GetParticularTargets(targetEvent, meta);
-        }
-
-        public List<Target> GetTargets(TargetEvent<T> targetEvent, M meta)
-        {
-            return m_targetProvider.GetTargets(targetEvent, meta);
+            return m_targetProvider.GetTargets(spot, dir, attack);
         }
     }
 
-    public class ModularWeapon : ModularTargetingItem<AtkTarget, Attackable.Params>
+    public class ModularShovel : ModularItem, ITargetProvider<Target>
     {
-        public ModularWeapon(ItemMetadata meta, IProvideTargets<AtkTarget, Attackable.Params> targetProvider, params IModule[] modules)
-            : base(meta, Core.Items.Slot.Weapon, targetProvider, modules)
-        {
-        }
-    }
+        private ITargetProvider<Target> m_targetProvider;
 
-    public class ModularShovel : ModularTargetingItem<DigTarget, Dig>
-    {
-        public ModularShovel(ItemMetadata meta, IProvideTargets<DigTarget, Dig> targetProvider, params IModule[] modules)
-            : base(meta, Core.Items.Slot.Shovel, targetProvider, modules)
+        public ModularShovel(
+            ItemMetadata meta,
+            ITargetProvider<Target> targetProvider,
+            params IModule[] modules)
+            : base(meta, Core.Items.Slot.Shovel, modules)
         {
+            m_targetProvider = targetProvider;
+        }
+
+        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 dir)
+        {
+            return m_targetProvider.GetTargets(spot, dir);
         }
     }
 }

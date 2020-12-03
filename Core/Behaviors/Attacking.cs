@@ -61,14 +61,22 @@ namespace Core.Behaviors
             if (ev.targets == null)
             {
                 var inv = ev.actor.Inventory;
-                ev.targets = inv == null
-                    ? GenerateTargetsDefault(ev)
-                    : inv
-                        .GenerateTargets(
-                            Target.CreateEvent<AtkTarget>(ev),
-                            new Attackable.Params(ev.attack, ev.actor),
-                            Slot.Weapon)
-                        .ToList();
+                if (inv != null)
+                {
+                    var weapon = (ModularWeapon)inv.GetItemFromSlot(Slot.Weapon);
+                    if (weapon != null)
+                    {
+                        ev.targets = weapon.GetTargets(ev.actor, ev.action.direction, ev.attack).ToList();
+                    }
+                    else
+                    {
+                        ev.targets = new List<AtkTarget>();
+                    }
+                }
+                else
+                {
+                    ev.targets = GenerateTargetsDefault(ev);
+                }
             }
         }
 

@@ -11,9 +11,6 @@ namespace Test
         private Attack m_attack;
         private Push m_push;
 
-        private TargetProvider<AtkTarget, Attackable.Params> m_targetProvider;
-
-
         public AnonShooting(
             Layer targetedLayer,
             Layer skipLayer,

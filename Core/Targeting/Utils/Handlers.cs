@@ -90,17 +90,7 @@ namespace Core.Targeting
                          || t.atkCondition == AtkCondition.IF_NEXT_TO);
         }
 
-        public static void StopNoFirst(TargetEvent<DigTarget> digEvent)
-        {
-            if (digEvent.targets[0].targetEntity == null)
-            {
-                digEvent.targets.Clear();
-                digEvent.propagate = false;
-            }
-        }
-
         public static Chain<TargetEvent<AtkTarget>> GeneralChain;
-        public static Chain<TargetEvent<DigTarget>> DigChain;
 
         static Handlers()
         {
@@ -116,17 +106,6 @@ namespace Core.Targeting
             foreach (var func in generalHandlers)
             {
                 GeneralChain.AddHandler(func);
-            }
-
-            var digHandlers = new List<System.Action<TargetEvent<DigTarget>>>
-            {
-                StopNoFirst,
-                DiscardNoEntity,
-            };
-            DigChain = new Chain<TargetEvent<DigTarget>>();
-            foreach (var func in digHandlers)
-            {
-                DigChain.AddHandler(func);
             }
         }
     }

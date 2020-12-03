@@ -98,18 +98,6 @@ namespace Core.Items
             return m_itemSlots[slot][0];
         }
 
-        public IEnumerable<T> GenerateTargets<T, M>(
-            TargetEvent<T> targetEvent, M meta, ISlot slot)
-            where T : Target, new()
-        {
-            var targetProvider = (ModularTargetingItem<T, M>)GetItemFromSlot(slot);
-            if (targetProvider == null)
-            {
-                return new List<T>();
-            }
-            return targetProvider.GetParticularTargets(targetEvent, meta);
-        }
-
         public bool IsEquipped(IItem item) =>
             m_itemSlots[item.Slot].Contains(item.Decompose().item);
 

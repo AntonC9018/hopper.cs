@@ -16,7 +16,7 @@ namespace Core.Behaviors
         public class Event : StandartEvent
         {
             public Dig dig;
-            public List<DigTarget> targets;
+            public List<Target> targets;
         }
 
         public bool Activate(Action action)
@@ -39,13 +39,15 @@ namespace Core.Behaviors
             if (ev.targets == null)
             {
                 var inv = ev.actor.Inventory;
-                ev.targets = inv == null
-                    ? new List<DigTarget>()
-                    : inv
-                        .GenerateTargets(
-                            Target.CreateEvent<DigTarget>(ev),
-                            ev.dig, Slot.Shovel)
-                        .ToList();
+                var shovel = (ModularShovel)inv.GetItemFromSlot(Slot.Shovel);
+                if (shovel != null)
+                {
+                    ev.targets = shovel.GetTargets(ev.actor, ev.action.direction).ToList();
+                }
+                else
+                {
+                    ev.targets = new List<Target>();
+                }
             }
         }
 

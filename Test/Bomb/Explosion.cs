@@ -37,10 +37,8 @@ namespace Test
             | Layer.WALL;
         private static Layer SkipLayer = 0;
 
-        private static IProvideTargets<AtkTarget, Attackable.Params> targetProvider =
-            TargetProvider.CreateMulti<AtkTarget, Attackable.Params>(
-                Pattern.Under, Handlers.GeneralChain, SkipLayer, TargetedLayer
-            );
+        private static MultiAtkTargetProvider targetProvider =
+            new MultiAtkTargetProvider(Pattern.Under, SkipLayer, TargetedLayer);
 
         public static void Explode(IntVector2 pos, int radius, World world)
         {
@@ -64,8 +62,8 @@ namespace Test
 
         public static void ExplodeCell(IntVector2 pos, IntVector2 knockbackDir, World world)
         {
-            var atkEvent = Target.CreateEvent<AtkTarget>(new Core.Targeting.Dummy(pos, world), knockbackDir);
-            var targets = targetProvider.GetParticularTargets(atkEvent, CreateMeta());
+            var targets = targetProvider.GetTargets(
+                new Core.Targeting.Dummy(pos, world), knockbackDir, (Attack)BaseAtk.Copy());
 
             foreach (var target in targets)
             {
