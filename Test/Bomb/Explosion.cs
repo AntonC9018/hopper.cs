@@ -55,8 +55,7 @@ namespace Test
             }
         }
 
-        public delegate void ExplosionHandler(IntVector2 pos, World world);
-        public static event ExplosionHandler ExplosionEvent;
+        public static readonly WorldEventPath<IntVector2> EventPath = new WorldEventPath<IntVector2>();
 
         private static Attackable.Params CreateMeta()
         {
@@ -74,7 +73,7 @@ namespace Test
                 target.targetEntity.Behaviors.TryGet<Pushable>()?.Activate(knockbackDir, BasePush);
             }
             // spawn particles through some mechanism 
-            ExplosionEvent?.Invoke(pos, world);
+            EventPath.Fire(world, pos);
         }
 
         public static IEnumerable<IntVector2> Spiral(int start_x, int start_y, int end_x, int end_y)

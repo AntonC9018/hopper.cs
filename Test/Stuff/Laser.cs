@@ -21,7 +21,7 @@ namespace Test
 
     public static class Laser
     {
-        public static event System.Action<World, LaserInfo> LaserEvent;
+        public static readonly WorldEventPath<LaserInfo> EventPath = new WorldEventPath<LaserInfo>();
 
         private static Attack.Source AttackSource = new Attack.Source();
         private static Attack DefaultAttack = new Attack
@@ -48,7 +48,7 @@ namespace Test
         {
             var shooting_info = DefaultShooting.ShootAnon(spot, dir);
             var laser_info = new LaserInfo(dir, spot.Pos + dir, shooting_info.last_checked_pos - dir);
-            LaserEvent?.Invoke(spot.World, laser_info);
+            EventPath.Fire(spot.World, laser_info);
         }
 
         public static readonly SimpleAction LaserShootAction = new SimpleAction(

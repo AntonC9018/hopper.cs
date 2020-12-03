@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using Core.Items;
 using Core.Utils.Vector;
 
@@ -11,6 +11,7 @@ namespace Core
         public GridManager Grid { get; private set; }
         public WorldStateManager State { get; private set; }
         public PoolContainer m_pools = new PoolContainer();
+        public Dictionary<int, IWorldEvent> m_events;
 
         public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
         public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
@@ -22,6 +23,7 @@ namespace Core
         {
             Grid = new GridManager(width, height);
             State = new WorldStateManager();
+            m_events = new Dictionary<int, IWorldEvent>();
             m_id = Registry.Default.World.Add(this);
             PhaseLayerExtensions.ThrowIfPhasesAreWrong();
         }
@@ -125,5 +127,13 @@ namespace Core
         // {
         //     SpawnParticleEvent?.Invoke(id);
         // }
+
+        public void InitializeWorldEvents()
+        {
+            foreach (var worldEvent in Registry.Default.GetKindRegistry<IWorldEvent>().ActiveItems)
+            {
+                m_events.Add(worldEvent.Id, worldEvent.GetCopy());
+            };
+        }
     }
 }

@@ -36,7 +36,8 @@ namespace Core
                 { typeof(IFactory<Entity>), new KindRegistry<IFactory<Entity>>() },
                 { typeof(IItem), new KindRegistry<IItem>() },
                 { typeof(Attack.Source), new KindRegistry<Attack.Source>() },
-                { typeof(Push.Source), new KindRegistry<Push.Source>() }
+                { typeof(Push.Source), new KindRegistry<Push.Source>() },
+                { typeof(IWorldEvent), new KindRegistry<IWorldEvent>() }
             };
         }
 
