@@ -185,6 +185,11 @@ namespace Core.Utils.Vector
             };
         }
 
+        public static Vector2 Lerp(Vector2 start, Vector2 end, float proportion)
+        {
+            return (end - start) * proportion + start;
+        }
+
         public static bool operator ==(Vector2 rhs, Vector2 lhs)
         {
             if (ReferenceEquals(rhs, null))

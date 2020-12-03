@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Core.Behaviors;
 
 namespace Core
@@ -30,9 +29,9 @@ namespace Core
         private int m_currentTimeFrame = 0;
         public int GetNextTimeFrame() => m_currentTimeFrame++;
 
-        private int[] m_timeStampPhaseLimits = new int[World.NumPhases];
-        public IReadOnlyList<int> TimeStampPhaseLimit
-            => System.Array.AsReadOnly(m_timeStampPhaseLimits);
+        private int[] m_updateCountPhaseLimits = new int[World.NumPhases];
+        public IReadOnlyList<int> UpdateCountPhaseLimit
+            => System.Array.AsReadOnly(m_updateCountPhaseLimits);
 
         public WorldStateManager()
         {
@@ -182,7 +181,7 @@ namespace Core
 
         private void EndPhase()
         {
-            m_timeStampPhaseLimits[(int)m_currentPhase] = m_currentTimeFrame;
+            m_updateCountPhaseLimits[(int)m_currentPhase] = m_currentTimeFrame;
             EndOfPhaseEvent?.Invoke(m_currentPhase);
         }
 
