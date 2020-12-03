@@ -31,7 +31,8 @@ namespace Core.Behaviors
         {
             if (config != null)
             {
-                m_content = config.contentSpec.CreateContent(m_entity.World.m_pools);
+                m_entity.InitEvent +=
+                    () => m_content = config.contentSpec.CreateContent(m_entity.World.m_pools);
             }
         }
 
