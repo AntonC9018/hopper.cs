@@ -12,7 +12,7 @@ namespace Core.Items
 
         public override ISlot Slot => m_storedItem.Slot;
 
-        public PackedItem(IItem storedItem, int count) : base()
+        public PackedItem(ItemMetadata meta, IItem storedItem, int count) : base(meta)
         {
             m_storedItem = storedItem;
             m_count = count;

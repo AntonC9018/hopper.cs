@@ -6,7 +6,7 @@ namespace Core.Items
         public override ISlot Slot => m_slot;
         protected ITinker m_tinker;
 
-        public TinkerItem(ITinker tinker, ISlot slot) : base()
+        public TinkerItem(ItemMetadata meta, ITinker tinker, ISlot slot) : base(meta)
         {
             this.m_tinker = tinker;
             m_slot = slot;

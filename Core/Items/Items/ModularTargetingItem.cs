@@ -11,10 +11,11 @@ namespace Core.Items
         private IProvideTargets<T, M> m_targetProvider;
 
         public ModularTargetingItem(
+            ItemMetadata meta,
             ISlot slot,
             IProvideTargets<T, M> targetProvider,
             params IModule[] modules)
-        : base(slot, modules)
+        : base(meta, slot, modules)
         {
             m_targetProvider = targetProvider;
         }
@@ -32,16 +33,16 @@ namespace Core.Items
 
     public class ModularWeapon : ModularTargetingItem<AtkTarget, Attackable.Params>
     {
-        public ModularWeapon(IProvideTargets<AtkTarget, Attackable.Params> targetProvider, params IModule[] modules)
-            : base(Core.Items.Slot.Weapon, targetProvider, modules)
+        public ModularWeapon(ItemMetadata meta, IProvideTargets<AtkTarget, Attackable.Params> targetProvider, params IModule[] modules)
+            : base(meta, Core.Items.Slot.Weapon, targetProvider, modules)
         {
         }
     }
 
     public class ModularShovel : ModularTargetingItem<DigTarget, Dig>
     {
-        public ModularShovel(IProvideTargets<DigTarget, Dig> targetProvider, params IModule[] modules)
-            : base(Core.Items.Slot.Shovel, targetProvider, modules)
+        public ModularShovel(ItemMetadata meta, IProvideTargets<DigTarget, Dig> targetProvider, params IModule[] modules)
+            : base(meta, Core.Items.Slot.Shovel, targetProvider, modules)
         {
         }
     }

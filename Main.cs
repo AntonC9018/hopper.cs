@@ -36,7 +36,7 @@ namespace Hopper
         public static void ShieldTest()
         {
             var slot = new SizedSlot<CircularItemContainer>("blocking", 1);
-            var shield = new ModularItem(slot, ShieldModule.CreateFront(2));
+            var shield = new ModularItem(new ItemMetadata("Test_Shield"), slot, ShieldModule.CreateFront(2));
             var enemyFactory = new EntityFactory<Entity>().AddBehavior<Attackable>();
             var playerFactory = new EntityFactory<Entity>()
                 .AddBehavior<Attacking>()
@@ -220,8 +220,10 @@ namespace Hopper
             World world = new World(1, 1);
             player.Init(new IntVector2(1, 1), world);
             var slot = new SizedSlot<CircularItemContainer>("stuff", 5);
-            var item = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
-            var item2 = new TinkerItem(new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
+            var item = new TinkerItem(
+                new ItemMetadata("Test_Item_1"), new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
+            var item2 = new TinkerItem(
+                new ItemMetadata("Test_Item_2"), new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
             var packed = Registry.Default.Items.PackModMap();
             ((Inventory)player.Inventory).AddContainer(slot, new CircularItemContainer(5));
             player.Inventory.Equip(item);
@@ -427,7 +429,7 @@ namespace Hopper
                 Attacking.Check,
                 e => System.Console.WriteLine("Hello from tinker applied by item")
             );
-            var item = new TinkerItem(tinker, slot);
+            var item = new TinkerItem(new ItemMetadata("Test_Tinker_Item"), tinker, slot);
 
             // inventory.Equip(item) ->         // the starting point
             // item.BeEquipped(entity) ->       // it's interface method
@@ -474,7 +476,7 @@ namespace Hopper
 
             var chainDefs2 = new IChainDef[0];
             var tinker2 = new Tinker<TinkerData>(chainDefs2);
-            var item2 = new TinkerItem(tinker2, slot2);
+            var item2 = new TinkerItem(new ItemMetadata("Test_Tinker_Item_2"), tinker2, slot2);
 
             var droppedItem2 = world.SpawnDroppedItem(item2, player.Pos + IntVector2.Down);
 

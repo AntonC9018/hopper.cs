@@ -8,7 +8,7 @@ namespace Core.Items
         public override ISlot Slot => m_slot;
         private IModifier modifier;
 
-        public ModifierItem(IModifier modifier, Slot<IItemContainer> slot) : base()
+        public ModifierItem(ItemMetadata meta, IModifier modifier, Slot<IItemContainer> slot) : base(meta)
         {
             this.modifier = modifier;
             m_slot = slot;

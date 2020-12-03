@@ -6,7 +6,7 @@ namespace Core.Items
         public override ISlot Slot => m_slot;
         private IModule[] m_modules;
 
-        public ModularItem(ISlot slot, params IModule[] modules) : base()
+        public ModularItem(ItemMetadata meta, ISlot slot, params IModule[] modules) : base(meta)
         {
             m_modules = modules;
             m_slot = slot;

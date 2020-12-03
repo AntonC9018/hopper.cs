@@ -8,9 +8,15 @@ namespace Core.Items
         public virtual ISlot Slot => throw new System.NotImplementedException();
         public virtual int Id => m_id;
 
-        public Item()
+        // Metadata
+        // TODO: might be useful to make this `name` a metadata class / struct
+        private readonly ItemMetadata m_metadata;
+        public ItemMetadata Metadata => m_metadata;
+
+        public Item(ItemMetadata meta)
         {
             m_id = Registry.Default.Items.Add(this);
+            m_metadata = meta;
         }
 
         public virtual void BeDestroyed(Entity entity)
@@ -34,12 +40,13 @@ namespace Core.Items
         }
 
         public static ModularTargetingItem<T, M> CreateModularTargeting<T, M>(
+            ItemMetadata meta,
             Slot<IItemContainer> slot,
             IProvideTargets<T, M> targetProvider,
             params IModule[] modules)
                 where T : Target, new()
         {
-            return new ModularTargetingItem<T, M>(slot, targetProvider, modules);
+            return new ModularTargetingItem<T, M>(meta, slot, targetProvider, modules);
         }
 
         public virtual DecomposedItem Decompose() => new DecomposedItem(this);

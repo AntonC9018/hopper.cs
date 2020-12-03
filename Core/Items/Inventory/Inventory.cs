@@ -42,7 +42,7 @@ namespace Core.Items
             var container = m_itemSlots[item.Slot];
             item.BeEquipped(m_actor);
             container.Insert(item.Decompose());
-            System.Console.WriteLine($"Picked up an item with id = {item.Id}");
+            System.Console.WriteLine($"Picked up item {item.Metadata.name}");
         }
 
         public void Unequip(IItem item)
@@ -50,7 +50,7 @@ namespace Core.Items
             var container = m_itemSlots[item.Slot];
             container.Remove(item.Decompose());
             item.BeUnequipped(m_actor);
-            System.Console.WriteLine($"Dropped item with id = {item.Id}");
+            System.Console.WriteLine($"Dropped item {item.Metadata.name}");
         }
 
         public void Destroy(IItem item)
@@ -58,7 +58,7 @@ namespace Core.Items
             var container = m_itemSlots[item.Slot];
             container.Remove(item.Decompose());
             item.BeDestroyed(m_actor);
-            System.Console.WriteLine($"Destroyed item with id = {item.Id}");
+            System.Console.WriteLine($"Destroyed item {item.Metadata.name}");
         }
 
         public void DropExcess()
@@ -69,7 +69,7 @@ namespace Core.Items
                 foreach (IItem item in excess)
                 {
                     item.BeUnequipped(m_actor);
-                    System.Console.WriteLine($"Dropped excess item with id = {item.Id}");
+                    System.Console.WriteLine($"Dropped excess item {item.Metadata.name}");
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace Core.Items
         {
             if (m_itemSlots.ContainsKey(slot))
             {
-                throw new System.Exception($"Container for key {slot} has already been defined");
+                throw new System.Exception($"Container for key {slot.Name} has already been defined");
             }
             m_itemSlots[slot] = container;
         }

@@ -96,7 +96,7 @@ namespace Test
                 Layer.REAL, Layer.WALL, defaultArrowAttack, null, true
             );
             var module = CreateModule(defaultShooting);
-            DefaultItem = new ModularItem(Slot, module);
+            DefaultItem = new ModularItem(new ItemMetadata("Default_Bow"), Slot, module);
         }
     }
 }
