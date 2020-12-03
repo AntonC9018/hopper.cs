@@ -10,6 +10,7 @@ namespace Core
     {
         public GridManager Grid { get; private set; }
         public WorldStateManager State { get; private set; }
+        public PoolContainer m_pools = new PoolContainer();
 
         public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
         public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;

@@ -212,7 +212,7 @@ namespace Core.FS
             var fileName = dirNames[dirNames.Length - 1];
             if (!node.nodes.ContainsKey(fileName))
             {
-                System.Console.WriteLine($"The system doesn't contain {path}");
+                System.Console.WriteLine($"Lazy loading file {path}");
                 node.nodes.Add(fileName, initialValue.Copy());
             }
             return (F)node.nodes[fileName];

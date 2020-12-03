@@ -9,7 +9,12 @@ namespace Core.Behaviors
     {
         public class Config
         {
-            public ContentConfig contentConfig;
+            public IContentSpec contentSpec;
+
+            public Config(IContentSpec contentSpec)
+            {
+                this.contentSpec = contentSpec;
+            }
         }
 
         public class Event : ActorEvent
@@ -19,14 +24,14 @@ namespace Core.Behaviors
 
         // TODO: while generating the contents randomly, use throwaway pools while deserializing
         // since the content is going to overwritten afterwards while populating the object.
+        // maybe include a flag to prevent that.
         public IContent m_content;
 
         private void Init(Config config)
         {
             if (config != null)
             {
-                m_content = ContentProvider.DefaultProvider
-                    .CreateContent(config.contentConfig);
+                m_content = config.contentSpec.CreateContent(m_entity.World.m_pools);
             }
         }
 
