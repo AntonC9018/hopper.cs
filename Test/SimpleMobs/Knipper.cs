@@ -7,7 +7,7 @@ namespace Test
 {
     public class Knipper : Entity
     {
-        private static SuccessCheckFunction IsPlayerClose(int fail, int success)
+        private static System.Func<Entity, Result> IsPlayerClose(int success, int fail)
         {
             return e =>
             {
@@ -26,7 +26,7 @@ namespace Test
             // 0: move. if near player, start exploding
             new Step
             {
-                successFunction = IsPlayerClose(1, 2),
+                successFunction = IsPlayerClose(fail : 1, success : 2),
                 action = new BehaviorAction<Moving>(),
                 movs = Movs.Basic,
                 algo = Algos.EnemyAlgo
@@ -34,12 +34,12 @@ namespace Test
             // 1: wait 1 bit. if near player, start exploding
             new Step
             {
-                successFunction = IsPlayerClose(-1, 1)
+                successFunction = IsPlayerClose(fail : -1, success : 1)
             },
             // 2: exploding, possibly not explode if the player is gone
             new Step
             {
-                successFunction = IsPlayerClose(-1, 1),
+                successFunction = IsPlayerClose(fail : -1, success :  1),
             },
             // 3: 1 bit delay before the inevitable explosion
             new Step
@@ -65,7 +65,6 @@ namespace Test
                 .AddBehavior<Moving>()
                 .AddBehavior<Damageable>()
                 .AddBehavior<Displaceable>();
-            // .Retouch(Core.Retouchers.Skip.E
         }
     }
 }

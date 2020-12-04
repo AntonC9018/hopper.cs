@@ -38,7 +38,7 @@ namespace Test
 
                 if (initialDirection != IntVector2.Zero)
                 {
-                    SlideStatus.Status.TryApply(
+                    SlideStatus.Status.TryApplyWithInitialData(
                         m_entity, entity, new SlideData(initialDirection));
                 }
             }

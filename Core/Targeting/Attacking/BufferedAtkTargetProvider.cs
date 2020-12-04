@@ -47,7 +47,7 @@ namespace Core.Targeting
                     {
                         var atkness = entity.Behaviors.Has<Attackable>()
                             ? entity.Behaviors.Get<Attackable>().GetAtkCondition(attack)
-                            : AtkCondition.NEVER;
+                            : Attackness.NEVER;
                         var target = new AtkTarget(atkness, rotatedPiece, entity);
                         targetEvent.targets.Add(target);
                     }

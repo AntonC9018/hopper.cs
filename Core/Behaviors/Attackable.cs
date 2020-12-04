@@ -48,24 +48,21 @@ namespace Core.Behaviors
 
         private static void ResistSource(Event ev)
         {
-            var sourceRes = ev.actor.Stats.Get(Attack.Source.Resistance.Path);
-            if (sourceRes[ev.atkParams.attack.sourceId] > ev.atkParams.attack.power)
+            if (GetSourceResistance(ev) > ev.atkParams.attack.power)
             {
                 ev.atkParams.attack.damage = 0;
             }
         }
 
+        private static int GetSourceResistance(Event ev)
+        {
+            var sourceRes = ev.actor.Stats.Get(Attack.Source.Resistance.Path);
+            return sourceRes[ev.atkParams.attack.sourceId];
+        }
+
         private static void Armor(Event ev)
         {
-            if (ev.atkParams.attack.damage == 0)
-            {
-                return;
-            }
-            if (ev.resistance.pierce > ev.atkParams.attack.pierce)
-            {
-                ev.atkParams.attack.damage = 0;
-            }
-            else
+            if (ev.atkParams.attack.damage > 0)
             {
                 ev.atkParams.attack.damage = Maths.Clamp(
                     ev.atkParams.attack.damage - ev.resistance.armor,
@@ -76,45 +73,46 @@ namespace Core.Behaviors
 
         private static void TakeHit(Event ev)
         {
-            System.Console.WriteLine($"Attacking {ev.actor.ToString()}");
-            ev.actor.Behaviors.TryGet<Damageable>()?.Activate(ev.atkParams.attack.damage);
-            System.Console.WriteLine($"Taken {ev.atkParams.attack.damage} damage");
+            // if pierce is high enough, resist the taken damage altogether
+            if (ev.resistance.pierce > ev.atkParams.attack.pierce)
+            {
+                ev.actor.Behaviors.TryGet<Damageable>()?.Activate(ev.atkParams.attack.damage);
+            }
         }
 
-
-        public class AttackablenessEvent : StandartEvent
+        public class AttacknessEvent : StandartEvent
         {
-            public AtkCondition attackableness = AtkCondition.ALWAYS;
+            public Attackness attackness = Attackness.ALWAYS;
             public Attack attack;
         }
 
-        public AtkCondition GetAtkCondition(Attack atk)
+        public Attackness GetAtkCondition(Attack attack)
         {
-            var ev = new AttackablenessEvent
+            var ev = new AttacknessEvent
             {
                 actor = this.m_entity,
-                attack = atk
+                attack = attack
             };
-            GetChain<AttackablenessEvent>(ChainName.Condition).Pass(ev);
-            return ev.attackableness;
+            GetChain<AttacknessEvent>(ChainName.Condition).Pass(ev);
+            return ev.attackness;
         }
 
-        public bool IsAttackable(Attack attack, Entity attacker)
+        public bool IsAttackable(Attack attack, IWorldSpot attacker)
         {
             var condition = GetAtkCondition(attack);
-            return condition == AtkCondition.ALWAYS || condition == AtkCondition.IF_NEXT_TO
+            return condition == Attackness.ALWAYS || condition == Attackness.IF_NEXT_TO
                 && (attacker == null || (attacker.Pos - m_entity.Pos).Abs().ComponentSum() <= 1);
         }
 
         public static readonly ChainPaths<Attackable, Event> Check;
         public static readonly ChainPaths<Attackable, Event> Do;
-        public static readonly ChainPaths<Attackable, AttackablenessEvent> Condition;
+        public static readonly ChainPaths<Attackable, AttacknessEvent> Condition;
 
         static Attackable()
         {
             Do = new ChainPaths<Attackable, Event>(ChainName.Do);
             Check = new ChainPaths<Attackable, Event>(ChainName.Check);
-            Condition = new ChainPaths<Attackable, AttackablenessEvent>(ChainName.Condition);
+            Condition = new ChainPaths<Attackable, AttacknessEvent>(ChainName.Condition);
 
             // this can be cleaned up by using lambdas
             // this way we would eliminate the need of static methods
@@ -132,7 +130,7 @@ namespace Core.Behaviors
                 .AddHandler(TakeHit)
                 .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacked_do))
 
-                .AddTemplate<AttackablenessEvent>(ChainName.Condition)
+                .AddTemplate<AttacknessEvent>(ChainName.Condition)
 
                 .End();
 

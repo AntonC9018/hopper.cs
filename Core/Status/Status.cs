@@ -9,7 +9,7 @@ namespace Core
         void Update(Entity entity);
         bool IsApplied(Entity entity);
         // void Nullify(Entity entity);
-        bool TryApply(Entity applicant, Entity target);
+        bool TryApplyAuto(Entity applicant, Entity target);
     }
 
     public static class Status
@@ -35,23 +35,21 @@ namespace Core
             Status.Resistance.Path.DefaultFile.Add(Id, defaultResValue);
         }
 
-        // Returns false if it is still applied after the update 
-        // Returns true if the status should be removed
         public virtual void Update(Entity entity)
         {
             if (entity.Tinkers.IsTinked(m_tinker))
             {
                 var data = m_tinker.GetStore(entity);
-                DecrementAmount(data);
+                UpdateAmount(data);
 
-                if (data.amount == 0)
+                if (data.amount <= 0)
                 {
                     Remove(entity);
                 }
             }
         }
 
-        protected virtual void DecrementAmount(T store)
+        protected virtual void UpdateAmount(T store)
         {
             store.amount--;
         }
@@ -61,10 +59,10 @@ namespace Core
             return m_tinker.IsTinked(entity) && m_tinker.GetStore(entity).amount > 0;
         }
 
-        public bool TryApply(Entity applicant, Entity target)
-            => TryApply(applicant, target, new T());
+        public bool TryApplyAuto(Entity applicant, Entity target)
+            => TryApplyWithInitialData(applicant, target, new T());
 
-        public bool TryApply(Entity applicant, Entity target, T statusData)
+        public bool TryApplyWithInitialData(Entity applicant, Entity target, T statusData)
             => TryApply(target, statusData, GetStat(applicant));
 
         // A convenience method for calling the Statused decorator

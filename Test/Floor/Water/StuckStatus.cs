@@ -11,7 +11,7 @@ namespace Test
         {
         }
 
-        protected override void DecrementAmount(StuckData data)
+        protected override void UpdateAmount(StuckData data)
         {
         }
 

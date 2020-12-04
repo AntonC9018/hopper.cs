@@ -46,7 +46,7 @@ namespace Test
             }
         }
         private static ChainDefBuilder builder = new ChainDefBuilder()
-            .Add_HandlerInsteadOf_Attack_Dig_Move(Handlers.StopPropagate, PriorityRanks.High);
+            .AddHandler_InsteadOf_Attack_Dig_Move(Handlers.StopPropagate, PriorityRanks.High);
         public static readonly FreezeStatus Status = new FreezeStatus(1);
     }
 }

@@ -14,7 +14,7 @@ namespace Core.Targeting
     // which has info on which index in the pattern resulted in a target and which positon was affected.
     // It also has info on atkness.
     // This might be needed for figuring out which swipe animation to play.
-    // This is basically only used for player weapons.
+    // This is basically only useful for player weapons.
     public interface IBufferedAtkTargetProvider
     {
         IEnumerable<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack);

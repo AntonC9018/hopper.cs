@@ -21,10 +21,11 @@ namespace Core.Items
             {
                 return null;
             }
-            var item = deck[index];
-            index++;
+            var item = deck[index++];
             if (item.quantity == 0)
+            {
                 return GetNextItem(rng);
+            }
             item.quantity--;
             return item;
         }

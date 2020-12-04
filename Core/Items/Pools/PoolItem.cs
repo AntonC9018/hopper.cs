@@ -7,16 +7,16 @@ namespace Core.Items
         public int id;
         public int quantity;
 
-        public PoolItem(int id, int q)
+        public PoolItem(int id, int quantity)
         {
             this.id = id;
-            this.quantity = q;
+            this.quantity = quantity;
         }
 
-        public PoolItem(IHaveId item, int q)
+        public PoolItem(IHaveId item, int quantity)
         {
             this.id = item.Id;
-            this.quantity = q;
+            this.quantity = quantity;
         }
 
         public override bool Equals(object obj)

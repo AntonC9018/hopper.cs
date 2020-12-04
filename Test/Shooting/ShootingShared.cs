@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using Core;
-using Core.Behaviors;
 using Core.History;
 using Core.Stats.Basic;
 using Core.Targeting;
@@ -44,6 +42,14 @@ namespace Test
             separately for shooting here and we'll see later. Implementing inefficient hacks
             to the current target provider algorithm for first makes me feel bad and for second
             overcomplicates an already bloated piece of code.
+
+            Update: deleted the overgeneralized prior code, leaving only useful interfaces.
+            Event still, if we wish to generate targets dynamically, that is, when the pattern
+            generates points on the fly, it is easier to define some logic like below, than 
+            to elaborate a more generic way of generating this. Although I can see possible room
+            for thought in `dynamic patterns`, let's call them so, as well. The key would probably
+            be to return some more powerful info than just the piece, like the piece of cell
+            and whether we should continue iterating or return from the function.
         */
         protected ShootingInfo GetInitialShootInfo(IWorldSpot spot, IntVector2 direction)
         {

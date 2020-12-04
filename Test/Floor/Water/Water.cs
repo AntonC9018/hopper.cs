@@ -35,9 +35,9 @@ namespace Test
 
         private void Stuck(Entity entity)
         {
-            if ((entity.Layer & m_targetedLayer) != 0)
+            if (entity.Layer.IsOfLayer(m_targetedLayer))
             {
-                StuckStatus.Status.TryApply(this, entity);
+                StuckStatus.Status.TryApplyAuto(this, entity);
             }
         }
 

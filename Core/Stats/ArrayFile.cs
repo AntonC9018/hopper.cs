@@ -9,7 +9,6 @@ namespace Core.Stats
 
         public void _Add(ArrayFile otherFile, int sign)
         {
-            // we assume it is the same type 
             var otherArray = otherFile.content;
             for (int i = 0; i < content.Count; i++)
             {

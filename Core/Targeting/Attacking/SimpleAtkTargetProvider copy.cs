@@ -1,17 +1,16 @@
 using System.Collections.Generic;
-using Chains;
 using Core.Behaviors;
 using Core.Stats.Basic;
 using Core.Utils.Vector;
 
 namespace Core.Targeting
 {
-    public class SimpleAtkTargetProvider : IAtkTargetProvider
+    public class SingleAtkTargetProvider : IAtkTargetProvider
     {
         private Layer m_skipLayer;
         private Layer m_targetLayer;
 
-        public SimpleAtkTargetProvider(Layer skipLayer, Layer targetLayer)
+        public SingleAtkTargetProvider(Layer skipLayer, Layer targetLayer)
         {
             m_skipLayer = skipLayer;
             m_targetLayer = targetLayer;
@@ -22,14 +21,12 @@ namespace Core.Targeting
             Cell cell = spot.GetCellRelative(dir);
             if (cell != null && cell.HasBlock(dir, m_skipLayer) == false)
             {
-                var entity = cell.GetEntityFromLayer(dir, Layer.WALL);
-                if (entity != null && entity.Behaviors.Has<Attackable>())
+                Entity entity = cell.GetEntityFromLayer(dir, Layer.WALL);
+                if (entity != null
+                    && entity.Behaviors.Has<Attackable>()
+                    && entity.Behaviors.Get<Attackable>().IsAttackable(attack, spot))
                 {
-                    var atkness = entity.Behaviors.Get<Attackable>().GetAtkCondition(attack);
-                    if (atkness != AtkCondition.SKIP && atkness != AtkCondition.NEVER)
-                    {
-                        yield return new Target(entity, dir);
-                    }
+                    yield return new Target(entity, dir);
                 }
             }
         }

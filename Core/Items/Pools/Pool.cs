@@ -26,6 +26,9 @@ namespace Core.Items
 
     public class PoolFS<T> : FS<Directory, T> where T : SubPool, new()
     {
+        // This should contain the strings of `currently active` pools
+        // E.g. if it is zone 1, floor 2, ~.~.enemy should map to z1.f2.enemy 
+        // TODO: fill this up via world
         public List<string> m_tildeMap;
 
         public PoolFS()

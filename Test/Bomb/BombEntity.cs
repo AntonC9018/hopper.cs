@@ -51,7 +51,7 @@ namespace Test
         {
             return new EntityFactory<BombEntity>()
                 .AddBehavior<Attackable>()
-                .Retouch(Attackableness.Constant(AtkCondition.IF_NEXT_TO))
+                .Retouch(Attackableness.Constant(Attackness.IF_NEXT_TO))
                 .AddBehavior<Pushable>()
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))

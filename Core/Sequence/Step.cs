@@ -18,13 +18,12 @@ namespace Core
         public int relativeStepIndexSuccess = 1;
         public int relativeStepIndexFail = 0;
 
-        public SuccessCheckFunction successFunction = null;
+        public System.Func<Entity, Result> successFunction = null;
         public int repeat = 1;
 
-        // an clonable instance of Action
         public Action action = null;
-        public InsideChangeFunction enterFunction = null;
-        public InsideChangeFunction exitFunction = null;
+        public System.Action<Entity> enterFunction = null;
+        public System.Action<Entity> exitFunction = null;
         public MovsFunc movs = null;
         public System.Action<Acting.Event> algo = null;
 

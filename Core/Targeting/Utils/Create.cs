@@ -30,7 +30,7 @@ namespace Core.Targeting
                 pattern, chain, stop, Layer.WALL, Layer.REAL);
         }
 
-        public static readonly SimpleTargetProvider SimpleDig = new SimpleTargetProvider(0, Layer.WALL);
-        public static readonly SimpleAtkTargetProvider SimpleAttack = new SimpleAtkTargetProvider(Layer.WALL, Layer.REAL);
+        public static readonly SingleTargetProvider SimpleDig = new SingleTargetProvider(0, Layer.WALL);
+        public static readonly SingleAtkTargetProvider SimpleAttack = new SingleAtkTargetProvider(Layer.WALL, Layer.REAL);
     }
 }

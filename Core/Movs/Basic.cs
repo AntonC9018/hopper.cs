@@ -37,44 +37,6 @@ namespace Core
                 if (diff_ones.y != 0) { list.Add(diff_y); }
             }
 
-            // var rel = CalculateRelativeness(e, player);
-
-            // if (e.Orientation.x > 0)
-            // {
-            //     if (rel.gx) Add(1, 0);
-            //     if (rel.gy) Add(0, 1);
-            //     if (rel.lx) Add(0, -1);
-            //     if (rel.ly) Add(-1, 0);
-            // }
-            // else if (e.Orientation.x < 0)
-            // {
-            //     if (rel.lx) Add(-1, 0);
-            //     if (rel.gy) Add(0, 1);
-            //     if (rel.ly) Add(0, -1);
-            //     if (rel.gx) Add(1, 0);
-            // }
-            // else if (e.Orientation.y > 0)
-            // {
-            //     if (rel.gy) Add(0, 1);
-            //     if (rel.gx) Add(1, 0);
-            //     if (rel.lx) Add(-1, 0);
-            //     if (rel.ly) Add(0, -1);
-            // }
-            // else if (e.Orientation.y < 0)
-            // {
-            //     if (rel.ly) Add(0, -1);
-            //     if (rel.gx) Add(1, 0);
-            //     if (rel.lx) Add(-1, 0);
-            //     if (rel.gy) Add(0, 1);
-            // }
-            // else
-            // {
-            //     if (rel.gx) Add(1, 0);
-            //     if (rel.lx) Add(-1, 0);
-            //     if (rel.gy) Add(0, 1);
-            //     if (rel.ly) Add(0, -1);
-            // }
-
             return list;
         }
 

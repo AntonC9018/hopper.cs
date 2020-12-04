@@ -10,11 +10,10 @@ namespace Core.Stats
 
         public void _Add(MapFile otherFile, int sign)
         {
-            // we assume it is the same type 
-            var otherArray = otherFile.content;
-            for (int i = 0; i < content.Count; i++)
+            var otherMap = otherFile.content;
+            foreach (int i in otherMap.Keys)
             {
-                content[i] += otherArray[i] * sign;
+                content[i] += otherMap[i] * sign;
             }
         }
 
