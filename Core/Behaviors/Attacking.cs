@@ -14,26 +14,16 @@ namespace Core.Behaviors
     {
         public class Event : StandartEvent
         {
-            public List<AtkTarget> targets;
+            public List<Target> targets;
             public Attack attack;
             public Push push;
         }
 
-        private static List<AtkTarget> GenerateTargetsDefault(Event ev)
-        {
-            var entity = ev.actor.GetCellRelative(ev.action.direction)
-                .GetEntityFromLayer(ev.action.direction, Layer.REAL);
-
-            return entity == null
-                ? new List<AtkTarget>()
-                : new List<AtkTarget>(1)
-                {
-                    new AtkTarget(entity, ev.action.direction)
-                };
-        }
+        private static List<Target> GenerateTargetsDefault(Event ev)
+            => TargetProvider.SimpleAttack.GetTargets(ev.actor, ev.action.direction, ev.attack).ToList();
 
         public bool Activate(Action action) => Activate(action, null);
-        public bool Activate(Action action, List<AtkTarget> targets)
+        public bool Activate(Action action, List<Target> targets)
         {
             var ev = new Event
             {
@@ -60,17 +50,20 @@ namespace Core.Behaviors
         {
             if (ev.targets == null)
             {
-                var inv = ev.actor.Inventory;
-                if (inv != null)
+                if (ev.actor.Inventory != null)
                 {
-                    var weapon = (ModularWeapon)inv.GetItemFromSlot(Slot.Weapon);
+                    ev.targets = new List<Target>();
+                    var weapon = ev.actor.Inventory.GetItemFromSlot(Slot.Weapon);
                     if (weapon != null)
                     {
-                        ev.targets = weapon.GetTargets(ev.actor, ev.action.direction, ev.attack).ToList();
-                    }
-                    else
-                    {
-                        ev.targets = new List<AtkTarget>();
+                        // Get targets from weapon, using its target provider
+                        // TODO: Save these initial targets at history or something
+                        // since we don't want out event to have excessive data. 
+                        // It may be useful in some cases, but not yet
+                        foreach (var t in weapon.GetTargets(ev.actor, ev.action.direction, ev.attack))
+                        {
+                            ev.targets.Add(new Target(t.targetEntity, t.piece.dir));
+                        }
                     }
                 }
                 else
@@ -85,7 +78,7 @@ namespace Core.Behaviors
             foreach (var target in ev.targets)
             {
                 System.Console.WriteLine($"Attacking {target.targetEntity}");
-                ApplyAttack(target.targetEntity, target.piece.dir, (Attack)ev.attack.Copy(), ev.actor);
+                ApplyAttack(target.targetEntity, target.dir, (Attack)ev.attack.Copy(), ev.actor);
             }
         }
 
@@ -125,7 +118,7 @@ namespace Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
-                TryApplyPush(target.targetEntity, target.piece.dir, (Push)ev.push.Copy());
+                TryApplyPush(target.targetEntity, target.dir, (Push)ev.push.Copy());
             }
         }
 

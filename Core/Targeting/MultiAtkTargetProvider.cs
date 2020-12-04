@@ -5,13 +5,13 @@ using Core.Utils.Vector;
 
 namespace Core.Targeting
 {
-    public class MultiAtkTargetProvider : IAtkTargetProvider
+    public class MultiTargetProvider : IAtkTargetProvider
     {
         private IPattern m_pattern;
         private Layer m_skipLayer;
         private Layer m_targetLayer;
 
-        public MultiAtkTargetProvider(
+        public MultiTargetProvider(
             IPattern pattern,
             Layer skipLayer,
             Layer targetLayer)
@@ -21,10 +21,8 @@ namespace Core.Targeting
             m_targetLayer = targetLayer;
         }
 
-        public IEnumerable<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack)
+        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack)
         {
-            var targets = new List<AtkTarget>();
-
             foreach (var rotatedPiece in m_pattern.GetPieces(spot, dir))
             {
                 Cell cell = spot.GetCellRelative(rotatedPiece.pos);
@@ -35,19 +33,14 @@ namespace Core.Targeting
                     {
                         if (entity.Behaviors.Has<Attackable>())
                         {
-                            var atkness = entity.Behaviors.Get<Attackable>().GetAtkCondition(attack);
-                            if (atkness == AtkCondition.NEVER || atkness == AtkCondition.SKIP)
-                            {
-                                var target = new AtkTarget(entity, dir);
-                                target.atkCondition = atkness;
-                                targets.Add(target);
-                            }
+                            // we can disregard the attackableness, since it will be blocked anyway.
+                            // var atkness = entity.Behaviors.Get<Attackable>().GetAtkCondition(attack);
+                            // if (atkness == AtkCondition.NEVER || atkness == AtkCondition.SKIP)
+                            yield return new Target(entity, dir);
                         }
                     }
                 }
             }
-
-            return targets;
         }
     }
 }

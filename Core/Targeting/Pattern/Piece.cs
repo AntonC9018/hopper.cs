@@ -22,5 +22,30 @@ namespace Core.Targeting
                 reach = reach
             };
         }
+
+        public Piece Rotate(IntVector2 direction)
+        {
+            double angle = IntVector2.Right.AngleTo(direction);
+            return new Piece
+            {
+                pos = pos.RotateAndRound(angle),
+                dir = dir.RotateAndRound(angle),
+                reach = reach
+            };
+        }
+
+        public static readonly Piece Default = new Piece
+        {
+            pos = IntVector2.Right,
+            dir = IntVector2.Right,
+            reach = null
+        };
+
+        public static readonly Piece Under = new Piece
+        {
+            pos = IntVector2.Zero,
+            dir = IntVector2.Right,
+            reach = null
+        };
     }
 }

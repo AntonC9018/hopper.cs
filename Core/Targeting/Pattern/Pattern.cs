@@ -30,24 +30,7 @@ namespace Core.Targeting
             }
         }
 
-        public static Pattern Default = new Pattern
-        (
-            new Piece
-            {
-                pos = IntVector2.Right,
-                dir = IntVector2.Right,
-                reach = null
-            }
-        );
-
-        public static Pattern Under = new Pattern
-        (
-            new Piece
-            {
-                pos = IntVector2.Zero,
-                dir = IntVector2.Right,
-                reach = null
-            }
-        );
+        public static Pattern Default = new Pattern(Piece.Default);
+        public static Pattern Under = new Pattern(Piece.Under);
     }
 }

@@ -5,7 +5,7 @@ namespace Core.Items
 {
     public class Inventory : IInventory
     {
-        private Dictionary<ISlot, IItemContainer> m_itemSlots;
+        private Dictionary<ISlot<IItem>, IItemContainer> m_itemSlots;
 
         private Entity m_actor;
 
@@ -21,7 +21,7 @@ namespace Core.Items
             }
         }
 
-        public Inventory(Entity entity, Dictionary<ISlot, IItemContainer> slots)
+        public Inventory(Entity entity, Dictionary<ISlot<IItem>, IItemContainer> slots)
         {
             m_itemSlots = slots;
             m_actor = entity;
@@ -29,7 +29,7 @@ namespace Core.Items
 
         public Inventory(Entity entity)
         {
-            m_itemSlots = new Dictionary<ISlot, IItemContainer>(Slot._Slots.Count);
+            m_itemSlots = new Dictionary<ISlot<IItem>, IItemContainer>(Slot._Slots.Count);
             foreach (var slot in Slot._Slots)
             {
                 m_itemSlots.Add(slot, slot.CreateContainer());
@@ -74,12 +74,12 @@ namespace Core.Items
             }
         }
 
-        public void AddContainer<T>(Slot<T> slot) where T : IItemContainer
+        public void AddContainer<T>(Slot<T, IItem> slot) where T : IItemContainer
         {
             AddContainer(slot, (T)slot.CreateContainer());
         }
 
-        public void AddContainer<T>(Slot<T> slot, T container) where T : IItemContainer
+        public void AddContainer<T>(Slot<T, IItem> slot, T container) where T : IItemContainer
         {
             if (m_itemSlots.ContainsKey(slot))
             {
@@ -93,9 +93,9 @@ namespace Core.Items
             return m_itemSlots.ContainsKey(item.Slot);
         }
 
-        public IItem GetItemFromSlot(ISlot slot)
+        public T GetItemFromSlot<T>(ISlot<T> slot) where T : IItem
         {
-            return m_itemSlots[slot][0];
+            return (T)m_itemSlots[slot as ISlot<IItem>][0];
         }
 
         public bool IsEquipped(IItem item) =>

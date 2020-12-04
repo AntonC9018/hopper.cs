@@ -7,7 +7,6 @@ namespace Core.Targeting
     public static class TargetProvider
     {
         public static bool DefaultStop<T>(TargetEvent<T> e)
-            where T : Target, new()
         {
             return (e.propagate == false) || e.targets.Count == 0;
         }
@@ -18,7 +17,7 @@ namespace Core.Targeting
         )
         {
             return new BufferedAtkTargetProvider(
-                pattern, chain, DefaultStop, Layer.WALL, Layer.REAL);
+                pattern, chain, DefaultStop<AtkTarget>, Layer.WALL, Layer.REAL);
         }
 
         public static BufferedAtkTargetProvider CreateAtk(
@@ -31,9 +30,7 @@ namespace Core.Targeting
                 pattern, chain, stop, Layer.WALL, Layer.REAL);
         }
 
-        public static SimpleDigTargetProvider CreateSimpleDig()
-        {
-            return new SimpleDigTargetProvider();
-        }
+        public static readonly SimpleTargetProvider SimpleDig = new SimpleTargetProvider(0, Layer.WALL);
+        public static readonly SimpleAtkTargetProvider SimpleAttack = new SimpleAtkTargetProvider(Layer.WALL, Layer.REAL);
     }
 }

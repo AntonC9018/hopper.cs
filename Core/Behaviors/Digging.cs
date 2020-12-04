@@ -38,15 +38,14 @@ namespace Core.Behaviors
         {
             if (ev.targets == null)
             {
-                var inv = ev.actor.Inventory;
-                var shovel = (ModularShovel)inv.GetItemFromSlot(Slot.Shovel);
-                if (shovel != null)
+                ev.targets = new List<Target>();
+                if (ev.actor.Inventory != null)
                 {
-                    ev.targets = shovel.GetTargets(ev.actor, ev.action.direction).ToList();
-                }
-                else
-                {
-                    ev.targets = new List<Target>();
+                    var shovel = ev.actor.Inventory.GetItemFromSlot(Slot.Shovel);
+                    if (shovel != null)
+                    {
+                        ev.targets.AddRange(shovel.GetTargets(ev.actor, ev.action.direction));
+                    }
                 }
             }
         }

@@ -37,8 +37,8 @@ namespace Test
             | Layer.WALL;
         private static Layer SkipLayer = 0;
 
-        private static MultiAtkTargetProvider targetProvider =
-            new MultiAtkTargetProvider(Pattern.Under, SkipLayer, TargetedLayer);
+        private static MultiTargetProvider targetProvider =
+            new MultiTargetProvider(Pattern.Under, SkipLayer, TargetedLayer);
 
         public static void Explode(IntVector2 pos, int radius, World world)
         {

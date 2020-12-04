@@ -6,7 +6,7 @@ using Core.Utils.Vector;
 
 namespace Core.Targeting
 {
-    public class BufferedAtkTargetProvider : IAtkTargetProvider
+    public class BufferedAtkTargetProvider : IBufferedAtkTargetProvider
     {
         private IPattern m_pattern;
         private Chain<TargetEvent<AtkTarget>> m_chain;
@@ -48,8 +48,7 @@ namespace Core.Targeting
                         var atkness = entity.Behaviors.Has<Attackable>()
                             ? entity.Behaviors.Get<Attackable>().GetAtkCondition(attack)
                             : AtkCondition.NEVER;
-                        var target = new AtkTarget(entity, dir);
-                        target.atkCondition = atkness;
+                        var target = new AtkTarget(atkness, rotatedPiece, entity);
                         targetEvent.targets.Add(target);
                     }
                 }

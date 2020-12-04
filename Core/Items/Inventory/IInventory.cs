@@ -11,7 +11,7 @@ namespace Core.Items
         bool CanEquipItem(IItem item);
         void Destroy(IItem item);
 
-        IItem GetItemFromSlot(ISlot slot);
+        T GetItemFromSlot<T>(ISlot<T> slot) where T : IItem;
         bool IsEquipped(IItem item);
         IEnumerable<IItem> AllItems { get; }
     }

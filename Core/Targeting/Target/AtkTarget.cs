@@ -10,22 +10,17 @@ namespace Core.Targeting
         IF_NEXT_TO = 3
     }
 
-    public class AtkTarget : Target
+    public class AtkTarget
     {
         public AtkCondition atkCondition = AtkCondition.NEVER;
+        public Piece piece;
+        public Entity targetEntity;
 
-        public AtkTarget()
+        public AtkTarget(AtkCondition atkCondition, Piece piece, Entity targetEntity)
         {
-        }
-
-        public AtkTarget(Entity targetEntity, IntVector2 dir)
-        {
+            this.atkCondition = atkCondition;
+            this.piece = piece;
             this.targetEntity = targetEntity;
-            this.piece = new Piece
-            {
-                index = 0,
-                dir = dir
-            };
         }
     }
 }

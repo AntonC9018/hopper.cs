@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Utils;
 using Chains;
-using Core.Stats.Basic;
 
 namespace Core.Targeting
 {
@@ -40,14 +39,14 @@ namespace Core.Targeting
         }
 
         public static void DiscardUnreachable<T>(TargetEvent<T> weaponEvent)
-            where T : Target
+            where T : AtkTarget
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => CanReach(t, weaponEvent.targets));
         }
 
         public static bool CanReach<T>(T target, IEnumerable<T> targets)
-            where T : Target
+            where T : AtkTarget
         {
             var reach = target.piece.reach;
 
@@ -77,7 +76,7 @@ namespace Core.Targeting
         }
 
         public static void DiscardNoEntity<T>(TargetEvent<T> weaponEvent)
-            where T : Target
+            where T : AtkTarget
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => t.targetEntity != null);

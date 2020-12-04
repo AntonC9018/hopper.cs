@@ -2,11 +2,11 @@ namespace Core.Items
 {
     public class ModularItem : Item
     {
-        private readonly ISlot m_slot;
-        public override ISlot Slot => m_slot;
+        private readonly ISlot<IItem> m_slot;
+        public override ISlot<IItem> Slot => m_slot;
         private IModule[] m_modules;
 
-        public ModularItem(ItemMetadata meta, ISlot slot, params IModule[] modules) : base(meta)
+        public ModularItem(ItemMetadata meta, ISlot<IItem> slot, params IModule[] modules) : base(meta)
         {
             m_modules = modules;
             m_slot = slot;

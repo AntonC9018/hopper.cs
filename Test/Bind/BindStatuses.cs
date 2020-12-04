@@ -45,8 +45,9 @@ namespace Test
 
         private void AttackJustMe(Attacking.Event ev)
         {
-            var target = new AtkTarget(status.Tinker.GetStore(ev).whoApplied, IntVector2.Zero);
-            ev.targets = new List<AtkTarget> { target };
+            ev.targets = new List<Target> {
+                new Target(status.Tinker.GetStore(ev).whoApplied, IntVector2.Zero)
+            };
         }
 
         private void SelfRemove(Tick.Event ev)

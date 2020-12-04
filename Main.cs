@@ -14,10 +14,9 @@ using Core.Stats;
 using Core.Stats.Basic;
 using Core.History;
 
-// Hello World! program
 namespace Hopper
 {
-    class Hello
+    class ConsoleDemo
     {
         static void Main(string[] args)
         {
@@ -35,8 +34,8 @@ namespace Hopper
 
         public static void ShieldTest()
         {
-            var slot = new SizedSlot<CircularItemContainer>("blocking", 1);
-            var shield = new ModularItem(new ItemMetadata("Test_Shield"), slot, ShieldModule.CreateFront(2));
+            var slot = new SizedSlot<CircularItemContainer, Core.Items.IItem>("blocking", 1);
+            var shield = new Core.Items.ModularItem(new ItemMetadata("Test_Shield"), slot, ShieldModule.CreateFront(2));
             var enemyFactory = new EntityFactory<Entity>().AddBehavior<Attackable>();
             var playerFactory = new EntityFactory<Entity>()
                 .AddBehavior<Attacking>()
@@ -219,7 +218,7 @@ namespace Hopper
             var player = playerFactory.Instantiate();
             World world = new World(1, 1);
             player.Init(new IntVector2(1, 1), world);
-            var slot = new SizedSlot<CircularItemContainer>("stuff", 5);
+            var slot = new SizedSlot<CircularItemContainer, Core.Items.IItem>("stuff", 5);
             var item = new TinkerItem(
                 new ItemMetadata("Test_Item_1"), new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
             var item2 = new TinkerItem(
@@ -231,7 +230,7 @@ namespace Hopper
 
             MemoryTraceWriter traceWriter = new MemoryTraceWriter();
             JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.Converters.Add(new IHaveIdConverter<IItem>());
+            settings.Converters.Add(new IHaveIdConverter<Core.Items.IItem>());
             settings.Converters.Add(new InventoryConverter());
             // settings.Converters.Add(new BehaviorConverter());
             settings.Converters.Add(new BehaviorControlConverter());
@@ -374,7 +373,7 @@ namespace Hopper
                 new PoolItem(4, 10)
             };
 
-            var pool = Pool.CreateNormal<IItem>();
+            var pool = Pool.CreateNormal<Core.Items.IItem>();
 
             pool.AddRange("zone1/weapons", items.Take(2));
             pool.AddRange("zone1/trinkets", items.Skip(2).Take(2));
@@ -420,7 +419,7 @@ namespace Hopper
             System.Console.WriteLine("\n ------ Inventory Demo ------ \n");
             var inventory = (Inventory)player.Inventory;
 
-            var slot = new SizedSlot<CircularItemContainer>("stuff2", 1);
+            var slot = new SizedSlot<CircularItemContainer, Core.Items.IItem>("stuff2", 1);
 
             inventory.AddContainer(slot);
 
@@ -470,7 +469,7 @@ namespace Hopper
             playerMoveAction.direction = IntVector2.Down;
             player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
 
-            var slot2 = new SizedSlot<CircularItemContainer>("stuff3", 1);
+            var slot2 = new SizedSlot<CircularItemContainer, Core.Items.IItem>("stuff3", 1);
             inventory.AddContainer(slot2);
 
             var chainDefs2 = new IChainDef[0];

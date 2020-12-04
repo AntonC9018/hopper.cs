@@ -6,13 +6,13 @@ using Core.Utils.Vector;
 
 namespace Core.Items
 {
-    public class ModularWeapon : ModularItem, IAtkTargetProvider
+    public class ModularWeapon : ModularItem, IBufferedAtkTargetProvider
     {
-        private IAtkTargetProvider m_targetProvider;
+        private IBufferedAtkTargetProvider m_targetProvider;
 
         public ModularWeapon(
             ItemMetadata meta,
-            IAtkTargetProvider targetProvider,
+            IBufferedAtkTargetProvider targetProvider,
             params IModule[] modules)
             : base(meta, Core.Items.Slot.Weapon, modules)
         {

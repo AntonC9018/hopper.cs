@@ -21,11 +21,10 @@ namespace Test
         {
             if (attacked != null && attacked.Behaviors.Has<Attackable>())
             {
-                var atkTarget = new AtkTarget();
-                atkTarget.targetEntity = attacked;
+                var target = new Target(attacked, IntVector2.Zero);
 
                 var success = attacker.Behaviors.Get<Attacking>()
-                    .Activate(action, new List<AtkTarget>(1) { atkTarget });
+                    .Activate(action, new List<Target>(1) { target });
             }
         }
 
