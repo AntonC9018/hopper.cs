@@ -2,7 +2,7 @@ using System;
 
 namespace Core.Utils.Vector
 {
-    public class Vector2
+    public struct Vector2
     {
         public float x, y;
 
@@ -21,7 +21,6 @@ namespace Core.Utils.Vector
             get => new Vector2(0, 1);
         }
 
-        public Vector2() { }
         public Vector2(float x, float y)
         {
             this.x = x;
@@ -192,10 +191,6 @@ namespace Core.Utils.Vector
 
         public static bool operator ==(Vector2 rhs, Vector2 lhs)
         {
-            if (ReferenceEquals(rhs, null))
-            {
-                return ReferenceEquals(lhs, null);
-            }
             return rhs.Equals(lhs);
         }
 

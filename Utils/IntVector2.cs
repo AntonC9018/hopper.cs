@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Core.Utils.Vector
 {
-    public class IntVector2
+    public struct IntVector2
     {
         public int x, y;
 
@@ -49,7 +49,6 @@ namespace Core.Utils.Vector
             }
         }
 
-        public IntVector2() { }
         public IntVector2(int x, int y)
         {
             this.x = x;
@@ -245,10 +244,6 @@ namespace Core.Utils.Vector
 
         public static bool operator ==(IntVector2 rhs, IntVector2 lhs)
         {
-            if (ReferenceEquals(rhs, null))
-            {
-                return ReferenceEquals(lhs, null);
-            }
             return rhs.Equals(lhs);
         }
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using Chains;
 using Core.Behaviors;
+using Core.Utils.Vector;
 
 namespace Core.Retouchers
 {
@@ -18,14 +19,14 @@ namespace Core.Retouchers
 
         static void AnyReorient(Displaceable.Event ev)
         {
-            if (ev.dir != null)
+            if (ev.dir != IntVector2.Zero)
             {
                 ev.actor.Reorient(ev.dir);
             }
         }
         static void AnyReorient(StandartEvent ev)
         {
-            if (ev.action.direction != null)
+            if (ev.action.direction != IntVector2.Zero)
             {
                 ev.actor.Reorient(ev.action.direction);
             }

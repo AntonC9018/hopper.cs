@@ -6,6 +6,7 @@ namespace Core.Generation
     public class Room
     {
         public IntVector2 position;
+        public bool isPositionSet;
         public IntVector2 dimensions;
         public Node node;
         public Vector2 Center => (Vector2)position + ((Vector2)DimensionsMinusOne) / 2;
@@ -17,6 +18,7 @@ namespace Core.Generation
         {
             this.dimensions = dimensions;
             this.node = node;
+            this.isPositionSet = false;
         }
 
         public Vector2 GetBorderCenter(IntVector2 direction)
@@ -51,7 +53,13 @@ namespace Core.Generation
 
         public void SetPositionFromCenter(Vector2 center)
         {
-            this.position = (IntVector2)(center - ((Vector2)DimensionsMinusOne) / 2);
+            SetPosition((IntVector2)(center - ((Vector2)DimensionsMinusOne) / 2));
+        }
+
+        public void SetPosition(IntVector2 position)
+        {
+            this.position = position;
+            isPositionSet = true;
         }
     }
 }

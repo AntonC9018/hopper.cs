@@ -259,8 +259,8 @@ namespace Core.Generation
             {
                 if (target_room == room)
                     continue;
-                if (room.position == null)
-                    continue;
+                // if (room.position == null)
+                //     continue;
 
                 Vector2 room_center = room.Center;
                 Vector2 center_difference = (target_room_center - room_center).Abs();
