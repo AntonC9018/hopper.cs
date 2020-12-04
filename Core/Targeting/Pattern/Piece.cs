@@ -5,12 +5,16 @@ namespace Core.Targeting
 {
     public class Piece
     {
+        // vector offset
         public IntVector2 pos;
+        // = knockback direction
         public IntVector2 dir;
         // null is no checking required
-        // empty list to check all previous indeces
-        // list of indices to check the specified indeces
+        // empty list to check all previous indices
+        // list of indices to check the specified indices
         public List<int> reach;
+
+        // set automatically, if created for a pattern. otherwise, leave at default
         public int index;
 
         public Piece Rotate(double angle)
@@ -19,7 +23,8 @@ namespace Core.Targeting
             {
                 pos = pos.RotateAndRound(angle),
                 dir = dir.RotateAndRound(angle),
-                reach = reach
+                reach = reach,
+                index = index
             };
         }
 
@@ -30,7 +35,8 @@ namespace Core.Targeting
             {
                 pos = pos.RotateAndRound(angle),
                 dir = dir.RotateAndRound(angle),
-                reach = reach
+                reach = reach,
+                index = index
             };
         }
 
