@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Core.Utils;
 using Core.Utils.Vector;
 
@@ -90,11 +91,11 @@ namespace Core.Generation
             int useful_parent_width = parent_orthogonal_dimension - 2 * wall_width;
             int useful_child_width = child_orthogonal_dimension - 2 * wall_width;
 
-            if (useful_child_width < options.min_hallway_width
-                || useful_parent_width < options.min_hallway_width)
-            {
-                throw new System.Exception("Cannot be less");
-            }
+            Debug.Assert(
+                useful_child_width >= options.min_hallway_width
+                    && useful_parent_width >= options.min_hallway_width,
+                "Cannot be less"
+            );
 
             int min_orthogonal_offset = -useful_child_width + options.min_hallway_width;
             int max_orthogonal_offset = useful_parent_width - options.min_hallway_width;

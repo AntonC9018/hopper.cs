@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Core.Utils.Vector;
+using System.Diagnostics;
 
 namespace Core.Behaviors
 {
@@ -19,10 +20,7 @@ namespace Core.Behaviors
 
             public Config(Step[] stepData)
             {
-                if (stepData == null)
-                {
-                    throw new System.Exception("Step Data must be specified in order to use Sequenced behavior");
-                }
+                Debug.Assert(stepData != null, "Step Data must be specified in order to use Sequenced behavior");
                 GetSequence = () => new Sequence(stepData);
             }
         }

@@ -27,9 +27,6 @@ namespace Core.Items
     {
         public Slot(string name) : base(name, Slot._Slots.Count)
         {
-            if (this as ISlot<IItem> == null)
-                throw new System.Exception("NULL");
-
             Slot._Slots.Add(this as ISlot<IItem>);
         }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using Core.Targeting;
 
 namespace Core.Items
@@ -81,10 +82,10 @@ namespace Core.Items
 
         public void AddContainer<T>(Slot<T, IItem> slot, T container) where T : IItemContainer
         {
-            if (m_itemSlots.ContainsKey(slot))
-            {
-                throw new System.Exception($"Container for key {slot.Name} has already been defined");
-            }
+            Debug.Assert(
+                !m_itemSlots.ContainsKey(slot),
+                $"Container for key {slot.Name} has already been defined"
+            );
             m_itemSlots[slot] = container;
         }
 

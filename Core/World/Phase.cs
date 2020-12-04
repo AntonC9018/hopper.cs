@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Core
 {
     public enum Phase
@@ -28,38 +30,14 @@ namespace Core
 
         public static void ThrowIfPhasesAreWrong()
         {
-            if (Layer.REAL.ToIndex() + 1 != (int)Phase.REAL)
-            {
-                throw new System.Exception("REAL is not where it should be");
-            }
-            if (Layer.MISC.ToIndex() + 1 != (int)Phase.MISC)
-            {
-                throw new System.Exception("MISC is not where it should be");
-            }
-            if (Layer.WALL.ToIndex() + 1 != (int)Phase.WALL)
-            {
-                throw new System.Exception("WALL is not where it should be");
-            }
-            if (Layer.PROJECTILE.ToIndex() + 1 != (int)Phase.PROJECTILE)
-            {
-                throw new System.Exception("PROJECTILE is not where it should be");
-            }
-            if (Layer.GOLD.ToIndex() + 1 != (int)Phase.GOLD)
-            {
-                throw new System.Exception("GOLD is not where it should be");
-            }
-            if (Layer.FLOOR.ToIndex() + 1 != (int)Phase.FLOOR)
-            {
-                throw new System.Exception("FLOOR is not where it should be");
-            }
-            if (Layer.TRAP.ToIndex() + 1 != (int)Phase.TRAP)
-            {
-                throw new System.Exception("TRAP is not where it should be");
-            }
-            if (Layer.DROPPED.ToIndex() + 1 != (int)Phase.DROPPED)
-            {
-                throw new System.Exception("DROPPED is not where it should be");
-            }
+            Debug.Assert(Layer.REAL.ToIndex() + 1 == (int)Phase.REAL, "REAL is not where it should be");
+            Debug.Assert(Layer.MISC.ToIndex() + 1 == (int)Phase.MISC, "MISC is not where it should be");
+            Debug.Assert(Layer.WALL.ToIndex() + 1 == (int)Phase.WALL, "WALL is not where it should be");
+            Debug.Assert(Layer.PROJECTILE.ToIndex() + 1 == (int)Phase.PROJECTILE, "PROJECTILE is not where it should be");
+            Debug.Assert(Layer.GOLD.ToIndex() + 1 == (int)Phase.GOLD, "GOLD is not where it should be");
+            Debug.Assert(Layer.FLOOR.ToIndex() + 1 == (int)Phase.FLOOR, "FLOOR is not where it should be");
+            Debug.Assert(Layer.TRAP.ToIndex() + 1 == (int)Phase.TRAP, "TRAP is not where it should be");
+            Debug.Assert(Layer.DROPPED.ToIndex() + 1 == (int)Phase.DROPPED, "DROPPED is not where it should be");
         }
     }
 }

@@ -2,61 +2,56 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Core.Utils.CircularBuffer;
+using System.Diagnostics;
 
 namespace Core.Items
 {
     public class CircularItemContainer : IResizableContainer
     {
-        private CircularBuffer<IItem> items;
-        private List<IItem> excess;
+        private CircularBuffer<IItem> m_items;
+        private List<IItem> m_excess;
 
         public CircularItemContainer(int size)
         {
-            items = new CircularBuffer<IItem>(size);
-            excess = new List<IItem>();
+            m_items = new CircularBuffer<IItem>(size);
+            m_excess = new List<IItem>();
         }
 
         public int Size
         {
-            get => items.Size;
+            get => m_items.Size;
             set
             {
                 var remainingItems = AllItems.Take(value).ToArray();
-                excess.AddRange(AllItems.Skip(value));
-                items = new CircularBuffer<IItem>(Size, remainingItems);
+                m_excess.AddRange(AllItems.Skip(value));
+                m_items = new CircularBuffer<IItem>(Size, remainingItems);
             }
         }
 
-        public IEnumerable<IItem> AllItems => items.ToArray();
+        public IEnumerable<IItem> AllItems => m_items.ToArray();
 
         public List<IItem> PullOutExcess()
         {
-            var exc = excess;
-            excess = new List<IItem>();
-            return exc;
+            var excess = m_excess;
+            m_excess = new List<IItem>();
+            return excess;
         }
-        public IItem this[int index] { get => items[index]; }
+        public IItem this[int index] { get => m_items[index]; }
         public void Insert(DecomposedItem di)
         {
-            if (di.count != 1)
-            {
-                throw new System.Exception("Packed items are not supported in circular item containers");
-            }
-            var ex = items.PushBack(di.item);
-            if (ex != null)
-                excess.Add(ex);
+            Debug.Assert(di.count == 1, "Packed items are not supported in circular item containers");
+            var excess = m_items.PushBack(di.item);
+            if (excess != null)
+                m_excess.Add(excess);
         }
         public void Remove(DecomposedItem di)
         {
-            if (di.count != 1)
-            {
-                throw new System.Exception("Packed items are not supported in circular item containers");
-            }
-            var remainingItems = items
+            Debug.Assert(di.count == 1, "Packed items are not supported in circular item containers");
+            var remainingItems = m_items
                 .Where(i => i != di.item)
                 .ToArray();
-            items = new CircularBuffer<IItem>(items.Capacity, remainingItems);
+            m_items = new CircularBuffer<IItem>(m_items.Capacity, remainingItems);
         }
-        public bool Contains(IItem item) => items.Contains(item);
+        public bool Contains(IItem item) => m_items.Contains(item);
     }
 }
