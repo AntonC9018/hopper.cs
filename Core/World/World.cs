@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core.Items;
-using Core.Utils.Vector;
+using Hopper.Core.Items;
+using Hopper.Core.Utils.Vector;
 
-namespace Core
+namespace Hopper.Core
 {
     public delegate void BringIntoGrid();
 

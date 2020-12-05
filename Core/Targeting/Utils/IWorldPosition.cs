@@ -1,6 +1,6 @@
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.Targeting
+namespace Hopper.Core.Targeting
 {
     public interface IWorldSpot
     {

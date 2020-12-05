@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 using System.Diagnostics;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public class Sequential : Behavior

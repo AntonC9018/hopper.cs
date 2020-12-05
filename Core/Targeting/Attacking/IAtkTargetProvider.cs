@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core.Stats.Basic;
-using Core.Utils.Vector;
+using Hopper.Core.Stats.Basic;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.Targeting
+namespace Hopper.Core.Targeting
 {
     // Returns a standart Target enumerable, without any additional attack metadata like the atkness
     public interface IAtkTargetProvider

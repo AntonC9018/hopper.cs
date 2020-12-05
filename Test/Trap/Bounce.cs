@@ -1,4 +1,4 @@
-using Core.Stats;
+using Hopper.Core.Stats;
 
 namespace Test
 {

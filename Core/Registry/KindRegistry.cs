@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Core.Utils;
+using Hopper.Core.Utils;
 
-namespace Core
+namespace Hopper.Core
 {
     public class KindRegistry<T> : IKindRegistry where T : IHaveId
     {

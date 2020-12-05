@@ -1,9 +1,9 @@
 using System.Runtime.Serialization;
 using Chains;
-using Core.Stats.Basic;
-using Core.Utils.Vector;
+using Hopper.Core.Stats.Basic;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public class Pushable : Behavior

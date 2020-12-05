@@ -1,18 +1,18 @@
 using System.Collections.Generic;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 using Chains;
-using Core;
-using Core.Items;
+using Hopper.Core;
+using Hopper.Core.Items;
 using System.Linq;
-using Core.Targeting;
-using Core.Behaviors;
+using Hopper.Core.Targeting;
+using Hopper.Core.Behaviors;
 using Test;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Core.Generation;
-using Core.Stats;
-using Core.Stats.Basic;
-using Core.History;
+using Hopper.Core.Generation;
+using Hopper.Core.Stats;
+using Hopper.Core.Stats.Basic;
+using Hopper.Core.History;
 
 namespace Hopper
 {
@@ -34,8 +34,8 @@ namespace Hopper
 
         public static void ShieldTest()
         {
-            var slot = new SizedSlot<CircularItemContainer, Core.Items.IItem>("blocking", 1);
-            var shield = new Core.Items.ModularItem(new ItemMetadata("Test_Shield"), slot, ShieldModule.CreateFront(2));
+            var slot = new SizedSlot<CircularItemContainer, Hopper.Core.Items.IItem>("blocking", 1);
+            var shield = new Hopper.Core.Items.ModularItem(new ItemMetadata("Test_Shield"), slot, ShieldModule.CreateFront(2));
             var enemyFactory = new EntityFactory<Entity>().AddBehavior<Attackable>();
             var playerFactory = new EntityFactory<Entity>()
                 .AddBehavior<Attacking>()
@@ -63,8 +63,8 @@ namespace Hopper
                 .AddBehavior<Moving>()
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Statused>()
-                .Retouch(Core.Retouchers.Reorient.OnDisplace)
-                .Retouch(Core.Retouchers.Skip.EmptyAttack);
+                .Retouch(Hopper.Core.Retouchers.Reorient.OnDisplace)
+                .Retouch(Hopper.Core.Retouchers.Skip.EmptyAttack);
 
             var player = world.SpawnPlayer(p_fact, new IntVector2(1, 1));
             var ice_fact = IceFloor.CreateFactory();
@@ -218,7 +218,7 @@ namespace Hopper
             var player = playerFactory.Instantiate();
             World world = new World(1, 1);
             player.Init(new IntVector2(1, 1), world);
-            var slot = new SizedSlot<CircularItemContainer, Core.Items.IItem>("stuff", 5);
+            var slot = new SizedSlot<CircularItemContainer, Hopper.Core.Items.IItem>("stuff", 5);
             var item = new TinkerItem(
                 new ItemMetadata("Test_Item_1"), new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
             var item2 = new TinkerItem(
@@ -230,7 +230,7 @@ namespace Hopper
 
             MemoryTraceWriter traceWriter = new MemoryTraceWriter();
             JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.Converters.Add(new IHaveIdConverter<Core.Items.IItem>());
+            settings.Converters.Add(new IHaveIdConverter<Hopper.Core.Items.IItem>());
             settings.Converters.Add(new InventoryConverter());
             // settings.Converters.Add(new BehaviorConverter());
             settings.Converters.Add(new BehaviorControlConverter());
@@ -271,10 +271,10 @@ namespace Hopper
             Acting.Config playerActingConf = new Acting.Config(Algos.SimpleAlgo, null);
 
             playerFactory.AddBehavior<Acting>(playerActingConf);
-            playerFactory.Retouch(Core.Retouchers.Skip.EmptyAttack);
+            playerFactory.Retouch(Hopper.Core.Retouchers.Skip.EmptyAttack);
 
             // this one's for the equip demo
-            playerFactory.Retouch(Core.Retouchers.Equip.OnDisplace);
+            playerFactory.Retouch(Hopper.Core.Retouchers.Equip.OnDisplace);
 
 
             var enemyFactory = new EntityFactory<Entity>();
@@ -373,7 +373,7 @@ namespace Hopper
                 new PoolItem(4, 10)
             };
 
-            var pool = Pool.CreateNormal<Core.Items.IItem>();
+            var pool = Pool.CreateNormal<Hopper.Core.Items.IItem>();
 
             pool.AddRange("zone1/weapons", items.Take(2));
             pool.AddRange("zone1/trinkets", items.Skip(2).Take(2));
@@ -419,7 +419,7 @@ namespace Hopper
             System.Console.WriteLine("\n ------ Inventory Demo ------ \n");
             var inventory = (Inventory)player.Inventory;
 
-            var slot = new SizedSlot<CircularItemContainer, Core.Items.IItem>("stuff2", 1);
+            var slot = new SizedSlot<CircularItemContainer, Hopper.Core.Items.IItem>("stuff2", 1);
 
             inventory.AddContainer(slot);
 
@@ -469,7 +469,7 @@ namespace Hopper
             playerMoveAction.direction = IntVector2.Down;
             player.Behaviors.Get<Acting>().NextAction = playerMoveAction;
 
-            var slot2 = new SizedSlot<CircularItemContainer, Core.Items.IItem>("stuff3", 1);
+            var slot2 = new SizedSlot<CircularItemContainer, Hopper.Core.Items.IItem>("stuff3", 1);
             inventory.AddContainer(slot2);
 
             var chainDefs2 = new IChainDef[0];

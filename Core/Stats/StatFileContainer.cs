@@ -1,8 +1,8 @@
 
 using Chains;
-using Core.FS;
+using Hopper.Core.FS;
 
-namespace Core.Stats
+namespace Hopper.Core.Stats
 {
     public class StatFileContainer<T> : File where T : File
     {

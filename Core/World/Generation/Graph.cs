@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 using System.Linq;
 using System;
 
-namespace Core.Generation
+namespace Hopper.Core.Generation
 {
 
     public class Node

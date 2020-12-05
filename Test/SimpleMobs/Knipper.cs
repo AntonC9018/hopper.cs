@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Core;
-using Core.Behaviors;
-using Core.Utils.Vector;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Utils.Vector;
 
 namespace Test
 {

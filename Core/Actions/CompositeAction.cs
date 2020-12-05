@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Core
+namespace Hopper.Core
 {
     public class CompositeAction : Action
     {

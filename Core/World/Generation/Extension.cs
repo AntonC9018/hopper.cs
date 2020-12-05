@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Generation
+namespace Hopper.Core.Generation
 {
     public static class RandomExtensions
     {

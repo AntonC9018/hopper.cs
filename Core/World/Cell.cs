@@ -1,9 +1,9 @@
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 using System.Collections.Generic;
-using Core.Utils;
+using Hopper.Core.Utils;
 using System.Linq;
 
-namespace Core
+namespace Hopper.Core
 {
     // This indicates the order in which actions are executed
     public enum Layer

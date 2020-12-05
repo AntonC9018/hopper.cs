@@ -1,5 +1,5 @@
-using Core.Behaviors;
-using Core.Utils.MyLinkedList;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Utils.MyLinkedList;
 
 namespace Chains
 {

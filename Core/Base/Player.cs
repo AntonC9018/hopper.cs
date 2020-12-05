@@ -1,9 +1,9 @@
 using System.Runtime.Serialization;
-using Core.Behaviors;
-using Core.Items;
-using Core.Stats.Basic;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Items;
+using Hopper.Core.Stats.Basic;
 
-namespace Core
+namespace Hopper.Core
 {
     [DataContract]
     public class Player : Entity

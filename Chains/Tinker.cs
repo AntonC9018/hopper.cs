@@ -1,8 +1,8 @@
 using Chains;
-using Core.Behaviors;
+using Hopper.Core.Behaviors;
 using Newtonsoft.Json;
 
-namespace Core
+namespace Hopper.Core
 {
     public class TinkerData
     {

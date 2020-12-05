@@ -1,7 +1,7 @@
-using Core.Behaviors;
-using Core.Targeting;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Targeting;
 
-namespace Core.Retouchers
+namespace Hopper.Core.Retouchers
 {
     public static class Attackableness
     {

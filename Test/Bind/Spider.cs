@@ -1,8 +1,8 @@
 using System.Runtime.Serialization;
-using Core;
-using Core.Behaviors;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
 using Newtonsoft.Json;
-using Core.Utils;
+using Hopper.Core.Utils;
 
 namespace Test
 {
@@ -12,7 +12,7 @@ namespace Test
         public Spider() : base() { }
 
         [DataMember]
-        [JsonConverter(typeof(Core.IHaveIdConverter<Entity>))]
+        [JsonConverter(typeof(Hopper.Core.IHaveIdConverter<Entity>))]
         public Entity BoundEntity { get; set; }
 
 

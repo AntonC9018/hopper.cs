@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 
-namespace Core
+namespace Hopper.Core
 {
     public delegate List<IntVector2> MovsFunc(Entity entity, Action action);
 }

@@ -1,4 +1,4 @@
-namespace Core.Stats.Basic
+namespace Hopper.Core.Stats.Basic
 {
     public class Dig : StatFile
     {

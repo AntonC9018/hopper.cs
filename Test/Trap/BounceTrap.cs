@@ -1,7 +1,7 @@
-using Core;
-using Core.Behaviors;
-using Core.Stats;
-using Core.Stats.Basic;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Stats;
+using Hopper.Core.Stats.Basic;
 
 namespace Test
 {

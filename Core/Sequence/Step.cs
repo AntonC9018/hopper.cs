@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core.Behaviors;
-using Core.Utils.Vector;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Utils.Vector;
 
-namespace Core
+namespace Hopper.Core
 {
     public delegate void InsideChangeFunction(Entity entity);
     public delegate Result SuccessCheckFunction(Entity entity);

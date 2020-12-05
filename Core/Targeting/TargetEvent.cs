@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 using Chains;
 
-namespace Core.Targeting
+namespace Hopper.Core.Targeting
 {
     public class TargetEvent<T> : EventBase
     {

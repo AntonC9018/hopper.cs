@@ -1,7 +1,7 @@
 using Chains;
-using Core.Behaviors;
+using Hopper.Core.Behaviors;
 
-namespace Core
+namespace Hopper.Core
 {
     static partial class Algos
     {

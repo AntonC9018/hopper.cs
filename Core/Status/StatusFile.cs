@@ -1,6 +1,6 @@
-using Core.Stats;
+using Hopper.Core.Stats;
 
-namespace Core
+namespace Hopper.Core
 {
     public class StatusFile : StatFile
     {

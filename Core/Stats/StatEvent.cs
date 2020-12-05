@@ -1,7 +1,7 @@
 using Chains;
-using Core.FS;
+using Hopper.Core.FS;
 
-namespace Core.Stats
+namespace Hopper.Core.Stats
 {
     public class StatEvent<T> : EventBase where T : File
     {

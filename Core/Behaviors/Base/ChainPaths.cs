@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Chains;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     public interface IProvideBehavior
     {

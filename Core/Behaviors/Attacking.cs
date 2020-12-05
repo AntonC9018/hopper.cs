@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using Chains;
-using Core.Items;
-using Core.Targeting;
+using Hopper.Core.Items;
+using Hopper.Core.Targeting;
 using System.Runtime.Serialization;
-using Core.Stats.Basic;
+using Hopper.Core.Stats.Basic;
 using System.Linq;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public class Attacking : Behavior, IStandartActivateable

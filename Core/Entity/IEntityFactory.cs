@@ -1,4 +1,4 @@
-namespace Core
+namespace Hopper.Core
 {
     public interface IFactory<out T> : IHaveId
     {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Core.Utils;
+using Hopper.Core.Utils;
 
-namespace Core.FS
+namespace Hopper.Core.FS
 {
     public class FS<D, F>
         where D : Directory, new()

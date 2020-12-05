@@ -1,6 +1,6 @@
-using Core.FS;
+using Hopper.Core.FS;
 
-namespace Core.Stats
+namespace Hopper.Core.Stats
 {
     public class DefaultStats
     {

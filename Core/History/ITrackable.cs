@@ -1,4 +1,4 @@
-namespace Core.History
+namespace Hopper.Core.History
 {
     public interface ITrackable<out T>
     {

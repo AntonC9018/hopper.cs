@@ -1,10 +1,10 @@
 
 using System.Linq;
 using Chains;
-using Core.Behaviors;
-using Core.Utils.Vector;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.Retouchers
+namespace Hopper.Core.Retouchers
 {
     public static class Reorient
     {

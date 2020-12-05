@@ -1,4 +1,4 @@
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     public interface IBehaviorFactory
     {

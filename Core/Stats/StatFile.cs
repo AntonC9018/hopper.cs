@@ -1,7 +1,7 @@
-using Core.FS;
+using Hopper.Core.FS;
 using System.Reflection;
 
-namespace Core.Stats
+namespace Hopper.Core.Stats
 {
     public interface IAddableWith<in T> where T : IAddableWith<T>
     {

@@ -1,7 +1,7 @@
-using Core.Behaviors;
-using Core.Utils.Vector;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Utils.Vector;
 
-namespace Core
+namespace Hopper.Core
 {
     public class BehaviorAction<T> : Action
         where T : Behavior, IStandartActivateable, new()

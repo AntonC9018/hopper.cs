@@ -1,9 +1,9 @@
 
 using System.Linq;
 using Chains;
-using Core.Behaviors;
+using Hopper.Core.Behaviors;
 
-namespace Core.Retouchers
+namespace Hopper.Core.Retouchers
 {
     public static class Invincibility
     {

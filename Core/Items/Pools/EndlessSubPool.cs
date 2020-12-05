@@ -1,7 +1,7 @@
 using System;
-using Core.FS;
+using Hopper.Core.FS;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public class EndlessSubPool : SubPool
     {

@@ -1,7 +1,7 @@
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 using System.Collections.Generic;
 
-namespace Core
+namespace Hopper.Core
 {
     public class GridManager
     {

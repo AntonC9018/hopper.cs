@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Chains;
 using System.Reflection;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 using System.Runtime.Serialization;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     public class InputMapping : ChainName
     {

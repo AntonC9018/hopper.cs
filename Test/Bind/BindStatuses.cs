@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Chains;
-using Core;
-using Core.Behaviors;
-using Core.History;
-using Core.Targeting;
-using Core.Utils.Vector;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.History;
+using Hopper.Core.Targeting;
+using Hopper.Core.Utils.Vector;
 
 namespace Test
 {

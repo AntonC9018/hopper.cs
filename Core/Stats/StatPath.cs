@@ -1,6 +1,6 @@
-using Core.FS;
+using Hopper.Core.FS;
 
-namespace Core.Stats
+namespace Hopper.Core.Stats
 {
     public interface IStatPath<out T> where T : File
     {

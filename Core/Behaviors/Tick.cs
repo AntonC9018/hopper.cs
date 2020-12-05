@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using Chains;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public class Tick : Behavior

@@ -1,6 +1,6 @@
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.History
+namespace Hopper.Core.History
 {
     public class EntityState // possible include some more data
     {

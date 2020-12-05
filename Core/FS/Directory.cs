@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Core.FS
+namespace Hopper.Core.FS
 {
     public class Directory : Node
     {

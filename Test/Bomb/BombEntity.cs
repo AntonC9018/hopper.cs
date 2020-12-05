@@ -1,10 +1,10 @@
 using System;
-using Core;
-using Core.Behaviors;
-using Core.Retouchers;
-using Core.Stats;
-using Core.Stats.Basic;
-using Core.Targeting;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Retouchers;
+using Hopper.Core.Stats;
+using Hopper.Core.Stats.Basic;
+using Hopper.Core.Targeting;
 
 namespace Test
 {
@@ -57,7 +57,7 @@ namespace Test
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(steps))
                 .AddBehavior<Statused>()
-                .Retouch(Core.Retouchers.Reorient.OnDisplace)
+                .Retouch(Hopper.Core.Retouchers.Reorient.OnDisplace)
                 .SetDefaultStats(defaultStats);
         }
 

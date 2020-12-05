@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.History
+namespace Hopper.Core.History
 {
     public class History<T>
     {

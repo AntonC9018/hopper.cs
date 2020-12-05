@@ -1,7 +1,7 @@
-using Core.FS;
-using Core.Utils;
+using Hopper.Core.FS;
+using Hopper.Core.Utils;
 
-namespace Core.Stats
+namespace Hopper.Core.Stats
 {
     public interface IModifier
     {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Core.Behaviors;
+using Hopper.Core.Behaviors;
 
 namespace Chains
 {

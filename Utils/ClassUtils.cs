@@ -1,4 +1,4 @@
-namespace Core.Utils
+namespace Hopper.Core.Utils
 {
     public static class ClassUtils
     {

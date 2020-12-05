@@ -1,8 +1,8 @@
-using Core.Items;
+using Hopper.Core.Items;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Core
+namespace Hopper.Core
 {
     public class InventoryConverter : JsonConverter<IInventory>
     {

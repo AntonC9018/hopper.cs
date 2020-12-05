@@ -1,6 +1,6 @@
 using Chains;
-using Core;
-using Core.Behaviors;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
 using Test.Utils;
 
 namespace Test

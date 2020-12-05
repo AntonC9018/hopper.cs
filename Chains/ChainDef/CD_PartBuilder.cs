@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Core;
-using Core.Behaviors;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
 
 namespace Chains
 {

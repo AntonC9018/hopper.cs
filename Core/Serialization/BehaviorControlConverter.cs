@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Core.Behaviors;
+using Hopper.Core.Behaviors;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Core
+namespace Hopper.Core
 {
     public class BehaviorControlConverter : JsonConverter<BehaviorControl>
     {

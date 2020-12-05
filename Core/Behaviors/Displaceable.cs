@@ -1,9 +1,9 @@
 using Chains;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 using System.Runtime.Serialization;
-using Core.Stats.Basic;
+using Hopper.Core.Stats.Basic;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public class Displaceable : Behavior

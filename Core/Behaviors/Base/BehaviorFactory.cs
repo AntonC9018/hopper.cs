@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Chains;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     public class BehaviorFactory<Beh> : IBehaviorFactory, IProvidesChainTemplate
            where Beh : Behavior, new()

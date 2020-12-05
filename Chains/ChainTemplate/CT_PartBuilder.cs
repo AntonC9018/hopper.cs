@@ -1,5 +1,5 @@
 
-using Core.Behaviors;
+using Hopper.Core.Behaviors;
 
 namespace Chains
 {

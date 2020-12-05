@@ -1,12 +1,12 @@
-using Core.Utils.Vector;
-using Core.Items;
+using Hopper.Core.Utils.Vector;
+using Hopper.Core.Items;
 using System.Runtime.Serialization;
-using Core.Stats;
-using Core.Targeting;
-using Core.History;
+using Hopper.Core.Stats;
+using Hopper.Core.Targeting;
+using Hopper.Core.History;
 using System;
 
-namespace Core
+namespace Hopper.Core
 {
     [DataContract]
     public class Entity : IHaveId, IWorldSpot, ITrackable<EntityState>

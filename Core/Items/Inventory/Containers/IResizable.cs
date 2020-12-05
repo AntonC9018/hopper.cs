@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public interface IResizable
     {

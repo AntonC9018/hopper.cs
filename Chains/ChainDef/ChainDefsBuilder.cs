@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Core;
-using Core.Behaviors;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
 
 namespace Chains
 {

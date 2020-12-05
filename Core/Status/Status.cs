@@ -1,8 +1,8 @@
 using Chains;
-using Core.Behaviors;
-using Core.Stats;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Stats;
 
-namespace Core
+namespace Hopper.Core
 {
     public interface IStatus : IHaveId
     {

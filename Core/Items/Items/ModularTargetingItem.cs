@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Core.Behaviors;
-using Core.Stats.Basic;
-using Core.Targeting;
-using Core.Utils.Vector;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Stats.Basic;
+using Hopper.Core.Targeting;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public class ModularWeapon : ModularItem, IBufferedAtkTargetProvider
     {
@@ -14,7 +14,7 @@ namespace Core.Items
             ItemMetadata meta,
             IBufferedAtkTargetProvider targetProvider,
             params IModule[] modules)
-            : base(meta, Core.Items.Slot.Weapon, modules)
+            : base(meta, Hopper.Core.Items.Slot.Weapon, modules)
         {
             m_targetProvider = targetProvider;
         }
@@ -33,7 +33,7 @@ namespace Core.Items
             ItemMetadata meta,
             ITargetProvider<Target> targetProvider,
             params IModule[] modules)
-            : base(meta, Core.Items.Slot.Shovel, modules)
+            : base(meta, Hopper.Core.Items.Slot.Shovel, modules)
         {
             m_targetProvider = targetProvider;
         }

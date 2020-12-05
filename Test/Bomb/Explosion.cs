@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Core;
-using Core.Behaviors;
-using Core.Stats.Basic;
-using Core.Targeting;
-using Core.Utils.Vector;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Stats.Basic;
+using Hopper.Core.Targeting;
+using Hopper.Core.Utils.Vector;
 
 namespace Test
 {
@@ -63,7 +63,7 @@ namespace Test
         public static void ExplodeCell(IntVector2 pos, IntVector2 knockbackDir, World world)
         {
             var targets = targetProvider.GetTargets(
-                new Core.Targeting.Dummy(pos, world), knockbackDir, (Attack)BaseAtk.Copy());
+                new Hopper.Core.Targeting.Dummy(pos, world), knockbackDir, (Attack)BaseAtk.Copy());
 
             foreach (var target in targets)
             {

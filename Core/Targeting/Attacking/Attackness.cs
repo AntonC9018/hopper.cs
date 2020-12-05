@@ -1,4 +1,4 @@
-namespace Core.Targeting
+namespace Hopper.Core.Targeting
 {
     public enum Attackness
     {

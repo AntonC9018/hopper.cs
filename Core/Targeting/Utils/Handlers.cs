@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Core.Utils;
+using Hopper.Core.Utils;
 using Chains;
 
-namespace Core.Targeting
+namespace Hopper.Core.Targeting
 {
     public static class Handlers
     {

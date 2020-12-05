@@ -1,8 +1,8 @@
 ﻿using Chains;
-using Core;
-using Core.Behaviors;
-using Core.FS;
-using Core.Stats;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.FS;
+using Hopper.Core.Stats;
 
 namespace Test
 {

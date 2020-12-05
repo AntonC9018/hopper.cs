@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Core.Utils;
+using Hopper.Core.Utils;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     public class ChainName : ScalableEnum
     {

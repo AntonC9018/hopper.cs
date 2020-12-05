@@ -1,4 +1,4 @@
-namespace Core.FS
+namespace Hopper.Core.FS
 {
     public class Node
     {

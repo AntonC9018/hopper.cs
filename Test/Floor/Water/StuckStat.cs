@@ -1,5 +1,5 @@
-using Core;
-using Core.Stats;
+using Hopper.Core;
+using Hopper.Core.Stats;
 
 namespace Test
 {

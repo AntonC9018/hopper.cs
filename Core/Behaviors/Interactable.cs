@@ -1,8 +1,8 @@
 using System.Runtime.Serialization;
 using Chains;
-using Core.Items;
+using Hopper.Core.Items;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public partial class Interactable : Behavior

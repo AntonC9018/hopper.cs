@@ -1,10 +1,10 @@
 using Chains;
-using Core.Stats.Basic;
+using Hopper.Core.Stats.Basic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public class Statused : Behavior

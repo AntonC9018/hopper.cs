@@ -1,6 +1,6 @@
-using Core.Targeting;
+using Hopper.Core.Targeting;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public class Item : IItem
     {

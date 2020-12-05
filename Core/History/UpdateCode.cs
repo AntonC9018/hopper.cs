@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Core.Utils;
+using Hopper.Core.Utils;
 
-namespace Core.History
+namespace Hopper.Core.History
 {
     public class UpdateCode : ScalableEnum
     {

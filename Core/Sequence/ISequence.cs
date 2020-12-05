@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 
-namespace Core
+namespace Hopper.Core
 {
     public interface ISequence
     {

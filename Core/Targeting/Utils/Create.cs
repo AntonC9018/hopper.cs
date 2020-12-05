@@ -1,8 +1,8 @@
 using Chains;
-using Core.Behaviors;
-using Core.Stats.Basic;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Stats.Basic;
 
-namespace Core.Targeting
+namespace Hopper.Core.Targeting
 {
     public static class TargetProvider
     {

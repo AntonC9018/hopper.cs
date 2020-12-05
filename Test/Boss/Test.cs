@@ -1,6 +1,6 @@
-using Core;
-using Core.Behaviors;
-using Core.Utils.Vector;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Utils.Vector;
 
 namespace Test
 {
@@ -105,8 +105,8 @@ namespace Test
                 .AddBehavior<Moving>()
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Damageable>(new Damageable.Config(1))
-                .Retouch(Core.Retouchers.Skip.NoPlayer)
-                .Retouch(Core.Retouchers.Skip.BlockedMove)
+                .Retouch(Hopper.Core.Retouchers.Skip.NoPlayer)
+                .Retouch(Hopper.Core.Retouchers.Skip.BlockedMove)
                 // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
                 .Retouch(TurnToPlayerRetoucher)
                 .AddBehavior<Sequential>(new Sequential.Config(Steps));
@@ -119,8 +119,8 @@ namespace Test
             .AddBehavior<Moving>()
             .AddBehavior<Displaceable>()
             .AddBehavior<Damageable>(new Damageable.Config(5))
-            .Retouch(Core.Retouchers.Skip.NoPlayer)
-            .Retouch(Core.Retouchers.Skip.BlockedMove)
+            .Retouch(Hopper.Core.Retouchers.Skip.NoPlayer)
+            .Retouch(Hopper.Core.Retouchers.Skip.BlockedMove)
             // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
             .Retouch(TurnToPlayerRetoucher)
             .AddBehavior<Sequential>(new Sequential.Config(Steps));

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core.Behaviors;
-using Core.Utils;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Utils;
 
-namespace Core
+namespace Hopper.Core
 {
     public class BehaviorSetting
     {
@@ -119,7 +119,7 @@ namespace Core
             return this;
         }
 
-        public EntityFactory<T> SetDefaultStats(Core.Stats.DefaultStats stats)
+        public EntityFactory<T> SetDefaultStats(Hopper.Core.Stats.DefaultStats stats)
         {
             return AddSetupListener(e => e.Stats.DefaultStats = stats.StatManager);
         }

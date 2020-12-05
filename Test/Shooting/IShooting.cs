@@ -1,6 +1,6 @@
-using Core;
-using Core.Targeting;
-using Core.Utils.Vector;
+using Hopper.Core;
+using Hopper.Core.Targeting;
+using Hopper.Core.Utils.Vector;
 
 namespace Test
 {

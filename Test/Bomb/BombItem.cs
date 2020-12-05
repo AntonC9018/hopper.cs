@@ -1,7 +1,7 @@
 using Chains;
-using Core;
-using Core.Behaviors;
-using Core.Items;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Items;
 
 namespace Test
 {

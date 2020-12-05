@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Core
+namespace Hopper.Core
 {
     public class IHaveIdConverter<T> : JsonConverter<T> where T : IHaveId
     {

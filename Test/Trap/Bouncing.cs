@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Core;
-using Core.Behaviors;
-using Core.Stats.Basic;
-using Core.Utils.Vector;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Stats.Basic;
+using Hopper.Core.Utils.Vector;
 
 namespace Test
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Core;
-using Core.Utils.Vector;
+using Hopper.Core;
+using Hopper.Core.Utils.Vector;
 
 namespace Test
 {

@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
-using Core.Items;
+using Hopper.Core.Items;
 
-namespace Core
+namespace Hopper.Core
 {
     [DataContract]
     public class Wall : Entity

@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     [DataContract]
     public class ItemContent : IContent

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Core.Utils
+namespace Hopper.Core.Utils
 {
     // https://stackoverflow.com/a/41907561
     public class Map<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>

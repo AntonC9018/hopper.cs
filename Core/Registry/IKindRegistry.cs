@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Core
+namespace Hopper.Core
 {
     public interface IKindRegistry
     {

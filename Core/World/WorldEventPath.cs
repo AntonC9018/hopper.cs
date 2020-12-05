@@ -1,4 +1,4 @@
-namespace Core
+namespace Hopper.Core
 {
     public class WorldEventPath<T>
     {

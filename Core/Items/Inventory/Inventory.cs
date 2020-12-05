@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Core.Targeting;
+using Hopper.Core.Targeting;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public class Inventory : IInventory
     {

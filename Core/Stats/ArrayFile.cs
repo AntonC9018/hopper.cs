@@ -1,7 +1,7 @@
-using Core.FS;
+using Hopper.Core.FS;
 using System.Collections.Generic;
 
-namespace Core.Stats
+namespace Hopper.Core.Stats
 {
     public class ArrayFile : File, IAddableWith<ArrayFile>
     {

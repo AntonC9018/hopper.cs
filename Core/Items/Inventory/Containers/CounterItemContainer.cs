@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public class CounterItemContainer : IItemContainer
     {

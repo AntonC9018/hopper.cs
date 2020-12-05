@@ -1,16 +1,16 @@
 using Chains;
-using Core;
-using Core.Stats;
+using Hopper.Core;
+using Hopper.Core.Stats;
 using Newtonsoft.Json;
-using Core.Utils;
-using Core.Behaviors;
+using Hopper.Core.Utils;
+using Hopper.Core.Behaviors;
 using System;
 
 namespace Test
 {
     public class BindData : StatusData
     {
-        [JsonConverter(typeof(Core.IHaveIdConverter<Entity>))]
+        [JsonConverter(typeof(Hopper.Core.IHaveIdConverter<Entity>))]
         public Entity whoApplied;
 
         public BindData() { }

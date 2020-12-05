@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using Core.Utils.CircularBuffer;
+using Hopper.Core.Utils.CircularBuffer;
 using System.Diagnostics;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public class CircularItemContainer : IResizableContainer
     {

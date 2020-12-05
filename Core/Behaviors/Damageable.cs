@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public class Damageable : Behavior

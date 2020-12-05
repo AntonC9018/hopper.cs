@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Core.Utils
+namespace Hopper.Core.Utils
 {
     public static class Functions
     {

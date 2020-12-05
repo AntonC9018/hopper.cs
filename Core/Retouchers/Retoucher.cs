@@ -1,9 +1,9 @@
 using System;
 using Chains;
-using Core.Behaviors;
-using Core.Utils;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Utils;
 
-namespace Core
+namespace Hopper.Core
 {
     public class Retoucher : IHaveId
     {

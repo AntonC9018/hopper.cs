@@ -1,7 +1,7 @@
 using System;
-using Core.Utils.Vector;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.Generation
+namespace Hopper.Core.Generation
 {
     public class Room
     {

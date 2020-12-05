@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core;
-using Core.Behaviors;
-using Core.Targeting;
-using Core.Utils.Vector;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Targeting;
+using Hopper.Core.Utils.Vector;
 
 namespace Test
 {

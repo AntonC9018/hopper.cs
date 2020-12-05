@@ -1,4 +1,4 @@
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public class SetEntityContentSpec : IContentSpec
     {

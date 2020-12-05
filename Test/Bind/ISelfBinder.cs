@@ -1,4 +1,4 @@
-using Core;
+using Hopper.Core;
 
 namespace Test
 {

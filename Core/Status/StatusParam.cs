@@ -1,6 +1,6 @@
-using Core.Behaviors;
+using Hopper.Core.Behaviors;
 
-namespace Core
+namespace Hopper.Core
 {
     public class StatusParam
     {

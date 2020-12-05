@@ -1,11 +1,11 @@
 using Chains;
-using Core.Utils;
+using Hopper.Core.Utils;
 using System.Runtime.Serialization;
-using Core.Stats.Basic;
-using Core.Utils.Vector;
-using Core.Targeting;
+using Hopper.Core.Stats.Basic;
+using Hopper.Core.Utils.Vector;
+using Hopper.Core.Targeting;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public class Attackable : Behavior

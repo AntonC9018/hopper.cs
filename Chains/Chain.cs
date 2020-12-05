@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Core.Utils;
-using Core.Utils.MyLinkedList;
+using Hopper.Core.Utils;
+using Hopper.Core.Utils.MyLinkedList;
 
 namespace Chains
 {

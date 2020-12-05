@@ -1,4 +1,4 @@
-namespace Core.Items
+namespace Hopper.Core.Items
 {
 
     public interface IItem : IHaveId, IModule

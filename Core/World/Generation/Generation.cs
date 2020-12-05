@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Core.Utils;
-using Core.Utils.Vector;
+using Hopper.Core.Utils;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.Generation
+namespace Hopper.Core.Generation
 {
     public partial class Generator
     {

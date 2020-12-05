@@ -1,5 +1,5 @@
-using Core;
-using Core.Behaviors;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
 
 namespace Test
 {
@@ -44,9 +44,9 @@ namespace Test
                 .AddBehavior<Pushable>()
                 .AddBehavior<Statused>()
 
-                .Retouch(Core.Retouchers.Skip.NoPlayer)
-                .Retouch(Core.Retouchers.Skip.BlockedMove)
-                .Retouch(Core.Retouchers.Reorient.OnActionSuccess);
+                .Retouch(Hopper.Core.Retouchers.Skip.NoPlayer)
+                .Retouch(Hopper.Core.Retouchers.Skip.BlockedMove)
+                .Retouch(Hopper.Core.Retouchers.Reorient.OnActionSuccess);
         }
     }
 }

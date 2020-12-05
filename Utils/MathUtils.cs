@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.Utils
+namespace Hopper.Core.Utils
 {
     public static class Maths
     {

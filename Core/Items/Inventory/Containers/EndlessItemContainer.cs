@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public class UniqueEndelssItemContanier : IItemContainer
     {

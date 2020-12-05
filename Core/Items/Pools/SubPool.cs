@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Core.FS;
-using Core.Utils;
+using Hopper.Core.FS;
+using Hopper.Core.Utils;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     // public interface ISubPool
     // {

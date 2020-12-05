@@ -1,8 +1,8 @@
-using Core.Behaviors;
-using Core.Items;
-using Core.Utils;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Items;
+using Hopper.Core.Utils;
 
-namespace Core.Retouchers
+namespace Hopper.Core.Retouchers
 {
     public static class Equip
     {

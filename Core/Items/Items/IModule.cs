@@ -1,6 +1,6 @@
-using Core.Stats;
+using Hopper.Core.Stats;
 
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     public interface IModule
     {

@@ -1,8 +1,8 @@
 using System.Runtime.Serialization;
 using Chains;
-using Core.Stats.Basic;
+using Hopper.Core.Stats.Basic;
 
-namespace Core.Behaviors
+namespace Hopper.Core.Behaviors
 {
     [DataContract]
     public class Moving : Behavior, IStandartActivateable

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core.Items;
-using Core.Stats.Basic;
+using Hopper.Core.Items;
+using Hopper.Core.Stats.Basic;
 
-namespace Core
+namespace Hopper.Core
 {
     public struct FactoryLink
     {

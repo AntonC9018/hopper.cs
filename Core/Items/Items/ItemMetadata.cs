@@ -1,4 +1,4 @@
-namespace Core.Items
+namespace Hopper.Core.Items
 {
     // This class serves for ease of debugging and for view applications only.
     // It has nothing to do with the logic part of the application.

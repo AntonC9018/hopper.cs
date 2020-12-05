@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Chains;
-using Core.Behaviors;
-using Core.Stats.Basic;
-using Core.Utils.Vector;
+using Hopper.Core.Behaviors;
+using Hopper.Core.Stats.Basic;
+using Hopper.Core.Utils.Vector;
 
-namespace Core.Targeting
+namespace Hopper.Core.Targeting
 {
     public class BufferedAtkTargetProvider : IBufferedAtkTargetProvider
     {

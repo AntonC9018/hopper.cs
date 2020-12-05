@@ -1,4 +1,4 @@
-namespace Core.Generation
+namespace Hopper.Core.Generation
 {
     public class RoomStuff
     {

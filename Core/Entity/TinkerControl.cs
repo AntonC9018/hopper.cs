@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Core
+namespace Hopper.Core
 {
     [DataContract]
     public class TinkerControl

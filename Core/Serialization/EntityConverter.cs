@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Core
+namespace Hopper.Core
 {
     public class EntityConverter : JsonConverter<Entity>
     {

@@ -1,9 +1,9 @@
 using Chains;
-using Core;
-using Core.Behaviors;
-using Core.History;
-using Core.Items;
-using Core.Stats.Basic;
+using Hopper.Core;
+using Hopper.Core.Behaviors;
+using Hopper.Core.History;
+using Hopper.Core.Items;
+using Hopper.Core.Stats.Basic;
 
 namespace Test
 {
@@ -80,7 +80,7 @@ namespace Test
 
         public static readonly ModularItem DefaultItem;
         public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
-        public static readonly ISlot<IItem> Slot = Core.Items.Slot.RangeWeapon;
+        public static readonly ISlot<IItem> Slot = Hopper.Core.Items.Slot.RangeWeapon;
         public static readonly Attack.Source ArrowSource = new Attack.Source();
 
         static Bow()

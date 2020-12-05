@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Core.Behaviors;
+using Hopper.Core.Behaviors;
 using Newtonsoft.Json;
 
-namespace Core
+namespace Hopper.Core
 {
     [DataContract]
     public class BehaviorControl : IProvideBehavior

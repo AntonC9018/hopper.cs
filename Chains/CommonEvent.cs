@@ -1,6 +1,6 @@
 using Chains;
 
-namespace Core
+namespace Hopper.Core
 {
     public class ActorEvent : EventBase
     {

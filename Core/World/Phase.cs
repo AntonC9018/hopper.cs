@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Core
+namespace Hopper.Core
 {
     public enum Phase
     {
