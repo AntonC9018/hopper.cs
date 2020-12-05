@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using Hopper.Utils.MyLinkedList;
-using Hopper.Utils.Chains;
 
-namespace Hopper.Core.Chains
+namespace Hopper.Utils.Chains
 {
     public interface IChainTemplate
     {

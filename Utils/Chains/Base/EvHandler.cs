@@ -11,6 +11,12 @@ namespace Hopper.Utils.Chains
             this.Priority = (int)priority;
         }
 
+        public EvHandler(IEvHandler<Event> evHandler)
+        {
+            handlerFunction = evHandler.Call;
+            Priority = evHandler.Priority;
+        }
+
         public void Call(Event ev)
         {
             handlerFunction(ev);

@@ -39,8 +39,9 @@ namespace Hopper.Utils.Chains
         public Handle<Event> AddHandler(IEvHandler<Event> handler)
         {
             b_dirty = true;
-            m_handlers.AddFront(handler);
-            handler.Priority = MapPriority(handler.Priority);
+            var evHandlerCopy = new EvHandler<Event>(handler);
+            evHandlerCopy.Priority = MapPriority(evHandlerCopy.Priority);
+            m_handlers.AddFront(evHandlerCopy);
             return new Handle<Event>(m_handlers.Head);
         }
 
@@ -115,7 +116,7 @@ namespace Hopper.Utils.Chains
             m_handlersToRemove.Clear();
         }
 
-        public void SortHandlers()
+        internal void SortHandlers()
         {
             m_handlers.Sort((a, b) => a.Priority - b.Priority);
             b_dirty = false;
