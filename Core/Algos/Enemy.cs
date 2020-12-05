@@ -3,7 +3,7 @@ using Hopper.Core.Behaviors;
 
 namespace Hopper.Core
 {
-    static partial class Algos
+    public static partial class Algos
     {
         static bool AskMove(Acting.Event ev)
         {

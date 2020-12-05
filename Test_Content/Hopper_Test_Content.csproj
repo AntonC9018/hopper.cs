@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Utils\Hopper_Core.csproj" />
+    <ProjectReference Include="..\Core\Hopper_Core.csproj" />
   </ItemGroup>
 
 </Project>
