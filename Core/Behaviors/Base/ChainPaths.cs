@@ -1,5 +1,6 @@
 using System.Diagnostics;
-using Chains;
+using Hopper.Core.Chains;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Behaviors
 {

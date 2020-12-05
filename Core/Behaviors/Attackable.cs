@@ -1,9 +1,10 @@
-using Chains;
+using Hopper.Utils.Chains;
 using Hopper.Core.Utils;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Utils.Vector;
 using Hopper.Core.Targeting;
+using Hopper.Core.Chains;
 
 namespace Hopper.Core.Behaviors
 {

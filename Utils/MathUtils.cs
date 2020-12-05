@@ -16,12 +16,12 @@ namespace Hopper.Core.Utils
             return x < y ? x : y;
         }
 
-        internal static int Abs(int x)
+        public static int Abs(int x)
         {
             return x < 0 ? -x : x;
         }
 
-        internal static int Max(int x, int y)
+        public static int Max(int x, int y)
         {
             return x > y ? x : y;
         }

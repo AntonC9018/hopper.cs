@@ -1,5 +1,5 @@
 using System.Runtime.Serialization;
-using Chains;
+using Hopper.Core.Chains;
 
 namespace Hopper.Core.Behaviors
 {

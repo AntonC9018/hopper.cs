@@ -1,8 +1,9 @@
-using Chains;
+using Hopper.Utils.Chains;
 using Hopper.Core.Stats.Basic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Hopper.Core.Chains;
 
 namespace Hopper.Core.Behaviors
 {

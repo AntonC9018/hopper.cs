@@ -25,7 +25,7 @@ namespace Hopper.Core.Stats
             return new StatModifier<T>(path, file);
         }
 
-        public static ChainModifier<T> Create<T>(StatPath<T> path, Chains.EvHandler<StatEvent<T>> handler)
+        public static ChainModifier<T> Create<T>(StatPath<T> path, Hopper.Utils.Chains.EvHandler<StatEvent<T>> handler)
             where T : StatFile, IAddableWith<T>, new()
         {
             return new ChainModifier<T>(path, handler);
@@ -56,10 +56,10 @@ namespace Hopper.Core.Stats
 
     public class ChainModifier<T> : Modifier, IModifier where T : File
     {
-        public Chains.EvHandler<StatEvent<T>> handler;
+        public Hopper.Utils.Chains.EvHandler<StatEvent<T>> handler;
         public IStatPath<T> path;
 
-        public ChainModifier(IStatPath<T> path, Chains.EvHandler<StatEvent<T>> handler)
+        public ChainModifier(IStatPath<T> path, Hopper.Utils.Chains.EvHandler<StatEvent<T>> handler)
         {
             this.handler = handler;
             this.path = path;

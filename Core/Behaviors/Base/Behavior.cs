@@ -1,4 +1,5 @@
-using Chains;
+using Hopper.Core.Chains;
+using Hopper.Utils.Chains;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 

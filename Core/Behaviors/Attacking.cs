@@ -1,11 +1,12 @@
 using System.Collections.Generic;
-using Chains;
+using Hopper.Utils.Chains;
 using Hopper.Core.Items;
 using Hopper.Core.Targeting;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using System.Linq;
 using Hopper.Core.Utils.Vector;
+using Hopper.Core.Chains;
 
 namespace Hopper.Core.Behaviors
 {

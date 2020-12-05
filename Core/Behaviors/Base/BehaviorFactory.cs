@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
-using Chains;
+using Hopper.Core.Chains;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Behaviors
 {

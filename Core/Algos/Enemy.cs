@@ -1,4 +1,4 @@
-using Chains;
+using Hopper.Utils.Chains;
 using Hopper.Core.Behaviors;
 
 namespace Hopper.Core

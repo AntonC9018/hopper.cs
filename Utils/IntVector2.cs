@@ -202,7 +202,7 @@ namespace Hopper.Core.Utils.Vector
             );
         }
 
-        internal IntVector2 Sign()
+        public IntVector2 Sign()
         {
             return new IntVector2
             {

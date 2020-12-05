@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hopper.Core.Utils;
-using Chains;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Targeting
 {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Chains;
 using System.Reflection;
 using Hopper.Core.Utils.Vector;
 using System.Runtime.Serialization;
+using Hopper.Core.Chains;
 
 namespace Hopper.Core.Behaviors
 {

@@ -1,7 +1,8 @@
 using System;
-using Chains;
+using Hopper.Utils.Chains;
 using Hopper.Core.Behaviors;
 using Hopper.Core.Utils;
+using Hopper.Core.Chains;
 
 namespace Hopper.Core
 {
