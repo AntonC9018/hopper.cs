@@ -6,7 +6,7 @@ using Hopper.Core.Items;
 using System.Linq;
 using Hopper.Core.Targeting;
 using Hopper.Core.Behaviors;
-using Test;
+using Hopper.Test_Content;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Hopper.Core.Generation;
