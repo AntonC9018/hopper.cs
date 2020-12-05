@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils.Vector;
 using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Targeting

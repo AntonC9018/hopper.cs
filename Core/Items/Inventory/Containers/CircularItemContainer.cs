@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using Hopper.Core.Utils.CircularBuffer;
+using Hopper.Utils.CircularBuffer;
 using System.Diagnostics;
 
 namespace Hopper.Core.Items

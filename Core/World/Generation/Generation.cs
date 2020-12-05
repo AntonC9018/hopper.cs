@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Hopper.Core.Utils;
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Generation
 {

@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace Hopper.Core.Utils
+namespace Hopper.Utils
 {
     public static class ReadOnlyCollectionExtensions
     {

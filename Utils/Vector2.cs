@@ -1,6 +1,6 @@
 using System;
 
-namespace Hopper.Core.Utils.Vector
+namespace Hopper.Utils.Vector
 {
     public struct Vector2
     {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using Hopper.Core.Utils.Vector;
-using Chains;
+using Hopper.Utils.Vector;
 using Hopper.Core;
 using Hopper.Core.Items;
 using System.Linq;
@@ -13,6 +12,8 @@ using Hopper.Core.Generation;
 using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.History;
+using Hopper.Core.Chains;
+using Hopper.Utils.Chains;
 
 namespace Hopper
 {
@@ -344,7 +345,7 @@ namespace Hopper
             System.Console.WriteLine("Attack damage:{0}", attack.damage);
             System.Console.WriteLine("Attack pierce:{0}", attack.pierce);
 
-            var mod2 = Modifier.Create(Attack.Path, new Chains.EvHandler<StatEvent<Attack>>(
+            var mod2 = Modifier.Create(Attack.Path, new EvHandler<StatEvent<Attack>>(
                 (StatEvent<Attack> eve) =>
                 {
                     System.Console.WriteLine("Called handler");

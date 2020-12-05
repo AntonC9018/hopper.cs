@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils.Vector;
 using System.Diagnostics;
 
 namespace Hopper.Core.Behaviors

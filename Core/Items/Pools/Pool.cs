@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hopper.Core.FS;
-using Hopper.Core.Utils;
+using Hopper.Utils;
 
 namespace Hopper.Core.Items
 {

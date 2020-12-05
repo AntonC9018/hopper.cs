@@ -1,6 +1,6 @@
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils.Vector;
 using System.Collections.Generic;
-using Hopper.Core.Utils;
+using Hopper.Utils;
 using System.Linq;
 
 namespace Hopper.Core

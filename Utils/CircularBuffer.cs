@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections;
 using Newtonsoft.Json;
 
-namespace Hopper.Core.Utils.CircularBuffer
+namespace Hopper.Utils.CircularBuffer
 {
     /// <inheritdoc/>
     /// <summary>

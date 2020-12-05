@@ -1,4 +1,4 @@
-namespace Hopper.Core.Utils.MyLinkedList
+namespace Hopper.Utils.MyLinkedList
 {
     public class MyLinkedList<T>
     {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Hopper.Core.Utils;
+using Hopper.Utils;
 
 namespace Hopper.Core.Items
 {

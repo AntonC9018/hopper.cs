@@ -1,4 +1,4 @@
-namespace Hopper.Core.Utils
+namespace Hopper.Utils
 {
     // USAGE:
     /*

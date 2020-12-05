@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Hopper.Core.Utils.Vector
+namespace Hopper.Utils.Vector
 {
     public struct IntVector2
     {

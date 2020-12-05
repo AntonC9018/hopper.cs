@@ -2,7 +2,7 @@
 using System.Linq;
 using Hopper.Utils.Chains;
 using Hopper.Core.Behaviors;
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Retouchers
 {

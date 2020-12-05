@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Hopper.Core.Utils.MyLinkedList;
+using Hopper.Utils.MyLinkedList;
 
 namespace Hopper.Utils.Chains
 {

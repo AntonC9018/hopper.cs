@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Hopper.Core.Utils.MyLinkedList;
+using Hopper.Utils.MyLinkedList;
 using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Chains

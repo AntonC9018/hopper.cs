@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Hopper.Core.Behaviors;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Targeting;
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Items
 {

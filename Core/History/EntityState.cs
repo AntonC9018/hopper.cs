@@ -1,4 +1,4 @@
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core.History
 {
@@ -22,6 +22,6 @@ namespace Hopper.Core.History
 
     public static class EntityStateHistoryExtensions
     {
-        
+
     }
 }

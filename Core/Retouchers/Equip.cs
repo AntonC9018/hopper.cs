@@ -1,6 +1,6 @@
 using Hopper.Core.Behaviors;
 using Hopper.Core.Items;
-using Hopper.Core.Utils;
+using Hopper.Utils;
 
 namespace Hopper.Core.Retouchers
 {

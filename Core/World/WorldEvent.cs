@@ -1,5 +1,5 @@
 using System;
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {

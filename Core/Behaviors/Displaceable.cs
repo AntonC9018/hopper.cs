@@ -1,5 +1,5 @@
 using Hopper.Utils.Chains;
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils.Vector;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Chains;

@@ -1,4 +1,4 @@
-using Hopper.Core.Utils.Vector;
+using Hopper.Utils.Vector;
 using Hopper.Core.Items;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats;

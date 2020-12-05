@@ -1,5 +1,5 @@
 using Hopper.Core.FS;
-using Hopper.Core.Utils;
+using Hopper.Utils;
 
 namespace Hopper.Core.Stats
 {
