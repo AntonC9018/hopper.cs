@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Diagnostics;
+using Hopper.Utils;
 using Hopper.Core.Targeting;
 
 namespace Hopper.Core.Items
@@ -82,7 +82,7 @@ namespace Hopper.Core.Items
 
         public void AddContainer<T>(Slot<T, IItem> slot, T container) where T : IItemContainer
         {
-            Debug.Assert(
+            Assert.That(
                 !m_itemSlots.ContainsKey(slot),
                 $"Container for key {slot.Name} has already been defined"
             );

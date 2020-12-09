@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Hopper.Utils;
 
 namespace Hopper.Core
 {
@@ -30,14 +30,14 @@ namespace Hopper.Core
 
         public static void ThrowIfPhasesAreWrong()
         {
-            Debug.Assert(Layer.REAL.ToIndex() + 1 == (int)Phase.REAL, "REAL is not where it should be");
-            Debug.Assert(Layer.MISC.ToIndex() + 1 == (int)Phase.MISC, "MISC is not where it should be");
-            Debug.Assert(Layer.WALL.ToIndex() + 1 == (int)Phase.WALL, "WALL is not where it should be");
-            Debug.Assert(Layer.PROJECTILE.ToIndex() + 1 == (int)Phase.PROJECTILE, "PROJECTILE is not where it should be");
-            Debug.Assert(Layer.GOLD.ToIndex() + 1 == (int)Phase.GOLD, "GOLD is not where it should be");
-            Debug.Assert(Layer.FLOOR.ToIndex() + 1 == (int)Phase.FLOOR, "FLOOR is not where it should be");
-            Debug.Assert(Layer.TRAP.ToIndex() + 1 == (int)Phase.TRAP, "TRAP is not where it should be");
-            Debug.Assert(Layer.DROPPED.ToIndex() + 1 == (int)Phase.DROPPED, "DROPPED is not where it should be");
+            Assert.That(Layer.REAL.ToIndex() + 1 == (int)Phase.REAL, "REAL is not where it should be");
+            Assert.That(Layer.MISC.ToIndex() + 1 == (int)Phase.MISC, "MISC is not where it should be");
+            Assert.That(Layer.WALL.ToIndex() + 1 == (int)Phase.WALL, "WALL is not where it should be");
+            Assert.That(Layer.PROJECTILE.ToIndex() + 1 == (int)Phase.PROJECTILE, "PROJECTILE is not where it should be");
+            Assert.That(Layer.GOLD.ToIndex() + 1 == (int)Phase.GOLD, "GOLD is not where it should be");
+            Assert.That(Layer.FLOOR.ToIndex() + 1 == (int)Phase.FLOOR, "FLOOR is not where it should be");
+            Assert.That(Layer.TRAP.ToIndex() + 1 == (int)Phase.TRAP, "TRAP is not where it should be");
+            Assert.That(Layer.DROPPED.ToIndex() + 1 == (int)Phase.DROPPED, "DROPPED is not where it should be");
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Hopper.Test_Content
 {
     public class BindData : StatusData
     {
-        [JsonConverter(typeof(Hopper.Core.IHaveIdConverter<Entity>))]
+        [JsonConverter(typeof(Hopper.Core.IKindConverter<Entity>))]
         public Entity whoApplied;
 
         public BindData() { }

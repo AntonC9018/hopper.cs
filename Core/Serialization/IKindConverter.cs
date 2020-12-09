@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Hopper.Core
 {
-    public class IHaveIdConverter<T> : JsonConverter<T> where T : IHaveId
+    public class IKindConverter<T> : JsonConverter<T> where T : IHaveId
     {
         public override T ReadJson(JsonReader reader, System.Type objectType, T existingValue, bool hasExistingValue, JsonSerializer serializer)
         {

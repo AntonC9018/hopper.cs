@@ -12,7 +12,7 @@ namespace Hopper.Test_Content
         public Spider() : base() { }
 
         [DataMember]
-        [JsonConverter(typeof(Hopper.Core.IHaveIdConverter<Entity>))]
+        [JsonConverter(typeof(Hopper.Core.IKindConverter<Entity>))]
         public Entity BoundEntity { get; set; }
 
 

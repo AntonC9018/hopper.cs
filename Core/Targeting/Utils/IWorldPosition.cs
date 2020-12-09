@@ -1,3 +1,4 @@
+using Hopper.Core.History;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting

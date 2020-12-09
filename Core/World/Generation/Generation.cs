@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
 
@@ -91,7 +90,7 @@ namespace Hopper.Core.Generation
             int useful_parent_width = parent_orthogonal_dimension - 2 * wall_width;
             int useful_child_width = child_orthogonal_dimension - 2 * wall_width;
 
-            Debug.Assert(
+            Assert.That(
                 useful_child_width >= options.min_hallway_width
                     && useful_parent_width >= options.min_hallway_width,
                 "Cannot be less"

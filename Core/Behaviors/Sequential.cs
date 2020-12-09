@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Hopper.Utils.Vector;
-using System.Diagnostics;
+using Hopper.Utils;
 
 namespace Hopper.Core.Behaviors
 {
@@ -20,7 +20,7 @@ namespace Hopper.Core.Behaviors
 
             public Config(Step[] stepData)
             {
-                Debug.Assert(stepData != null, "Step Data must be specified in order to use Sequenced behavior");
+                Assert.That(stepData != null, "Step Data must be specified in order to use Sequenced behavior");
                 GetSequence = () => new Sequence(stepData);
             }
         }

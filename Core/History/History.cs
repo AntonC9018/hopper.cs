@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hopper.Utils;
 using System.Linq;
 
 namespace Hopper.Core.History
@@ -13,23 +14,28 @@ namespace Hopper.Core.History
             m_updates = new List<UpdateInfo<T>>();
         }
 
-        public void InitControl(ITrackable<T> trackable)
+        public void InitControlUpdate(ITrackable<T> trackable)
         {
-            var update = new UpdateInfo<T>
+            var initialUpdate = CreateControlUpdate(trackable.GetState());
+            m_updates.Add(initialUpdate);
+        }
+
+        private UpdateInfo<T> CreateControlUpdate(T state)
+        {
+            return new UpdateInfo<T>
             {
-                stateAfter = trackable.GetState(),
+                stateAfter = state,
                 timeframe = -1,
                 updateCode = UpdateCode.control
             };
-            m_updates.Add(update);
         }
 
-        public void Add(ITrackable<T> trackable, UpdateCode updateCode)
+        public void Add(T state, int timeframe, UpdateCode updateCode)
         {
             var update = new UpdateInfo<T>
             {
-                stateAfter = trackable.GetState(),
-                timeframe = trackable.World.GetNextTimeFrame(),
+                stateAfter = state,
+                timeframe = timeframe,
                 updateCode = updateCode
             };
             m_updates.Add(update);
@@ -41,15 +47,10 @@ namespace Hopper.Core.History
             {
                 return;
             }
-            var update = new UpdateInfo<T>
-            {
-                stateAfter = m_updates.Last().stateAfter,
-                timeframe = -1,
-                updateCode = UpdateCode.control
-            };
+            var controlState = m_updates.Last().stateAfter;
             m_updates.Clear();
-            // add the control state. this is the initial state at the start of history
-            m_updates.Add(update);
+            // add the control update. this has the initial state at the start of history
+            m_updates.Add(CreateControlUpdate(controlState));
         }
 
         public T GetStateBefore(UpdateCode updateCode)
@@ -64,7 +65,19 @@ namespace Hopper.Core.History
                 }
             }
             // otherwise, return the last state
-            return m_updates.Last().stateAfter;
+            return m_updates[m_updates.Count - 1].stateAfter;
+        }
+    }
+
+    public static class HistoryExtension
+    {
+        static public void Add(this History<EntityState> history, Entity entity, UpdateCode updateCode)
+        {
+            history.Add(
+                state: ((ITrackable<EntityState>)entity).GetState(),
+                timeframe: entity.World.GetNextTimeFrame(),
+                updateCode
+            );
         }
     }
 }

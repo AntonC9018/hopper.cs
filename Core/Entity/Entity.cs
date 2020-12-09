@@ -79,7 +79,7 @@ namespace Hopper.Core
             m_pos = pos;
             World = world;
 
-            History.InitControl(this);
+            History.InitControlUpdate(this);
 
             // fire the init event and destroy it, since it should only be called once
             InitEvent?.Invoke();

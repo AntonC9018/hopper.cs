@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Hopper.Utils;
 using Hopper.Core.Chains;
 using Hopper.Utils.Chains;
 
@@ -46,7 +46,7 @@ namespace Hopper.Core.Behaviors
 
         public ChainTemplate<Event> TemplatePath(IProvideBehaviorFactory startingFrom)
         {
-            Debug.Assert(
+            Assert.That(
                 startingFrom.HasBehaviorFactory<Beh>(),
                 $"Tried to add chains to a template of {typeof(Beh).Name}, but no such Behavior was present on the entity. Please, add the required behaviors prior to retouching"
             );

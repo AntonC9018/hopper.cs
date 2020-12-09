@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Hopper.Utils.CircularBuffer;
-using System.Diagnostics;
+using Hopper.Utils;
 
 namespace Hopper.Core.Items
 {
@@ -39,14 +39,14 @@ namespace Hopper.Core.Items
         public IItem this[int index] { get => m_items[index]; }
         public void Insert(DecomposedItem di)
         {
-            Debug.Assert(di.count == 1, "Packed items are not supported in circular item containers");
+            Assert.That(di.count == 1, "Packed items are not supported in circular item containers");
             var excess = m_items.PushBack(di.item);
             if (excess != null)
                 m_excess.Add(excess);
         }
         public void Remove(DecomposedItem di)
         {
-            Debug.Assert(di.count == 1, "Packed items are not supported in circular item containers");
+            Assert.That(di.count == 1, "Packed items are not supported in circular item containers");
             var remainingItems = m_items
                 .Where(i => i != di.item)
                 .ToArray();
