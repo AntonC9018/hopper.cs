@@ -3,42 +3,41 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Items
 {
-    public interface ISlot<out T> where T : IItem
+    public interface ISlot<out C>
+        where C : IItemContainer<IItem>
     {
-        IItemContainer CreateContainer();
+        C CreateContainer();
     }
 
     public static class Slot
     {
-        public static readonly List<ISlot<IItem>> _Slots = new List<ISlot<IItem>>();
-        public static readonly SizedSlot<CircularItemContainer, ModularWeapon> Weapon =
-            new SizedSlot<CircularItemContainer, ModularWeapon>("weapon", 1);
-        public static readonly SizedSlot<CircularItemContainer, IItem> RangeWeapon =
-            new SizedSlot<CircularItemContainer, IItem>("range_weapon", 1);
-        public static readonly SizedSlot<CircularItemContainer, ModularShovel> Shovel =
-            new SizedSlot<CircularItemContainer, ModularShovel>("shovel", 1);
-        public static readonly Slot<CounterItemContainer, IItem> Counter
-            = new Slot<CounterItemContainer, IItem>("counter_slot");
+        public static readonly List<ISlot<IItemContainer<IItem>>> _Slots = new List<ISlot<IItemContainer<IItem>>>();
+        public static readonly SizedSlot<CircularItemContainer<ModularWeapon>> Weapon =
+            new SizedSlot<CircularItemContainer<ModularWeapon>>("weapon", 1);
+        public static readonly SizedSlot<CircularItemContainer<IItem>> RangeWeapon =
+            new SizedSlot<CircularItemContainer<IItem>>("range_weapon", 1);
+        public static readonly SizedSlot<CircularItemContainer<ModularShovel>> Shovel =
+            new SizedSlot<CircularItemContainer<ModularShovel>>("shovel", 1);
+        public static readonly Slot<CounterItemContainer<IItem>> Counter
+            = new Slot<CounterItemContainer<IItem>>("counter_slot");
     }
 
-    public class Slot<T, U> : ScalableEnum, ISlot<U>
-        where T : IItemContainer
-        where U : IItem
+    public class Slot<C> : ScalableEnum, ISlot<C>
+        where C : IItemContainer<IItem>
     {
         public Slot(string name) : base(name, Slot._Slots.Count)
         {
-            Slot._Slots.Add(this as ISlot<IItem>);
+            Slot._Slots.Add(this as ISlot<IItemContainer<IItem>>);
         }
 
-        public virtual IItemContainer CreateContainer()
+        public virtual C CreateContainer()
         {
-            return (IItemContainer)System.Activator.CreateInstance(typeof(T));
+            return (C)System.Activator.CreateInstance(typeof(C));
         }
     }
 
-    public class SizedSlot<T, U> : Slot<T, U>
-        where T : IResizableContainer
-        where U : IItem
+    public class SizedSlot<C> : Slot<C>
+        where C : IResizableContainer<IItem>
     {
         private int m_defaultSize;
 
@@ -47,9 +46,9 @@ namespace Hopper.Core.Items
             m_defaultSize = defaultSize;
         }
 
-        public override IItemContainer CreateContainer()
+        public override C CreateContainer()
         {
-            return (IItemContainer)System.Activator.CreateInstance(typeof(T), m_defaultSize);
+            return (C)System.Activator.CreateInstance(typeof(C), m_defaultSize);
         }
     }
 }

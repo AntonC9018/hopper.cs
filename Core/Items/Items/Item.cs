@@ -5,7 +5,7 @@ namespace Hopper.Core.Items
     public class Item : IItem
     {
         private readonly int m_id;
-        public virtual ISlot<IItem> Slot => throw new System.NotImplementedException();
+        public virtual ISlot<IItemContainer<IItem>> Slot => throw new System.NotImplementedException();
         public virtual int Id => m_id;
 
         // Metadata

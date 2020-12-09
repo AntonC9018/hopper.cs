@@ -2,11 +2,11 @@ namespace Hopper.Core.Items
 {
     public class TinkerItem : Item
     {
-        private readonly ISlot<IItem> m_slot;
-        public override ISlot<IItem> Slot => m_slot;
+        private readonly ISlot<IItemContainer<IItem>> m_slot;
+        public override ISlot<IItemContainer<IItem>> Slot => m_slot;
         protected ITinker m_tinker;
 
-        public TinkerItem(ItemMetadata meta, ITinker tinker, ISlot<IItem> slot) : base(meta)
+        public TinkerItem(ItemMetadata meta, ITinker tinker, ISlot<IItemContainer<IItem>> slot) : base(meta)
         {
             this.m_tinker = tinker;
             m_slot = slot;

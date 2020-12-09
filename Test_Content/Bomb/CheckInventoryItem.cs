@@ -5,7 +5,7 @@ namespace Hopper.Test_Content
 {
     public class CheckInventoryItem : TinkerItem
     {
-        public CheckInventoryItem(ItemMetadata meta, ITinker tinker, ISlot<IItem> slot) : base(meta, tinker, slot)
+        public CheckInventoryItem(ItemMetadata meta, ITinker tinker, ISlot<IItemContainer<IItem>> slot) : base(meta, tinker, slot)
         {
             System.Console.WriteLine($"Tinker is null? : {tinker == null}");
         }

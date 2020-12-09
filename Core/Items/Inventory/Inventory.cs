@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using Hopper.Utils;
-using Hopper.Core.Targeting;
 
 namespace Hopper.Core.Items
 {
     public class Inventory : IInventory
     {
-        private Dictionary<ISlot<IItem>, IItemContainer> m_itemSlots;
+        private Dictionary<ISlot<IItemContainer<IItem>>, IItemContainer<IItem>> m_itemSlots;
 
         private Entity m_actor;
 
@@ -22,15 +21,17 @@ namespace Hopper.Core.Items
             }
         }
 
-        public Inventory(Entity entity, Dictionary<ISlot<IItem>, IItemContainer> slots)
+        // define slots manually
+        public Inventory(Entity entity, Dictionary<ISlot<IItemContainer<IItem>>, IItemContainer<IItem>> slots)
         {
             m_itemSlots = slots;
             m_actor = entity;
         }
 
+        // Intialize with the slots defined by default in the slots enum
         public Inventory(Entity entity)
         {
-            m_itemSlots = new Dictionary<ISlot<IItem>, IItemContainer>(Slot._Slots.Count);
+            m_itemSlots = new Dictionary<ISlot<IItemContainer<IItem>>, IItemContainer<IItem>>(Slot._Slots.Count);
             foreach (var slot in Slot._Slots)
             {
                 m_itemSlots.Add(slot, slot.CreateContainer());
@@ -75,18 +76,18 @@ namespace Hopper.Core.Items
             }
         }
 
-        public void AddContainer<T>(Slot<T, IItem> slot) where T : IItemContainer
+        public void AddContainer<T>(Slot<T> slot) where T : IItemContainer<IItem>
         {
             AddContainer(slot, (T)slot.CreateContainer());
         }
 
-        public void AddContainer<T>(Slot<T, IItem> slot, T container) where T : IItemContainer
+        public void AddContainer<T>(Slot<T> slot, T container) where T : IItemContainer<IItem>
         {
             Assert.That(
-                !m_itemSlots.ContainsKey(slot),
+                m_itemSlots.ContainsKey(slot as ISlot<IItemContainer<IItem>>) == false,
                 $"Container for key {slot.Name} has already been defined"
             );
-            m_itemSlots[slot] = container;
+            m_itemSlots[slot as ISlot<IItemContainer<IItem>>] = container;
         }
 
         public bool CanEquipItem(IItem item)
@@ -94,9 +95,9 @@ namespace Hopper.Core.Items
             return m_itemSlots.ContainsKey(item.Slot);
         }
 
-        public T GetItemFromSlot<T>(ISlot<T> slot) where T : IItem
+        public T GetContainer<T>(ISlot<T> slot) where T : IItemContainer<IItem>
         {
-            return (T)m_itemSlots[slot as ISlot<IItem>][0];
+            return (T)m_itemSlots[slot as ISlot<IItemContainer<IItem>>];
         }
 
         public bool IsEquipped(IItem item) =>

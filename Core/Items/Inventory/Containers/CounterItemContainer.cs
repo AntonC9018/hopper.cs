@@ -3,11 +3,12 @@ using Newtonsoft.Json;
 
 namespace Hopper.Core.Items
 {
-    public class CounterItemContainer : IItemContainer
+    public class CounterItemContainer<T> : IItemContainer<T>
+        where T : IItem
     {
-        private Dictionary<IItem, int> itemCount = new Dictionary<IItem, int>();
+        private Dictionary<T, int> itemCount = new Dictionary<T, int>();
 
-        public IEnumerable<IItem> AllItems
+        public IEnumerable<T> AllItems
         {
             get
             {
@@ -19,26 +20,26 @@ namespace Hopper.Core.Items
             }
         }
 
-        public List<IItem> PullOutExcess() => new List<IItem>();
-        public IItem this[int index] => throw new System.Exception("This doesn't make sense");
+        public IReadOnlyList<T> PullOutExcess() => new List<T>();
+        public T this[int index] => throw new System.Exception("This doesn't make sense");
 
         public void Insert(DecomposedItem di)
         {
-            if (itemCount.ContainsKey(di.item))
-                itemCount[di.item] += di.count;
+            if (itemCount.ContainsKey((T)di.item))
+                itemCount[(T)di.item] += di.count;
             else
-                itemCount.Add(di.item, di.count);
+                itemCount.Add((T)di.item, di.count);
         }
 
         public void Remove(DecomposedItem di)
         {
-            int newVal = itemCount[di.item] -= di.count;
+            int newVal = itemCount[(T)di.item] -= di.count;
             if (newVal <= 0)
             {
-                itemCount.Remove(di.item);
+                itemCount.Remove((T)di.item);
             }
         }
 
-        public bool Contains(IItem item) => itemCount.ContainsKey(item);
+        public bool Contains(IItem item) => itemCount.ContainsKey((T)item);
     }
 }

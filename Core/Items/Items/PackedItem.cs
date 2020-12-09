@@ -10,7 +10,7 @@ namespace Hopper.Core.Items
         private IItem m_storedItem;
         private int m_count;
 
-        public override ISlot<IItem> Slot => m_storedItem.Slot;
+        public override ISlot<IItemContainer<IItem>> Slot => m_storedItem.Slot;
 
         public PackedItem(ItemMetadata meta, IItem storedItem, int count) : base(meta)
         {

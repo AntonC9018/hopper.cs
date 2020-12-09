@@ -80,7 +80,7 @@ namespace Hopper.Test_Content
 
         public static readonly ModularItem DefaultItem;
         public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
-        public static readonly ISlot<IItem> Slot = Hopper.Core.Items.Slot.RangeWeapon;
+        public static readonly ISlot<IItemContainer<IItem>> Slot = Hopper.Core.Items.Slot.RangeWeapon;
         public static readonly Attack.Source ArrowSource = new Attack.Source();
 
         static Bow()
