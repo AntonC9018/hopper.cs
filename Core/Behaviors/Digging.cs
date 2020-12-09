@@ -54,7 +54,7 @@ namespace Hopper.Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
-                target.targetEntity.Behaviors
+                target.entity.Behaviors
                     .Get<Attackable>()
                     .Activate(ev.action.direction,
                         new Attackable.Params(ev.dig.ToAttack(), ev.actor));

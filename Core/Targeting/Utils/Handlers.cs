@@ -10,11 +10,11 @@ namespace Hopper.Core.Targeting
         public static void NextToAny(TargetEvent<AtkTarget> weaponEvent)
         {
             var first = weaponEvent.targets[0];
-            if (first.piece.index == 0 && first.atkCondition != Attackness.NEVER)
+            if (first.piece.index == 0 && first.attackness != Attackness.NEVER)
                 return;
 
             if (weaponEvent.targets.Any(
-                    t => t.atkCondition == Attackness.IF_NEXT_TO))
+                    t => t.attackness == Attackness.IF_NEXT_TO))
             {
                 weaponEvent.propagate = false;
                 weaponEvent.targets.Clear();
@@ -28,7 +28,7 @@ namespace Hopper.Core.Targeting
 
             // take first that doesn't have low priority
             AtkTarget first = weaponEvent.targets.Find(
-                t => t.atkCondition != Attackness.SKIP);
+                t => t.attackness != Attackness.SKIP);
 
             // if all have low priority, take the first one
             if (first == null)
@@ -66,27 +66,27 @@ namespace Hopper.Core.Targeting
         public static void DiscardNotClose(TargetEvent<AtkTarget> weaponEvent)
         {
             weaponEvent.targets = weaponEvent.targets
-                .FilterFromIndex(t => t.atkCondition != Attackness.IF_NEXT_TO, 1);
+                .FilterFromIndex(t => t.attackness != Attackness.IF_NEXT_TO, 1);
         }
 
         public static void DiscardUnattackable(TargetEvent<AtkTarget> weaponEvent)
         {
             weaponEvent.targets = weaponEvent.targets
-                .Where(t => t.atkCondition != Attackness.NEVER);
+                .Where(t => t.attackness != Attackness.NEVER);
         }
 
         public static void DiscardNoEntity<T>(TargetEvent<T> weaponEvent)
             where T : AtkTarget
         {
             weaponEvent.targets = weaponEvent.targets
-                .Where(t => t.targetEntity != null);
+                .Where(t => t.entity != null);
         }
 
         public static void KeepAttackable(TargetEvent<AtkTarget> weaponEvent)
         {
             weaponEvent.targets = weaponEvent.targets
-                .Where(t => t.atkCondition == Attackness.ALWAYS
-                         || t.atkCondition == Attackness.IF_NEXT_TO);
+                .Where(t => t.attackness == Attackness.ALWAYS
+                         || t.attackness == Attackness.IF_NEXT_TO);
         }
 
         public static Chain<TargetEvent<AtkTarget>> GeneralChain;

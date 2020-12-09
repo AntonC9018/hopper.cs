@@ -21,14 +21,14 @@ namespace Hopper.Core.Targeting
             m_targetLayer = targetLayer;
         }
 
-        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack)
+        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 direction, Attack attack)
         {
-            foreach (var rotatedPiece in m_pattern.GetPieces(spot, dir))
+            foreach (var rotatedPiece in m_pattern.GetPieces(spot, direction))
             {
                 Cell cell = spot.GetCellRelative(rotatedPiece.pos);
-                if (cell != null && cell.HasBlock(dir, m_skipLayer) == false)
+                if (cell != null && cell.HasBlock(direction, m_skipLayer) == false)
                 {
-                    var entities = cell.GetAllFromLayer(dir, m_targetLayer);
+                    var entities = cell.GetAllFromLayer(direction, m_targetLayer);
                     foreach (var entity in entities)
                     {
                         if (entity.Behaviors.Has<Attackable>())
@@ -36,7 +36,7 @@ namespace Hopper.Core.Targeting
                             // we can disregard the attackableness, since it will be blocked anyway.
                             // var atkness = entity.Behaviors.Get<Attackable>().GetAtkCondition(attack);
                             // if (atkness == AtkCondition.NEVER || atkness == AtkCondition.SKIP)
-                            yield return new Target(entity, dir);
+                            yield return new Target(entity, direction);
                         }
                     }
                 }

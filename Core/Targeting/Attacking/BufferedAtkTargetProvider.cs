@@ -28,21 +28,21 @@ namespace Hopper.Core.Targeting
             m_targetLayer = targetLayer;
         }
 
-        public IEnumerable<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack)
+        public List<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 direction, Attack attack)
         {
             var targetEvent = new TargetEvent<AtkTarget>
             {
                 spot = spot,
-                dir = dir,
+                direction = direction,
                 targets = new List<AtkTarget>()
             };
 
-            foreach (var rotatedPiece in m_pattern.GetPieces(spot, dir))
+            foreach (var rotatedPiece in m_pattern.GetPieces(spot, direction))
             {
                 Cell cell = spot.GetCellRelative(rotatedPiece.pos);
-                if (cell != null && cell.HasBlock(dir, m_skipLayer) == false)
+                if (cell != null && cell.HasBlock(direction, m_skipLayer) == false)
                 {
-                    var entity = cell.GetEntityFromLayer(dir, m_targetLayer);
+                    var entity = cell.GetEntityFromLayer(direction, m_targetLayer);
                     if (entity != null)
                     {
                         var atkness = entity.Behaviors.Has<Attackable>()

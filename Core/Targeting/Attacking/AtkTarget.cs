@@ -1,18 +1,16 @@
-using Hopper.Utils.Vector;
-
 namespace Hopper.Core.Targeting
 {
     public class AtkTarget
     {
-        public Attackness atkCondition = Attackness.NEVER;
+        public Attackness attackness = Attackness.NEVER;
         public Piece piece;
-        public Entity targetEntity;
+        public Entity entity;
 
-        public AtkTarget(Attackness atkCondition, Piece piece, Entity targetEntity)
+        public AtkTarget(Attackness attackness, Piece piece, Entity targetEntity)
         {
-            this.atkCondition = atkCondition;
+            this.attackness = attackness;
             this.piece = piece;
-            this.targetEntity = targetEntity;
+            this.entity = targetEntity;
         }
     }
 }

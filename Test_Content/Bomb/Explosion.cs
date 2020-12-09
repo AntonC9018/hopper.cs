@@ -67,8 +67,8 @@ namespace Hopper.Test_Content
 
             foreach (var target in targets)
             {
-                target.targetEntity.Behaviors.Get<Attackable>().Activate(knockbackDir, CreateMeta());
-                target.targetEntity.Behaviors.TryGet<Pushable>()?.Activate(knockbackDir, BasePush);
+                target.entity.Behaviors.Get<Attackable>().Activate(knockbackDir, CreateMeta());
+                target.entity.Behaviors.TryGet<Pushable>()?.Activate(knockbackDir, BasePush);
             }
             // spawn particles through some mechanism 
             EventPath.Fire(world, pos);

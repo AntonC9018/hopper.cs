@@ -1,5 +1,3 @@
-using Hopper.Core.Behaviors;
-
 namespace Hopper.Core
 {
     public class StatusParam

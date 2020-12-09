@@ -53,7 +53,6 @@ namespace Hopper.Core.Behaviors
             {
                 if (ev.actor.Inventory != null)
                 {
-                    ev.targets = new List<Target>();
                     var weapon = ev.actor.Inventory.GetItemFromSlot(Slot.Weapon);
                     if (weapon != null)
                     {
@@ -61,10 +60,13 @@ namespace Hopper.Core.Behaviors
                         // TODO: Save these initial targets at history or something
                         // since we don't want out event to have excessive data. 
                         // It may be useful in some cases, but not yet
-                        foreach (var t in weapon.GetTargets(ev.actor, ev.action.direction, ev.attack))
-                        {
-                            ev.targets.Add(new Target(t.targetEntity, t.piece.dir));
-                        }
+                        ev.targets = weapon
+                            .GetTargets(ev.actor, ev.action.direction, ev.attack)
+                            .ConvertAll(t => new Target(t.entity, t.piece.dir));
+                    }
+                    else
+                    {
+                        ev.targets = new List<Target>();
                     }
                 }
                 else
@@ -78,8 +80,8 @@ namespace Hopper.Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
-                System.Console.WriteLine($"Attacking {target.targetEntity}");
-                ApplyAttack(target.targetEntity, target.dir, (Attack)ev.attack.Copy(), ev.actor);
+                System.Console.WriteLine($"Attacking {target.entity}");
+                ApplyAttack(target.entity, target.direction, (Attack)ev.attack.Copy(), ev.actor);
             }
         }
 
@@ -119,7 +121,7 @@ namespace Hopper.Core.Behaviors
         {
             foreach (var target in ev.targets)
             {
-                TryApplyPush(target.targetEntity, target.dir, (Push)ev.push.Copy());
+                TryApplyPush(target.entity, target.direction, (Push)ev.push.Copy());
             }
         }
 

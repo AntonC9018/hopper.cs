@@ -7,7 +7,7 @@ namespace Hopper.Core.Targeting
     public class TargetEvent<T> : EventBase
     {
         public List<T> targets;
-        public IntVector2 dir;
+        public IntVector2 direction;
         public IWorldSpot spot;
     }
 }

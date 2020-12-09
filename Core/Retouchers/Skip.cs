@@ -36,13 +36,13 @@ namespace Hopper.Core.Retouchers
         static void SkipNoPlayer(Attacking.Event ev)
         {
             ev.propagate = ev.targets
-                .Any(t => t.targetEntity.IsPlayer);
+                .Any(t => t.entity.IsPlayer);
         }
 
         static void SkipSelf(Attacking.Event ev)
         {
             ev.propagate = ev.targets
-                .Any(t => t.targetEntity == ev.actor);
+                .Any(t => t.entity == ev.actor);
         }
     }
 }

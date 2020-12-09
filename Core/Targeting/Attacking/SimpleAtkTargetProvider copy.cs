@@ -16,17 +16,17 @@ namespace Hopper.Core.Targeting
             m_targetLayer = targetLayer;
         }
 
-        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack)
+        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 direction, Attack attack)
         {
-            Cell cell = spot.GetCellRelative(dir);
-            if (cell != null && cell.HasBlock(dir, m_skipLayer) == false)
+            Cell cell = spot.GetCellRelative(direction);
+            if (cell != null && cell.HasBlock(direction, m_skipLayer) == false)
             {
-                Entity entity = cell.GetEntityFromLayer(dir, Layer.WALL);
+                Entity entity = cell.GetEntityFromLayer(direction, Layer.WALL);
                 if (entity != null
                     && entity.Behaviors.Has<Attackable>()
                     && entity.Behaviors.Get<Attackable>().IsAttackable(attack, spot))
                 {
-                    yield return new Target(entity, dir);
+                    yield return new Target(entity, direction);
                 }
             }
         }

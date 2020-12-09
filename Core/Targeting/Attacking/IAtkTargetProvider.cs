@@ -7,7 +7,7 @@ namespace Hopper.Core.Targeting
     // Returns a standart Target enumerable, without any additional attack metadata like the atkness
     public interface IAtkTargetProvider
     {
-        IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack);
+        IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 direction, Attack attack);
     }
 
     // AtkTarget has additional metadata about the attack. It includes the whole attack piece,
@@ -17,6 +17,6 @@ namespace Hopper.Core.Targeting
     // This is basically only useful for player weapons.
     public interface IBufferedAtkTargetProvider
     {
-        IEnumerable<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack);
+        List<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 direction, Attack attack);
     }
 }

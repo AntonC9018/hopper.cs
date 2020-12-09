@@ -4,13 +4,13 @@ namespace Hopper.Core.Targeting
 {
     public class Target
     {
-        public Entity targetEntity;
-        public IntVector2 dir;
+        public Entity entity;
+        public IntVector2 direction;
 
-        public Target(Entity targetEntity, IntVector2 dir)
+        public Target(Entity entity, IntVector2 direction)
         {
-            this.targetEntity = targetEntity;
-            this.dir = dir;
+            this.entity = entity;
+            this.direction = direction;
         }
     }
 }
