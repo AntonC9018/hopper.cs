@@ -1,5 +1,5 @@
 #define MAIN_WILL_BE_DELETED
-#if MAIN_WILL_BE_DELETED
+#if !MAIN_WILL_BE_DELETED
 
 using System.Collections.Generic;
 using Hopper.Utils.Vector;
