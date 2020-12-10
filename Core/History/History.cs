@@ -25,17 +25,15 @@ namespace Hopper.Core.History
             return new UpdateInfo<T>
             {
                 stateAfter = state,
-                timeframe = -1,
                 updateCode = UpdateCode.control
             };
         }
 
-        public void Add(T state, int timeframe, UpdateCode updateCode)
+        public void Add(T state, UpdateCode updateCode)
         {
             var update = new UpdateInfo<T>
             {
                 stateAfter = state,
-                timeframe = timeframe,
                 updateCode = updateCode
             };
             m_updates.Add(update);
@@ -75,7 +73,6 @@ namespace Hopper.Core.History
         {
             history.Add(
                 state: ((ITrackable<EntityState>)entity).GetState(),
-                timeframe: entity.World.GetNextTimeFrame(),
                 updateCode
             );
         }

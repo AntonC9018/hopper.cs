@@ -4,6 +4,5 @@ namespace Hopper.Core.History
     {
         public T stateAfter;
         public UpdateCode updateCode;
-        public int timeframe;
     }
 }

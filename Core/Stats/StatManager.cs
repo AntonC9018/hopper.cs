@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Hopper.Core.Stats
 {
-    public class StatFS : FS<Directory, File>
+    public class StatFS : FS<File>
     {
     }
 

@@ -17,13 +17,11 @@ namespace Hopper.Core.Items
 
         public override PoolItem GetNextItem(Random rng)
         {
-            if (index == deck.Count - 1)
+            if (index == deck.Length)
             {
                 ReshuffleDeck(rng);
             }
-            var item = deck[index];
-            index++;
-            return item;
+            return deck[index++];
         }
     }
 }

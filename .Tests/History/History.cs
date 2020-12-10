@@ -42,17 +42,15 @@ namespace Hopper.Tests
         {
             history.InitControlUpdate(trackable_Hello);
             Assert.That(history.Updates[0].updateCode == UpdateCode.control);
-            Assert.That(history.Updates[0].timeframe == -1);
             Assert.That(history.Updates[0].stateAfter == "Hello");
         }
 
         [Test]
         public void RightDataAreAdded()
         {
-            history.Add(trackable_World.GetState(), 1, testCode);
+            history.Add(trackable_World.GetState(), testCode);
 
             Assert.That(history.Updates[0].updateCode == testCode);
-            Assert.That(history.Updates[0].timeframe == 1);
             Assert.That(history.Updates[0].stateAfter == "World");
         }
 
@@ -60,11 +58,10 @@ namespace Hopper.Tests
         public void LastState_BecomesControlState_AfterClear()
         {
             history.InitControlUpdate(trackable_Hello);
-            history.Add(trackable_World.GetState(), 1, testCode);
+            history.Add(trackable_World.GetState(), testCode);
             history.Clear();
 
             Assert.That(history.Updates[0].updateCode == UpdateCode.control);
-            Assert.That(history.Updates[0].timeframe == -1);
             Assert.That(history.Updates[0].stateAfter == "World");
         }
 
@@ -78,7 +75,7 @@ namespace Hopper.Tests
         public void SearchBefore_WorksCorrectly()
         {
             history.InitControlUpdate(trackable_Hello);
-            history.Add(trackable_World.GetState(), 2, testCode);
+            history.Add(trackable_World.GetState(), testCode);
             var state = history.GetStateBefore(testCode);
             Assert.That(state == "Hello");
         }

@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Hopper.Utils;
 
 namespace Hopper.Core.FS
 {
-    public class FS<D, F>
-        where D : Directory, new()
-        where F : File
+    // T is the base type of file this FS can hold
+    public class FS<T> where T : File
     {
         protected static readonly char s_separationChar = '/';
         protected virtual string[] Split(string path)
@@ -15,48 +12,48 @@ namespace Hopper.Core.FS
             return path.Split(s_separationChar);
         }
 
-        private D m_baseDir;
+        private Directory m_baseDir;
 
-        public D BaseDir
+        public Directory BaseDir
         {
             get => m_baseDir;
         }
 
         public FS()
         {
-            m_baseDir = new D();
+            m_baseDir = new Directory();
         }
-        public FS(D d)
+        public FS(Directory baseDir)
         {
-            m_baseDir = d;
+            m_baseDir = baseDir;
         }
 
-        protected D GetDirectoryBySplitPath(IEnumerable<string> dirNames)
+        protected Directory GetDirectoryBySplitPath(IEnumerable<string> dirNames)
         {
-            D dir = m_baseDir;
+            Directory dir = m_baseDir;
             foreach (var dirName in dirNames)
             {
                 // getting a node should not require a virtual function
                 // since it is always just nodes in an array
-                dir = (D)dir.nodes[dirName];
+                dir = (Directory)dir.nodes[dirName];
             }
-            return (D)dir;
+            return (Directory)dir;
         }
 
-        protected D GetDirectoryBySplitPathLazy(IEnumerable<string> dirNames)
+        protected Directory GetDirectoryBySplitPathLazy(IEnumerable<string> dirNames)
         {
-            D dir = m_baseDir;
+            Directory dir = m_baseDir;
             foreach (var dirName in dirNames)
             {
                 // getting a node should not require a virtual function
                 // since it is always just nodes in an array
                 if (!dir.nodes.ContainsKey(dirName))
                 {
-                    dir.nodes.Add(dirName, new D());
+                    dir.nodes.Add(dirName, new Directory());
                 }
-                dir = (D)dir.nodes[dirName];
+                dir = (Directory)dir.nodes[dirName];
             }
-            return (D)dir;
+            return (Directory)dir;
         }
 
         public List<Node> GetNodes(string path)
@@ -73,7 +70,7 @@ namespace Hopper.Core.FS
 
                 foreach (var node in buffer)
                 {
-                    foreach (var n in ExpandPath(segment, (D)node))
+                    foreach (var n in ExpandPath(segment, (Directory)node))
                     {
                         currentNodes.Add(n);
                     }
@@ -82,9 +79,10 @@ namespace Hopper.Core.FS
             return currentNodes;
         }
 
-        public List<F> GetFiles(string path) => GetNodes(path).ConvertAll(e => (F)e);
+        public List<T> GetFiles(string path) => GetNodes(path).ConvertAll(e => (T)e);
 
-        public List<Node> GetNodesLazy(string path, F defaultValue)
+        // A copy of the initial value will be created for each of the nodes
+        public List<Node> GetNodesLazy(string path, T defaultValue)
         {
             var splitPath = Split(path);
             List<Node> currentNodes = new List<Node> { m_baseDir };
@@ -101,7 +99,7 @@ namespace Hopper.Core.FS
 
                 foreach (var node in buffer)
                 {
-                    foreach (var n in ExpandPathLazy(splitPath[i], (D)node, substitute))
+                    foreach (var n in ExpandPathLazy(splitPath[i], (Directory)node, substitute))
                     {
                         currentNodes.Add(n);
                     }
@@ -111,10 +109,10 @@ namespace Hopper.Core.FS
             return currentNodes;
         }
 
-        public List<F> GetFilesLazy(string path, F defaultValue)
-            => GetNodesLazy(path, defaultValue).ConvertAll(e => (F)e);
+        public List<T> GetFilesLazy(string path, T defaultValue)
+            => GetNodesLazy(path, defaultValue).ConvertAll(e => (T)e);
 
-        protected IEnumerable<Node> ExpandPath(string pathItem, D currentDir)
+        protected IEnumerable<Node> ExpandPath(string pathItem, Directory currentDir)
         {
             if (pathItem == "*")
             {
@@ -129,7 +127,7 @@ namespace Hopper.Core.FS
             }
         }
 
-        protected IEnumerable<Node> ExpandPathLazy(string pathItem, D currentDir, F substitute)
+        protected IEnumerable<Node> ExpandPathLazy(string pathItem, Directory currentDir, T substitute)
         {
             if (pathItem == "*")
             {
@@ -143,7 +141,7 @@ namespace Hopper.Core.FS
                 Node sub;
                 if (substitute == null)
                 {
-                    sub = new D();
+                    sub = new Directory();
                 }
                 else
                 {
@@ -158,11 +156,11 @@ namespace Hopper.Core.FS
             }
         }
 
-        public List<F> GetAllFiles()
+        public List<T> GetAllFiles()
         {
             List<Node> currentNodes = new List<Node>() { m_baseDir };
             List<Node> buffer = new List<Node>();
-            List<F> result = new List<F>();
+            List<T> result = new List<T>();
 
             while (currentNodes.Count > 0)
             {
@@ -173,13 +171,13 @@ namespace Hopper.Core.FS
 
                 foreach (var node in buffer)
                 {
-                    if (node is F)
+                    if (node is T)
                     {
-                        result.Add((F)node);
+                        result.Add((T)node);
                     }
                     else
                     {
-                        foreach (var item in ((D)node).nodes.Values)
+                        foreach (var item in ((Directory)node).nodes.Values)
                         {
                             currentNodes.Add(item);
                         }
@@ -189,7 +187,7 @@ namespace Hopper.Core.FS
             return result;
         }
 
-        public D GetDirectory(string path)
+        public Directory GetDirectory(string path)
         {
             var dirName = Split(path);
             return GetDirectoryBySplitPath(dirName);
@@ -204,7 +202,8 @@ namespace Hopper.Core.FS
             return node.nodes[fileName];
         }
 
-        public F GetFileLazy(string path, F initialValue)
+        // A copy of the initial value will be created
+        public T GetFileLazy(string path, T initialValue)
         {
             var dirNames = Split(path);
             var dirPath = dirNames.Take(dirNames.Length - 1);
@@ -215,57 +214,48 @@ namespace Hopper.Core.FS
                 System.Console.WriteLine($"Lazy loading file {path}");
                 node.nodes.Add(fileName, initialValue.Copy());
             }
-            return (F)node.nodes[fileName];
+            return (T)node.nodes[fileName];
         }
 
-        public F GetFile(string path)
+        public T GetFile(string path)
         {
             var dirNames = Split(path);
             var dirPath = dirNames.Take(dirNames.Length - 1);
             var node = GetDirectoryBySplitPath(dirPath);
             var fileName = dirNames[dirNames.Length - 1];
-            return (F)node.nodes[fileName];
+            return (T)node.nodes[fileName];
         }
 
         public void Debug() => Debug(m_baseDir, 2);
 
-        public void Debug(D dir, int indentLevel)
+        public void Debug(Directory dir, int indentLevel)
         {
             foreach (var kvp in dir.nodes)
             {
                 System.Console.WriteLine(kvp.Key.PadLeft(indentLevel));
-                if (kvp.Value is D)
+                if (kvp.Value is Directory)
                 {
-                    Debug((D)kvp.Value, indentLevel + 4);
+                    Debug((Directory)kvp.Value, indentLevel + 4);
                 }
             }
         }
 
-        public void CopyDirectoryStructure(D from, D to)
+        public void CopyDirectoryStructure(Directory from, Directory to)
         {
             foreach (var kvp in from.nodes)
             {
-                if (kvp.Value is D)
+                if (kvp.Value is Directory)
                 {
-                    var subdir = new D();
+                    var subdir = new Directory();
                     to.nodes.Add(kvp.Key, subdir);
-                    CopyDirectoryStructure((D)kvp.Value, subdir);
+                    CopyDirectoryStructure((Directory)kvp.Value, subdir);
                 }
                 else
                 {
-                    var copy = ((F)kvp.Value).Copy();
+                    var copy = ((T)kvp.Value).Copy();
                     to.nodes.Add(kvp.Key, copy);
                 }
             }
         }
-
-        // public bool HasNode(string path)
-        // {
-        //     var dirNames = Split(path);
-        //     var dirPath = dirNames.Take(dirNames.Length - 1);
-        //     var node = GetDirectoryBySplitPath(dirPath);
-        //     var fileName = dirNames[dirNames.Length - 1];
-        //     return node.;
-        // }
     }
 }

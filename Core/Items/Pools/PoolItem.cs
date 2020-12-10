@@ -13,12 +13,6 @@ namespace Hopper.Core.Items
             this.quantity = quantity;
         }
 
-        public PoolItem(IHaveId item, int quantity)
-        {
-            this.id = item.Id;
-            this.quantity = quantity;
-        }
-
         public override bool Equals(object obj)
         {
             return id == ((PoolItem)obj).id;

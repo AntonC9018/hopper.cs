@@ -49,10 +49,7 @@ namespace Hopper.Core
         public event System.Action InitEvent;
         public event System.Action DieEvent;
 
-        EntityState ITrackable<EntityState>.GetState()
-        {
-            return new EntityState(this);
-        }
+        EntityState ITrackable<EntityState>.GetState() => new EntityState(this);
 
         public Entity()
         {

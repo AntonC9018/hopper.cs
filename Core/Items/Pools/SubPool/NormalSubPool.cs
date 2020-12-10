@@ -17,7 +17,8 @@ namespace Hopper.Core.Items
 
         public override PoolItem GetNextItem(Random rng)
         {
-            if (index >= deck.Count)
+            // Subpool exhausted
+            if (index >= deck.Length)
             {
                 return null;
             }

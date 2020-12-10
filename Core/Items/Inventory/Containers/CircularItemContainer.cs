@@ -59,14 +59,14 @@ namespace Hopper.Core.Items
         public T this[int index] => m_items[index];
         public void Insert(DecomposedItem di)
         {
-            Assert.That(di.count == 1, "Packed items are not supported in circular item containers");
+            Assert.AreEqual(1, di.count, "Packed items are not supported in circular item containers");
             var excess = m_items.PushBack((T)di.item);
             if (excess != null)
                 m_excess.Add(excess);
         }
         public void Remove(DecomposedItem di)
         {
-            Assert.That(di.count == 1, "Packed items are not supported in circular item containers");
+            Assert.AreEqual(1, di.count, "Packed items are not supported in circular item containers");
             Assert.That(m_items.Size > 0, "Removing from an empty circular item container");
 
             int i = 0;
