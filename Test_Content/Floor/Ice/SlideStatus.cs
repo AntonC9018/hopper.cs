@@ -3,6 +3,7 @@ using Hopper.Core;
 using Hopper.Core.Behaviors;
 using Hopper.Utils.Chains;
 using Hopper.Core.Stats.Basic;
+using Hopper.Core.Targeting;
 
 namespace Hopper.Test_Content
 {
@@ -28,7 +29,7 @@ namespace Hopper.Test_Content
 
         private bool HasIceUnder(Entity entity)
         {
-            var floor = entity.Cell.GetAnyEntityFromLayer(Layer.FLOOR);
+            var floor = entity.GetCell().GetAnyEntityFromLayer(Layer.FLOOR);
             return floor != null && floor.Behaviors.Has<Sliding>();
         }
 

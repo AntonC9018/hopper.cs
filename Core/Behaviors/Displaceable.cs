@@ -3,6 +3,7 @@ using Hopper.Utils.Vector;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Chains;
+using Hopper.Core.Targeting;
 
 namespace Hopper.Core.Behaviors
 {
@@ -15,6 +16,24 @@ namespace Hopper.Core.Behaviors
             public Move move;
             public IntVector2 newPos;
             public IntVector2 dir;
+            public Layer blockLayer;
+        }
+
+        public class Config
+        {
+            public Layer blockLayer;
+
+            public Config(Layer blockLayer)
+            {
+                this.blockLayer = blockLayer;
+            }
+        }
+
+        private Layer m_blockLayer;
+
+        public void Init(Config config)
+        {
+            m_blockLayer = config == null ? ExtendedLayer.BLOCK : config.blockLayer;
         }
 
         public bool Activate(IntVector2 dir, Move move)
@@ -23,7 +42,8 @@ namespace Hopper.Core.Behaviors
             {
                 actor = m_entity,
                 dir = dir,
-                move = move
+                move = move,
+                blockLayer = m_blockLayer
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -34,7 +54,7 @@ namespace Hopper.Core.Behaviors
 
             do
             {
-                if (ev.actor.HasBlockRelative(ev.dir * i))
+                if (ev.actor.HasBlockRelative(ev.dir * i, ev.blockLayer))
                     break;
                 i++;
             } while (i < ev.move.power);

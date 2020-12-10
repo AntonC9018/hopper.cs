@@ -21,8 +21,8 @@ namespace Hopper.Test_Content
         {
             m_hasBounced = false;
             // automatically update the whether an entity left on top of us
-            m_entity.InitEvent += (() => m_entity.Cell.LeaveEvent += GetUnpushed);
-            m_entity.DieEvent += (() => m_entity.Cell.LeaveEvent -= GetUnpushed);
+            m_entity.InitEvent += (() => m_entity.GetCell().LeaveEvent += GetUnpushed);
+            m_entity.DieEvent += (() => m_entity.GetCell().LeaveEvent -= GetUnpushed);
         }
 
         public bool Activate(Action action)
@@ -41,7 +41,7 @@ namespace Hopper.Test_Content
             }
 
             // otherwise, try to bounce
-            var entity = m_entity.Cell.GetUndirectedEntityFromLayer(m_targetedLayer);
+            var entity = m_entity.GetCell().GetUndirectedEntityFromLayer(m_targetedLayer);
 
             // if there's nobody to target, watch the cell, since
             // other traps may push a person onto us.
@@ -63,7 +63,7 @@ namespace Hopper.Test_Content
         private void StartListening()
         {
             m_isEnterListenerApplied = true;
-            m_entity.Cell.EnterEvent += TryPushTarget;
+            m_entity.GetCell().EnterEvent += TryPushTarget;
 
             // only push in our phase
             m_entity.World.State.EndOfPhaseEvent += Reset;
@@ -101,7 +101,7 @@ namespace Hopper.Test_Content
         {
             // we don't push the entity in the next iteration 
             // if they end up on top of us in this iteration
-            var ent = m_entity.Cell.GetUndirectedEntityFromLayer(m_targetedLayer);
+            var ent = m_entity.GetCell().GetUndirectedEntityFromLayer(m_targetedLayer);
             m_hasEntityBeenOnTop = ent != null;
         }
 
@@ -109,7 +109,7 @@ namespace Hopper.Test_Content
         {
             if (m_isEnterListenerApplied)
             {
-                m_entity.Cell.EnterEvent -= TryPushTarget;
+                m_entity.GetCell().EnterEvent -= TryPushTarget;
                 m_entity.World.State.EndOfPhaseEvent -= Reset;
                 m_isEnterListenerApplied = false;
             }

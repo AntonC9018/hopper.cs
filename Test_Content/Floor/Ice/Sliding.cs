@@ -1,6 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Behaviors;
 using Hopper.Core.History;
+using Hopper.Core.Targeting;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
 
@@ -12,13 +13,13 @@ namespace Hopper.Test_Content
 
         private void Init(object _)
         {
-            m_entity.InitEvent += (() => m_entity.Cell.EnterEvent += ApplySliding);
-            m_entity.DieEvent += (() => m_entity.Cell.EnterEvent -= ApplySliding);
+            m_entity.InitEvent += (() => m_entity.GetCell().EnterEvent += ApplySliding);
+            m_entity.DieEvent += (() => m_entity.GetCell().EnterEvent -= ApplySliding);
         }
 
         public bool Activate(Action action)
         {
-            var entity = m_entity.Cell.GetUndirectedEntityFromLayer(TargetedLayer);
+            var entity = m_entity.GetCell().GetUndirectedEntityFromLayer(TargetedLayer);
             if (entity != null)
             {
                 ApplySliding(entity);

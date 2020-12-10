@@ -17,7 +17,7 @@ namespace Hopper.Test_Content
         {
             if (ev.actor.IsDead && ev.atkParams.attacker != null)
             {
-                foreach (var ent in ev.actor.Cell.GetAllFromLayer(m_teleportedLayer))
+                foreach (var ent in ev.actor.GetCell().GetAllFromLayer(m_teleportedLayer))
                 {
                     ent.ResetPosInGrid(ev.atkParams.attacker.Pos);
                 }

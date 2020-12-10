@@ -28,8 +28,8 @@ namespace Hopper.Test_Content
 
         private void ListenCell()
         {
-            Cell.EnterEvent += Stuck;
-            Cell.LeaveEvent += UnStuck;
+            this.GetCell().EnterEvent += Stuck;
+            this.GetCell().LeaveEvent += UnStuck;
             DieEvent += DieHandler;
         }
 
@@ -51,9 +51,9 @@ namespace Hopper.Test_Content
 
         private void DieHandler()
         {
-            Cell.EnterEvent -= Stuck;
-            Cell.LeaveEvent -= UnStuck;
-            foreach (var ent in Cell.GetAllFromLayer(m_targetedLayer))
+            this.GetCell().EnterEvent -= Stuck;
+            this.GetCell().LeaveEvent -= UnStuck;
+            foreach (var ent in this.GetCell().GetAllFromLayer(m_targetedLayer))
             {
                 UnStuck(ent);
             }

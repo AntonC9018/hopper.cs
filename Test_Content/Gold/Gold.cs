@@ -41,7 +41,7 @@ namespace Hopper.Test_Content
 
         private static void PickUp(Displaceable.Event ev)
         {
-            var golds = ev.actor.Cell.GetAllFromLayer(Layer.GOLD);
+            var golds = ev.actor.GetCell().GetAllFromLayer(Layer.GOLD);
             foreach (var gold in golds)
             {
                 if (gold != null && gold.IsDead == false)

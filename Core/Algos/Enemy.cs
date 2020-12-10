@@ -7,7 +7,7 @@ namespace Hopper.Core
     {
         static bool AskMove(Acting.Event ev)
         {
-            var e = ev.actor.Cell.GetAllFromLayer(ev.action.direction, Layer.REAL);
+            var e = ev.actor.GetCell().GetAllFromLayer(ev.action.direction, Layer.REAL);
             bool success = false;
             foreach (var entity in e)
             {

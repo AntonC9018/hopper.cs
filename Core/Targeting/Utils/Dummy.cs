@@ -12,10 +12,5 @@ namespace Hopper.Core.Targeting
 
         public IntVector2 Pos { get; private set; }
         public World World { get; private set; }
-
-        public Cell GetCellRelative(IntVector2 dir)
-        {
-            return World.Grid.GetCellAt(Pos + dir);
-        }
     }
 }

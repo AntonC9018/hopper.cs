@@ -2,6 +2,7 @@ using Hopper.Core.Chains;
 using Hopper.Core;
 using Hopper.Core.Behaviors;
 using Hopper.Core.Items;
+using Hopper.Core.Targeting;
 
 namespace Hopper.Test_Content
 {

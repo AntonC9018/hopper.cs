@@ -56,7 +56,7 @@ namespace Hopper.Test_Content
         {
             if (ev.applyTo == null)
             {
-                ev.applyTo = ev.actor.Cell.GetEntityFromLayer(ev.action.direction, Layer.REAL);
+                ev.applyTo = ev.actor.GetCell().GetEntityFromLayer(ev.action.direction, Layer.REAL);
             }
         }
 

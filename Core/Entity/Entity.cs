@@ -2,9 +2,7 @@ using Hopper.Utils.Vector;
 using Hopper.Core.Items;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats;
-using Hopper.Core.Targeting;
 using Hopper.Core.History;
-using System;
 
 namespace Hopper.Core
 {
@@ -15,7 +13,7 @@ namespace Hopper.Core
         private int m_id;
 
         [DataMember(Name = "pos")]
-        protected IntVector2 m_pos;
+        protected IntVector2 m_pos = IntVector2.Zero;
         [DataMember(Name = "orientation")]
         protected IntVector2 m_orientation = IntVector2.Zero;
         public IntVector2 Pos { get => m_pos; set => m_pos = value; }
@@ -24,7 +22,6 @@ namespace Hopper.Core
         public virtual Layer Layer => Layer.REAL;
         public virtual bool IsDirected => false;
         public virtual bool IsPlayer => false;
-        public Cell Cell => World.Grid.GetCellAt(m_pos);
 
         // state
         // isDead is set to true when the entity needs to be filtered out 
@@ -63,11 +60,6 @@ namespace Hopper.Core
         public void _SetId(int id)
         {
             this.m_id = id;
-        }
-
-        public void Init(IntVector2 pos, World world)
-        {
-            Init(m_pos, m_orientation, world);
         }
 
         public void Init(IntVector2 pos, IntVector2 orientation, World world)
@@ -115,32 +107,6 @@ namespace Hopper.Core
 
             History.Add(this, UpdateCode.dead);
         }
-
-        public IntVector2 GetPosRelative(IntVector2 offset)
-        {
-            return m_pos + offset;
-        }
-
-        public Cell GetCellRelative(IntVector2 offset)
-        {
-            return World.Grid.GetCellAt(m_pos + offset);
-        }
-
-        public bool HasBlockRelative(IntVector2 offset)
-        {
-            var cell = GetCellRelative(offset);
-            if (cell == null) return true;
-            return cell.HasBlock(offset.Sign(), ExtendedLayer.BLOCK);
-        }
-
-        // public Entity GetTargetRelative_IfNotBlocked(IntVector2 direction, Layer layer)
-        // {
-        //     if (Cell.HasDirectionalBlock(direction))
-        //     {
-        //         return null;
-        //     }
-        //     return GetCellRelative(direction).GetAnyEntityFromLayer(layer);
-        // }
 
         public override bool Equals(object obj)
         {

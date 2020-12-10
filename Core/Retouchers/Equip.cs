@@ -11,7 +11,7 @@ namespace Hopper.Core.Retouchers
 
         static void PickUp(ActorEvent actorEvent)
         {
-            var droppedItems = actorEvent.actor.Cell.m_entities
+            var droppedItems = actorEvent.actor.GetCell().m_entities
                 .Where(i => i.Layer == Layer.DROPPED)
                 .ConvertAll<DroppedItem>(i => (DroppedItem)i);
 

@@ -35,8 +35,8 @@ namespace Hopper.Test_Content
 
         private void ListenCell()
         {
-            Cell.EnterEvent += BlockOff;
-            Cell.LeaveEvent += Unblock;
+            this.GetCell().EnterEvent += BlockOff;
+            this.GetCell().LeaveEvent += Unblock;
             this.DieEvent += RemoveAll;
         }
 
@@ -67,7 +67,7 @@ namespace Hopper.Test_Content
 
         private void TryKillBarriers()
         {
-            if (m_barriers != null && Cell.GetUndirectedEntityFromLayer(TargetedLayer) == null)
+            if (m_barriers != null && this.GetCell().GetUndirectedEntityFromLayer(TargetedLayer) == null)
             {
                 KillBarriers();
             }
@@ -87,8 +87,8 @@ namespace Hopper.Test_Content
 
         private void RemoveAll()
         {
-            Cell.EnterEvent -= BlockOff;
-            Cell.LeaveEvent -= Unblock;
+            this.GetCell().EnterEvent -= BlockOff;
+            this.GetCell().LeaveEvent -= Unblock;
             if (m_barriers != null)
             {
                 KillBarriers();
