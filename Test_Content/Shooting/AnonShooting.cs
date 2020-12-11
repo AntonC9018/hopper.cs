@@ -8,20 +8,20 @@ namespace Hopper.Test_Content
 {
     public class AnonShooting : ShootingShared, IAnyShooting
     {
-        private Attack m_attack;
-        private Push m_push;
+        private System.Func<Registry, Attack> m_attackFunc; // TODO: take from function
+        private System.Func<Registry, Push> m_pushFunc; // TODO: take from function
 
         public AnonShooting(
             Layer targetedLayer,
             Layer skipLayer,
-            Attack attack,
-            Push push,
+            System.Func<Registry, Attack> attack,
+            System.Func<Registry, Push> push,
             bool stopAfterFirstAttack)
 
             : base(targetedLayer, skipLayer, stopAfterFirstAttack)
         {
-            m_attack = attack;
-            m_push = push;
+            m_attackFunc = attack;
+            m_pushFunc = push;
         }
 
         public ShootingInfo Shoot(Entity entity, Action action)
@@ -43,10 +43,13 @@ namespace Hopper.Test_Content
 
         private void ShootOnceAnon(Entity attacked, IntVector2 direction)
         {
-            Attacking.TryApplyAttack(attacked, direction, m_attack, null);
-            if (m_push != null)
+            Attacking.TryApplyAttack(attacked, direction,
+                m_attackFunc(attacked.World.m_currentRegistry), null);
+
+            if (m_pushFunc != null)
             {
-                Attacking.TryApplyPush(attacked, direction, m_push);
+                Attacking.TryApplyPush(attacked, direction,
+                    m_pushFunc(attacked.World.m_currentRegistry));
             }
         }
     }

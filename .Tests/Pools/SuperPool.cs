@@ -100,7 +100,7 @@ namespace Hopper.Tests
             // Reset the first pool again
             normalPool.GetNextItem("1");
 
-            Assert.AreEqual(0, it2.quantity, "The second subpool must not be affected in this case.");
+            Assert.AreEqual(0, it3.quantity, "The second subpool must not be affected in this case.");
         }
     }
 }

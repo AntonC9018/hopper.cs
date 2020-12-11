@@ -89,7 +89,7 @@ namespace Hopper.Test_Content
 
             if (displaceable != null)
             {
-                var move = (Move)Move.Path.DefaultFile.Copy();
+                var move = (Move)Move.Path.defaultFile.Copy();
                 displaceable.Activate(store.initialDirection, move);
             }
         }

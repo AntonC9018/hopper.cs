@@ -5,7 +5,7 @@ namespace Hopper.Test_Content
 {
     public class FreezeStat : StatusFile
     {
-        public static readonly StatPath<FreezeStat> Path = new StatPath<FreezeStat>(
+        public static readonly SimpleStatPath<FreezeStat> Path = new SimpleStatPath<FreezeStat>(
             "status/freeze", new FreezeStat { power = 1, amount = 3 });
     }
 }

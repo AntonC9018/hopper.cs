@@ -15,7 +15,7 @@ namespace Hopper.Test_Content
             amount = 2;
         }
 
-        public static readonly StatPath<Invincibility> Path = new StatPath<Invincibility>("status/inv");
+        public static readonly SimpleStatPath<Invincibility> Path = new SimpleStatPath<Invincibility>("status/inv");
 
         public static Status<StatusData> status = new Status<StatusData>(
             new ChainDefBuilder()

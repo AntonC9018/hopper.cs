@@ -1,11 +1,11 @@
-using Hopper.Utils.Chains;
 using Hopper.Core.Behaviors;
 using Hopper.Core.Stats;
 using Hopper.Core.Chains;
+using Hopper.Core.Stats.Basic;
 
 namespace Hopper.Core
 {
-    public interface IStatus : IHaveId
+    public interface IStatus : IKind
     {
         void Update(Entity entity);
         bool IsApplied(Entity entity);
@@ -15,25 +15,41 @@ namespace Hopper.Core
 
     public static class Status
     {
-        public class Resistance : MapFile
+        public static class Resistance
         {
-            public static readonly StatPath<Resistance> Path = new StatPath<Resistance>("status/res");
-            protected override MapFile DefaultFile => Path.DefaultFile;
+            public static StatPath<ArrayFile> Path =
+                new StatPath<ArrayFile>
+                (
+                    "status/res",
+                    ArrayFilePath<IStatus>.GetDefaultFile
+                );
         }
     }
 
     public class Status<T> : IStatus where T : StatusData, new()
     {
         private IStatPath<StatusFile> m_statPath;
+        private int m_resDefaultValue;
+        private Registry m_registry;
+        private int m_id;
         protected Tinker<T> m_tinker;
-        public int Id => m_tinker.Id;
+
         public Tinker<T> Tinker => m_tinker;
+        public int Id => m_id;
+        public SourceBase<IStatus> m_source;
 
         public Status(IChainDef[] chainDefs, IStatPath<StatusFile> statPath, int defaultResValue)
         {
             m_statPath = statPath;
             m_tinker = new Tinker<T>(chainDefs);
-            Status.Resistance.Path.DefaultFile.Add(Id, defaultResValue);
+            m_source = new SourceBase<IStatus> { resistance = defaultResValue };
+        }
+
+        public void RegisterSelf(Registry registry)
+        {
+            m_tinker.RegisterSelf(registry);
+            m_id = registry.GetKindRegistry<IStatus>().Add(this);
+            m_source.InitFor(registry);
         }
 
         public virtual void Update(Entity entity)

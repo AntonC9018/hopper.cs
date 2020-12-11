@@ -3,18 +3,18 @@ using Newtonsoft.Json.Linq;
 
 namespace Hopper.Core
 {
-    public class IKindConverter<T> : JsonConverter<T> where T : IHaveId
-    {
-        public override T ReadJson(JsonReader reader, System.Type objectType, T existingValue, bool hasExistingValue, JsonSerializer serializer)
-        {
-            var id = reader.ReadAsInt32() ?? 0;
-            return Registry.Default.GetKind<T>(id);
-        }
+    // public class IKindConverter<T> : JsonConverter<T> where T : IKind
+    // {
+    //     public override T ReadJson(JsonReader reader, System.Type objectType, T existingValue, bool hasExistingValue, JsonSerializer serializer)
+    //     {
+    //         var id = reader.ReadAsInt32() ?? 0;
+    //         return Registry.Default.GetKind<T>(id);
+    //     }
 
-        public override void WriteJson(JsonWriter writer, T value, JsonSerializer serializer)
-        {
-            JToken t = JToken.FromObject(value.Id);
-            t.WriteTo(writer);
-        }
-    }
+    //     public override void WriteJson(JsonWriter writer, T value, JsonSerializer serializer)
+    //     {
+    //         JToken t = JToken.FromObject(value.Id);
+    //         t.WriteTo(writer);
+    //     }
+    // }
 }

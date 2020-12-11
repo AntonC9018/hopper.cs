@@ -150,7 +150,8 @@ namespace Hopper.Core
                 {
                     if (entity.IsDead)
                     {
-                        Registry.Default.Entity.Remove(entity.Id);
+                        // TODO: Store entities by world
+                        // Registry.Default.Entity.Remove(entity.Id);
                     }
                     else
                     {

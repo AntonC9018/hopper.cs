@@ -57,7 +57,11 @@ namespace Hopper.Core.Behaviors
                 target.entity.Behaviors
                     .Get<Attackable>()
                     .Activate(ev.action.direction,
-                        new Attackable.Params(ev.dig.ToAttack(), ev.actor));
+                        new Attackable.Params(
+                            ev.dig.ToAttack(ev.actor.World.m_currentRegistry),
+                            ev.actor
+                        )
+                    );
             }
         }
 

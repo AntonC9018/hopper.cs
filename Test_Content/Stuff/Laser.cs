@@ -23,21 +23,23 @@ namespace Hopper.Test_Content
     {
         public static readonly WorldEventPath<LaserInfo> EventPath = new WorldEventPath<LaserInfo>();
 
-        private static Attack.Source AttackSource = new Attack.Source();
-        private static Attack DefaultAttack = new Attack
-        {
-            power = 1,
-            sourceId = AttackSource.Id,
-            damage = 2,
-            pierce = 5
-        };
-        private static Push.Source PushSource = new Push.Source();
-        private static Push DefaultPush = new Push
-        {
-            power = 1,
-            sourceId = PushSource.Id,
-            distance = 1
-        };
+        private static Attack.Source AttackSource = new Attack.Source { resistance = 1 };
+        private static Attack DefaultAttack(Registry reg) =>
+            new Attack
+            {
+                power = 1,
+                sourceId = AttackSource.GetId(reg),
+                damage = 2,
+                pierce = 5
+            };
+        private static Push.Source PushSource = new Push.Source { resistance = 1 };
+        private static Push DefaultPush(Registry reg) =>
+            new Push
+            {
+                power = 1,
+                sourceId = PushSource.GetId(reg),
+                distance = 1
+            };
         private static Layer TargetedLayer = Layer.REAL;
         private static Layer SkipLayer = Layer.WALL;
 

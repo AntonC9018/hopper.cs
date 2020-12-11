@@ -3,7 +3,7 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
-    public interface IWorldEvent : IHaveId
+    public interface IWorldEvent : IKind
     {
         IWorldEvent GetCopy();
     }
@@ -15,14 +15,19 @@ namespace Hopper.Core
 
         public event System.Action<T> Event;
 
+        public WorldEvent()
+        {
+
+        }
+
         public void Fire(T pos)
         {
             Event?.Invoke(pos);
         }
 
-        public WorldEvent()
+        public void RegisterSelf(Registry registry)
         {
-            m_id = Registry.Default.GetKindRegistry<IWorldEvent>().Add(this);
+            m_id = registry.GetKindRegistry<IWorldEvent>().Add(this);
         }
 
         private WorldEvent(int id)

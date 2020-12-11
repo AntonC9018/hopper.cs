@@ -1,8 +1,8 @@
 namespace Hopper.Core
 {
-    public interface IFactory<out T> : IHaveId
+    public interface IFactory<out T> : IKind
     {
-        T Instantiate();
-        T ReInstantiate(int id);
+        T Instantiate(Registry registry);
+        T ReInstantiate(Registry registry, int id);
     }
 }

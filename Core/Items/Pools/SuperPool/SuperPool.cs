@@ -22,7 +22,7 @@ namespace Hopper.Core.Items
         private SuperPool(SuperPool<SP> copyFrom)
         {
             m_fs = new PoolFS<SP>();
-            m_fs.CopyDirectoryStructure(copyFrom.m_fs.BaseDir, m_fs.BaseDir);
+            m_fs.BaseDir.CopyDirectoryStructureFrom(copyFrom.m_fs.BaseDir);
             m_fs.m_tildeMap = new List<string>(copyFrom.m_fs.m_tildeMap);
             m_rng = copyFrom.m_rng; // TODO: copy from seed
 

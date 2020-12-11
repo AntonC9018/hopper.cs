@@ -38,8 +38,11 @@ namespace Hopper.Tests
 
         public Inventory_Tests()
         {
+            Registry registry = new Registry();
             item_Hello = new TestItem(new ItemMetadata("Hello"));
             item_World = new TestItem(new ItemMetadata("World"));
+            item_Hello.RegisterSelf(registry);
+            item_World.RegisterSelf(registry);
         }
 
         [SetUp]
@@ -76,7 +79,7 @@ namespace Hopper.Tests
             inventory.Equip(item_Hello);
 
             Assert.AreEqual(inventory.GetContainer(TestSlot)[0], item_Hello);
-            Assert.AreEqual(ItemAction.Equip, item_Hello.messages[0], "The equip function was called");
+            Assert.AreEqual(ItemAction.Equip, item_Hello.messages[0], "The equip method was called");
         }
 
         [Test]
@@ -86,7 +89,7 @@ namespace Hopper.Tests
             inventory = new Inventory(null);
             inventory.Equip(item_Hello);   // [0]
             inventory.Unequip(item_Hello); // [1]
-            Assert.AreEqual(ItemAction.Unequip, item_Hello.messages[1], "The unequip function was called");
+            Assert.AreEqual(ItemAction.Unequip, item_Hello.messages[1], "The unequip method was called");
         }
 
         [Test]
@@ -95,8 +98,8 @@ namespace Hopper.Tests
             // initialize with default slots (all members of the enum Slot)
             inventory = new Inventory(null);
             inventory.Equip(item_Hello);   // [0]
-            inventory.Unequip(item_Hello); // [1]
-            Assert.AreEqual(ItemAction.Destroy, item_Hello.messages[1], "The unequip function was called");
+            inventory.Destroy(item_Hello); // [1]
+            Assert.AreEqual(ItemAction.Destroy, item_Hello.messages[1], "The destroy method was called");
         }
 
         [Test]

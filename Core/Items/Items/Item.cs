@@ -1,10 +1,8 @@
-using Hopper.Core.Targeting;
-
 namespace Hopper.Core.Items
 {
     public class Item : IItem
     {
-        private readonly int m_id;
+        private int m_id;
         public virtual ISlot<IItemContainer<IItem>> Slot => throw new System.NotImplementedException();
         public virtual int Id => m_id;
 
@@ -15,8 +13,12 @@ namespace Hopper.Core.Items
 
         public Item(ItemMetadata meta)
         {
-            m_id = Registry.Default.Items.Add(this);
             m_metadata = meta;
+        }
+
+        public virtual void RegisterSelf(Registry registry)
+        {
+            m_id = registry.GetKindRegistry<IItem>().Add(this);
         }
 
         public virtual void BeDestroyed(Entity entity)

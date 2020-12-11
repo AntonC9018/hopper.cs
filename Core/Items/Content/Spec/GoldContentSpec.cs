@@ -9,7 +9,7 @@ namespace Hopper.Core.Items
             this.amount = amount;
         }
 
-        public IContent CreateContent(PoolContainer pools)
+        public IContent CreateContent(PoolContainer pools, Registry registry)
         {
             throw new System.NotImplementedException();
         }

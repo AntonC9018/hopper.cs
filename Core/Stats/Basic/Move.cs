@@ -5,7 +5,7 @@ namespace Hopper.Core.Stats.Basic
         public int power;
         public int through;
 
-        public static readonly StatPath<Move> Path = new StatPath<Move>(
+        public static readonly SimpleStatPath<Move> Path = new SimpleStatPath<Move>(
             "move/base",
             new Move
             {

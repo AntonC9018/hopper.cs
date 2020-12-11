@@ -9,9 +9,9 @@ namespace Hopper.Core.Items
             m_poolPath = poolPath;
         }
 
-        public IContent CreateContent(PoolContainer pools)
+        public IContent CreateContent(PoolContainer pools, Registry registry)
         {
-            return pools.GetEntity(m_poolPath);
+            return pools.GetEntity(m_poolPath, registry);
         }
     }
 }

@@ -4,12 +4,17 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Retouchers
 {
-    public static class Equip
+    public class Equip
     {
-        public static Retoucher OnDisplace = Retoucher
-            .SingleHandlered<Displaceable.Event>(Displaceable.Do, PickUp);
+        public Retoucher OnDisplace = Retoucher
+            .SingleHandlered(Displaceable.Do, PickUp);
 
-        static void PickUp(ActorEvent actorEvent)
+        public void RegisterAll(Registry registry)
+        {
+            OnDisplace.RegisterSelf(registry);
+        }
+
+        private static void PickUp(ActorEvent actorEvent)
         {
             var droppedItems = actorEvent.actor.GetCell().m_entities
                 .Where(i => i.Layer == Layer.DROPPED)

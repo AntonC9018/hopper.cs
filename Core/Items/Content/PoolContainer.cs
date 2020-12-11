@@ -5,25 +5,25 @@ namespace Hopper.Core.Items
         public ISuperPool EntityPool;
         public ISuperPool ItemPool;
 
-        public EntityContent GetEntity(string path)
+        public EntityContent GetEntity(string path, Registry registry)
         {
             var poolItem = EntityPool.GetNextItem(path);
             if (poolItem == null)
             {
                 return null;
             }
-            var factory = Registry.Default.EntityFactory.Map(poolItem.id);
+            var factory = registry.EntityFactory.Get(poolItem.id);
             return new EntityContent(factory);
         }
 
-        public ItemContent GetItem(string path)
+        public ItemContent GetItem(string path, Registry registry)
         {
             var poolItem = ItemPool.GetNextItem(path);
             if (poolItem == null)
             {
                 return null;
             }
-            var item = Registry.Default.Items.Map(poolItem.id);
+            var item = registry.Items.Get(poolItem.id);
             return new ItemContent(item);
         }
 

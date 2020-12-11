@@ -78,25 +78,28 @@ namespace Hopper.Test_Content
             }
         }
 
-        public static readonly ModularItem DefaultItem;
         public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
         public static readonly ISlot<IItemContainer<IItem>> Slot = Hopper.Core.Items.Slot.RangeWeapon;
         public static readonly Attack.Source ArrowSource = new Attack.Source();
 
-        static Bow()
-        {
-            var defaultArrowAttack = new Attack
+        public static Attack defaultArrowAttack(Registry reg) =>
+            new Attack
             {
-                sourceId = ArrowSource.Id,
+                sourceId = ArrowSource.GetId(reg),
                 power = 1,
                 pierce = 1,
                 damage = 1
             };
+
+        public static ModularItem CreateBow()
+        {
             var defaultShooting = new AnonShooting(
                 Layer.REAL, Layer.WALL, defaultArrowAttack, null, true
             );
             var module = CreateModule(defaultShooting);
-            DefaultItem = new ModularItem(new ItemMetadata("Default_Bow"), Slot, module);
+            return new ModularItem(new ItemMetadata("Default_Bow"), Slot, module);
         }
+
+        public static readonly ModularItem DefaultItem = CreateBow();
     }
 }

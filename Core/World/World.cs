@@ -12,6 +12,7 @@ namespace Hopper.Core
         public WorldStateManager State { get; private set; }
         public PoolContainer m_pools = new PoolContainer();
         public Dictionary<int, IWorldEvent> m_events;
+        public Registry m_currentRegistry;
 
         public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
         public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
@@ -19,13 +20,14 @@ namespace Hopper.Core
         public int Id => m_id;
         private int m_id;
 
-        public World(int width, int height)
+        public World(int width, int height, Registry registry)
         {
+            PhaseLayerExtensions.ThrowIfPhasesAreWrong();
             Grid = new GridManager(width, height);
             State = new WorldStateManager();
             m_events = new Dictionary<int, IWorldEvent>();
-            m_id = Registry.Default.World.Add(this);
-            PhaseLayerExtensions.ThrowIfPhasesAreWrong();
+            m_id = registry.World.Add(this);
+            m_currentRegistry = registry;
         }
 
         public void Loop()
@@ -61,7 +63,7 @@ namespace Hopper.Core
         private T SpawnEntityNoEvent<T>(
             IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
-            var entity = entityFactory.Instantiate();
+            var entity = entityFactory.Instantiate(m_currentRegistry);
             entity.Init(pos, orientation, this);
             Grid.Reset(entity, entity.Pos);
             return entity;
@@ -70,7 +72,7 @@ namespace Hopper.Core
         public T SpawnHangingEntity<T>(
             IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
-            var entity = entityFactory.Instantiate();
+            var entity = entityFactory.Instantiate(m_currentRegistry);
             entity.Init(pos, orientation, this);
             State.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);
@@ -130,7 +132,7 @@ namespace Hopper.Core
 
         public void InitializeWorldEvents()
         {
-            foreach (var worldEvent in Registry.Default.GetKindRegistry<IWorldEvent>().ActiveItems)
+            foreach (var worldEvent in m_currentRegistry.GetKindRegistry<IWorldEvent>().Items)
             {
                 m_events.Add(worldEvent.Id, worldEvent.GetCopy());
             };

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Hopper.Core.Chains;
+using Hopper.Core.Stats;
 
 namespace Hopper.Core.Behaviors
 {
@@ -14,7 +15,7 @@ namespace Hopper.Core.Behaviors
         {
             public Entity actor;
             public Attack attack;
-            public Status.Resistance resistance;
+            public ArrayFile resistance;
             public StatusParam[] statusParams;
         }
 
@@ -81,7 +82,7 @@ namespace Hopper.Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = ev.actor.Stats.Get(Status.Resistance.Path);
+            ev.resistance = ev.actor.Stats.Get<ArrayFile>(Status.Resistance.Path);
         }
 
         static void ResistSomeStatuses(Event ev)

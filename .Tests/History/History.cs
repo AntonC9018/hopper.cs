@@ -32,17 +32,18 @@ namespace Hopper.Tests
         [Test]
         public void EmptyHistory_GetsInitialState()
         {
-            Assert.That(history.Updates.Count == 0, "At start, no events exist");
+            Assert.AreEqual(0, history.Updates.Count, "At start, no events exist");
             history.InitControlUpdate(trackable_Hello);
-            Assert.That(history.Updates.Count == 1, "We have initialized the history with a control event with an initial state");
+            Assert.AreEqual(1, history.Updates.Count,
+                "We have initialized the history with a control event with an initial state");
         }
 
         [Test]
         public void ControlUpdate_HasRightData()
         {
             history.InitControlUpdate(trackable_Hello);
-            Assert.That(history.Updates[0].updateCode == UpdateCode.control);
-            Assert.That(history.Updates[0].stateAfter == "Hello");
+            Assert.AreEqual(UpdateCode.control, history.Updates[0].updateCode);
+            Assert.AreEqual("Hello", history.Updates[0].stateAfter);
         }
 
         [Test]
@@ -50,8 +51,8 @@ namespace Hopper.Tests
         {
             history.Add(trackable_World.GetState(), testCode);
 
-            Assert.That(history.Updates[0].updateCode == testCode);
-            Assert.That(history.Updates[0].stateAfter == "World");
+            Assert.AreEqual(testCode, history.Updates[0].updateCode);
+            Assert.AreEqual("World", history.Updates[0].stateAfter);
         }
 
         [Test]
@@ -61,8 +62,8 @@ namespace Hopper.Tests
             history.Add(trackable_World.GetState(), testCode);
             history.Clear();
 
-            Assert.That(history.Updates[0].updateCode == UpdateCode.control);
-            Assert.That(history.Updates[0].stateAfter == "World");
+            Assert.AreEqual(UpdateCode.control, history.Updates[0].updateCode);
+            Assert.AreEqual("World", history.Updates[0].stateAfter);
         }
 
         [Test]
@@ -77,7 +78,7 @@ namespace Hopper.Tests
             history.InitControlUpdate(trackable_Hello);
             history.Add(trackable_World.GetState(), testCode);
             var state = history.GetStateBefore(testCode);
-            Assert.That(state == "Hello");
+            Assert.AreEqual("Hello", state);
         }
     }
 }

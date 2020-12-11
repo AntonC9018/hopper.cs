@@ -9,22 +9,24 @@ namespace Hopper.Test_Content
 {
     public class Explosion
     {
-        public static readonly Attack.Source AtkSource = new Attack.Source(0);
-        public static readonly Attack BaseAtk = new Attack
-        {
-            damage = 3,
-            power = 2,
-            sourceId = AtkSource.Id,
-            pierce = 1
-        };
+        public static readonly Attack.Source AtkSource = new Attack.Source { resistance = 0 };
+        public static Attack BaseAtk(Registry reg) =>
+            new Attack
+            {
+                damage = 3,
+                power = 2,
+                sourceId = AtkSource.GetId(reg),
+                pierce = 1
+            };
 
-        public static readonly Push.Source PushSource = new Push.Source(0);
-        public static readonly Push BasePush = new Push
-        {
-            power = 2,
-            pierce = 1,
-            sourceId = PushSource.Id
-        };
+        public static readonly Push.Source PushSource = new Push.Source { resistance = 0 };
+        public static Push BasePush(Registry reg) =>
+            new Push
+            {
+                power = 2,
+                pierce = 1,
+                sourceId = PushSource.GetId(reg)
+            };
 
         private static Layer TargetedLayer =
             Layer.DROPPED
@@ -55,20 +57,22 @@ namespace Hopper.Test_Content
 
         public static readonly WorldEventPath<IntVector2> EventPath = new WorldEventPath<IntVector2>();
 
-        private static Attackable.Params CreateMeta()
+        private static Attackable.Params CreateMeta(Registry reg)
         {
-            return new Attackable.Params((Attack)BaseAtk.Copy(), null);
+            return new Attackable.Params(BaseAtk(reg), null);
         }
 
         public static void ExplodeCell(IntVector2 pos, IntVector2 knockbackDir, World world)
         {
             var targets = targetProvider.GetTargets(
-                new Hopper.Core.Targeting.Dummy(pos, world), knockbackDir, (Attack)BaseAtk.Copy());
+                new Hopper.Core.Targeting.Dummy(pos, world), knockbackDir, BaseAtk(world.m_currentRegistry));
 
             foreach (var target in targets)
             {
-                target.entity.Behaviors.Get<Attackable>().Activate(knockbackDir, CreateMeta());
-                target.entity.Behaviors.TryGet<Pushable>()?.Activate(knockbackDir, BasePush);
+                target.entity.Behaviors.Get<Attackable>()
+                    .Activate(knockbackDir, CreateMeta(world.m_currentRegistry));
+                target.entity.Behaviors.TryGet<Pushable>()?
+                    .Activate(knockbackDir, BasePush(world.m_currentRegistry));
             }
             // spawn particles through some mechanism 
             EventPath.Fire(world, pos);

@@ -239,23 +239,5 @@ namespace Hopper.Core.FS
                 }
             }
         }
-
-        public void CopyDirectoryStructure(Directory from, Directory to)
-        {
-            foreach (var kvp in from.nodes)
-            {
-                if (kvp.Value is Directory)
-                {
-                    var subdir = new Directory();
-                    to.nodes.Add(kvp.Key, subdir);
-                    CopyDirectoryStructure((Directory)kvp.Value, subdir);
-                }
-                else
-                {
-                    var copy = ((T)kvp.Value).Copy();
-                    to.nodes.Add(kvp.Key, copy);
-                }
-            }
-        }
     }
 }

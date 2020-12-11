@@ -5,7 +5,7 @@ namespace Hopper.Test_Content
 {
     public class StuckStat : StatusFile
     {
-        public static readonly StatPath<StuckStat> Path = new StatPath<StuckStat>(
+        public static readonly SimpleStatPath<StuckStat> Path = new SimpleStatPath<StuckStat>(
             "status/stuck", new StuckStat { power = 1, amount = 1 });
     }
 }

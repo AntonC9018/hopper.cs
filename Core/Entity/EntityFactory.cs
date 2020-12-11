@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Core.Behaviors;
+using Hopper.Core.Stats;
 using Hopper.Utils;
 
 namespace Hopper.Core
@@ -17,11 +18,18 @@ namespace Hopper.Core
         public int Id => m_id;
         private int m_id;
         public event System.Action<T> SetupEvent;
+        public event System.Action<Registry> RunAtPatchingEvent;
+        private DefaultStats m_defaultStats;
 
         public EntityFactory()
         {
-            m_id = Registry.Default.EntityFactory.Add(this);
             AddBehavior<Tick>();
+        }
+
+        public void RegisterSelf(Registry registry)
+        {
+            m_id = registry.GetKindRegistry<IFactory<Entity>>().Add(this);
+            registry.RunPatchingEvent += reg => RunAtPatchingEvent?.Invoke(reg);
         }
 
         private Dictionary<System.Type, BehaviorSetting> m_behaviorSettings =
@@ -51,15 +59,15 @@ namespace Hopper.Core
             return m_retouchers.ContainsKey(retoucher.Id);
         }
 
-        public T Instantiate()
+        public T Instantiate(Registry registry)
         {
             var entity = InstantiateLogic();
-            int id = Registry.Default.Entity.Add(entity, new FactoryLink { factoryId = m_id });
+            int id = registry.Entity.Add(entity, new FactoryLink { factoryId = m_id });
             entity._SetId(id);
             return entity;
         }
 
-        public T ReInstantiate(int id)
+        public T ReInstantiate(Registry registry, int id)
         {
             var entity = InstantiateLogic();
             entity._SetId(id);
@@ -78,6 +86,9 @@ namespace Hopper.Core
                 var behavior = setting.factory.Instantiate(entity, setting.config);
                 entity.Behaviors.Add(type, behavior);
             }
+
+            entity.Stats = new StatManager(m_defaultStats);
+
             SetupEvent?.Invoke(entity);
             return entity;
         }
@@ -119,9 +130,16 @@ namespace Hopper.Core
             return this;
         }
 
-        public EntityFactory<T> SetDefaultStats(Hopper.Core.Stats.DefaultStats stats)
+        public EntityFactory<T> RunAtPatching(System.Action<Registry> callback)
         {
-            return AddSetupListener(e => e.Stats.DefaultStats = stats.StatManager);
+            RunAtPatchingEvent += callback;
+            return this;
+        }
+
+        public EntityFactory<T> SetDefaultStats(System.Func<Registry, DefaultStats> callback)
+        {
+            RunAtPatchingEvent += (reg) => m_defaultStats = callback(reg);
+            return this;
         }
     }
 }

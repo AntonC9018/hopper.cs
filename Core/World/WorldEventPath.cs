@@ -2,21 +2,16 @@ namespace Hopper.Core
 {
     public class WorldEventPath<T>
     {
-        public int m_eventId;
+        public readonly WorldEvent<T> Event;
 
         public WorldEventPath()
         {
-            m_eventId = new WorldEvent<T>().Id;
-        }
-
-        public WorldEventPath(int eventId)
-        {
-            m_eventId = eventId;
+            Event = new WorldEvent<T>();
         }
 
         public WorldEvent<T> Get(World world)
         {
-            return (WorldEvent<T>)world.m_events[m_eventId];
+            return (WorldEvent<T>)world.m_events[Event.Id];
         }
 
         public void Fire(World world, T pos)

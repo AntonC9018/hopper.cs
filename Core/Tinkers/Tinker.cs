@@ -11,7 +11,7 @@ namespace Hopper.Core
         public int count = 1;
     }
 
-    public interface ITinker : IHaveId
+    public interface ITinker : IKind
     {
         void Untink(Entity entity);
         void Tink(Entity entity);
@@ -21,13 +21,17 @@ namespace Hopper.Core
     public class Tinker<T> : ITinker where T : TinkerData, new()
     {
         public int Id => m_id;
-        private int m_id;
+        private int m_id = -1;
         protected IChainDef[] m_chainDefinition;
 
         public Tinker(params IChainDef[] chainDefs)
         {
             m_chainDefinition = chainDefs;
-            m_id = Registry.Default.Tinker.Add(this);
+        }
+
+        public void RegisterSelf(Registry registry)
+        {
+            m_id = registry.GetKindRegistry<ITinker>().Add(this);
         }
 
         public void Tink(Entity entity)

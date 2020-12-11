@@ -6,41 +6,50 @@ using Hopper.Core.Targeting;
 
 namespace Hopper.Core.Retouchers
 {
-    public static class Skip
+    public class Skip
     {
-        public static Retoucher EmptyAttack = Retoucher
+        public Retoucher EmptyAttack = Retoucher
             .SingleHandlered<Attacking.Event>(Attacking.Check, SkipEmptyAttack);
-        public static Retoucher EmptyDig = Retoucher
+        public Retoucher EmptyDig = Retoucher
             .SingleHandlered<Digging.Event>(Digging.Check, SkipEmptyDig);
-        public static Retoucher BlockedMove = Retoucher
+        public Retoucher BlockedMove = Retoucher
             .SingleHandlered<Moving.Event>(Moving.Check, SkipBlocked);
-        public static Retoucher NoPlayer = Retoucher
+        public Retoucher NoPlayer = Retoucher
             .SingleHandlered<Attacking.Event>(Attacking.Check, SkipNoPlayer);
-        public static Retoucher Self = Retoucher
+        public Retoucher Self = Retoucher
             .SingleHandlered<Attacking.Event>(Attacking.Check, SkipSelf);
 
-        static void SkipEmptyAttack(Attacking.Event ev)
+        public void RegisterAll(Registry registry)
+        {
+            EmptyAttack.RegisterSelf(registry);
+            EmptyDig.RegisterSelf(registry);
+            BlockedMove.RegisterSelf(registry);
+            NoPlayer.RegisterSelf(registry);
+            Self.RegisterSelf(registry);
+        }
+
+        private static void SkipEmptyAttack(Attacking.Event ev)
         {
             ev.propagate = ev.targets.Count > 0;
         }
 
-        static void SkipEmptyDig(Digging.Event ev)
+        private static void SkipEmptyDig(Digging.Event ev)
         {
             ev.propagate = ev.targets.Count > 0;
         }
 
-        static void SkipBlocked(Moving.Event ev)
+        private static void SkipBlocked(Moving.Event ev)
         {
             ev.propagate = ev.actor.HasBlockRelative(ev.action.direction) == false;
         }
 
-        static void SkipNoPlayer(Attacking.Event ev)
+        private static void SkipNoPlayer(Attacking.Event ev)
         {
             ev.propagate = ev.targets
                 .Any(t => t.entity.IsPlayer);
         }
 
-        static void SkipSelf(Attacking.Event ev)
+        private static void SkipSelf(Attacking.Event ev)
         {
             ev.propagate = ev.targets
                 .Any(t => t.entity == ev.actor);

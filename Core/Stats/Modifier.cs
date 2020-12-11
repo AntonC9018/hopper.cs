@@ -19,13 +19,13 @@ namespace Hopper.Core.Stats
             return id;
         }
 
-        public static StatModifier<T> Create<T>(StatPath<T> path, T file)
+        public static StatModifier<T> Create<T>(SimpleStatPath<T> path, T file)
             where T : StatFile, IAddableWith<T>, new()
         {
             return new StatModifier<T>(path, file);
         }
 
-        public static ChainModifier<T> Create<T>(StatPath<T> path, Hopper.Utils.Chains.EvHandler<StatEvent<T>> handler)
+        public static ChainModifier<T> Create<T>(SimpleStatPath<T> path, Hopper.Utils.Chains.EvHandler<StatEvent<T>> handler)
             where T : StatFile, IAddableWith<T>, new()
         {
             return new ChainModifier<T>(path, handler);

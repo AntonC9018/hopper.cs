@@ -37,7 +37,7 @@ namespace Hopper.Core
 
         // These fields do not store persistent state
         public World World { get; private set; }
-        public StatManager Stats { get; private set; }
+        public StatManager Stats { get; internal set; }
 
         public History<EntityState> History { get; private set; }
 
@@ -53,13 +53,17 @@ namespace Hopper.Core
             IsDead = false;
             Behaviors = new BehaviorControl();
             Tinkers = new TinkerControl(this);
-            Stats = new StatManager();
             History = new History<EntityState>();
         }
 
-        public void _SetId(int id)
+        internal void _SetId(int id)
         {
             this.m_id = id;
+        }
+
+        public void RegisterSelf(Registry registry)
+        {
+            throw new System.Exception("Entity cannot register self");
         }
 
         public void Init(IntVector2 pos, IntVector2 orientation, World world)
@@ -69,6 +73,9 @@ namespace Hopper.Core
             World = world;
 
             History.InitControlUpdate(this);
+
+            if (Stats == null)
+                Stats = new StatManager(world.m_currentRegistry);
 
             // fire the init event and destroy it, since it should only be called once
             InitEvent?.Invoke();
@@ -117,7 +124,7 @@ namespace Hopper.Core
 
         public int GetFactoryId()
         {
-            return Registry.Default.Entity.MapMetadata(m_id).factoryId;
+            return World.m_currentRegistry.Entity.MapMetadata(m_id).factoryId;
         }
     }
 }

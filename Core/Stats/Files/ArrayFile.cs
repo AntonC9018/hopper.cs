@@ -5,12 +5,12 @@ namespace Hopper.Core.Stats
 {
     public class ArrayFile : File, IAddableWith<ArrayFile>
     {
-        public List<int> content = new List<int>();
+        public int[] content;
 
         public void _Add(ArrayFile otherFile, int sign)
         {
             var otherArray = otherFile.content;
-            for (int i = 0; i < content.Count; i++)
+            for (int i = 0; i < otherArray.Length; i++)
             {
                 content[i] += otherArray[i] * sign;
             }
@@ -19,14 +19,15 @@ namespace Hopper.Core.Stats
         public override File Copy()
         {
             var newFile = (ArrayFile)base.Copy();
-            newFile.content = new List<int>(content);
+            newFile.content = new int[content.Length];
+            content.CopyTo(newFile.content, 0);
             return newFile;
         }
 
-        public int this[int index]
+        public int this[int id]
         {
-            get => content[index];
-            set => content[index] = value;
+            get => content[id];
+            set => content[id] = value;
         }
     }
 }

@@ -2,19 +2,32 @@ using Hopper.Core.FS;
 
 namespace Hopper.Core.Stats
 {
-    public class DefaultStats
+    public class DefaultStats : IPatch
     {
-        public StatManager StatManager { get; private set; }
+        public StatManager statManager;
+        public Registry Registry { get; private set; }
 
-        public DefaultStats()
+        public DefaultStats(Registry registry)
         {
-            StatManager = new StatManager();
+            this.Registry = registry;
+            this.statManager = new StatManager();
+        }
+
+        public void PatchKindRegistry(int kindId)
+        {
+            this.Registry.EntityFactoryPatch.Add(kindId, this);
         }
 
         public DefaultStats Set<T>(IStatPath<T> statPath, T value)
             where T : File, new()
         {
-            StatManager.GetRaw(statPath.String, value);
+            statManager.GetRaw(statPath.String, value);
+            return this;
+        }
+
+        public DefaultStats SetAtIndex(IStatPath<ArrayFile> statPath, int index, int value)
+        {
+            statManager.GetRaw(statPath.String, statPath.GetDefault(Registry))[index] = value;
             return this;
         }
     }

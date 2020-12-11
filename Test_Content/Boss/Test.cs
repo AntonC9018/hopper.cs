@@ -1,5 +1,6 @@
 using Hopper.Core;
 using Hopper.Core.Behaviors;
+using Hopper.Core.Retouchers;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content
@@ -48,8 +49,9 @@ namespace Hopper.Test_Content
                 var pos = entity.Pos - action.direction * (i + 1);
                 if (entity.World.Grid.IsOutOfBounds(pos) == false)
                 {
-                    var whelp = entity.World.SpawnEntity(Whelp.Factory, pos, action.direction);
-                    whelp.DieEvent += () => entity.m_whelpCount--;
+                    // TODO: Save the factory somewhere
+                    // var whelp = entity.World.SpawnEntity(Whelp.Factory, pos, action.direction);
+                    // whelp.DieEvent += () => entity.m_whelpCount--;
                 }
                 entity.m_whelpCount++;
             }
@@ -98,31 +100,33 @@ namespace Hopper.Test_Content
                 }
             };
 
-            public static readonly EntityFactory<Whelp> Factory = new EntityFactory<Whelp>()
+            public static EntityFactory<Whelp> Factory(CoreRetouchers retouchers) =>
+                new EntityFactory<Whelp>()
+                    .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
+                    .AddBehavior<Attacking>()
+                    .AddBehavior<Attackable>()
+                    .AddBehavior<Moving>()
+                    .AddBehavior<Displaceable>()
+                    .AddBehavior<Damageable>(new Damageable.Config(1))
+                    .Retouch(retouchers.Skip.NoPlayer)
+                    .Retouch(retouchers.Skip.BlockedMove)
+                    // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
+                    .Retouch(TurnToPlayerRetoucher)
+                    .AddBehavior<Sequential>(new Sequential.Config(Steps));
+        }
+
+        public static EntityFactory<TestBoss> Factory(CoreRetouchers retouchers) =>
+            new EntityFactory<TestBoss>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
                 .AddBehavior<Attacking>()
                 .AddBehavior<Attackable>()
                 .AddBehavior<Moving>()
                 .AddBehavior<Displaceable>()
-                .AddBehavior<Damageable>(new Damageable.Config(1))
-                .Retouch(Hopper.Core.Retouchers.Skip.NoPlayer)
-                .Retouch(Hopper.Core.Retouchers.Skip.BlockedMove)
+                .AddBehavior<Damageable>(new Damageable.Config(5))
+                .Retouch(retouchers.Skip.NoPlayer)
+                .Retouch(retouchers.Skip.BlockedMove)
                 // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
                 .Retouch(TurnToPlayerRetoucher)
                 .AddBehavior<Sequential>(new Sequential.Config(Steps));
-        }
-
-        public static readonly EntityFactory<TestBoss> Factory = new EntityFactory<TestBoss>()
-            .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
-            .AddBehavior<Attacking>()
-            .AddBehavior<Attackable>()
-            .AddBehavior<Moving>()
-            .AddBehavior<Displaceable>()
-            .AddBehavior<Damageable>(new Damageable.Config(5))
-            .Retouch(Hopper.Core.Retouchers.Skip.NoPlayer)
-            .Retouch(Hopper.Core.Retouchers.Skip.BlockedMove)
-            // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
-            .Retouch(TurnToPlayerRetoucher)
-            .AddBehavior<Sequential>(new Sequential.Config(Steps));
     }
 }

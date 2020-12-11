@@ -8,6 +8,7 @@ namespace Hopper.Utils
     public class IdGenerator
     {
         private int id = 0;
+        public int Count => id;
         public int GetNextId()
         {
             return id++;

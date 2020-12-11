@@ -36,31 +36,25 @@ namespace Hopper.Test_Content
             }
         };
 
-        private static DefaultStats defaultStats = GetDefaultStats();
-        private static DefaultStats GetDefaultStats()
+        private static DefaultStats GetDefaultStats(Registry registry)
         {
-            var res = new Attack.Source.Resistance();
-            res.Add(Explosion.AtkSource.Id, 10);
-
-            return new DefaultStats()
-                .Set(Attack.Source.Resistance.Path, res)
+            return new DefaultStats(registry)
+                .SetAtIndex(Attack.Source.Resistance.Path, registry.IdReferences[Explosion.AtkSource], 10)
                 .Set(Push.Resistance.Path, new Push.Resistance { pierce = 0 });
         }
 
-        public static EntityFactory<BombEntity> CreateFactory()
+        public static EntityFactory<BombEntity> CreateFactory(CoreRetouchers retouchers)
         {
             return new EntityFactory<BombEntity>()
                 .AddBehavior<Attackable>()
-                .Retouch(Attackableness.Constant(Attackness.IF_NEXT_TO))
+                .Retouch(retouchers.Attackness.Constant(Attackness.IF_NEXT_TO))
                 .AddBehavior<Pushable>()
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(steps))
                 .AddBehavior<Statused>()
-                .Retouch(Hopper.Core.Retouchers.Reorient.OnDisplace)
-                .SetDefaultStats(defaultStats);
+                .Retouch(retouchers.Reorient.OnDisplace)
+                .SetDefaultStats(GetDefaultStats);
         }
-
-        public static EntityFactory<BombEntity> Factory = CreateFactory();
     }
 }

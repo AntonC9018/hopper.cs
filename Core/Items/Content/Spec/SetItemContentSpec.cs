@@ -9,7 +9,7 @@ namespace Hopper.Core.Items
             this.m_item = item;
         }
 
-        public IContent CreateContent(PoolContainer pools)
+        public IContent CreateContent(PoolContainer pools, Registry registry)
         {
             return new ItemContent(m_item);
         }

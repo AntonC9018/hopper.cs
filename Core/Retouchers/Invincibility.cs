@@ -5,20 +5,25 @@ using Hopper.Core.Behaviors;
 
 namespace Hopper.Core.Retouchers
 {
-    public static class Invincibility
+    public class Invincibility
     {
-        public static Retoucher PreventsDamage = Retoucher
-            .SingleHandlered<Attackable.Event>(Attackable.Do, PreventDamage);
-        public static Retoucher Decreases = Retoucher
-            .SingleHandlered<Tick.Event>(Tick.Chain, Decrease);
+        public Retoucher PreventsDamage = Retoucher
+            .SingleHandlered(Attackable.Do, PreventDamage);
+        public Retoucher Decreases = Retoucher
+            .SingleHandlered(Tick.Chain, Decrease);
 
+        public void RegisterAll(Registry registry)
+        {
+            PreventsDamage.RegisterSelf(registry);
+            Decreases.RegisterSelf(registry);
+        }
 
         // TODO:
-        static void PreventDamage(Attackable.Event ev)
+        private static void PreventDamage(Attackable.Event ev)
         {
         }
         // TODO:
-        static void Decrease(Tick.Event ev)
+        private static void Decrease(Tick.Event ev)
         {
         }
 

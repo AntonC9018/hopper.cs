@@ -6,8 +6,9 @@ namespace Hopper.Core.Stats.Basic
         public int damage;
         public int pierce;
 
-        public static Attack.Source Source = new Attack.Source();
-        public static readonly StatPath<Dig> Path = new StatPath<Dig>(
+        public static Attack.Source Source = new Attack.Source { resistance = 1 };
+
+        public static readonly SimpleStatPath<Dig> Path = new SimpleStatPath<Dig>(
             "dig/base",
             new Dig
             {
@@ -17,11 +18,11 @@ namespace Hopper.Core.Stats.Basic
             }
         );
 
-        public Attack ToAttack()
+        public Attack ToAttack(Registry registry)
         {
             return new Attack
             {
-                sourceId = Source.Id,
+                sourceId = Source.GetId(registry),
                 power = power,
                 damage = damage,
                 pierce = pierce

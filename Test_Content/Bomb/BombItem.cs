@@ -22,7 +22,9 @@ namespace Hopper.Test_Content
                 // This is maybe too overcomplicated, I'm not sure if we need this.
                 // System.Action activate = e.World.SpawnHangingEntity(BombEntity.Factory, targetPos);
                 // e.World.m_state.OncePhaseStarts(Phase.REAL, activate);
-                e.World.SpawnEntity(BombEntity.Factory, targetPos);
+
+                // TODO: Save the bomb factory somewhere
+                // e.World.SpawnEntity(BombEntity.Factory, targetPos);
 
                 e.Inventory.Destroy(item);
             }

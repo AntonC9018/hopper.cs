@@ -10,22 +10,21 @@ namespace Hopper.Test_Content
         public override Layer Layer => Layer.TRAP;
         public static Action action = new BehaviorAction<Bouncing>();
 
-        public static Push.Source BounceSource = new Push.Source();
-        public static Push PushStat = new Push
-        {
-            sourceId = BounceSource.Id,
-            power = 2,
-            pierce = 1,
-            distance = 1
-        };
+        public static Push.Source BounceSource = new Push.Source { resistance = 1 };
+        public static Push PushStat(Registry registry) =>
+            new Push
+            {
+                sourceId = BounceSource.GetId(registry),
+                power = 2,
+                pierce = 1,
+                distance = 1
+            };
 
-        public static DefaultStats defaultStats = GetDefaultStats();
-        private static DefaultStats GetDefaultStats()
+        private static DefaultStats GetDefaultStats(Registry registry)
         {
-            return new DefaultStats().Set(Push.Path, PushStat);
+            return new DefaultStats(registry).Set(Push.Path, PushStat(registry));
         }
 
-        public static EntityFactory<BounceTrap> Factory = CreateFactory();
         public static EntityFactory<BounceTrap> CreateFactory()
         {
             return new EntityFactory<BounceTrap>()
@@ -34,7 +33,8 @@ namespace Hopper.Test_Content
                         e => action.Copy().WithDir(e.Orientation))
                 )
                 .AddBehavior<Bouncing>()
-                .SetDefaultStats(defaultStats);
+                .SetDefaultStats(GetDefaultStats);
+            // .SetDefaultStats(defaultStats); // run at patching
         }
     }
 }
