@@ -87,7 +87,10 @@ namespace Hopper.Core
                 entity.Behaviors.Add(type, behavior);
             }
 
-            entity.Stats = new StatManager(m_defaultStats);
+            if (m_defaultStats != null)
+            {
+                entity.Stats = new StatManager(m_defaultStats);
+            }
 
             SetupEvent?.Invoke(entity);
             return entity;

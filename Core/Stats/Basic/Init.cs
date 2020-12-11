@@ -6,15 +6,15 @@ namespace Hopper.Core.Stats.Basic
         {
             SourceBase<Attack.Source>.InitFor(registry);
             Attack.BasicSource.AddFor(registry);
-            Attack.Path.CreateDefaultFile(registry);
-            Attack.Source.Resistance.Path.CreateDefaultFile(registry);
+            Attack.Path.SetDefaultFile(registry);
+            Attack.Source.Resistance.Path.SetDefaultFile(registry);
 
             Dig.Source.AddFor(registry);
 
             SourceBase<Push.Source>.InitFor(registry);
             Push.BasicSource.AddFor(registry);
-            Push.Path.CreateDefaultFile(registry);
-            Push.Source.Resistance.Path.CreateDefaultFile(registry);
+            Push.Path.SetDefaultFile(registry);
+            Push.Source.Resistance.Path.SetDefaultFile(registry);
         }
     }
 }

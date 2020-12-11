@@ -27,6 +27,11 @@ namespace Hopper.Core.Stats
             return sm.Get<T>(this);
         }
 
+        public void SetDefaultFile(Registry registry)
+        {
+            registry.DefaultStats.statManager.Get<T>(String, CreateDefaultFile(registry));
+        }
+
         public T GetDefault(Registry registry)
         {
             // we know that at this point the stat has been initialized since it is
