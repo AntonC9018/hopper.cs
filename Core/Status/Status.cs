@@ -49,7 +49,7 @@ namespace Hopper.Core
         {
             m_tinker.RegisterSelf(registry);
             m_id = registry.GetKindRegistry<IStatus>().Add(this);
-            m_source.InitFor(registry);
+            m_source.AddFor(registry);
         }
 
         public virtual void Update(Entity entity)

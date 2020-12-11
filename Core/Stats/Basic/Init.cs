@@ -4,13 +4,15 @@ namespace Hopper.Core.Stats.Basic
     {
         public static void Init(Registry registry)
         {
-            Attack.BasicSource.InitFor(registry);
+            SourceBase<Attack.Source>.InitFor(registry);
+            Attack.BasicSource.AddFor(registry);
             Attack.Path.CreateDefaultFile(registry);
             Attack.Source.Resistance.Path.CreateDefaultFile(registry);
 
-            Dig.Source.InitFor(registry);
+            Dig.Source.AddFor(registry);
 
-            Push.BasicSource.InitFor(registry);
+            SourceBase<Push.Source>.InitFor(registry);
+            Push.BasicSource.AddFor(registry);
             Push.Path.CreateDefaultFile(registry);
             Push.Source.Resistance.Path.CreateDefaultFile(registry);
         }

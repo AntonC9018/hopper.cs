@@ -10,7 +10,7 @@ namespace Hopper.Core.Stats
             {
                 int patchCount = patches.Count;
                 var file = new ArrayFile();
-                DefaultFile.content = patches.ToArray();
+                file.content = patches.ToArray();
                 return file;
             }
         }
