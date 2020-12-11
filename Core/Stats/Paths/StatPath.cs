@@ -24,19 +24,19 @@ namespace Hopper.Core.Stats
 
         public T Path(StatManager sm)
         {
-            return sm.Get<T>(this);
+            return sm.GetLazy<T>(this);
         }
 
         public void SetDefaultFile(Registry registry)
         {
-            registry.DefaultStats.statManager.Get<T>(String, CreateDefaultFile(registry));
+            registry.DefaultStats.statManager.GetLazy<T>(String, CreateDefaultFile(registry));
         }
 
         public T GetDefault(Registry registry)
         {
             // we know that at this point the stat has been initialized since it is
             // called per Registry in the startup function
-            return registry.DefaultStats.statManager.Get<T>(String, null);
+            return registry.DefaultStats.statManager.GetUnsafe<T>(String);
         }
     }
 
@@ -60,7 +60,7 @@ namespace Hopper.Core.Stats
 
         public T Path(StatManager sm)
         {
-            return sm.Get<T>(this);
+            return sm.GetLazy<T>(this);
         }
 
         public T GetDefault(Registry registry)

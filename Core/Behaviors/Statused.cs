@@ -82,7 +82,7 @@ namespace Hopper.Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = ev.actor.Stats.Get<ArrayFile>(Status.Resistance.Path);
+            ev.resistance = ev.actor.Stats.GetLazy<ArrayFile>(Status.Resistance.Path);
         }
 
         static void ResistSomeStatuses(Event ev)

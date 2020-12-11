@@ -28,7 +28,7 @@ namespace Hopper.Core.Behaviors
         {
             if (ev.move == null)
             {
-                ev.move = ev.actor.Stats.Get(Move.Path);
+                ev.move = ev.actor.Stats.GetLazy(Move.Path);
             }
         }
 

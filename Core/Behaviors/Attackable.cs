@@ -44,7 +44,7 @@ namespace Hopper.Core.Behaviors
 
         private static void SetResistance(Event ev)
         {
-            ev.resistance = ev.actor.Stats.Get(Attack.Resistance.Path);
+            ev.resistance = ev.actor.Stats.GetLazy(Attack.Resistance.Path);
         }
 
         private static void ResistSource(Event ev)
@@ -57,7 +57,7 @@ namespace Hopper.Core.Behaviors
 
         private static int GetSourceResistance(Event ev)
         {
-            var sourceRes = ev.actor.Stats.Get(Attack.Source.Resistance.Path);
+            var sourceRes = ev.actor.Stats.GetLazy(Attack.Source.Resistance.Path);
             return sourceRes[ev.atkParams.attack.sourceId];
         }
 

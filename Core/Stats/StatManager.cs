@@ -43,7 +43,7 @@ namespace Hopper.Core.Stats
             }
             else
             {
-                Get<T>(modifier.path);
+                GetLazy<T>(modifier.path);
                 m_modifierCounts[modifier] = 1;
             }
             var node = (StatFileContainer<T>)m_fs.GetNode(modifier.path.String);
@@ -66,7 +66,7 @@ namespace Hopper.Core.Stats
             else
             {
                 // lazy load
-                Get<T>(modifier.path);
+                GetLazy<T>(modifier.path);
                 var node = (StatFileContainer<T>)m_fs.GetNode(modifier.path.String);
                 var handle = node.chain.AddHandler(modifier.handler);
                 m_chainModifierHandles[modifier] = handle;
@@ -88,16 +88,23 @@ namespace Hopper.Core.Stats
             node.chain.RemoveHandler(handle);
         }
 
-        public T Get<T>(IStatPath<T> statPath) where T : File
+        public T GetLazy<T>(IStatPath<T> statPath) where T : File
         {
             var defaultValue = statPath.GetDefault(m_registry);
-            return Get(statPath.String, defaultValue);
+            return GetLazy(statPath.String, defaultValue);
         }
 
-        public T Get<T>(string path, T defaultFile) where T : File
+        public T GetLazy<T>(string path, T defaultFile) where T : File
         {
             var defaultValue = new StatFileContainer<T>(defaultFile);
             var statFile = (StatFileContainer<T>)m_fs.GetFileLazy(path, defaultValue);
+            var file = statFile.Retrieve();
+            return file;
+        }
+
+        public T GetUnsafe<T>(string path) where T : File
+        {
+            var statFile = (StatFileContainer<T>)m_fs.GetFile(path);
             var file = statFile.Retrieve();
             return file;
         }

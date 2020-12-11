@@ -29,12 +29,12 @@ namespace Hopper.Core.Behaviors
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = ev.actor.Stats.Get(Push.Resistance.Path);
+            ev.resistance = ev.actor.Stats.GetLazy(Push.Resistance.Path);
         }
 
         static void ResistSource(Event ev)
         {
-            var sourceRes = ev.actor.Stats.Get(Push.Source.Resistance.Path);
+            var sourceRes = ev.actor.Stats.GetLazy(Push.Source.Resistance.Path);
             if (sourceRes[ev.push.sourceId] > ev.push.power)
             {
                 ev.push.distance = 0;

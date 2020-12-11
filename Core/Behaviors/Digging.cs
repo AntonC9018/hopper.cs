@@ -31,7 +31,7 @@ namespace Hopper.Core.Behaviors
 
         private static void SetDig(Event ev)
         {
-            ev.dig = ev.actor.Stats.Get(Dig.Path);
+            ev.dig = ev.actor.Stats.GetLazy(Dig.Path);
         }
 
         private static void SetTargets(Event ev)

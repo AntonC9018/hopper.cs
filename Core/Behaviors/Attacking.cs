@@ -39,11 +39,11 @@ namespace Hopper.Core.Behaviors
         {
             if (ev.attack == null)
             {
-                ev.attack = ev.actor.Stats.Get(Attack.Path);
+                ev.attack = ev.actor.Stats.GetLazy(Attack.Path);
             }
             if (ev.push == null)
             {
-                ev.push = ev.actor.Stats.Get(Push.Path);
+                ev.push = ev.actor.Stats.GetLazy(Push.Path);
             }
         }
 
