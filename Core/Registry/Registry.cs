@@ -70,9 +70,14 @@ namespace Hopper.Core
             return (PatchRegistry<T>)PatchRegistries[typeof(U)];
         }
 
-        public T GetCustomPatchRegistry<T, U>()
+        public T GetCustomPatchRegistry<T, U>() where T : IPatchRegistry<object>
         {
             return (T)PatchRegistries[typeof(U)];
+        }
+
+        public T AddCustomPatchRegistry<T, U>(T reg) where T : IPatchRegistry<object>
+        {
+            PatchRegistries[typeof(U)] = reg;
         }
 
         public JustAssignmentRegistry GetAssignmentRegistry<T>()

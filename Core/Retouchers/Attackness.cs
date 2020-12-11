@@ -14,7 +14,8 @@ namespace Hopper.Core.Retouchers
         {
             foreach (var r in ConstantRetouchers)
             {
-                r.RegisterSelf(registry);
+                if (r != null)
+                    r.RegisterSelf(registry);
             }
         }
 
