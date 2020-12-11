@@ -26,7 +26,7 @@ namespace Hopper.Core
 
         public event System.Action<Registry> RunPatchingEvent;
 
-        public void RunPathing()
+        public void RunPatching()
         {
             RunPatchingEvent?.Invoke(this);
         }
@@ -45,12 +45,11 @@ namespace Hopper.Core
 
         // temporary entityFactory -> defaultStats map
         public PatchRegistry<DefaultStats> EntityFactoryPatch = new PatchRegistry<DefaultStats>();
-        private Dictionary<System.Type, IPatchRegistry<object>> PatchRegistries;
-        private Dictionary<System.Type, JustAssignmentRegistry> AssignmentRegistries;
+        private Dictionary<System.Type, IPatchRegistry<object>> PatchRegistries =
+            new Dictionary<System.Type, IPatchRegistry<object>>();
+        private Dictionary<System.Type, JustAssignmentRegistry> AssignmentRegistries =
+            new Dictionary<System.Type, JustAssignmentRegistry>();
         public Dictionary<object, int> IdReferences = new Dictionary<object, int>();
-
-
-        // public StatTree m_statTree = new StatTree();
 
 
         public T GetKind<T>(int id) where T : IKind
@@ -75,7 +74,7 @@ namespace Hopper.Core
             return (T)PatchRegistries[typeof(U)];
         }
 
-        public T AddCustomPatchRegistry<T, U>(T reg) where T : IPatchRegistry<object>
+        public void AddCustomPatchRegistry<T, U>(T reg) where T : IPatchRegistry<object>
         {
             PatchRegistries[typeof(U)] = reg;
         }
