@@ -40,6 +40,7 @@ namespace Hopper.Core
                 { typeof(IItem), new KindRegistry<IItem>() },
                 { typeof(IWorldEvent), new KindRegistry<IWorldEvent>() }
             };
+            DefaultStats = new DefaultStats(this);
         }
 
         // temporary entityFactory -> defaultStats map
