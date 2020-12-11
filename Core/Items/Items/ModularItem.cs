@@ -16,11 +16,6 @@ namespace Hopper.Core.Items
             }
         }
 
-        public override void RegisterSelf(Registry registry)
-        {
-            
-        }
-
         public override void BeDestroyed(Entity entity)
         {
             foreach (var mod in m_modules)
