@@ -38,8 +38,9 @@ namespace Hopper.Test_Content.Explosion
 
         private static DefaultStats GetDefaultStats(Registry registry)
         {
+            System.Console.WriteLine(Explosion.AtkSource.GetId(registry));
             return new DefaultStats(registry)
-                .SetAtIndex(Attack.Source.Resistance.Path, registry.IdReferences[Explosion.AtkSource], 10)
+                .SetAtIndex(Attack.Source.Resistance.Path, Explosion.AtkSource.GetId(registry), 10)
                 .Set(Push.Resistance.Path, new Push.Resistance { pierce = 0 });
         }
 

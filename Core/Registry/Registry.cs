@@ -40,7 +40,8 @@ namespace Hopper.Core
                 { typeof(Retoucher), new KindRegistry<Retoucher>()},
                 { typeof(IFactory<Entity>), new KindRegistry<IFactory<Entity>>() },
                 { typeof(IItem), new KindRegistry<IItem>() },
-                { typeof(IWorldEvent), new KindRegistry<IWorldEvent>() }
+                { typeof(IWorldEvent), new KindRegistry<IWorldEvent>() },
+                { typeof(IStatus), new KindRegistry<IStatus>() },
             };
             DefaultStats = new DefaultStats(this);
         }
