@@ -41,11 +41,7 @@ namespace Hopper.Core
                 { typeof(IFactory<Entity>), new KindRegistry<IFactory<Entity>>() },
                 { typeof(IItem), new KindRegistry<IItem>() },
                 { typeof(IWorldEvent), new KindRegistry<IWorldEvent>() },
-<<<<<<< HEAD
-                { typeof(IStatus), new KindRegistry<IStatus>() },
-=======
                 { typeof(IStatus), new KindRegistry<IStatus>() }
->>>>>>> 6134aaaa9b0093e677432a5813b2f6b45fabfb9b
             };
             DefaultStats = new DefaultStats(this);
         }
