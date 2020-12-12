@@ -24,6 +24,7 @@ namespace Hopper.Core.Mods
             ModsContent mods = new ModsContent();
             foreach (System.Type modType in modTypes)
             {
+                System.Console.WriteLine($"Creating content for mod {modType.Name}...");
                 mods.m_mods[modType] = (IMod)System.Activator.CreateInstance(modType, mods);
             }
 
@@ -34,10 +35,12 @@ namespace Hopper.Core.Mods
             // Run the `Kind` phase
             foreach (System.Type modType in modTypes)
             {
+                System.Console.WriteLine($"Registering kinds for mod {modType.Name}...");
                 mods.m_mods[modType].RegisterSelf(registry);
             }
 
             // Run the `Patching` phase
+            System.Console.WriteLine($"Running patching...");
             registry.RunPatching();
 
             // TODO: somehow signal to start the `Instance` phase

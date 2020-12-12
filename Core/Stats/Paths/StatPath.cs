@@ -27,7 +27,7 @@ namespace Hopper.Core.Stats
             return sm.GetLazy<T>(this);
         }
 
-        public void SetDefaultFile(Registry registry)
+        public void PatchDefaultFile(Registry registry)
         {
             registry.DefaultStats.Set(String, CreateDefaultFile(registry));
         }

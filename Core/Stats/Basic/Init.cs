@@ -6,17 +6,22 @@ namespace Hopper.Core.Stats.Basic
         {
             SourceBase<Attack.Source>.InitOn(registry);
             Attack.BasicSource.RegisterOn(registry);
-            Attack.Path.SetDefaultFile(registry);
-            Attack.Source.Resistance.Path.SetDefaultFile(registry);
 
             Dig.Source.RegisterOn(registry);
 
             SourceBase<Push.Source>.InitOn(registry);
             Push.BasicSource.RegisterOn(registry);
-            Push.Path.SetDefaultFile(registry);
-            Push.Source.Resistance.Path.SetDefaultFile(registry);
 
             SourceBase<IStatus>.InitOn(registry);
+
+            registry.RunPatchingEvent += reg =>
+            {
+                Attack.Path.PatchDefaultFile(reg);
+                Attack.Source.Resistance.Path.PatchDefaultFile(reg);
+                Push.Path.PatchDefaultFile(reg);
+                Push.Source.Resistance.Path.PatchDefaultFile(reg);
+                Status.Resistance.Path.PatchDefaultFile(reg);
+            };
         }
     }
 }
