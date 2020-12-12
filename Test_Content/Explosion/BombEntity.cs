@@ -27,7 +27,7 @@ namespace Hopper.Test_Content.Explosion
         {
             new Step
             {
-                repeat = 20,
+                repeat = 3,
                 action = null
             },
             new Step

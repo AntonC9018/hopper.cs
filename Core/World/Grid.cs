@@ -39,8 +39,8 @@ namespace Hopper.Core
         public void Reset(Entity entity, IntVector2 pos)
         {
             var cell = m_grid[pos.y, pos.x];
-            cell.FireEnterEvent(entity);
             cell.m_entities.Add(entity);
+            cell.FireEnterEvent(entity);
         }
 
         public void Remove(Entity entity)

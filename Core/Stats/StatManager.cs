@@ -2,6 +2,7 @@
 using Hopper.Utils.Chains;
 using Hopper.Core.FS;
 using System.Collections.Generic;
+using Hopper.Utils;
 
 namespace Hopper.Core.Stats
 {
@@ -33,6 +34,7 @@ namespace Hopper.Core.Stats
             m_modifierCounts = new Dictionary<Modifier, int>();
             m_fs = new StatFS();
             m_fs.BaseDir.CopyDirectoryStructureFrom(defaultStats.statManager.m_fs.BaseDir);
+            m_registry = defaultStats.Registry;
         }
 
         public void AddStatModifier<T>(StatModifier<T> modifier) where T : File, IAddableWith<T>

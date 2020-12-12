@@ -41,7 +41,7 @@ namespace Hopper.Test_Content.Floor
                 if (m_barriers == null)
                 {
                     m_barriers = new List<RealBarrier>(4);
-                    var barrierFactory = entity.GetFactoryKindData<EntityFactory<RealBarrier>>();
+                    var barrierFactory = this.GetFactoryKindData<EntityFactory<RealBarrier>>();
                     foreach (var orientation in IntVector2.Zero.OrthogonallyAdjacent)
                     {
                         m_barriers.Add(entity.World.SpawnEntity(barrierFactory, entity.Pos, orientation));

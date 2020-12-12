@@ -3,7 +3,6 @@ using Hopper.Utils.Vector;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Chains;
-using Hopper.Core.Targeting;
 
 namespace Hopper.Core.Behaviors.Basic
 {
@@ -31,9 +30,9 @@ namespace Hopper.Core.Behaviors.Basic
 
         private Layer m_blockLayer;
 
-        public void Init(Config config)
+        private void Init(Config config)
         {
-            m_blockLayer = config == null ? ExtendedLayer.BLOCK : config.blockLayer;
+            m_blockLayer = (config == null) ? ExtendedLayer.BLOCK : config.blockLayer;
         }
 
         public bool Activate(IntVector2 dir, Move move)
@@ -61,6 +60,14 @@ namespace Hopper.Core.Behaviors.Basic
             i--;
 
             ev.newPos = ev.actor.GetPosRelative(ev.dir * i);
+
+            // TODO: in this case you should probably add the bump to the history and stop
+            // also this should be done in the do chain
+            // the thing is that 0 movement messes up some systmes of the game
+            // e.g. listeners on cell's enter and leave events. 
+            if (ev.newPos == ev.actor.Pos)
+            {
+            }
         }
 
         private static void DisplaceRemove(Event ev)

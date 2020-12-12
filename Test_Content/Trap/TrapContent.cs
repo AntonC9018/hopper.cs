@@ -15,6 +15,7 @@ namespace Hopper.Test_Content.Trap
         public void RegisterSelf(Registry registry)
         {
             Bounce.Source.RegisterOn(registry);
+            BounceTrapFactory.RegisterSelf(registry);
         }
     }
 }

@@ -36,6 +36,7 @@ namespace Hopper.Test_Content.Explosion
         {
             Explosion.EventPath.Event.RegisterSelf(registry);
             Explosion.AtkSource.RegisterOn(registry);
+            Explosion.PushSource.RegisterOn(registry);
 
             bombFactory.RegisterSelf(registry);
             tinker.RegisterSelf(registry);

@@ -92,6 +92,7 @@ namespace Hopper.Core
         public T SpawnEntity<T>(
             IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
+            System.Console.WriteLine($"Creating entity of factory id : {entityFactory.Id}");
             var entity = SpawnEntityNoEvent(entityFactory, pos, orientation);
             State.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);

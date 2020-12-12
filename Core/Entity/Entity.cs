@@ -16,8 +16,16 @@ namespace Hopper.Core
         protected IntVector2 m_pos = IntVector2.Zero;
         [DataMember(Name = "orientation")]
         protected IntVector2 m_orientation = IntVector2.Zero;
-        public IntVector2 Pos { get => m_pos; set => m_pos = value; }
-        public IntVector2 Orientation { get => m_orientation; set => m_orientation = value; }
+        public IntVector2 Pos
+        {
+            get => m_pos;
+            set => m_pos = value;
+        }
+        public IntVector2 Orientation
+        {
+            get => m_orientation;
+            set => m_orientation = value;
+        }
 
         public virtual Layer Layer => Layer.REAL;
         public virtual bool IsDirected => false;
@@ -92,7 +100,7 @@ namespace Hopper.Core
 
         public void RemoveFromGrid()
         {
-            World.Grid.Remove(this);
+            World.Grid.Remove(this, m_pos);
         }
 
         public void ResetInGrid()

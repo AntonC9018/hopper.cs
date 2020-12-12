@@ -13,7 +13,7 @@ namespace Hopper.Core.Stats.Basic
         public void RegisterOn(Registry registry)
         {
             var r = registry.GetCustomPatchRegistry<ArrayPatch<T>, Resistance_Kind<T>>();
-            registry.IdReferences[this] = r.patches.Count - 1;
+            registry.IdReferences[this] = r.patches.Count;
             r.patches.Add(resistance);
         }
 
