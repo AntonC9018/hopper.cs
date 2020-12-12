@@ -3,7 +3,7 @@ using Hopper.Core;
 using Hopper.Core.Stats;
 using Hopper.Core.Behaviors;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Bind
 {
     public class Bind : StatusFile
     {

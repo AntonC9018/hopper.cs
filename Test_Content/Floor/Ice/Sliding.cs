@@ -4,14 +4,26 @@ using Hopper.Core.History;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Floor
 {
     public class Sliding : Behavior, IStandartActivateable
     {
         public static Layer TargetedLayer = Layer.REAL;
 
-        private void Init(object _)
+        public class Config
         {
+            public SlideStatus status;
+            public Config(SlideStatus status)
+            {
+                this.status = status;
+            }
+        }
+
+        private SlideStatus m_status;
+
+        private void Init(Config config)
+        {
+            m_status = config.status;
             m_entity.InitEvent += (() => m_entity.GetCell().EnterEvent += ApplySliding);
             m_entity.DieEvent += (() => m_entity.GetCell().EnterEvent -= ApplySliding);
         }
@@ -38,7 +50,7 @@ namespace Hopper.Test_Content
 
                 if (initialDirection != IntVector2.Zero)
                 {
-                    SlideStatus.Status.TryApplyWithInitialData(
+                    m_status.TryApplyWithInitialData(
                         m_entity, entity, new SlideData(initialDirection));
                 }
             }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Hopper.Core.Items;
+using Hopper.Core.Mods;
 using Hopper.Core.Stats;
 
 namespace Hopper.Core
@@ -50,7 +52,9 @@ namespace Hopper.Core
         private Dictionary<System.Type, JustAssignmentRegistry> AssignmentRegistries =
             new Dictionary<System.Type, JustAssignmentRegistry>();
         public Dictionary<object, int> IdReferences = new Dictionary<object, int>();
+        public Dictionary<int, object> KindData = new Dictionary<int, object>();
 
+        public ModsContent ModContent;
 
         public T GetKind<T>(int id) where T : IKind
         {
@@ -82,6 +86,26 @@ namespace Hopper.Core
         public JustAssignmentRegistry GetAssignmentRegistry<T>()
         {
             return (JustAssignmentRegistry)AssignmentRegistries[typeof(T)];
+        }
+
+        // change this so that it is stored as metadata instead
+        public static Action<Registry, IKind> StoreForKind<T>(T data)
+        {
+            return (registry, kind) =>
+            {
+                registry.KindData[kind.Id] = data;
+            };
+        }
+    }
+
+    public static class EntityExtensions
+    {
+        public static T GetFactoryKindData<T>(this Entity entity)
+        {
+            var registry = entity.World.m_currentRegistry;
+            var factoryId = registry.Entity.MapMetadata(entity.Id).factoryId;
+            var t = (T)registry.KindData[factoryId];
+            return t;
         }
     }
 }

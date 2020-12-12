@@ -99,7 +99,5 @@ namespace Hopper.Test_Content
             var module = CreateModule(defaultShooting);
             return new ModularItem(new ItemMetadata("Default_Bow"), Slot, module);
         }
-
-        public static readonly ModularItem DefaultItem = CreateBow();
     }
 }

@@ -3,18 +3,17 @@ using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Trap
 {
     public class BounceTrap : Entity
     {
         public override Layer Layer => Layer.TRAP;
         public static Action action = new BehaviorAction<Bouncing>();
 
-        public static Push.Source BounceSource = new Push.Source { resistance = 1 };
         public static Push PushStat(Registry registry) =>
             new Push
             {
-                sourceId = BounceSource.GetId(registry),
+                sourceId = Bounce.Source.GetId(registry),
                 power = 2,
                 pierce = 1,
                 distance = 1

@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Floor
 {
     /*
         This water has been implemented without using behaviors
@@ -17,10 +17,11 @@ namespace Hopper.Test_Content
     {
         public override Layer Layer => Layer.FLOOR;
 
-        public static EntityFactory<Water> CreateFactory()
+        public static EntityFactory<Water> CreateFactory(StuckStatus status)
         {
             return new EntityFactory<Water>()
                 .AddBehavior<Attackable>()
+                .RunAtPatching(Registry.StoreForKind(status))
                 .AddInitListener(water => water.ListenCell());
         }
 
@@ -37,15 +38,16 @@ namespace Hopper.Test_Content
         {
             if (entity.Layer.IsOfLayer(m_targetedLayer))
             {
-                StuckStatus.Status.TryApplyAuto(this, entity);
+                entity.GetFactoryKindData<StuckStatus>().TryApplyAuto(this, entity);
             }
         }
 
         private void UnStuck(Entity entity)
         {
-            if (StuckStatus.Status.IsApplied(entity))
+            var status = entity.GetFactoryKindData<StuckStatus>();
+            if (status.IsApplied(entity))
             {
-                StuckStatus.Status.Tinker.GetStore(entity).amount = 0;
+                status.Tinker.GetStore(entity).amount = 0;
             }
         }
 

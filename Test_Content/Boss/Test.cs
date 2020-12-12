@@ -3,7 +3,7 @@ using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Retouchers;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Boss
 {
     public class TestBoss : Entity
     {
@@ -47,11 +47,13 @@ namespace Hopper.Test_Content
             for (int i = 0; i < toSpawn; i++)
             {
                 var pos = entity.Pos - action.direction * (i + 1);
+
+                var whelpFactory = entity.GetFactoryKindData<EntityFactory<Whelp>>();
+
                 if (entity.World.Grid.IsOutOfBounds(pos) == false)
                 {
-                    // TODO: Save the factory somewhere
-                    // var whelp = entity.World.SpawnEntity(Whelp.Factory, pos, action.direction);
-                    // whelp.DieEvent += () => entity.m_whelpCount--;
+                    var whelp = entity.World.SpawnEntity(whelpFactory, pos, action.direction);
+                    whelp.DieEvent += () => entity.m_whelpCount--;
                 }
                 entity.m_whelpCount++;
             }
@@ -100,7 +102,7 @@ namespace Hopper.Test_Content
                 }
             };
 
-            public static EntityFactory<Whelp> Factory(CoreRetouchers retouchers) =>
+            public static EntityFactory<Whelp> CreateFactory(CoreRetouchers retouchers) =>
                 new EntityFactory<Whelp>()
                     .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
                     .AddBehavior<Attacking>()
@@ -115,8 +117,10 @@ namespace Hopper.Test_Content
                     .AddBehavior<Sequential>(new Sequential.Config(Steps));
         }
 
-        public static EntityFactory<TestBoss> Factory(CoreRetouchers retouchers) =>
-            new EntityFactory<TestBoss>()
+        public static EntityFactory<TestBoss> CreateFactory(
+            CoreRetouchers retouchers, EntityFactory<Whelp> whelpFactory)
+        {
+            return new EntityFactory<TestBoss>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
                 .AddBehavior<Attacking>()
                 .AddBehavior<Attackable>()
@@ -126,7 +130,10 @@ namespace Hopper.Test_Content
                 .Retouch(retouchers.Skip.NoPlayer)
                 .Retouch(retouchers.Skip.BlockedMove)
                 // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
+                .RunAtPatching(Registry.StoreForKind(whelpFactory))
                 .Retouch(TurnToPlayerRetoucher)
                 .AddBehavior<Sequential>(new Sequential.Config(Steps));
+
+        }
     }
 }

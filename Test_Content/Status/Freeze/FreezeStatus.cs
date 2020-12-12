@@ -3,10 +3,12 @@ using Hopper.Core;
 using Hopper.Test_Content.Utils;
 using Hopper.Utils.Chains;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Status.Freeze
 {
     public class FreezeStatus : Status<FreezeData>
     {
+        private EntityFactory<IceCube> m_iceCubeFactory;
+
         public FreezeStatus(int defaultResValue)
             : base(builder.ToStatic(), FreezeStat.Path, defaultResValue)
         {
@@ -25,7 +27,7 @@ namespace Hopper.Test_Content
             target.RemoveFromGrid();
 
             var iceCube = target.World.SpawnHangingEntity(
-                IceCube.Factory, target.Pos, target.Orientation);
+                m_iceCubeFactory, target.Pos, target.Orientation);
             iceCube.Captured = target;
 
             iceCube.ResetInGrid();
@@ -47,6 +49,5 @@ namespace Hopper.Test_Content
         }
         private static ChainDefBuilder builder = new ChainDefBuilder()
             .AddHandler_InsteadOf_Attack_Dig_Move(Handlers.StopPropagate, PriorityRanks.High);
-        public static readonly FreezeStatus Status = new FreezeStatus(1);
     }
 }

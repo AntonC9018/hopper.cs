@@ -2,13 +2,23 @@ using Hopper.Core.Chains;
 using Hopper.Utils.Chains;
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Stats;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Floor
 {
     public class StuckStatus : Status<StuckData>
     {
-        public StuckStatus(int defaultResValue)
-            : base(builder.ToStatic(), StuckStat.Path, defaultResValue)
+        public StuckStatus Create(int defaultResValue)
+        {
+            var lambdas = new Lambdas();
+            var chainDefs = lambdas.CreateBuilder().ToStatic();
+            var status = new StuckStatus(chainDefs, defaultResValue);
+            lambdas.status = status;
+            return status;
+        }
+
+        public StuckStatus(IChainDef[] chainDefs, int defaultResValue)
+            : base(chainDefs, StuckStat.Path, defaultResValue)
         {
         }
 
@@ -16,24 +26,27 @@ namespace Hopper.Test_Content
         {
         }
 
-        private static void PreventActionAndDecreaseAmount(ActorEvent ev)
+        private class Lambdas
         {
-            if (Status.IsApplied(ev.actor))
+            public StuckStatus status;
+
+            public ChainDefBuilder CreateBuilder() => new ChainDefBuilder()
+                .AddDef(Attacking.Do)
+                .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
+                .AddDef(Digging.Do)
+                .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
+                .AddDef(Displaceable.Do)
+                .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
+                .End();
+
+            private void PreventActionAndDecreaseAmount(ActorEvent ev)
             {
-                Status.Tinker.GetStore(ev).amount--;
-                ev.propagate = false;
+                if (status.IsApplied(ev.actor))
+                {
+                    status.Tinker.GetStore(ev).amount--;
+                    ev.propagate = false;
+                }
             }
         }
-
-        private static ChainDefBuilder builder = new ChainDefBuilder()
-            .AddDef(Attacking.Do)
-            .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
-            .AddDef(Digging.Do)
-            .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
-            .AddDef(Displaceable.Do)
-            .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
-            .End();
-
-        public static readonly StuckStatus Status = new StuckStatus(1);
     }
 }

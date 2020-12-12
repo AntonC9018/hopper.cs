@@ -2,11 +2,11 @@ using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Retouchers;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.SimpleMobs
 {
     public static class Skeleton
     {
-        public static EntityFactory<Entity> Factory(CoreRetouchers retocuhers) =>
+        public static EntityFactory<Entity> CreateFactory(CoreRetouchers retouchers) =>
             new EntityFactory<Entity>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(CreateSequenceData()))
@@ -19,9 +19,9 @@ namespace Hopper.Test_Content
                 .AddBehavior<Pushable>()
                 .AddBehavior<Statused>()
 
-                .Retouch(retocuhers.Skip.NoPlayer)
-                .Retouch(retocuhers.Skip.BlockedMove)
-                .Retouch(retocuhers.Reorient.OnActionSuccess);
+                .Retouch(retouchers.Skip.NoPlayer)
+                .Retouch(retouchers.Skip.BlockedMove)
+                .Retouch(retouchers.Reorient.OnActionSuccess);
 
         static Step[] CreateSequenceData()
         {

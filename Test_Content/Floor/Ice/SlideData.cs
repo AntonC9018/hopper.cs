@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Floor
 {
     public class SlideData : StatusData
     {

@@ -4,34 +4,28 @@ using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Floor
 {
     public class BlockingTrap : Entity
     {
         public override Layer Layer => Layer.FLOOR;
 
-        public static EntityFactory<BlockingTrap> CreateFactory()
+        public static EntityFactory<BlockingTrap> CreateFactory(EntityFactory<RealBarrier> factory)
         {
             return new EntityFactory<BlockingTrap>()
                 .AddBehavior<Attackable>()
-                .AddInitListener(trap => trap.ListenCell());
+                .AddInitListener(trap => trap.ListenCell())
+                .RunAtPatching(Registry.StoreForKind(factory));
         }
 
-        // These cannot be attacked on their own currently.
-        // In order to fix this, I will have to introduce a special
-        // function for the cell, which will also take a direction
-        // and return the barriers if their layer is in the query
-        public static EntityFactory<RealBarrier> BarrierFactory =
+        public static EntityFactory<RealBarrier> CreateBarrierFactory() =>
             RealBarrier.CreateFactory()
                 .AddBehavior<Attackable>()
                 .AddBehavior<Damageable>();
 
         private static Layer TargetedLayer = Layer.REAL;
+
         [DataMember] private List<RealBarrier> m_barriers;
-        // private static Tinker<BlockedData> Tinker = Tinker<BlockedData>.SingleHandlered(
-        //     // TODO: also, once the entity dies, call TryKillBarriers()
-        //     Attacking.Check, AttackInstead, Chains.PriorityRanks.High
-        // );
 
         private void ListenCell()
         {
@@ -47,9 +41,10 @@ namespace Hopper.Test_Content
                 if (m_barriers == null)
                 {
                     m_barriers = new List<RealBarrier>(4);
+                    var barrierFactory = entity.GetFactoryKindData<EntityFactory<RealBarrier>>();
                     foreach (var orientation in IntVector2.Zero.OrthogonallyAdjacent)
                     {
-                        m_barriers.Add(entity.World.SpawnEntity(BarrierFactory, entity.Pos, orientation));
+                        m_barriers.Add(entity.World.SpawnEntity(barrierFactory, entity.Pos, orientation));
                     }
                 }
                 // Tinker.Tink(entity, new BlockedData { applicant = this });

@@ -2,7 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Chains;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Status.Freeze
 {
     public interface ICapture
     {
@@ -13,15 +13,15 @@ namespace Hopper.Test_Content
     {
         public Entity Captured { get; set; }
 
-        public static Retoucher MoveCapturedRetoucher = new Retoucher(
+        public static Retoucher CreateMoveCapturedRetoucher() => new Retoucher(
             new TemplateChainDefBuilder()
                 .AddDef(Displaceable.Do)
                 .AddHandler(DisplaceCaptured)
                 .End().ToStatic()
         );
 
-        public static EntityFactory<IceCube> Factory = CreateFactory();
-        public static EntityFactory<IceCube> CreateFactory()
+        public static EntityFactory<IceCube> CreateFactory(
+            Retoucher MoveCapturedRetoucher, FreezeStatus status)
         {
             return new EntityFactory<IceCube>()
                 .AddBehavior<Displaceable>()
@@ -29,7 +29,7 @@ namespace Hopper.Test_Content
                 .AddBehavior<Pushable>()
                 .AddBehavior<Damageable>()
                 .Retouch(MoveCapturedRetoucher)
-                .AddDieListener(ReleaseOnDeath);
+                .AddDieListener(ReleaseOnDeath(status));
         }
 
         private static void DisplaceCaptured(ActorEvent ev)
@@ -38,13 +38,16 @@ namespace Hopper.Test_Content
             icapture.Captured.Pos = ev.actor.Pos;
         }
 
-        private static void ReleaseOnDeath(IceCube iceCube)
+        private static System.Action<IceCube> ReleaseOnDeath(FreezeStatus status)
         {
-            // release
-            iceCube.Captured.ResetInGrid();
-            // remove the status effect
-            FreezeStatus.Status.Remove(iceCube.Captured);
-            // TODO: apply 1 invulnerable to the captured entity
+            return iceCube =>
+            {
+                // release
+                iceCube.Captured.ResetInGrid();
+                // remove the status effect
+                status.Remove(iceCube.Captured);
+                // TODO: apply 1 invulnerable to the captured entity
+            };
         }
     }
 }

@@ -6,7 +6,7 @@ using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Targeting;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Explosion
 {
     // slot for bomb (endless)
     // when N x bombs are picked, apply N x tinkers so that 

@@ -3,22 +3,13 @@ using Hopper.Core;
 using Hopper.Utils.Chains;
 using Hopper.Core.Behaviors.Basic;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Bind
 {
-    public class SelfBinding
+    public static class BindRetouchers
     {
-        public static Retoucher NoMoveRetoucher = SetupRetoucher(BindStatuses.NoMove);
-
-        private BindStatus status;
-
-        public SelfBinding(BindStatus status)
+        public static Retoucher CreateBindRetoucher(BindStatus bindStatus)
         {
-            this.status = status;
-        }
-
-        public static Retoucher SetupRetoucher(BindStatus bindStatus)
-        {
-            var lambdas = new SelfBinding(bindStatus);
+            var lambdas = new Lambdas(bindStatus);
             var builder = new TemplateChainDefBuilder()
 
                 .AddDef<Tick.Event>(Tick.Chain)
@@ -35,19 +26,28 @@ namespace Hopper.Test_Content
             return new Retoucher(builder.ToStatic());
         }
 
-
-        private void Register(Binding.Event ev)
+        private class Lambdas
         {
-            bool success = status.IsApplied(ev.applyTo);
+            public BindStatus status;
 
-            if (success)
+            public Lambdas(BindStatus status)
             {
-                ((ISelfBinder)ev.actor).BoundEntity = ev.applyTo;
-                ev.actor.ResetPosInGrid(ev.applyTo.Pos);
+                this.status = status;
             }
-            else
+
+            public void Register(Binding.Event ev)
             {
-                ev.actor.Die();
+                bool success = status.IsApplied(ev.applyTo);
+
+                if (success)
+                {
+                    ((ISelfBinder)ev.actor).BoundEntity = ev.applyTo;
+                    ev.actor.ResetPosInGrid(ev.applyTo.Pos);
+                }
+                else
+                {
+                    ev.actor.Die();
+                }
             }
         }
 

@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
-using Hopper.Utils.Vector;
+using Hopper.Test_Content.Explosion;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.SimpleMobs
 {
     public class Knipper : Entity
     {
@@ -54,8 +53,7 @@ namespace Hopper.Test_Content
             }
         };
 
-        public static EntityFactory<Knipper> Factory = CreateFactory();
-        private static EntityFactory<Knipper> CreateFactory()
+        public static EntityFactory<Knipper> CreateFactory()
         {
             return new EntityFactory<Knipper>()
                 .AddBehavior<Attackable>()

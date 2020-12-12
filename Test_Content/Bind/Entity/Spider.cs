@@ -3,7 +3,7 @@ using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
 using Hopper.Utils;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Bind
 {
     [DataContract]
     public class Spider : Entity, ISelfBinder
@@ -13,10 +13,17 @@ namespace Hopper.Test_Content
         [DataMember]
         public Entity BoundEntity { get; set; }
 
+        public static EntityFactory<Spider> CreateFactory(BindContent bind) =>
+            new EntityFactory<Spider>()
+                .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
+                .AddBehavior<Sequential>(new Sequential.Config(CreateSequenceData()))
+                .AddBehavior<Displaceable>()
+                .AddBehavior<Moving>()
+                .AddBehavior<Binding>(new Binding.Config { bindStatus = bind.NoMove })
+                .AddBehavior<Attackable>()
+                .Retouch(bind.NoMoveRetoucher);
 
-        public static EntityFactory<Spider> Factory;
-
-        static Step[] CreateSequenceData()
+        private static Step[] CreateSequenceData()
         {
             var bindAction = new BehaviorAction<Binding>();
             var moveAction = new BehaviorAction<Moving>();
@@ -45,20 +52,6 @@ namespace Hopper.Test_Content
             };
 
             return stepData;
-        }
-
-        static Spider()
-        {
-            Factory = new EntityFactory<Spider>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
-                .AddBehavior<Sequential>(new Sequential.Config(CreateSequenceData()))
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Moving>()
-                .AddBehavior<Binding>(new Binding.Config { bindStatus = BindStatuses.NoMove })
-                .AddBehavior<Attackable>()
-                .Retouch(SelfBinding.NoMoveRetoucher);
-
-            ClassUtils.AssureStaticallyConstructed(typeof(SelfBinding));
         }
     }
 }

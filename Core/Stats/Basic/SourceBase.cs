@@ -4,13 +4,13 @@ namespace Hopper.Core.Stats.Basic
     {
         public int resistance { get; set; }
 
-        public static void InitFor(Registry registry)
+        public static void InitOn(Registry registry)
         {
             var r = new ArrayPatch<T>();
             registry.AddCustomPatchRegistry<ArrayPatch<T>, Resistance_Kind<T>>(r);
         }
 
-        public void AddFor(Registry registry)
+        public void RegisterOn(Registry registry)
         {
             var r = registry.GetCustomPatchRegistry<ArrayPatch<T>, Resistance_Kind<T>>();
             registry.IdReferences[this] = r.patches.Count - 1;

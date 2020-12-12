@@ -1,6 +1,6 @@
 using Hopper.Core;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Status.Freeze
 {
     public class FreezeData : StatusData
     {

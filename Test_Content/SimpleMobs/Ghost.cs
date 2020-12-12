@@ -35,10 +35,10 @@ namespace Hopper.Test_Content
             }
         };
 
-        public static Retoucher TeleportAfterAttack =
+        public static Retoucher CreateTeleportAfterAttack() =>
             Retoucher.SingleHandlered(Attackable.Do, Teleport, PriorityRanks.Lowest);
 
-        public static EntityFactory<Ghost> CreateFactory()
+        public static EntityFactory<Ghost> CreateFactory(Retoucher teleportAfterAttack)
         {
             return new EntityFactory<Ghost>()
                 .AddBehavior<Moving>()
@@ -49,7 +49,7 @@ namespace Hopper.Test_Content
                 .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(steps))
                 .AddBehavior<Damageable>()
-                .Retouch(TeleportAfterAttack);
+                .Retouch(teleportAfterAttack);
         }
     }
 }

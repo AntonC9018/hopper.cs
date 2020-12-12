@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Items;
 
-namespace Hopper.Test_Content
+namespace Hopper.Test_Content.Explosion
 {
     public class CheckInventoryItem : TinkerItem
     {
