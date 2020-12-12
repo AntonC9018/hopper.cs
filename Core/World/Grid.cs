@@ -1,3 +1,4 @@
+using Hopper.Utils;
 using Hopper.Utils.Vector;
 using System.Collections.Generic;
 
@@ -50,7 +51,8 @@ namespace Hopper.Core
         public void Remove(Entity entity, IntVector2 pos)
         {
             var cell = m_grid[pos.y, pos.x];
-            cell.m_entities.Remove(entity);
+            bool wasRemoved = cell.m_entities.Remove(entity);
+            Assert.That(wasRemoved, "Trying to remove an entity which is not in the cell is not allowed");
             cell.FireLeaveEvent(entity);
         }
 

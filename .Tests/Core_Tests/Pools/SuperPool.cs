@@ -22,13 +22,13 @@ namespace Hopper.Tests
         [Test]
         public void DrawingFrom_EmptyPool_Throws()
         {
-            Assert.Throws<System.Exception>(() => endlessPool.GetNextItem(""));
+            Assert.Throws<Hopper.Utils.Exception>(() => endlessPool.GetNextItem(""));
         }
 
         [Test]
         public void FinishingConfuguringOf_EmptyPool_Throws()
         {
-            Assert.Throws<System.Exception>(() => endlessPool.FinishConfiguring());
+            Assert.Throws<Hopper.Utils.Exception>(() => endlessPool.FinishConfiguring());
         }
 
         [Test]

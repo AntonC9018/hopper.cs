@@ -47,7 +47,7 @@ namespace Hopper.Core.Behaviors.Basic
 
         public void ApplyCurrentAlgo(Acting.Event ev)
         {
-            ((Sequence)m_sequence).ApplyCurrentAlgo(ev);
+            m_sequence.ApplyCurrentAlgo(ev);
         }
     }
 }

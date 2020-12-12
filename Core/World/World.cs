@@ -20,6 +20,16 @@ namespace Hopper.Core
         public int Id => m_id;
         private int m_id;
 
+        // For now, do this for the sake of tests and debugging
+        // The world currently does not really need an id
+        public World(int width, int height)
+        {
+            PhaseLayerExtensions.ThrowIfPhasesAreWrong();
+            Grid = new GridManager(width, height);
+            State = new WorldStateManager();
+            m_events = new Dictionary<int, IWorldEvent>();
+        }
+
         public World(int width, int height, Registry registry)
         {
             PhaseLayerExtensions.ThrowIfPhasesAreWrong();

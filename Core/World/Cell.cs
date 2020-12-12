@@ -180,14 +180,14 @@ namespace Hopper.Core
         public bool HasBlock(IntVector2 direction, Layer layer)
         {
             var prevCell = m_grid.GetCellAt(-direction + m_pos);
+            // Has directional block prev
             if (prevCell != null && prevCell.HasDirectionalBlock(direction, layer))
             {
-                System.Console.WriteLine("Has directional block prev");
                 return true;
             }
+            // Has directional block current
             if (HasDirectionalBlock(-direction, layer))
             {
-                System.Console.WriteLine("Has directional block current");
                 return true;
             }
             return GetUndirectedEntityFromLayer(layer) != null;
@@ -195,7 +195,7 @@ namespace Hopper.Core
 
         public bool HasDirectionalBlock(IntVector2 direction, Layer layer)
         {
-            var dir = direction.Copy();
+            var dir = direction;
             foreach (var entity in m_entities)
             {
                 if (entity.IsDirected && entity.IsOfLayer(layer))

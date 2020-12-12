@@ -12,13 +12,6 @@ namespace Hopper.Core
         private readonly Dictionary<int, TinkerData> m_tinkerStore =
             new Dictionary<int, TinkerData>();
 
-        private Entity m_entity;
-
-        public TinkerControl(Entity entity)
-        {
-            m_entity = entity;
-        }
-
         public bool IsTinked(ITinker tinker)
         {
             return m_tinkerStore.ContainsKey(tinker.Id);

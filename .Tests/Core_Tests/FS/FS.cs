@@ -56,7 +56,7 @@ namespace Hopper.Tests
 
             var dir1 = (Directory)node1;
             var dir2 = (Directory)node2;
-            Assert.That(dir1.nodes["2"] == dir2);
+            Assert.AreSame(dir1.nodes["2"], dir2);
         }
 
         [Test]

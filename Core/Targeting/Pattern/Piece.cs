@@ -12,7 +12,7 @@ namespace Hopper.Core.Targeting
         // null is no checking required
         // empty list to check all previous indices
         // list of indices to check the specified indices
-        public List<int> reach;
+        public int[] reach;
 
         // set automatically, if created for a pattern. otherwise, leave at default
         public int index;

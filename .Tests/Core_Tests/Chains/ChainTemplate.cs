@@ -38,7 +38,7 @@ namespace Hopper.Tests
             chainTemplate.AddHandler(handler_Hello.Function);
             var chain = (Chain<EventBase>)chainTemplate.Init();
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "Hello");
+            Assert.AreEqual("Hello", recorder.recordedSequence);
         }
 
         [Test]
@@ -48,13 +48,13 @@ namespace Hopper.Tests
 
             var chain = (Chain<EventBase>)chainTemplate.Init();
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "Hello");
+            Assert.AreEqual("Hello", recorder.recordedSequence);
 
             recorder.recordedSequence = "";
 
             var chain2 = (Chain<EventBase>)chainTemplate.Init();
             chain2.Pass(ev);
-            Assert.That(recorder.recordedSequence == "Hello");
+            Assert.AreEqual("Hello", recorder.recordedSequence);
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Hopper.Tests
             chainTemplate.AddHandler(handler_Hello.Function, PriorityRanks.High);
             var chain = (Chain<EventBase>)chainTemplate.Init();
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "HelloWorld");
+            Assert.AreEqual("HelloWorld", recorder.recordedSequence);
         }
 
         [Test]
@@ -75,13 +75,13 @@ namespace Hopper.Tests
 
             var chain = (Chain<EventBase>)chainTemplate.Init();
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "HelloWorld");
+            Assert.AreEqual("HelloWorld", recorder.recordedSequence);
 
             recorder.recordedSequence = "";
 
             var chain2 = (Chain<EventBase>)chainTemplate.Init();
             chain2.Pass(ev);
-            Assert.That(recorder.recordedSequence == "HelloWorld");
+            Assert.AreEqual("HelloWorld", recorder.recordedSequence);
         }
     }
 }

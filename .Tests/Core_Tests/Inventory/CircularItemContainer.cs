@@ -49,7 +49,7 @@ namespace Hopper.Tests
         {
             var container = new CircularItemContainer<TestItem>(1);
             container.Insert(item_Hello.Decompose());
-            Assert.AreEqual(item_Hello, container.AllItems.First());
+            Assert.AreSame(item_Hello, container.AllItems.First());
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace Hopper.Tests
         public void RemovingUnequippedThrows()
         {
             var container = new CircularItemContainer<TestItem>(1);
-            Assert.Throws<System.Exception>(() => container.Remove(item_Hello.Decompose()));
+            Assert.Throws<Hopper.Utils.Exception>(() => container.Remove(item_Hello.Decompose()));
 
             container.Insert(item_Hello.Decompose());
             Assert.Throws<System.IndexOutOfRangeException>(() => container.Remove(item_World.Decompose()));
@@ -76,7 +76,7 @@ namespace Hopper.Tests
         {
             var container = new CircularItemContainer<TestItem>(1);
             var decomposedItem = new DecomposedItem(item_Hello, 2);
-            Assert.Throws<System.Exception>(() => container.Insert(decomposedItem));
+            Assert.Throws<Hopper.Utils.Exception>(() => container.Insert(decomposedItem));
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Hopper.Tests
         {
             var container = new CircularItemContainer<TestItem>(1);
             var decomposedItem = new DecomposedItem(item_Hello, 2);
-            Assert.Throws<System.Exception>(() => container.Remove(decomposedItem));
+            Assert.Throws<Hopper.Utils.Exception>(() => container.Remove(decomposedItem));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace Hopper.Tests
             container.Insert(item_Hello.Decompose());
             container.Insert(item_World.Decompose());
             var excess = container.PullOutExcess();
-            Assert.AreEqual(item_Hello, excess[0]);
+            Assert.AreSame(item_Hello, excess[0]);
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace Hopper.Tests
             container.Size = 1;
             var excess = container.PullOutExcess();
             Assert.AreEqual(1, excess.Count);
-            Assert.AreEqual(item_World, excess[0]);
+            Assert.AreSame(item_World, excess[0]);
         }
     }
 }

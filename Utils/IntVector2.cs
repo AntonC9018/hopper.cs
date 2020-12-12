@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Hopper.Utils.Vector
 {
+    [DataContract]
     public struct IntVector2
     {
-        public int x, y;
+        [DataMember] public int x;
+        [DataMember] public int y;
 
         public static IntVector2 Zero = new IntVector2(0, 0);
         public static IntVector2 Right = new IntVector2(1, 0);
@@ -100,18 +102,8 @@ namespace Hopper.Utils.Vector
             };
         }
 
-        public IntVector2 Copy()
-        {
-            return new IntVector2
-            {
-                x = x,
-                y = y
-            };
-        }
-
         public override bool Equals(object obj)
         {
-
             if (obj == null)
             {
                 return false;
@@ -145,9 +137,9 @@ namespace Hopper.Utils.Vector
             };
         }
 
-        [JsonIgnore] public int SqMag => x * x + y * y;
+        public int SqMag => x * x + y * y;
 
-        [JsonIgnore] public float Mag => (float)Math.Sqrt(SqMag);
+        public float Mag => (float)Math.Sqrt(SqMag);
 
         public double AngleTo(IntVector2 v)
         {

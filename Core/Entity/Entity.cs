@@ -52,7 +52,7 @@ namespace Hopper.Core
         {
             IsDead = false;
             Behaviors = new BehaviorControl();
-            Tinkers = new TinkerControl(this);
+            Tinkers = new TinkerControl();
             History = new History<EntityState>();
         }
 

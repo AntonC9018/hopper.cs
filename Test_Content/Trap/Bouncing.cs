@@ -3,6 +3,7 @@ using Hopper.Core;
 using Hopper.Core.Behaviors;
 using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Stats.Basic;
+using Hopper.Utils;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content
@@ -29,7 +30,7 @@ namespace Hopper.Test_Content
         {
             if (m_entity.Orientation == IntVector2.Zero)
             {
-                throw new System.Exception("The one pushing should have a direction to have any effect");
+                throw new Exception("The one pushing should have a direction to have any effect");
             }
 
             // if anybody has been standing on top since the previous loop, don't bounce

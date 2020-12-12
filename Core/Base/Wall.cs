@@ -1,5 +1,4 @@
 using System.Runtime.Serialization;
-using Hopper.Core.Items;
 
 namespace Hopper.Core
 {

@@ -1,6 +1,3 @@
-using System;
-using Hopper.Utils.Vector;
-
 namespace Hopper.Core
 {
     public interface IWorldEvent : IKind

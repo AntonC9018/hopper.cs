@@ -115,11 +115,6 @@ namespace Hopper.Core.Behaviors.Basic
             Check = new ChainPaths<Attackable, Event>(ChainName.Check);
             Condition = new ChainPaths<Attackable, AttacknessEvent>(ChainName.Condition);
 
-            // this can be cleaned up by using lambdas
-            // this way we would eliminate the need of static methods
-            // i.e. e => e.actor.beh_Attackable.MethodName(e)
-            // or, even better, wrap it in a method Wrap(func, id) and call it as
-            // Wrap(func, s_factory.id)
             var builder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)

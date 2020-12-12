@@ -3,13 +3,20 @@ using System.Collections.Generic;
 
 namespace Hopper.Utils
 {
+    public class Exception : System.Exception
+    {
+        public Exception(string message) : base(message)
+        {
+        }
+    }
+
     public static class Assert
     {
         public static void That(bool expression, string message = "")
         {
             if (expression == false)
             {
-                throw new System.Exception(message);
+                throw new Exception(message);
             }
         }
 
@@ -18,7 +25,7 @@ namespace Hopper.Utils
         {
             if (!EqualityComparer<T>.Default.Equals(expected, actual))
             {
-                throw new System.Exception(message + $"\nExpected {expected}, got {actual}.");
+                throw new Exception(message + $"\nExpected {expected}, got {actual}.");
             }
         }
 
@@ -27,7 +34,7 @@ namespace Hopper.Utils
         {
             if (EqualityComparer<T>.Default.Equals(expected, actual))
             {
-                throw new System.Exception(message + $"\nExpected {expected}, got {actual}.");
+                throw new Exception(message + $"\nExpected {expected}, got {actual}.");
             }
         }
     }

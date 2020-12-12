@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Hopper.Core.Behaviors.Basic;
+using Hopper.Utils;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core
@@ -10,8 +11,9 @@ namespace Hopper.Core
     {
         private Step[] stepData;
 
-        public Sequence(Step[] stepData)
+        public Sequence(params Step[] stepData)
         {
+            Assert.AreNotEqual(0, stepData.Length, "The step data must include at least one step");
             this.stepData = stepData;
         }
 

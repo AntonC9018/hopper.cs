@@ -36,7 +36,7 @@ namespace Hopper.Tests
         public void EmptyChain_AddingHandlerDefault_ReturnsHandle()
         {
             var handle = chain.AddHandler(handler_Hello.Function);
-            Assert.That(handle != null);
+            Assert.IsNotNull(handle);
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace Hopper.Tests
             // the handler will be called
             chain.Pass(ev);
             // assert it were called
-            Assert.That(recorder.recordedSequence == "Hello");
+            Assert.AreEqual("Hello", recorder.recordedSequence);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Hopper.Tests
             var handle = chain.AddHandler(handler_Hello.Function);
             chain.Pass(ev);
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "HelloHello");
+            Assert.AreEqual("HelloHello", recorder.recordedSequence);
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Hopper.Tests
             var handle = chain.AddHandler(handler_Hello.Function);
             chain.RemoveHandler(handle);
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "");
+            Assert.AreEqual("", recorder.recordedSequence);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace Hopper.Tests
             chain.Pass(ev);
             chain.RemoveHandler(handle);
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "Hello");
+            Assert.AreEqual("Hello", recorder.recordedSequence);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace Hopper.Tests
             var handle_Hello = chain.AddHandler(handler_Hello.Function);
             var handle_World = chain.AddHandler(handler_World.Function);
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "HelloWorld");
+            Assert.AreEqual("HelloWorld", recorder.recordedSequence);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Hopper.Tests
             var handle_Hello = chain.AddHandler(handler_Hello.Function, PriorityRanks.High);
             var handle_World = chain.AddHandler(handler_World.Function, PriorityRanks.Medium);
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "HelloWorld");
+            Assert.AreEqual("HelloWorld", recorder.recordedSequence);
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace Hopper.Tests
             var handle_World = chain.AddHandler(handler_World.Function, PriorityRanks.Medium);
             var handle_Hello = chain.AddHandler(handler_Hello.Function, PriorityRanks.High);
             chain.Pass(ev);
-            Assert.That(recorder.recordedSequence == "HelloWorld");
+            Assert.AreEqual("HelloWorld", recorder.recordedSequence);
         }
 
         [Test]
@@ -116,17 +116,17 @@ namespace Hopper.Tests
             // use the default stop function, which checks `propagation`
             chain.Pass(ev);
 
-            Assert.That(recorder.recordedSequence == "Hello");
+            Assert.AreEqual("Hello", recorder.recordedSequence);
         }
 
         [Test]
         public void EventHandler_IsNotModified()
         {
             var handler_test = new EvHandler<EventBase>(ev => { }, PriorityRanks.Medium);
-            Assert.That(handler_test.Priority == (int)PriorityRanks.Medium);
+            Assert.AreEqual((int)PriorityRanks.Medium, handler_test.Priority);
             chain.AddHandler(handler_test);
             chain.Pass(ev);
-            Assert.That(handler_test.Priority == (int)PriorityRanks.Medium);
+            Assert.AreEqual((int)PriorityRanks.Medium, handler_test.Priority);
         }
 
         [Test]
@@ -138,17 +138,17 @@ namespace Hopper.Tests
             // counter was checked at 1, now has value 1, handler is called
             chain.Pass(ev, ev => ++counter == 2);
             Assert.That(counter == 1, "Counter incremented");
-            Assert.That(recorder.recordedSequence == "Hello", "First call successful");
+            Assert.AreEqual("Hello", recorder.recordedSequence, "First call successful");
 
             // counter was checked at 2, now has value 2, handler is not called
             chain.Pass(ev, ev => ++counter == 2);
             Assert.That(counter == 2, "Counter incremented");
-            Assert.That(recorder.recordedSequence == "Hello", "Second call not successful, as expected");
+            Assert.AreEqual("Hello", recorder.recordedSequence, "Second call not successful, as expected");
 
             // counter was checked at 3, handler is called
             chain.Pass(ev, ev => ++counter == 2);
             Assert.That(counter == 3, "Counter incremented");
-            Assert.That(recorder.recordedSequence == "HelloHello", "Third call successful");
+            Assert.AreEqual("HelloHello", recorder.recordedSequence, "Third call successful");
         }
 
 

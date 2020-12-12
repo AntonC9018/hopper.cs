@@ -19,7 +19,7 @@ namespace Hopper.Core
         private int m_id;
         public event System.Action<T> SetupEvent;
         public event System.Action<Registry> RunAtPatchingEvent;
-        private DefaultStats m_defaultStats;
+        public DefaultStats DefaultStats;
 
         public EntityFactory()
         {
@@ -87,9 +87,9 @@ namespace Hopper.Core
                 entity.Behaviors.Add(type, behavior);
             }
 
-            if (m_defaultStats != null)
+            if (DefaultStats != null)
             {
-                entity.Stats = new StatManager(m_defaultStats);
+                entity.Stats = new StatManager(DefaultStats);
             }
 
             SetupEvent?.Invoke(entity);
@@ -133,15 +133,15 @@ namespace Hopper.Core
             return this;
         }
 
-        public EntityFactory<T> RunAtPatching(System.Action<Registry> callback)
+        public EntityFactory<T> RunAtPatching(System.Action<Registry, EntityFactory<T>> callback)
         {
-            RunAtPatchingEvent += callback;
+            RunAtPatchingEvent += (registry) => callback(registry, this);
             return this;
         }
 
         public EntityFactory<T> SetDefaultStats(System.Func<Registry, DefaultStats> callback)
         {
-            RunAtPatchingEvent += (reg) => m_defaultStats = callback(reg);
+            RunAtPatchingEvent += (registry) => DefaultStats = callback(registry);
             return this;
         }
     }

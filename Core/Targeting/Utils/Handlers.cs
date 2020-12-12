@@ -55,7 +55,7 @@ namespace Hopper.Core.Targeting
                 return true;
 
             // reachable only if all the ones before are empty
-            if (reach.Count == 0)
+            if (reach.Length == 0)
                 // is of lowest index
                 return !targets.Any(t => t.piece.index < target.piece.index);
 

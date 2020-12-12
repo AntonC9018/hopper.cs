@@ -21,7 +21,7 @@ namespace Hopper.Core
     public class Tinker<T> : ITinker where T : TinkerData, new()
     {
         public int Id => m_id;
-        private int m_id = -1;
+        private int m_id;
         protected IChainDef[] m_chainDefinition;
 
         public Tinker(params IChainDef[] chainDefs)
