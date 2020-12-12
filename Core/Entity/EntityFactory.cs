@@ -35,8 +35,8 @@ namespace Hopper.Core
         private Dictionary<System.Type, BehaviorSetting> m_behaviorSettings =
             new Dictionary<System.Type, BehaviorSetting>();
 
-        private Dictionary<int, Retoucher> m_retouchers =
-            new Dictionary<int, Retoucher>();
+        // private Dictionary<int, Retoucher> m_retouchers =
+        //     new Dictionary<int, Retoucher>();
 
         public EntityFactory<T> AddBehavior<Beh>(object conf = null)
             where Beh : Behavior, new()
@@ -49,15 +49,15 @@ namespace Hopper.Core
 
         public EntityFactory<T> Retouch(Retoucher retoucher)
         {
-            m_retouchers.Add(retoucher.Id, retoucher);
+            // m_retouchers.Add(retoucher.Id, retoucher);
             retoucher.Retouch(this);
             return this;
         }
 
-        public bool IsRetouched(Retoucher retoucher)
-        {
-            return m_retouchers.ContainsKey(retoucher.Id);
-        }
+        // public bool IsRetouched(Retoucher retoucher)
+        // {
+        //     return m_retouchers.ContainsKey(retoucher.Id);
+        // }
 
         public T Instantiate(Registry registry)
         {

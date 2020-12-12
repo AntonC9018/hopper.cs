@@ -8,7 +8,7 @@ namespace Hopper.Test_Content.Floor
 {
     public class StuckStatus : Status<StuckData>
     {
-        public StuckStatus Create(int defaultResValue)
+        public static StuckStatus Create(int defaultResValue)
         {
             var lambdas = new Lambdas();
             var chainDefs = lambdas.CreateBuilder().ToStatic();
