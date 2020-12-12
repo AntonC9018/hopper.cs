@@ -2,6 +2,7 @@ using Hopper.Core.Behaviors;
 using Hopper.Core.Stats;
 using Hopper.Core.Chains;
 using Hopper.Core.Stats.Basic;
+using Hopper.Core.Behaviors.Basic;
 
 namespace Hopper.Core
 {

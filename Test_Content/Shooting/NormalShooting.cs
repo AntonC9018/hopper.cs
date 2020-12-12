@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Core;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;
 

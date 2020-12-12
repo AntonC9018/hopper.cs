@@ -3,7 +3,7 @@ using Hopper.Utils.Chains;
 using Hopper.Core.Items;
 using Hopper.Core.Chains;
 
-namespace Hopper.Core.Behaviors
+namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
     public partial class Interactable : Behavior

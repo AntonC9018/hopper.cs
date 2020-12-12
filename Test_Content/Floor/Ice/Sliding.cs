@@ -1,7 +1,6 @@
 using Hopper.Core;
 using Hopper.Core.Behaviors;
 using Hopper.Core.History;
-using Hopper.Core.Targeting;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
 

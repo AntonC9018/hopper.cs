@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Hopper.Core.Behaviors;
+using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Stats;
-using Hopper.Utils;
 
 namespace Hopper.Core
 {

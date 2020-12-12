@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using Hopper.Core.Chains;
 using Hopper.Core.Stats;
 
-namespace Hopper.Core.Behaviors
+namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
     public class Statused : Behavior

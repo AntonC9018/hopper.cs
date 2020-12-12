@@ -8,7 +8,7 @@ using System.Linq;
 using Hopper.Utils.Vector;
 using Hopper.Core.Chains;
 
-namespace Hopper.Core.Behaviors
+namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
     public class Attacking : Behavior, IStandartActivateable

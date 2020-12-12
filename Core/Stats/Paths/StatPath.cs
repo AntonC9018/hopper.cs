@@ -29,7 +29,7 @@ namespace Hopper.Core.Stats
 
         public void SetDefaultFile(Registry registry)
         {
-            registry.DefaultStats.statManager.GetLazy<T>(String, CreateDefaultFile(registry));
+            registry.DefaultStats.Set(String, CreateDefaultFile(registry));
         }
 
         public T GetDefault(Registry registry)

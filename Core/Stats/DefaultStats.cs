@@ -25,6 +25,13 @@ namespace Hopper.Core.Stats
             return this;
         }
 
+        public DefaultStats Set<T>(string path, T value)
+            where T : File, new()
+        {
+            statManager.GetRaw(path, value);
+            return this;
+        }
+
         public DefaultStats SetAtIndex(IStatPath<ArrayFile> statPath, int index, int value)
         {
             statManager.GetRaw(statPath.String, statPath.GetDefault(Registry))[index] = value;

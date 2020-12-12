@@ -1,8 +1,7 @@
 using System.Runtime.Serialization;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Items;
 using Hopper.Core.Retouchers;
-using Hopper.Core.Stats.Basic;
 
 namespace Hopper.Core
 {

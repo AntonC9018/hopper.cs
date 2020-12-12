@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Behaviors.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core

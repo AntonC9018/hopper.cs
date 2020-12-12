@@ -1,6 +1,6 @@
 using Hopper.Core.History;
 
-namespace Hopper.Core.Behaviors
+namespace Hopper.Core.Behaviors.Basic
 {
     public static class Utils
     {

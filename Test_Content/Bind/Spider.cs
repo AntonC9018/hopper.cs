@@ -1,7 +1,6 @@
 using System.Runtime.Serialization;
 using Hopper.Core;
-using Hopper.Core.Behaviors;
-using Newtonsoft.Json;
+using Hopper.Core.Behaviors.Basic;
 using Hopper.Utils;
 
 namespace Hopper.Test_Content

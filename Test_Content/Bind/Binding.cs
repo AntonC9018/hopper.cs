@@ -1,8 +1,7 @@
 ﻿using Hopper.Core.Chains;
 using Hopper.Core;
-using Hopper.Core.Behaviors;
-using Hopper.Core.FS;
 using Hopper.Core.Stats;
+using Hopper.Core.Behaviors;
 
 namespace Hopper.Test_Content
 {

@@ -2,7 +2,7 @@ using Hopper.Core.Chains;
 using Hopper.Utils.Chains;
 using System.Runtime.Serialization;
 
-namespace Hopper.Core.Behaviors
+namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
     public class Acting : Behavior

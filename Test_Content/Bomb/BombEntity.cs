@@ -1,6 +1,6 @@
 using System;
 using Hopper.Core;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Retouchers;
 using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;

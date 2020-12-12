@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using Hopper.Utils.Vector;
 using Hopper.Utils;
 
-namespace Hopper.Core.Behaviors
+namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
     public class Sequential : Behavior

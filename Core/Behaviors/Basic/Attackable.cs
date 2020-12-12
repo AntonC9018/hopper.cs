@@ -6,7 +6,7 @@ using Hopper.Utils.Vector;
 using Hopper.Core.Targeting;
 using Hopper.Core.Chains;
 
-namespace Hopper.Core.Behaviors
+namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
     public class Attackable : Behavior

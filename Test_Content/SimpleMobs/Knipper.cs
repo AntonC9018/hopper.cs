@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Core;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Behaviors.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content

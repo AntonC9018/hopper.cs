@@ -1,4 +1,4 @@
-using Hopper.Core.Behaviors;
+using Hopper.Core.Behaviors.Basic;
 
 namespace Hopper.Core
 {
