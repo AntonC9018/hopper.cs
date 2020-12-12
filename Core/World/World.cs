@@ -124,7 +124,8 @@ namespace Hopper.Core
         public DroppedItem SpawnDroppedItem(
             IItem item, IntVector2 pos, IntVector2 orientation)
         {
-            var entity = SpawnEntityNoEvent(DroppedItem.Factory, pos, orientation);
+            var droppedItemFactory = m_currentRegistry.ModContent.Get<CoreMod>().DroppedItemFactory;
+            var entity = SpawnEntityNoEvent(droppedItemFactory, pos, orientation);
             entity.Item = item;
             SpawnEntityEvent?.Invoke(entity);
             return entity;
