@@ -7,105 +7,102 @@ namespace Hopper.Core.Targeting
 {
     public static class Handlers
     {
-        public static void NextToAny(TargetEvent<AtkTarget> weaponEvent)
+        public static void LeaveAttackableAndBlocks(TargetEvent<AtkTarget> weaponEvent)
         {
-            var first = weaponEvent.targets[0];
-            if (first.piece.index == 0 && first.attackness != Attackness.NEVER)
-                return;
+            weaponEvent.targets = weaponEvent.targets
+                .Where(t => t.attackness.Is(Attackness.CAN_BE_ATTACKED | Attackness.IS_BLOCK));
+            System.Console.WriteLine($"Target length: {weaponEvent.targets.Count}");
+        }
 
-            if (weaponEvent.targets.Any(
-                    t => t.attackness == Attackness.IF_NEXT_TO))
+        public static void TakeFirst_ThatCanBeAttacked_ByDefault(TargetEvent<AtkTarget> weaponEvent)
+        {
+            // take first that can be attacked by default
+            AtkTarget first = weaponEvent.targets.Find(
+                // we consider maybe to be
+                t => t.attackness.Is(Attackness.CAN_BE_ATTACKED | Attackness.BY_DEFAULT)
+            );
+
+            weaponEvent.targets.Clear();
+
+            if (first != null
+                && (!first.attackness.Is(Attackness.IF_NEXT_TO) || first.piece.index == 0))
             {
-                weaponEvent.propagate = false;
-                weaponEvent.targets.Clear();
+                weaponEvent.targets.Add(first);
             }
         }
 
-        public static void TakeFirstNotSkip(TargetEvent<AtkTarget> weaponEvent)
+        public static void TakeAll_ThatCanBeAttacked_ByDefault(TargetEvent<AtkTarget> weaponEvent)
         {
-            if (weaponEvent.targets.Count == 0)
-                return;
+            // take first that can be attacked by default
+            var targets = weaponEvent.targets.Where(
+                // we consider maybe to be
+                t => t.attackness.Is(Attackness.CAN_BE_ATTACKED | Attackness.BY_DEFAULT)
+            );
 
-            // take first that doesn't have low priority
-            AtkTarget first = weaponEvent.targets.Find(
-                t => t.attackness != Attackness.SKIP);
-
-            // if all have low priority, take the first one
-            if (first == null)
-                first = weaponEvent.targets[0];
-
-            weaponEvent.targets.Clear();
-            weaponEvent.targets.Add(first);
+            if (
+                // if all are attackable only close
+                targets.All(t => t.attackness.Is(Attackness.IF_NEXT_TO))
+                // and none are close
+                && targets.None(t => t.piece.index == 0)
+            )
+            {
+                weaponEvent.targets.Clear();
+            }
+            else
+            {
+                weaponEvent.targets = targets;
+            }
         }
 
         public static void DiscardUnreachable<T>(TargetEvent<T> weaponEvent)
             where T : AtkTarget
         {
-            weaponEvent.targets = weaponEvent.targets
-                .Where(t => CanReach(t, weaponEvent.targets));
+            // we assume they are sorted
+            // weaponEvent.targets.Sort((a, b) => a.piece.index - b.piece.index);
+
+            bool[] reachArray = new bool[weaponEvent.targets.Max(t => t.piece.index) + 1];
+            reachArray.Fill(true);
+            var newTargets = new List<T>();
+
+            foreach (var target in weaponEvent.targets)
+            {
+                int i = target.piece.index;
+                var piece = target.piece;
+
+                // we prevent reach if we are a block
+                reachArray[i] = target.attackness.Is(Attackness.IS_BLOCK);
+
+                if (
+                    // always reaches
+                    piece.reach == null
+
+                    // reaches only if all previous ones were not blocked
+                    || piece.reach.Length == 0 && reachArray.Take(i).All(true)
+
+                    // reaches in the specified ones were not blocked
+                    || piece.reach.All(j => reachArray[j] == true))
+                {
+                    newTargets.Add(weaponEvent.targets[i]);
+                }
+            }
+
+            weaponEvent.targets = newTargets;
         }
 
-        public static bool CanReach<T>(T target, IEnumerable<T> targets)
-            where T : AtkTarget
-        {
-            var reach = target.piece.reach;
-
-            // always reachable
-            if (reach == null)
-                return true;
-
-            // reachable only if all the ones before are empty
-            if (reach.Length == 0)
-                // is of lowest index
-                return !targets.Any(t => t.piece.index < target.piece.index);
-
-            // reachable if no specified indeces are present
-            return !targets.Any(t => reach.Contains(t.piece.index));
-        }
-
-        public static void DiscardNotClose(TargetEvent<AtkTarget> weaponEvent)
-        {
-            weaponEvent.targets = weaponEvent.targets
-                .FilterFromIndex(t => t.attackness != Attackness.IF_NEXT_TO, 1);
-        }
-
-        public static void DiscardUnattackable(TargetEvent<AtkTarget> weaponEvent)
-        {
-            weaponEvent.targets = weaponEvent.targets
-                .Where(t => t.attackness != Attackness.NEVER);
-        }
-
-        public static void DiscardNoEntity<T>(TargetEvent<T> weaponEvent)
-            where T : AtkTarget
-        {
-            weaponEvent.targets = weaponEvent.targets
-                .Where(t => t.entity != null);
-        }
-
-        public static void KeepAttackable(TargetEvent<AtkTarget> weaponEvent)
-        {
-            weaponEvent.targets = weaponEvent.targets
-                .Where(t => t.attackness == Attackness.ALWAYS
-                         || t.attackness == Attackness.IF_NEXT_TO);
-        }
-
-        public static Chain<TargetEvent<AtkTarget>> GeneralChain;
+        public static Chain<TargetEvent<AtkTarget>> DefaultAtkChain;
+        public static Chain<TargetEvent<AtkTarget>> MultiAtkChain;
 
         static Handlers()
         {
-            var generalHandlers = new List<System.Action<TargetEvent<AtkTarget>>>{
-                DiscardNoEntity,
-                NextToAny,
-                DiscardUnreachable,
-                DiscardUnattackable,
-                DiscardNotClose,
-                TakeFirstNotSkip,
-            };
-            GeneralChain = new Chain<TargetEvent<AtkTarget>>();
-            foreach (var func in generalHandlers)
-            {
-                GeneralChain.AddHandler(func);
-            }
+            DefaultAtkChain = new Chain<TargetEvent<AtkTarget>>();
+            DefaultAtkChain.AddHandler(LeaveAttackableAndBlocks);
+            DefaultAtkChain.AddHandler(DiscardUnreachable);
+            DefaultAtkChain.AddHandler(TakeFirst_ThatCanBeAttacked_ByDefault);
+
+            MultiAtkChain = new Chain<TargetEvent<AtkTarget>>();
+            MultiAtkChain.AddHandler(LeaveAttackableAndBlocks);
+            MultiAtkChain.AddHandler(DiscardUnreachable);
+            MultiAtkChain.AddHandler(TakeAll_ThatCanBeAttacked_ByDefault);
         }
     }
 }

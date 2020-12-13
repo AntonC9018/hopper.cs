@@ -18,9 +18,9 @@ namespace Hopper.Core.Items
             m_targetProvider = targetProvider;
         }
 
-        public List<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 dir, Attack attack)
+        public List<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 dir)
         {
-            return m_targetProvider.GetTargets(spot, dir, attack);
+            return m_targetProvider.GetTargets(spot, dir);
         }
     }
 }

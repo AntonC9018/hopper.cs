@@ -47,8 +47,7 @@ namespace Hopper.Test_Content.Explosion
         public static EntityFactory<BombEntity> CreateFactory(CoreRetouchers retouchers)
         {
             return new EntityFactory<BombEntity>()
-                .AddBehavior<Attackable>()
-                .Retouch(retouchers.Attackness.Constant(Attackness.IF_NEXT_TO))
+                .AddBehavior<Attackable>(new Attackable.Config(Attackness.CAN_BE_ATTACKED_IF_NEXT_TO))
                 .AddBehavior<Pushable>()
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))

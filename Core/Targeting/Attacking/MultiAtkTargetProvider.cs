@@ -21,7 +21,7 @@ namespace Hopper.Core.Targeting
             m_targetLayer = targetLayer;
         }
 
-        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 direction, Attack attack)
+        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 direction)
         {
             foreach (var rotatedPiece in m_pattern.GetPieces(spot, direction))
             {

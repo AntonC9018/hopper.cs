@@ -23,6 +23,7 @@ namespace Hopper.Tests
             // matters in whether the other targets will be ignored.
             var attackable = new Attackable();
             attackable.GenerateChains(BehaviorFactory<Attackable>.s_builder.Templates);
+            attackable.m_attackness = Attackness.ALWAYS;
             entity.Behaviors.Add(typeof(Attackable), attackable);
 
             wall = new Wall();
@@ -50,16 +51,15 @@ namespace Hopper.Tests
                     reach = null
                 }
             );
-            var targetProvider = TargetProvider.CreateAtk(pattern, Handlers.GeneralChain);
+            var targetProvider = TargetProvider.CreateAtk(pattern, Handlers.DefaultAtkChain);
 
             entity.Pos = new IntVector2(0, 0);
             world.Grid.Reset(entity);
 
             var dummy = new Dummy(new IntVector2(0, 1), world);
             var queriedDirection = IntVector2.Up;
-            var attack = new Attack(); // leave everything at 0, since not actually attacking
 
-            var targets = targetProvider.GetTargets(dummy, queriedDirection, attack);
+            var targets = targetProvider.GetTargets(dummy, queriedDirection);
 
             Assert.AreSame(entity, targets[0].entity);
         }
@@ -89,26 +89,24 @@ namespace Hopper.Tests
                     reach = new int[0]
                 }
             );
-            var targetProvider = TargetProvider.CreateAtk(pattern, Handlers.GeneralChain);
+            var targetProvider = TargetProvider.CreateAtk(pattern, Handlers.DefaultAtkChain);
 
             entity.Pos = new IntVector2(0, 0);
             world.Grid.Reset(entity);
 
             var dummy = new Dummy(new IntVector2(0, 2), world);
             var queriedDirection = IntVector2.Up;
-            var attack = new Attack(); // leave everything at 0, since not actually attacking
 
-            var targets = targetProvider.GetTargets(dummy, queriedDirection, attack);
+            var targets = targetProvider.GetTargets(dummy, queriedDirection);
 
             Assert.AreSame(entity, targets[0].entity);
 
             wall.Pos = new IntVector2(0, 1);
             world.Grid.Reset(wall);
 
-            targets = targetProvider.GetTargets(dummy, queriedDirection, attack);
+            targets = targetProvider.GetTargets(dummy, queriedDirection);
 
             Assert.AreEqual(0, targets.Count);
-
         }
 
         public void IfCloseTest()
@@ -138,30 +136,28 @@ namespace Hopper.Tests
                     reach = null
                 }
             );
-            var targetProvider = TargetProvider.CreateAtk(pattern, Handlers.GeneralChain);
+            var targetProvider = TargetProvider.CreateAtk(pattern, Handlers.DefaultAtkChain);
 
             // say now the entity is only attackable while close
-            var handle = Attackable.Condition.ChainPath(entity.Behaviors)
-                .AddHandler(ev => ev.attackness = Attackness.IF_NEXT_TO);
+            entity.Behaviors.Get<Attackable>().m_attackness |= Attackness.IF_NEXT_TO;
 
             entity.Pos = new IntVector2(0, 0);
             world.Grid.Reset(entity);
 
             var queriedDirection = IntVector2.Up;
-            var attack = new Attack(); // leave everything at 0, since not actually attacking
 
             // 1
             var dummy = new Dummy(new IntVector2(0, 1), world);
-            var targets = targetProvider.GetTargets(dummy, queriedDirection, attack);
+            var targets = targetProvider.GetTargets(dummy, queriedDirection);
             Assert.AreSame(entity, targets[0]);
 
             // 2
             dummy = new Dummy(new IntVector2(0, 2), world);
-            targets = targetProvider.GetTargets(dummy, queriedDirection, attack);
+            targets = targetProvider.GetTargets(dummy, queriedDirection);
             Assert.AreEqual(0, targets.Count);
 
             // do a clean-up
-            Attackable.Condition.ChainPath(entity.Behaviors).RemoveHandler(handle);
+            entity.Behaviors.Get<Attackable>().m_attackness ^= Attackness.IF_NEXT_TO;
         }
     }
 }

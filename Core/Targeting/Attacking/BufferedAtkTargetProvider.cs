@@ -28,7 +28,7 @@ namespace Hopper.Core.Targeting
             m_targetLayer = targetLayer;
         }
 
-        public List<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 direction, Attack attack)
+        public List<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 direction)
         {
             var targetEvent = new TargetEvent<AtkTarget>
             {
@@ -46,7 +46,7 @@ namespace Hopper.Core.Targeting
                     if (entity != null)
                     {
                         var atkness = entity.Behaviors.Has<Attackable>()
-                            ? entity.Behaviors.Get<Attackable>().GetAtkCondition(attack)
+                            ? entity.Behaviors.Get<Attackable>().m_attackness
                             : Attackness.NEVER;
                         var target = new AtkTarget(atkness, rotatedPiece, entity);
                         targetEvent.targets.Add(target);

@@ -21,7 +21,7 @@ namespace Hopper.Core.Behaviors.Basic
         }
 
         private static List<Target> GenerateTargetsDefault(Event ev)
-            => TargetProvider.SimpleAttack.GetTargets(ev.actor, ev.action.direction, ev.attack).ToList();
+            => TargetProvider.SimpleAttack.GetTargets(ev.actor, ev.action.direction).ToList();
 
         public bool Activate(Action action) => Activate(action, null);
         public bool Activate(Action action, List<Target> targets)
@@ -61,7 +61,7 @@ namespace Hopper.Core.Behaviors.Basic
                         // since we don't want out event to have excessive data. 
                         // It may be useful in some cases, but not yet
                         ev.targets = weapon
-                            .GetTargets(ev.actor, ev.action.direction, ev.attack)
+                            .GetTargets(ev.actor, ev.action.direction)
                             .ConvertAll(t => new Target(t.entity, t.piece.dir));
                     }
                     else
@@ -91,7 +91,7 @@ namespace Hopper.Core.Behaviors.Basic
             if (attacked.Behaviors.Has<Attackable>())
             {
                 var attackable = attacked.Behaviors.Get<Attackable>();
-                if (attackable.IsAttackable(attack, attacker))
+                if (attackable.IsAttackable(attacker))
                 {
                     attackable.Activate(direction, new Attackable.Params(attack, attacker));
                 }
@@ -146,8 +146,8 @@ namespace Hopper.Core.Behaviors.Basic
             var builder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(SetBase, PriorityRanks.High)
                 .AddHandler(SetTargets, PriorityRanks.Medium)
+                .AddHandler(SetBase, PriorityRanks.Medium)
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(ApplyAttack)

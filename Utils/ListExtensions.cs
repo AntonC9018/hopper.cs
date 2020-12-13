@@ -119,5 +119,38 @@ namespace Hopper.Utils
             }
             return result;
         }
+
+        public static IList<T> Fill<T>(this IList<T> arr, T value)
+        {
+            for (int i = 0; i < arr.Count; i++)
+            {
+                arr[i] = value;
+            }
+            return arr;
+        }
+
+        public static bool None<T>(this IEnumerable<T> arr, System.Predicate<T> pred)
+        {
+            foreach (var value in arr)
+            {
+                if (pred(value) == true)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static bool All<T>(this IEnumerable<T> arr, T value)
+        {
+            foreach (var el in arr)
+            {
+                if (!el.Equals(value))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

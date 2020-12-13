@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Hopper.Core.Behaviors.Basic;
-using Hopper.Core.Stats.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting
@@ -16,7 +15,7 @@ namespace Hopper.Core.Targeting
             m_targetLayer = targetLayer;
         }
 
-        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 direction, Attack attack)
+        public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 direction)
         {
             Cell cell = spot.GetCellRelative(direction);
             if (cell != null && cell.HasBlock(direction, m_skipLayer) == false)
@@ -24,7 +23,7 @@ namespace Hopper.Core.Targeting
                 Entity entity = cell.GetEntityFromLayer(direction, Layer.WALL);
                 if (entity != null
                     && entity.Behaviors.Has<Attackable>()
-                    && entity.Behaviors.Get<Attackable>().IsAttackable(attack, spot))
+                    && entity.Behaviors.Get<Attackable>().IsAttackable(spot))
                 {
                     yield return new Target(entity, direction);
                 }

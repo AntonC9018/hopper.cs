@@ -31,6 +31,20 @@ namespace Hopper.Core.Behaviors.Basic
             }
         }
 
+        public class Config
+        {
+            public Attackness attackness;
+            public Config(Attackness attackness)
+            {
+                this.attackness = attackness;
+            }
+        }
+
+        private void Init(Config config)
+        {
+            m_attackness = config == null ? Attackness.ALWAYS : config.attackness;
+        }
+
         public bool Activate(IntVector2 dir, Params attackableParams)
         {
             var ev = new Event
@@ -81,39 +95,21 @@ namespace Hopper.Core.Behaviors.Basic
             }
         }
 
-        public class AttacknessEvent : StandartEvent
-        {
-            public Attackness attackness = Attackness.ALWAYS;
-            public Attack attack;
-        }
+        public Attackness m_attackness;
 
-        public Attackness GetAtkCondition(Attack attack)
+        public bool IsAttackable(IWorldSpot attacker)
         {
-            var ev = new AttacknessEvent
-            {
-                actor = this.m_entity,
-                attack = attack
-            };
-            GetChain<AttacknessEvent>(ChainName.Condition).Pass(ev);
-            return ev.attackness;
-        }
-
-        public bool IsAttackable(Attack attack, IWorldSpot attacker)
-        {
-            var condition = GetAtkCondition(attack);
-            return condition == Attackness.ALWAYS || condition == Attackness.IF_NEXT_TO
+            return m_attackness == Attackness.ALWAYS || m_attackness == Attackness.IF_NEXT_TO
                 && (attacker == null || (attacker.Pos - m_entity.Pos).Abs().ComponentSum() <= 1);
         }
 
         public static readonly ChainPaths<Attackable, Event> Check;
         public static readonly ChainPaths<Attackable, Event> Do;
-        public static readonly ChainPaths<Attackable, AttacknessEvent> Condition;
 
         static Attackable()
         {
             Do = new ChainPaths<Attackable, Event>(ChainName.Do);
             Check = new ChainPaths<Attackable, Event>(ChainName.Check);
-            Condition = new ChainPaths<Attackable, AttacknessEvent>(ChainName.Condition);
 
             var builder = new ChainTemplateBuilder()
 
@@ -125,8 +121,6 @@ namespace Hopper.Core.Behaviors.Basic
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(TakeHit)
                 .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacked_do))
-
-                .AddTemplate<AttacknessEvent>(ChainName.Condition)
 
                 .End();
 

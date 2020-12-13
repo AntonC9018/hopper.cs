@@ -65,7 +65,7 @@ namespace Hopper.Test_Content.Explosion
         public static void ExplodeCell(IntVector2 pos, IntVector2 knockbackDir, World world)
         {
             var targets = targetProvider.GetTargets(
-                new Hopper.Core.Targeting.Dummy(pos, world), knockbackDir, BaseAtk(world.m_currentRegistry));
+                new Hopper.Core.Targeting.Dummy(pos, world), knockbackDir);
 
             foreach (var target in targets)
             {
