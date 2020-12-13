@@ -64,6 +64,7 @@ namespace Hopper.Tests
             Assert.AreSame(entity, targets[0].entity);
         }
 
+        [Test]
         public void SpearPattern()
         {
             /*
@@ -85,7 +86,7 @@ namespace Hopper.Tests
                 new Piece
                 {
                     dir = IntVector2.Right,
-                    pos = IntVector2.Right,
+                    pos = IntVector2.Right * 2,
                     reach = new int[0]
                 }
             );
@@ -94,6 +95,7 @@ namespace Hopper.Tests
             entity.Pos = new IntVector2(0, 0);
             world.Grid.Reset(entity);
 
+            // 1
             var dummy = new Dummy(new IntVector2(0, 2), world);
             var queriedDirection = IntVector2.Up;
 
@@ -101,6 +103,7 @@ namespace Hopper.Tests
 
             Assert.AreSame(entity, targets[0].entity);
 
+            // 2
             wall.Pos = new IntVector2(0, 1);
             world.Grid.Reset(wall);
 
@@ -109,6 +112,7 @@ namespace Hopper.Tests
             Assert.AreEqual(0, targets.Count);
         }
 
+        [Test]
         public void IfCloseTest()
         {
             /*
@@ -149,7 +153,7 @@ namespace Hopper.Tests
             // 1
             var dummy = new Dummy(new IntVector2(0, 1), world);
             var targets = targetProvider.GetTargets(dummy, queriedDirection);
-            Assert.AreSame(entity, targets[0]);
+            Assert.AreSame(entity, targets[0].entity);
 
             // 2
             dummy = new Dummy(new IntVector2(0, 2), world);

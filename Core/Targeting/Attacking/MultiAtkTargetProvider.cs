@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 using Hopper.Core.Behaviors.Basic;
-using Hopper.Core.Stats.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting
 {
-    public class MultiTargetProvider : IAtkTargetProvider
+    public class MultiAtkTargetProvider : ITargetProvider
     {
         private IPattern m_pattern;
         private Layer m_skipLayer;
         private Layer m_targetLayer;
 
-        public MultiTargetProvider(
+        public MultiAtkTargetProvider(
             IPattern pattern,
             Layer skipLayer,
             Layer targetLayer)

@@ -11,20 +11,17 @@ namespace Hopper.Core.Targeting
         private IPattern m_pattern;
         private Chain<TargetEvent<AtkTarget>> m_chain;
         private System.Func<TargetEvent<AtkTarget>, bool> m_stopFunc;
-        private Layer m_skipLayer;
         private Layer m_targetLayer;
 
         public BufferedAtkTargetProvider(
             IPattern pattern,
             Chain<TargetEvent<AtkTarget>> chain,
             System.Func<TargetEvent<AtkTarget>, bool> stopFunc,
-            Layer skipLayer,
             Layer targetLayer)
         {
             m_pattern = pattern;
             m_chain = chain;
             m_stopFunc = stopFunc;
-            m_skipLayer = skipLayer;
             m_targetLayer = targetLayer;
         }
 
@@ -40,7 +37,7 @@ namespace Hopper.Core.Targeting
             foreach (var rotatedPiece in m_pattern.GetPieces(spot, direction))
             {
                 Cell cell = spot.GetCellRelative(rotatedPiece.pos);
-                if (cell != null && cell.HasBlock(direction, m_skipLayer) == false)
+                if (cell != null)
                 {
                     var entity = cell.GetEntityFromLayer(direction, m_targetLayer);
                     if (entity != null)

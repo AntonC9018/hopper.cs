@@ -17,7 +17,7 @@ namespace Hopper.Core.Targeting
         )
         {
             return new BufferedAtkTargetProvider(
-                pattern, chain, DefaultStop<AtkTarget>, Layer.WALL, Layer.REAL);
+                pattern, chain, DefaultStop<AtkTarget>, Layer.REAL | Layer.WALL);
         }
 
         public static BufferedAtkTargetProvider CreateAtk(
@@ -27,7 +27,7 @@ namespace Hopper.Core.Targeting
         )
         {
             return new BufferedAtkTargetProvider(
-                pattern, chain, stop, Layer.WALL, Layer.REAL);
+                pattern, chain, stop, Layer.REAL | Layer.WALL);
         }
 
         public static readonly SingleTargetProvider SimpleDig = new SingleTargetProvider(0, Layer.WALL);

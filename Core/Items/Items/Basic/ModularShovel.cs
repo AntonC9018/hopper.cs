@@ -5,13 +5,13 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Items
 {
-    public class ModularShovel : ModularItem, ITargetProvider<Target>
+    public class ModularShovel : ModularItem, ITargetProvider
     {
-        private ITargetProvider<Target> m_targetProvider;
+        private ITargetProvider m_targetProvider;
 
         public ModularShovel(
             ItemMetadata meta,
-            ITargetProvider<Target> targetProvider,
+            ITargetProvider targetProvider,
             params IModule[] modules)
             : base(meta, Hopper.Core.Items.Slot.Shovel, modules)
         {

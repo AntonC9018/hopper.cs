@@ -11,7 +11,6 @@ namespace Hopper.Core.Targeting
         {
             weaponEvent.targets = weaponEvent.targets
                 .Where(t => t.attackness.Is(Attackness.CAN_BE_ATTACKED | Attackness.IS_BLOCK));
-            System.Console.WriteLine($"Target length: {weaponEvent.targets.Count}");
         }
 
         public static void TakeFirst_ThatCanBeAttacked_ByDefault(TargetEvent<AtkTarget> weaponEvent)
@@ -70,19 +69,25 @@ namespace Hopper.Core.Targeting
                 var piece = target.piece;
 
                 // we prevent reach if we are a block
-                reachArray[i] = target.attackness.Is(Attackness.IS_BLOCK);
+                reachArray[i] = target.attackness.IsNot(Attackness.IS_BLOCK);
 
-                if (
-                    // always reaches
-                    piece.reach == null
-
-                    // reaches only if all previous ones were not blocked
-                    || piece.reach.Length == 0 && reachArray.Take(i).All(true)
-
-                    // reaches in the specified ones were not blocked
-                    || piece.reach.All(j => reachArray[j] == true))
+                // always reaches
+                if (piece.reach == null)
                 {
-                    newTargets.Add(weaponEvent.targets[i]);
+                    newTargets.Add(target);
+                }
+                // reaches only if all previous ones were not blocked
+                else if (piece.reach.Length == 0)
+                {
+                    if (reachArray.Take(i).All(true))
+                    {
+                        newTargets.Add(target);
+                    }
+                }
+                // reaches in the specified ones were not blocked
+                else if (piece.reach.All(j => reachArray[j] == true))
+                {
+                    newTargets.Add(target);
                 }
             }
 

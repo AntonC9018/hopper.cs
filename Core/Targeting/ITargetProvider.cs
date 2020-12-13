@@ -3,8 +3,8 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting
 {
-    public interface ITargetProvider<T> where T : Target
+    public interface ITargetProvider
     {
-        IEnumerable<T> GetTargets(IWorldSpot spot, IntVector2 dir);
+        IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 dir);
     }
 }

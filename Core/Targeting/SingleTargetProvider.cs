@@ -3,7 +3,7 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting
 {
-    public class SingleTargetProvider : ITargetProvider<Target>
+    public class SingleTargetProvider : ITargetProvider
     {
         private Layer m_skipLayer;
         private Layer m_targetLayer;

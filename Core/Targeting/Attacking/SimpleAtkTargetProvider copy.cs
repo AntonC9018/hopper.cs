@@ -4,7 +4,7 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting
 {
-    public class SingleAtkTargetProvider : IAtkTargetProvider
+    public class SingleAtkTargetProvider : ITargetProvider
     {
         private Layer m_skipLayer;
         private Layer m_targetLayer;
