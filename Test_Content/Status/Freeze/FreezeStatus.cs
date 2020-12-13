@@ -9,9 +9,10 @@ namespace Hopper.Test_Content.Status.Freeze
     {
         private EntityFactory<IceCube> m_iceCubeFactory;
 
-        public FreezeStatus(int defaultResValue)
+        public FreezeStatus(int defaultResValue, EntityFactory<IceCube> iceCubeFactory)
             : base(builder.ToStatic(), FreezeStat.Path, defaultResValue)
         {
+            m_iceCubeFactory = iceCubeFactory;
         }
 
         protected override void Reapply(FreezeData existingData, FreezeData newData)

@@ -6,6 +6,7 @@ using Hopper.Test_Content.Boss;
 using Hopper.Test_Content.Explosion;
 using Hopper.Test_Content.Floor;
 using Hopper.Test_Content.SimpleMobs;
+using Hopper.Test_Content.Status;
 using Hopper.Test_Content.Trap;
 
 namespace Hopper.Test_Content
@@ -20,6 +21,7 @@ namespace Hopper.Test_Content
         public MobsContent Mob;
         public WallsContent Wall;
         public TrapContent Trap;
+        public StatusContent Status;
 
 
         public TestMod(ModsContent mods)
@@ -33,6 +35,7 @@ namespace Hopper.Test_Content
             Mob = new MobsContent(coreMod.Retouchers);
             Wall = new WallsContent();
             Trap = new TrapContent();
+            Status = new StatusContent(coreMod.Retouchers);
         }
         public void RegisterSelf(Registry registry)
         {
@@ -47,6 +50,7 @@ namespace Hopper.Test_Content
             Mob.RegisterSelf(registry);
             Wall.RegisterSelf(registry);
             Trap.RegisterSelf(registry);
+            Status.RegisterSelf(registry);
         }
     }
 }

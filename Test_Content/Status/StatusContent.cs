@@ -14,8 +14,8 @@ namespace Hopper.Test_Content.Status
         public StatusContent(CoreRetouchers retouchers)
         {
             MoveCapturedRetoucher = IceCube.CreateMoveCapturedRetoucher();
-            FreezeStatus = new FreezeStatus(1);
-            IceCubeFactory = IceCube.CreateFactory(MoveCapturedRetoucher, FreezeStatus);
+            IceCubeFactory = IceCube.CreateFactory(MoveCapturedRetoucher);
+            FreezeStatus = new FreezeStatus(1, IceCubeFactory);
         }
 
         public void RegisterSelf(Registry registry)

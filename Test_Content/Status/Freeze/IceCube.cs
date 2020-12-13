@@ -21,7 +21,7 @@ namespace Hopper.Test_Content.Status.Freeze
         );
 
         public static EntityFactory<IceCube> CreateFactory(
-            Retoucher MoveCapturedRetoucher, FreezeStatus status)
+            Retoucher MoveCapturedRetoucher)
         {
             return new EntityFactory<IceCube>()
                 .AddBehavior<Displaceable>()
@@ -29,7 +29,7 @@ namespace Hopper.Test_Content.Status.Freeze
                 .AddBehavior<Pushable>()
                 .AddBehavior<Damageable>()
                 .Retouch(MoveCapturedRetoucher)
-                .AddDieListener(ReleaseOnDeath(status));
+                .AddDieListener(ReleaseOnDeath);
         }
 
         private static void DisplaceCaptured(ActorEvent ev)
@@ -38,16 +38,18 @@ namespace Hopper.Test_Content.Status.Freeze
             icapture.Captured.Pos = ev.actor.Pos;
         }
 
-        private static System.Action<IceCube> ReleaseOnDeath(FreezeStatus status)
+        private FreezeStatus GetFreezeStatus()
         {
-            return iceCube =>
-            {
-                // release
-                iceCube.Captured.ResetInGrid();
-                // remove the status effect
-                status.Remove(iceCube.Captured);
-                // TODO: apply 1 invulnerable to the captured entity
-            };
+            return World.m_currentRegistry.ModContent.Get<TestMod>().Status.FreezeStatus;
+        }
+
+        private static void ReleaseOnDeath(IceCube iceCube)
+        {
+            // release
+            iceCube.Captured.ResetInGrid();
+            // remove the status effect
+            iceCube.GetFreezeStatus().Remove(iceCube.Captured);
+            // TODO: apply 1 invulnerable to the captured entity
         }
     }
 }
