@@ -3,10 +3,10 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Items
 {
-    public interface ISlot<out C>
-        where C : IItemContainer<IItem>
+    public interface ISlot<out T>
+        where T : IItemContainer<IItem>
     {
-        C CreateContainer();
+        T CreateContainer();
     }
 
     public static class Slot
@@ -18,26 +18,26 @@ namespace Hopper.Core.Items
             new SizedSlot<CircularItemContainer<IItem>>("range_weapon", 1);
         public static readonly SizedSlot<CircularItemContainer<ModularShovel>> Shovel =
             new SizedSlot<CircularItemContainer<ModularShovel>>("shovel", 1);
-        public static readonly Slot<CounterItemContainer<IItem>> Counter
-            = new Slot<CounterItemContainer<IItem>>("counter_slot");
+        public static readonly Slot<CounterItemContainer<IItem>> Counter =
+            new Slot<CounterItemContainer<IItem>>("counter_slot");
     }
 
-    public class Slot<C> : ScalableEnum, ISlot<C>
-        where C : IItemContainer<IItem>
+    public class Slot<T> : ScalableEnum, ISlot<T>
+        where T : IItemContainer<IItem>
     {
         public Slot(string name) : base(name, Slot._Slots.Count)
         {
             Slot._Slots.Add(this as ISlot<IItemContainer<IItem>>);
         }
 
-        public virtual C CreateContainer()
+        public virtual T CreateContainer()
         {
-            return (C)System.Activator.CreateInstance(typeof(C));
+            return (T)System.Activator.CreateInstance(typeof(T));
         }
     }
 
-    public class SizedSlot<C> : Slot<C>
-        where C : IResizableContainer<IItem>
+    public class SizedSlot<T> : Slot<T>
+        where T : IResizableContainer<IItem>
     {
         private int m_defaultSize;
 
@@ -46,9 +46,9 @@ namespace Hopper.Core.Items
             m_defaultSize = defaultSize;
         }
 
-        public override C CreateContainer()
+        public override T CreateContainer()
         {
-            return (C)System.Activator.CreateInstance(typeof(C), m_defaultSize);
+            return (T)System.Activator.CreateInstance(typeof(T), m_defaultSize);
         }
     }
 }
