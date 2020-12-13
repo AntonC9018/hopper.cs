@@ -25,6 +25,7 @@ namespace Hopper.Test_Content.Explosion
             {
                 power = 2,
                 pierce = 1,
+                distance = 1,
                 sourceId = PushSource.GetId(reg)
             };
 

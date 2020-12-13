@@ -36,9 +36,10 @@ namespace Hopper.Test_Content
         private static Push DefaultPush(Registry reg) =>
             new Push
             {
-                power = 1,
                 sourceId = PushSource.GetId(reg),
-                distance = 1
+                power = 1,
+                distance = 1,
+                pierce = 1
             };
         private static Layer TargetedLayer = Layer.REAL;
         private static Layer SkipLayer = Layer.WALL;
