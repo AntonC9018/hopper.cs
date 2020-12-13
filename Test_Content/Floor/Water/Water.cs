@@ -1,5 +1,6 @@
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
+using Hopper.Test_Content;
 
 namespace Hopper.Test_Content.Floor
 {
@@ -17,11 +18,10 @@ namespace Hopper.Test_Content.Floor
     {
         public override Layer Layer => Layer.FLOOR;
 
-        public static EntityFactory<Water> CreateFactory(StuckStatus status)
+        public static EntityFactory<Water> CreateFactory()
         {
             return new EntityFactory<Water>()
                 .AddBehavior<Attackable>()
-                .RunAtPatching(Registry.StoreForKind(status))
                 .AddInitListener(water => water.ListenCell());
         }
 
@@ -34,17 +34,22 @@ namespace Hopper.Test_Content.Floor
             DieEvent += DieHandler;
         }
 
+        private StuckStatus GetStuckStatus()
+        {
+            return World.m_currentRegistry.ModContent.Get<TestMod>().Floor.StuckStatus;
+        }
+
         private void Stuck(Entity entity)
         {
             if (entity.Layer.IsOfLayer(m_targetedLayer))
             {
-                entity.GetFactoryKindData<StuckStatus>().TryApplyAuto(this, entity);
+                GetStuckStatus().TryApplyAuto(this, entity);
             }
         }
 
         private void UnStuck(Entity entity)
         {
-            var status = entity.GetFactoryKindData<StuckStatus>();
+            var status = GetStuckStatus();
             if (status.IsApplied(entity))
             {
                 status.Tinker.GetStore(entity).amount = 0;

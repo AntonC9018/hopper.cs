@@ -8,7 +8,7 @@ using Hopper.Test_Content.Floor;
 using Hopper.Test_Content.SimpleMobs;
 using Hopper.Test_Content.Trap;
 
-namespace Hopper.Test
+namespace Hopper.Test_Content
 {
     public class TestMod : IMod
     {

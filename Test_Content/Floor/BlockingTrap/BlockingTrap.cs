@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
+using Hopper.Test_Content;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content.Floor
@@ -10,12 +11,11 @@ namespace Hopper.Test_Content.Floor
     {
         public override Layer Layer => Layer.FLOOR;
 
-        public static EntityFactory<BlockingTrap> CreateFactory(EntityFactory<RealBarrier> factory)
+        public static EntityFactory<BlockingTrap> CreateFactory()
         {
             return new EntityFactory<BlockingTrap>()
                 .AddBehavior<Attackable>()
-                .AddInitListener(trap => trap.ListenCell())
-                .RunAtPatching(Registry.StoreForKind(factory));
+                .AddInitListener(trap => trap.ListenCell());
         }
 
         public static EntityFactory<RealBarrier> CreateBarrierFactory() =>
@@ -34,6 +34,11 @@ namespace Hopper.Test_Content.Floor
             this.DieEvent += RemoveAll;
         }
 
+        private EntityFactory<RealBarrier> GetBarrierFactory()
+        {
+            return World.m_currentRegistry.ModContent.Get<TestMod>().Floor.RealBarrierFactory;
+        }
+
         private void BlockOff(Entity entity)
         {
             if (entity.Layer.IsOfLayer(TargetedLayer))
@@ -41,7 +46,7 @@ namespace Hopper.Test_Content.Floor
                 if (m_barriers == null)
                 {
                     m_barriers = new List<RealBarrier>(4);
-                    var barrierFactory = this.GetFactoryKindData<EntityFactory<RealBarrier>>();
+                    var barrierFactory = GetBarrierFactory();
                     foreach (var orientation in IntVector2.Zero.OrthogonallyAdjacent)
                     {
                         m_barriers.Add(entity.World.SpawnEntity(barrierFactory, entity.Pos, orientation));

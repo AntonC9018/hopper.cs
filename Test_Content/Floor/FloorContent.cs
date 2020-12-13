@@ -19,10 +19,10 @@ namespace Hopper.Test_Content.Floor
             StuckStatus = StuckStatus.Create(1);
 
             IceFloorFactory = IceFloor.CreateFactory(SlideStatus);
-            WaterFactory = Water.CreateFactory(StuckStatus);
+            WaterFactory = Water.CreateFactory();
 
             RealBarrierFactory = BlockingTrap.CreateBarrierFactory();
-            BlockingTrapFactory = BlockingTrap.CreateFactory(RealBarrierFactory);
+            BlockingTrapFactory = BlockingTrap.CreateFactory();
         }
 
         public void RegisterSelf(Registry registry)

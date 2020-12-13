@@ -1,6 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Retouchers;
+using Hopper.Test_Content;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content.Boss
@@ -41,6 +42,11 @@ namespace Hopper.Test_Content.Boss
             },
         };
 
+        private static EntityFactory<Whelp> GetWhelpFactory(Entity entity)
+        {
+            return entity.World.m_currentRegistry.ModContent.Get<TestMod>().Boss.WhelpFactory;
+        }
+
         private static void Spawn(TestBoss entity, Action action)
         {
             int toSpawn = entity.m_whelpMax - entity.m_whelpCount;
@@ -48,7 +54,7 @@ namespace Hopper.Test_Content.Boss
             {
                 var pos = entity.Pos - action.direction * (i + 1);
 
-                var whelpFactory = entity.GetFactoryKindData<EntityFactory<Whelp>>();
+                var whelpFactory = GetWhelpFactory(entity);
 
                 if (entity.World.Grid.IsOutOfBounds(pos) == false)
                 {
@@ -130,7 +136,6 @@ namespace Hopper.Test_Content.Boss
                 .Retouch(retouchers.Skip.NoPlayer)
                 .Retouch(retouchers.Skip.BlockedMove)
                 // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
-                .RunAtPatching(Registry.StoreForKind(whelpFactory))
                 .Retouch(TurnToPlayerRetoucher)
                 .AddBehavior<Sequential>(new Sequential.Config(Steps));
 
