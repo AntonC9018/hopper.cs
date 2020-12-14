@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Core.Behaviors.Basic;
+using Hopper.Utils;
 
 namespace Hopper.Core
 {
@@ -20,6 +21,8 @@ namespace Hopper.Core
         public event System.Action<Phase> StartOfPhaseEvent;
         public event System.Action<Phase> EndOfPhaseEvent;
 
+        public InstanceSubRegistry<Entity, FactoryLink> m_instanceSubregistry;
+
         private Phase m_currentPhase = Phase.PLAYER;
         public Phase CurrentPhase => m_currentPhase;
 
@@ -39,6 +42,7 @@ namespace Hopper.Core
             {
                 m_entities[i] = new List<Entity>();
             }
+            m_instanceSubregistry = new InstanceSubRegistry<Entity, FactoryLink>();
         }
 
         public void AddEntity(Entity entity)
@@ -150,8 +154,7 @@ namespace Hopper.Core
                 {
                     if (entity.IsDead)
                     {
-                        // TODO: Store entities by world
-                        // Registry.Default.Entity.Remove(entity.Id);
+                        m_instanceSubregistry.Remove(entity.Id);
                     }
                     else
                     {
@@ -212,6 +215,15 @@ namespace Hopper.Core
                 }
             };
             EndOfPhaseEvent += handler;
+        }
+
+        public void RegisterEntity(Entity entity, IFactory<Entity> EntityFactory)
+        {
+            Assert.AreEqual(0, entity.Id, "The entity must not have a valid id when being assigned one");
+
+            var meta = new FactoryLink { factoryId = EntityFactory.Id };
+            int id = m_instanceSubregistry.Add(entity, meta);
+            entity._SetId(id);
         }
     }
 }

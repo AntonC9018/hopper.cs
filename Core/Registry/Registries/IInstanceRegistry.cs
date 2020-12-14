@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hopper.Utils;
 
 namespace Hopper.Core
 {
@@ -42,8 +43,8 @@ namespace Hopper.Core
 
         public void Remove(int id)
         {
-            m_map.Remove(id);
-            m_meta.Remove(id);
+            Assert.That(m_map.Remove(id));
+            Assert.That(m_meta.Remove(id));
         }
     }
 

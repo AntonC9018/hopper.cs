@@ -134,7 +134,7 @@ namespace Hopper.Core
 
         public int GetFactoryId()
         {
-            return World.m_instanceSubregistry.MapMetadata(m_id).factoryId;
+            return World.State.m_instanceSubregistry.MapMetadata(m_id).factoryId;
         }
     }
 }

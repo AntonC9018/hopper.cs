@@ -13,7 +13,6 @@ namespace Hopper.Core
         public PoolContainer m_pools = new PoolContainer();
         public Dictionary<int, IWorldEvent> m_events;
         public Repository m_currentRepository;
-        public InstanceSubRegistry<Entity, FactoryLink> m_instanceSubregistry;
 
         public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
         public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
@@ -37,7 +36,7 @@ namespace Hopper.Core
             Grid = new GridManager(width, height);
             State = new WorldStateManager();
             m_events = new Dictionary<int, IWorldEvent>();
-            // m_id = registry.World.Add(this);
+            m_id = 1;
             m_currentRepository = repository;
         }
 
@@ -71,18 +70,11 @@ namespace Hopper.Core
         //
         // public event System.Action<int> SpawnParticleEvent;
 
-        private void RegisterEntity(Entity entity, IFactory<Entity> EntityFactory)
-        {
-            var meta = new FactoryLink { factoryId = EntityFactory.Id };
-            int id = m_instanceSubregistry.Add(entity, meta);
-            entity._SetId(id);
-        }
-
         private T SpawnEntityNoEvent<T>(
             IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
             var entity = EntityFactory.Instantiate();
-            RegisterEntity(entity, EntityFactory);
+            State.RegisterEntity(entity, EntityFactory);
             entity.Init(pos, orientation, this);
             Grid.Reset(entity, entity.Pos);
             return entity;
@@ -92,7 +84,7 @@ namespace Hopper.Core
             IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
             var entity = EntityFactory.Instantiate();
-            RegisterEntity(entity, EntityFactory);
+            State.RegisterEntity(entity, EntityFactory);
             entity.Init(pos, orientation, this);
             State.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);

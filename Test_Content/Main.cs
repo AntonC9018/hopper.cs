@@ -37,7 +37,7 @@ namespace Hopper.Test_Content
 
             foreach (var subMod in subMods)
             {
-                System.Console.WriteLine($"Registering submod {subMod.GetType().Name}");
+                System.Console.WriteLine($"Registering submod {subMod.GetType().Name}...");
                 subMod.RegisterSelf(registry);
             }
         }
@@ -50,7 +50,7 @@ namespace Hopper.Test_Content
 
             foreach (var subMod in subMods)
             {
-                System.Console.WriteLine($"Patching submod {subMod.GetType().Name}");
+                System.Console.WriteLine($"Patching submod {subMod.GetType().Name}...");
                 subMod.Patch(repository);
             }
         }
@@ -59,7 +59,7 @@ namespace Hopper.Test_Content
         {
             foreach (var subMod in subMods)
             {
-                System.Console.WriteLine($"AfterPatching submod {subMod.GetType().Name}");
+                System.Console.WriteLine($"AfterPatching submod {subMod.GetType().Name}...");
                 subMod.AfterPatch(repository);
             }
         }

@@ -2,6 +2,13 @@ using System.Collections.Generic;
 
 namespace Hopper.Core.Mods
 {
+    public class ModResult
+    {
+        public ModsContent mods;
+        public KindRegistry registry;
+        public Repository repository;
+    }
+
     public class ModManager
     {
         public List<System.Type> modTypes;
@@ -18,7 +25,7 @@ namespace Hopper.Core.Mods
             modTypes.Add(typeof(T));
         }
 
-        public KindRegistry RegisterAll()
+        public ModResult RegisterAll()
         {
             // Run the `Content` phase
             ModsContent mods = new ModsContent();
@@ -58,7 +65,12 @@ namespace Hopper.Core.Mods
                 mod.AfterPatch(repository);
             }
 
-            return registry;
+            return new ModResult
+            {
+                mods = mods,
+                registry = registry,
+                repository = repository,
+            };
         }
     }
 }
