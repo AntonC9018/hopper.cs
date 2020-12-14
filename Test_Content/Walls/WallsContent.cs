@@ -1,20 +1,21 @@
 using Hopper.Core;
-using Hopper.Core.Retouchers;
 
 namespace Hopper.Test_Content.Floor
 {
-    public class WallsContent
+    public class WallsContent : ISubMod
     {
-        public EntityFactory<Barrier> BarrierFactory;
-
-        public WallsContent()
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            BarrierFactory = Barrier.CreateFactory();
+            Barrier.Factory.RegisterSelf(registry);
         }
 
-        public void RegisterSelf(Registry registry)
+        public void Patch(Repository repository)
         {
-            BarrierFactory.RegisterSelf(registry);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            Barrier.Factory.AfterPatch(repository);
         }
     }
 }

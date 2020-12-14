@@ -1,25 +1,19 @@
 namespace Hopper.Core.Stats.Basic
 {
-    public class SourceBase<T> where T : class
+    public class SourceBase<T> : IKind, IPatch where T : SourceBase<T>
     {
         public int resistance { get; set; }
+        private int m_id;
+        public int Id => m_id;
 
-        public static void InitOn(Registry registry)
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            var r = new ArrayPatch<T>();
-            registry.AddCustomPatchRegistry<ArrayPatch<T>, Resistance_Kind<T>>(r);
+            m_id = registry.Add<T>((T)this);
         }
 
-        public void RegisterOn(Registry registry)
+        public void Patch(Repository repository)
         {
-            var r = registry.GetCustomPatchRegistry<ArrayPatch<T>, Resistance_Kind<T>>();
-            registry.IdReferences[this] = r.patches.Count;
-            r.patches.Add(resistance);
-        }
-
-        public int GetId(Registry registry)
-        {
-            return registry.IdReferences[this];
+            repository.GetPatchSubRegistry<T>().Add(m_id, (T)this);
         }
     }
 }

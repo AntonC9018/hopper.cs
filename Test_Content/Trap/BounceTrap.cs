@@ -7,21 +7,23 @@ namespace Hopper.Test_Content.Trap
 {
     public class BounceTrap : Entity
     {
-        public override Layer Layer => Layer.TRAP;
-        public static Action action = new BehaviorAction<Bouncing>();
+        public static readonly EntityFactory<BounceTrap> Factory = CreateFactory();
 
-        public static Push PushStat(Registry registry) =>
+        public override Layer Layer => Layer.TRAP;
+        public static readonly Action action = new BehaviorAction<Bouncing>();
+
+        public static readonly Push PushStat =
             new Push
             {
-                sourceId = Bounce.Source.GetId(registry),
+                sourceId = Bounce.Source.Id,
                 power = 2,
                 pierce = 1,
                 distance = 1
             };
 
-        private static DefaultStats GetDefaultStats(Registry registry)
+        private static DefaultStats GetDefaultStats(Repository repository)
         {
-            return new DefaultStats(registry).Set(Push.Path, PushStat(registry));
+            return new DefaultStats(repository).Set(Push.Path, PushStat);
         }
 
         public static EntityFactory<BounceTrap> CreateFactory()

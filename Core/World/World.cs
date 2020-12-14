@@ -12,7 +12,8 @@ namespace Hopper.Core
         public WorldStateManager State { get; private set; }
         public PoolContainer m_pools = new PoolContainer();
         public Dictionary<int, IWorldEvent> m_events;
-        public Registry m_currentRegistry;
+        public Repository m_currentRepository;
+        public InstanceSubRegistry<Entity, FactoryLink> m_instanceSubregistry;
 
         public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
         public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
@@ -30,14 +31,14 @@ namespace Hopper.Core
             m_events = new Dictionary<int, IWorldEvent>();
         }
 
-        public World(int width, int height, Registry registry)
+        public World(int width, int height, Repository repository)
         {
             PhaseLayerExtensions.ThrowIfPhasesAreWrong();
             Grid = new GridManager(width, height);
             State = new WorldStateManager();
             m_events = new Dictionary<int, IWorldEvent>();
-            m_id = registry.World.Add(this);
-            m_currentRegistry = registry;
+            // m_id = registry.World.Add(this);
+            m_currentRepository = repository;
         }
 
         public void Loop()
@@ -70,19 +71,28 @@ namespace Hopper.Core
         //
         // public event System.Action<int> SpawnParticleEvent;
 
-        private T SpawnEntityNoEvent<T>(
-            IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+        private void RegisterEntity(Entity entity, IFactory<Entity> EntityFactory)
         {
-            var entity = entityFactory.Instantiate(m_currentRegistry);
+            var meta = new FactoryLink { factoryId = EntityFactory.Id };
+            int id = m_instanceSubregistry.Add(entity, meta);
+            entity._SetId(id);
+        }
+
+        private T SpawnEntityNoEvent<T>(
+            IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+        {
+            var entity = EntityFactory.Instantiate();
+            RegisterEntity(entity, EntityFactory);
             entity.Init(pos, orientation, this);
             Grid.Reset(entity, entity.Pos);
             return entity;
         }
 
         public T SpawnHangingEntity<T>(
-            IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+            IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
-            var entity = entityFactory.Instantiate(m_currentRegistry);
+            var entity = EntityFactory.Instantiate();
+            RegisterEntity(entity, EntityFactory);
             entity.Init(pos, orientation, this);
             State.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);
@@ -90,43 +100,42 @@ namespace Hopper.Core
         }
 
         public T SpawnEntity<T>(
-            IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+            IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
-            System.Console.WriteLine($"Creating entity of factory id : {entityFactory.Id}");
-            var entity = SpawnEntityNoEvent(entityFactory, pos, orientation);
+            System.Console.WriteLine($"Creating entity of factory id : {EntityFactory.Id}");
+            var entity = SpawnEntityNoEvent(EntityFactory, pos, orientation);
             State.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }
 
         public T SpawnEntity<T>(
-            IFactory<T> entityFactory, IntVector2 pos) where T : Entity
+            IFactory<T> EntityFactory, IntVector2 pos) where T : Entity
         {
-            return SpawnEntity(entityFactory, pos, IntVector2.Zero);
+            return SpawnEntity(EntityFactory, pos, IntVector2.Zero);
         }
 
 
         public T SpawnPlayer<T>(
-            IFactory<T> entityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+            IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
         {
-            var entity = SpawnEntityNoEvent(entityFactory, pos, orientation);
+            var entity = SpawnEntityNoEvent(EntityFactory, pos, orientation);
             State.AddPlayer(entity);
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }
 
         public T SpawnPlayer<T>(
-            IFactory<T> entityFactory, IntVector2 pos) where T : Entity
+            IFactory<T> EntityFactory, IntVector2 pos) where T : Entity
         {
-            return SpawnPlayer(entityFactory, pos, IntVector2.Zero);
+            return SpawnPlayer(EntityFactory, pos, IntVector2.Zero);
         }
 
 
         public DroppedItem SpawnDroppedItem(
             IItem item, IntVector2 pos, IntVector2 orientation)
         {
-            var droppedItemFactory = m_currentRegistry.ModContent.Get<CoreMod>().DroppedItemFactory;
-            var entity = SpawnEntityNoEvent(droppedItemFactory, pos, orientation);
+            var entity = SpawnEntityNoEvent(DroppedItem.Factory, pos, orientation);
             entity.Item = item;
             SpawnEntityEvent?.Invoke(entity);
             return entity;
@@ -144,7 +153,7 @@ namespace Hopper.Core
 
         public void InitializeWorldEvents()
         {
-            foreach (var worldEvent in m_currentRegistry.GetKindRegistry<IWorldEvent>().Items)
+            foreach (var worldEvent in m_currentRepository.GetPatchSubRegistry<IWorldEvent>().patches.Values)
             {
                 m_events.Add(worldEvent.Id, worldEvent.GetCopy());
             };

@@ -15,6 +15,12 @@ namespace Hopper.Test_Content
 
     public class Bow
     {
+        public static readonly Attack.Source ArrowSource = new Attack.Source();
+        public static readonly ISlot<IItemContainer<IItem>> Slot = Hopper.Core.Items.Slot.RangeWeapon;
+        public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
+        public static ModularItem DefaultBow = CreateBow();
+
+
         // use this function to get a module for your item
         public static TinkerModule CreateModule(INormalShooting shooting)
         {
@@ -22,7 +28,6 @@ namespace Hopper.Test_Content
         }
         // TODO: either add more functions to generate more types of these
         // or make Bow's members all public.
-
 
         // public Tinker<BowTinkerData> Tinker => m_shootTinker;
         public readonly TinkerModule ShootingModule;
@@ -78,14 +83,10 @@ namespace Hopper.Test_Content
             }
         }
 
-        public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
-        public static readonly ISlot<IItemContainer<IItem>> Slot = Hopper.Core.Items.Slot.RangeWeapon;
-        public static readonly Attack.Source ArrowSource = new Attack.Source();
-
-        public static Attack defaultArrowAttack(Registry reg) =>
+        public static readonly Attack defaultArrowAttack =
             new Attack
             {
-                sourceId = ArrowSource.GetId(reg),
+                sourceId = ArrowSource.Id,
                 power = 1,
                 pierce = 1,
                 damage = 1

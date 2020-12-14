@@ -23,7 +23,7 @@ namespace Hopper.Test_Content
 
         public static void ShootingPrelude(Entity entity, Action action)
         {
-            entity.Reorient(action.direction);
+            entity.Reorient_(action.direction);
             entity.History.Add(entity, UpdateCode);
         }
         /*

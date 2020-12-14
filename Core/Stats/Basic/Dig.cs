@@ -18,11 +18,11 @@ namespace Hopper.Core.Stats.Basic
             }
         );
 
-        public Attack ToAttack(Registry registry)
+        public Attack ToAttack()
         {
             return new Attack
             {
-                sourceId = Source.GetId(registry),
+                sourceId = Source.Id,
                 power = power,
                 damage = damage,
                 pierce = pierce

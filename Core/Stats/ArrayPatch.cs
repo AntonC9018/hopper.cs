@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Hopper.Core.Stats
 {
-    public class ArrayPatch<T> : IPatchRegistry<T>
+    public class ArrayPatch<T> : IPatchSubRegistry<T>
     {
         public ArrayFile DefaultFile
         {

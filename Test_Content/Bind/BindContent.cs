@@ -2,24 +2,23 @@ using Hopper.Core;
 
 namespace Hopper.Test_Content.Bind
 {
-    public class BindContent
+    public class BindContent : ISubMod
     {
-        public BindStatus NoMove;
-        public Retoucher NoMoveRetoucher;
-        public EntityFactory<Spider> SpiderFactory;
-
-        public BindContent()
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            NoMove = BindStatuses.CreateStopMoveBindStatus();
-            NoMoveRetoucher = BindRetouchers.CreateBindRetoucher(NoMove);
-            SpiderFactory = Spider.CreateFactory(this);
+            BindStatuses.StopMove.RegisterSelf(registry);
+            BindRetouchers.StopMoveRetoucher.RegisterSelf(registry);
+            Spider.Factory.RegisterSelf(registry);
         }
 
-        public void RegisterSelf(Registry registry)
+        public void Patch(Repository repository)
         {
-            NoMove.RegisterSelf(registry);
-            NoMoveRetoucher.RegisterSelf(registry);
-            SpiderFactory.RegisterSelf(registry);
+            BindStatuses.StopMove.Patch(repository);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            Spider.Factory.AfterPatch(repository);
         }
     }
 }

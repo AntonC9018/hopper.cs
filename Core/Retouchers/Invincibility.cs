@@ -5,14 +5,12 @@ using Hopper.Core.Behaviors.Basic;
 
 namespace Hopper.Core.Retouchers
 {
-    public class Invincibility
+    public static class Invincibility
     {
-        public Retoucher PreventsDamage = Retoucher
-            .SingleHandlered(Attackable.Do, PreventDamage);
-        public Retoucher Decreases = Retoucher
-            .SingleHandlered(Tick.Chain, Decrease);
+        public static readonly Retoucher PreventsDamage = Retoucher.SingleHandlered(Attackable.Do, PreventDamage);
+        public static readonly Retoucher Decreases = Retoucher.SingleHandlered(Tick.Chain, Decrease);
 
-        public void RegisterAll(Registry registry)
+        public static void RegisterAll(ModSubRegistry registry)
         {
             PreventsDamage.RegisterSelf(registry);
             Decreases.RegisterSelf(registry);

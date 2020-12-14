@@ -7,12 +7,12 @@ namespace Hopper.Test_Content.Status.Freeze
 {
     public class FreezeStatus : Status<FreezeData>
     {
-        private EntityFactory<IceCube> m_iceCubeFactory;
+        public static readonly FreezeStatus Status;
+        private static readonly ChainDefBuilder builder;
 
-        public FreezeStatus(int defaultResValue, EntityFactory<IceCube> iceCubeFactory)
+        public FreezeStatus(int defaultResValue)
             : base(builder.ToStatic(), FreezeStat.Path, defaultResValue)
         {
-            m_iceCubeFactory = iceCubeFactory;
         }
 
         protected override void Reapply(FreezeData existingData, FreezeData newData)
@@ -28,7 +28,7 @@ namespace Hopper.Test_Content.Status.Freeze
             target.RemoveFromGrid();
 
             var iceCube = target.World.SpawnHangingEntity(
-                m_iceCubeFactory, target.Pos, target.Orientation);
+                IceCube.Factory, target.Pos, target.Orientation);
             iceCube.Captured = target;
 
             iceCube.ResetInGrid();
@@ -48,7 +48,12 @@ namespace Hopper.Test_Content.Status.Freeze
                 base.Remove(entity);
             }
         }
-        private static ChainDefBuilder builder = new ChainDefBuilder()
-            .AddHandler_InsteadOf_Attack_Dig_Move(Handlers.StopPropagate, PriorityRanks.High);
+
+        static FreezeStatus()
+        {
+            builder = new ChainDefBuilder()
+                .AddHandler_InsteadOf_Attack_Dig_Move(Handlers.StopPropagate, PriorityRanks.High);
+            Status = new FreezeStatus(1);
+        }
     }
 }

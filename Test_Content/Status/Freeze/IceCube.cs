@@ -13,15 +13,15 @@ namespace Hopper.Test_Content.Status.Freeze
     {
         public Entity Captured { get; set; }
 
-        public static Retoucher CreateMoveCapturedRetoucher() => new Retoucher(
+        public static readonly Retoucher MoveCapturedRetoucher = new Retoucher(
             new TemplateChainDefBuilder()
                 .AddDef(Displaceable.Do)
                 .AddHandler(DisplaceCaptured)
                 .End().ToStatic()
         );
+        public static readonly EntityFactory<IceCube> Factory = CreateFactory();
 
-        public static EntityFactory<IceCube> CreateFactory(
-            Retoucher MoveCapturedRetoucher)
+        public static EntityFactory<IceCube> CreateFactory()
         {
             return new EntityFactory<IceCube>()
                 .AddBehavior<Displaceable>()
@@ -38,17 +38,12 @@ namespace Hopper.Test_Content.Status.Freeze
             icapture.Captured.Pos = ev.actor.Pos;
         }
 
-        private FreezeStatus GetFreezeStatus()
-        {
-            return World.m_currentRegistry.ModContent.Get<TestMod>().Status.FreezeStatus;
-        }
-
         private static void ReleaseOnDeath(IceCube iceCube)
         {
             // release
             iceCube.Captured.ResetInGrid();
             // remove the status effect
-            iceCube.GetFreezeStatus().Remove(iceCube.Captured);
+            FreezeStatus.Status.Remove(iceCube.Captured);
             // TODO: apply 1 invulnerable to the captured entity
         }
     }

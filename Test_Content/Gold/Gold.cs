@@ -24,7 +24,7 @@ namespace Hopper.Test_Content
             var gold = (Gold)cell.GetAnyEntityFromLayer(Layer.GOLD);
             if (gold == null)
             {
-                gold = world.SpawnEntity(factory, pos);
+                gold = world.SpawnEntity(Factory, pos);
             }
             gold.Amount += amount;
             // TODO: save update of amount to history
@@ -33,6 +33,9 @@ namespace Hopper.Test_Content
         }
 
         public static readonly EntityFactory<Gold> Factory = CreateFactory();
+        public static readonly Retoucher PickUpRetoucher =
+            Retoucher.SingleHandlered(Displaceable.Do, PickUp);
+
         public static EntityFactory<Gold> CreateFactory()
         {
             return new EntityFactory<Gold>()
@@ -55,7 +58,5 @@ namespace Hopper.Test_Content
             }
         }
 
-        public static readonly Retoucher PickUpRetoucher =
-            Retoucher.SingleHandlered(Displaceable.Do, PickUp);
     }
 }

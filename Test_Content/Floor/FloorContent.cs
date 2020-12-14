@@ -1,38 +1,32 @@
 using Hopper.Core;
-using Hopper.Core.Retouchers;
 
 namespace Hopper.Test_Content.Floor
 {
-    public class FloorContent
+    public class FloorContent : ISubMod
     {
-        public EntityFactory<RealBarrier> RealBarrierFactory;
-        public EntityFactory<BlockingTrap> BlockingTrapFactory;
-        public EntityFactory<IceFloor> IceFloorFactory;
-        public EntityFactory<Water> WaterFactory;
-
-        public SlideStatus SlideStatus;
-        public StuckStatus StuckStatus;
-
-        public FloorContent()
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            SlideStatus = SlideStatus.Create(1);
-            StuckStatus = StuckStatus.Create(1);
+            SlideStatus.Status.RegisterSelf(registry);
+            StuckStatus.Status.RegisterSelf(registry);
 
-            IceFloorFactory = IceFloor.CreateFactory(SlideStatus);
-            WaterFactory = Water.CreateFactory();
-
-            RealBarrierFactory = BlockingTrap.CreateBarrierFactory();
-            BlockingTrapFactory = BlockingTrap.CreateFactory();
+            IceFloor.Factory.RegisterSelf(registry);
+            Water.Factory.RegisterSelf(registry);
+            RealBarrier.Factory.RegisterSelf(registry);
+            BlockingTrap.Factory.RegisterSelf(registry);
         }
 
-        public void RegisterSelf(Registry registry)
+        public void Patch(Repository repository)
         {
-            SlideStatus.RegisterSelf(registry);
-            StuckStatus.RegisterSelf(registry);
-            IceFloorFactory.RegisterSelf(registry);
-            WaterFactory.RegisterSelf(registry);
-            RealBarrierFactory.RegisterSelf(registry);
-            BlockingTrapFactory.RegisterSelf(registry);
+            SlideStatus.Status.Patch(repository);
+            StuckStatus.Status.Patch(repository);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            IceFloor.Factory.AfterPatch(repository);
+            Water.Factory.AfterPatch(repository);
+            RealBarrier.Factory.AfterPatch(repository);
+            BlockingTrap.Factory.AfterPatch(repository);
         }
     }
 }

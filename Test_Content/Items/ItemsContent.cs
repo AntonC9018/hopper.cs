@@ -4,21 +4,21 @@ using Hopper.Core.Retouchers;
 
 namespace Hopper.Test_Content.Boss
 {
-    public class ItemsContent
+    public class ItemsContent : ISubMod
     {
-        public ModularItem DefaultBow;
-        // public ModularItem FrontShield;
-
-        public ItemsContent()
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            DefaultBow = Bow.CreateBow();
-            // FrontShield = new ModularItem(new ItemMetadata("Front_Shield"), 
+            Bow.ArrowSource.RegisterSelf(registry);
+            Bow.DefaultBow.RegisterSelf(registry);
         }
 
-        public void RegisterSelf(Registry registry)
+        public void Patch(Repository repository)
         {
-            Bow.ArrowSource.RegisterOn(registry);
-            DefaultBow.RegisterSelf(registry);
+            Bow.ArrowSource.Patch(repository);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
         }
     }
 }

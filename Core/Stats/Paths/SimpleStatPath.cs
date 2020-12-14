@@ -25,7 +25,7 @@ namespace Hopper.Core.Stats
             return sm.GetLazy<T>(this);
         }
 
-        public T GetDefault(Registry registry)
+        public T GetDefault(Repository registry)
         {
             return defaultFile;
         }

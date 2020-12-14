@@ -15,9 +15,9 @@ namespace Hopper.Core.Items
             m_slot = slot;
         }
 
-        public override void RegisterSelf(Registry registry)
+        public override void RegisterSelf(ModSubRegistry registry)
         {
-            // m_id = registry.GetKindRegistry<IItem>().Add(this);
+            // m_id = registry.Add<IItem>(this);
         }
 
         public override void BeDestroyed(Entity entity)

@@ -6,18 +6,17 @@ namespace Hopper.Test_Content
 {
     public class Ghost : Entity
     {
-        public static Action Action = new CompositeAction(
-            new BehaviorAction<Attacking>(),
-            new BehaviorAction<Moving>()
-        );
-
-        private static Layer m_teleportedLayer = Layer.REAL | Layer.DROPPED | Layer.GOLD;
+        public static readonly EntityFactory<Ghost> Factory;
+        public static readonly Retoucher TeleportAfterAttackRetoucher;
+        public static readonly Action Action;
+        private static readonly Layer TeleportedLayer;
+        private static readonly Step[] Steps;
 
         private static void Teleport(Attackable.Event ev)
         {
             if (ev.actor.IsDead && ev.atkParams.attacker != null)
             {
-                foreach (var ent in ev.actor.GetCell().GetAllFromLayer(m_teleportedLayer))
+                foreach (var ent in ev.actor.GetCell().GetAllFromLayer(TeleportedLayer))
                 {
                     ent.ResetPosInGrid(ev.atkParams.attacker.Pos);
                 }
@@ -26,19 +25,7 @@ namespace Hopper.Test_Content
             }
         }
 
-        private static Step[] steps = new Step[]
-        {
-            new Step
-            {
-                action = Action,
-                movs = Movs.Basic
-            }
-        };
-
-        public static Retoucher CreateTeleportAfterAttack() =>
-            Retoucher.SingleHandlered(Attackable.Do, Teleport, PriorityRanks.Lowest);
-
-        public static EntityFactory<Ghost> CreateFactory(Retoucher teleportAfterAttack)
+        public static EntityFactory<Ghost> CreateFactory()
         {
             return new EntityFactory<Ghost>()
                 .AddBehavior<Moving>()
@@ -47,9 +34,29 @@ namespace Hopper.Test_Content
                 .AddBehavior<Attackable>()
                 .AddBehavior<Pushable>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
-                .AddBehavior<Sequential>(new Sequential.Config(steps))
+                .AddBehavior<Sequential>(new Sequential.Config(Steps))
                 .AddBehavior<Damageable>()
-                .Retouch(teleportAfterAttack);
+                .Retouch(TeleportAfterAttackRetoucher);
+        }
+
+        static Ghost()
+        {
+            Action = new CompositeAction(
+                new BehaviorAction<Attacking>(),
+                new BehaviorAction<Moving>()
+            );
+            TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.GOLD;
+            Steps = new Step[]
+            {
+                new Step
+                {
+                    action = Action,
+                    movs = Movs.Basic
+                }
+            };
+            TeleportAfterAttackRetoucher =
+               Retoucher.SingleHandlered(Attackable.Do, Teleport, PriorityRanks.Lowest);
+            Factory = CreateFactory();
         }
     }
 }

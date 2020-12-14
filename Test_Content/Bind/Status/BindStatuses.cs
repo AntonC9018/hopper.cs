@@ -10,6 +10,8 @@ namespace Hopper.Test_Content.Bind
 {
     public class BindStatuses
     {
+        public static readonly BindStatus StopMove = CreateStopMoveBindStatus();
+
         public static BindStatus CreateStopMoveBindStatus()
         {
             var lambdas = new Lambdas();
@@ -44,13 +46,13 @@ namespace Hopper.Test_Content.Bind
             private void AttackJustMe(Attacking.Event ev)
             {
                 ev.targets = new List<Target> {
-                    new Target(status.Tinker.GetStore(ev).whoApplied, IntVector2.Zero)
+                    new Target(status.m_tinker.GetStore(ev).whoApplied, IntVector2.Zero)
                 };
             }
 
             private void SelfRemove(Tick.Event ev)
             {
-                var statusData = status.Tinker.GetStore(ev.actor);
+                var statusData = status.m_tinker.GetStore(ev.actor);
                 if (statusData.whoApplied == null || statusData.whoApplied.IsDead)
                 {
                     statusData.amount = 0;
@@ -59,7 +61,7 @@ namespace Hopper.Test_Content.Bind
 
             private void DisplaceMe(Displaceable.Event ev)
             {
-                var statusData = status.Tinker.GetStore(ev);
+                var statusData = status.m_tinker.GetStore(ev);
                 if (statusData.whoApplied != null)
                 {
                     statusData.whoApplied.Pos = ev.actor.Pos;

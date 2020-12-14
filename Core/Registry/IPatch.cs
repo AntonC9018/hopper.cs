@@ -1,8 +1,7 @@
-namespace Hopper.Core.Stats
+namespace Hopper.Core
 {
     public interface IPatch
     {
-        Registry Registry { get; }
-        void PatchKindRegistry(int kindId);
+        void Patch(Repository repository);
     }
 }

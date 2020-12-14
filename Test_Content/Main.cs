@@ -13,44 +13,55 @@ namespace Hopper.Test_Content
 {
     public class TestMod : IMod
     {
-        public BindContent Bind;
-        public BossContent Boss;
-        public BombContent Bomb;
-        public FloorContent Floor;
-        public ItemsContent Item;
-        public MobsContent Mob;
-        public WallsContent Wall;
-        public TrapContent Trap;
-        public StatusContent Status;
+        public int Offset => 100;
+        public string Name => "test";
 
-
-        public TestMod(ModsContent mods)
+        public ISubMod[] subMods = new ISubMod[]
         {
-            var coreMod = mods.Get<CoreMod>();
-            Bind = new BindContent();
-            Bomb = new BombContent(coreMod.Retouchers);
-            Boss = new BossContent(coreMod.Retouchers);
-            Floor = new FloorContent();
-            Item = new ItemsContent();
-            Mob = new MobsContent(coreMod.Retouchers);
-            Wall = new WallsContent();
-            Trap = new TrapContent();
-            Status = new StatusContent(coreMod.Retouchers);
-        }
-        public void RegisterSelf(Registry registry)
+            new BindContent(),
+            new BossContent(),
+            new BombContent(),
+            new FloorContent(),
+            new ItemsContent(),
+            new MobsContent(),
+            new WallsContent(),
+            new TrapContent(),
+            new StatusContent(),
+        };
+
+        public void RegisterSelf(ModSubRegistry registry)
         {
             Laser.EventPath.Event.RegisterSelf(registry);
-            Laser.AttackSource.RegisterOn(registry);
-            Laser.PushSource.RegisterOn(registry);
-            Bind.RegisterSelf(registry);
-            Boss.RegisterSelf(registry);
-            Bomb.RegisterSelf(registry);
-            Floor.RegisterSelf(registry);
-            Item.RegisterSelf(registry);
-            Mob.RegisterSelf(registry);
-            Wall.RegisterSelf(registry);
-            Trap.RegisterSelf(registry);
-            Status.RegisterSelf(registry);
+            Laser.AttackSource.RegisterSelf(registry);
+            Laser.PushSource.RegisterSelf(registry);
+
+            foreach (var subMod in subMods)
+            {
+                System.Console.WriteLine($"Registering submod {subMod.GetType().Name}");
+                subMod.RegisterSelf(registry);
+            }
+        }
+
+        public void Patch(Repository repository)
+        {
+            Laser.EventPath.Event.Patch(repository);
+            Laser.AttackSource.Patch(repository);
+            Laser.PushSource.Patch(repository);
+
+            foreach (var subMod in subMods)
+            {
+                System.Console.WriteLine($"Patching submod {subMod.GetType().Name}");
+                subMod.Patch(repository);
+            }
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            foreach (var subMod in subMods)
+            {
+                System.Console.WriteLine($"AfterPatching submod {subMod.GetType().Name}");
+                subMod.AfterPatch(repository);
+            }
         }
     }
 }

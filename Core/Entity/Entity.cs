@@ -69,7 +69,7 @@ namespace Hopper.Core
             this.m_id = id;
         }
 
-        public void RegisterSelf(Registry registry)
+        public void RegisterSelf(ModSubRegistry registry)
         {
             throw new System.Exception("Entity cannot register self");
         }
@@ -83,7 +83,9 @@ namespace Hopper.Core
             History.InitControlUpdate(this);
 
             if (Stats == null)
-                Stats = new StatManager(world.m_currentRegistry);
+            {
+                Stats = new StatManager(world.m_currentRepository);
+            }
 
             // fire the init event and destroy it, since it should only be called once
             InitEvent?.Invoke();
@@ -108,7 +110,7 @@ namespace Hopper.Core
             World.Grid.Reset(this, m_pos);
         }
 
-        public void Reorient(IntVector2 orientation)
+        public void Reorient_(IntVector2 orientation)
         {
             m_orientation = orientation;
         }
@@ -132,7 +134,7 @@ namespace Hopper.Core
 
         public int GetFactoryId()
         {
-            return World.m_currentRegistry.Entity.MapMetadata(m_id).factoryId;
+            return World.m_instanceSubregistry.MapMetadata(m_id).factoryId;
         }
     }
 }

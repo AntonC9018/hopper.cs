@@ -8,6 +8,7 @@ namespace Hopper.Test_Content.Floor
 {
     public class SlideStatus : Status<SlideData>
     {
+        public static readonly SlideStatus Status = Create(1);
         public static SlideStatus Create(int defaultResValue)
         {
             var lambdas = new Lambdas();
@@ -69,7 +70,7 @@ namespace Hopper.Test_Content.Floor
 
             private void MakeEntitiesOnTheWaySlide(ActorEvent ev)
             {
-                var store = status.Tinker.GetStore(ev.actor);
+                var store = status.m_tinker.GetStore(ev.actor);
 
                 var entitiesOnTheWay = ev.actor
                     .GetCellRelative(store.initialDirection)
@@ -86,7 +87,7 @@ namespace Hopper.Test_Content.Floor
 
             private void SlideIfDidnt(Entity actor)
             {
-                var store = status.Tinker.GetStore(actor);
+                var store = status.m_tinker.GetStore(actor);
                 if (store.didSlide == false)
                 {
                     Slide(actor, store);
@@ -113,9 +114,9 @@ namespace Hopper.Test_Content.Floor
 
             private void ResetDidSlide(ActorEvent ev)
             {
-                if (status.Tinker.IsTinked(ev.actor))
+                if (status.m_tinker.IsTinked(ev.actor))
                 {
-                    status.Tinker.GetStore(ev.actor).didSlide = false;
+                    status.m_tinker.GetStore(ev.actor).didSlide = false;
                 }
             }
 

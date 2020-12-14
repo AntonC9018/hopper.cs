@@ -32,9 +32,10 @@ namespace Hopper.Core.Behaviors.Basic
         {
             if (config != null)
             {
-                m_entity.InitEvent +=
-                    () => m_content = config.contentSpec.CreateContent(
-                        m_entity.World.m_pools, m_entity.World.m_currentRegistry);
+                // TODO:
+                // m_entity.InitEvent +=
+                //     () => m_content = config.contentSpec.CreateContent(
+                //         m_entity.World.m_pools, m_entity.World.m_currentRepository);
             }
         }
 

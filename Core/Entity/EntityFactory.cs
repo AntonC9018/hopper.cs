@@ -17,64 +17,21 @@ namespace Hopper.Core
 
         public int Id => m_id;
         private int m_id;
-        public event System.Action<T> SetupEvent;
-        public event System.Action<Registry> RunAtPatchingEvent;
+        public event System.Action<T> InitEvent;
+        public event System.Action<Repository> AfterPatchEvent;
         public DefaultStats DefaultStats;
+
+        private Dictionary<System.Type, BehaviorSetting> m_behaviorSettings;
+        private Dictionary<int, Retoucher> m_retouchers;
 
         public EntityFactory()
         {
+            m_behaviorSettings = new Dictionary<System.Type, BehaviorSetting>();
+            m_retouchers = new Dictionary<int, Retoucher>();
             AddBehavior<Tick>();
         }
 
-        public void RegisterSelf(Registry registry)
-        {
-            m_id = registry.GetKindRegistry<IFactory<Entity>>().Add(this);
-            registry.RunPatchingEvent += reg => RunAtPatchingEvent?.Invoke(reg);
-        }
-
-        private Dictionary<System.Type, BehaviorSetting> m_behaviorSettings =
-            new Dictionary<System.Type, BehaviorSetting>();
-
-        // private Dictionary<int, Retoucher> m_retouchers =
-        //     new Dictionary<int, Retoucher>();
-
-        public EntityFactory<T> AddBehavior<Beh>(object conf = null)
-            where Beh : Behavior, new()
-        {
-            var factory = new BehaviorFactory<Beh>();
-            var setting = new BehaviorSetting { factory = factory, config = conf };
-            m_behaviorSettings.Add(typeof(Beh), setting);
-            return this;
-        }
-
-        public EntityFactory<T> Retouch(Retoucher retoucher)
-        {
-            // m_retouchers.Add(retoucher.Id, retoucher);
-            retoucher.Retouch(this);
-            return this;
-        }
-
-        // public bool IsRetouched(Retoucher retoucher)
-        // {
-        //     return m_retouchers.ContainsKey(retoucher.Id);
-        // }
-
-        public T Instantiate(Registry registry)
-        {
-            var entity = InstantiateLogic();
-            int id = registry.Entity.Add(entity, new FactoryLink { factoryId = m_id });
-            entity._SetId(id);
-            return entity;
-        }
-
-        public T ReInstantiate(Registry registry, int id)
-        {
-            var entity = InstantiateLogic();
-            entity._SetId(id);
-            return entity;
-        }
-
-        private T InstantiateLogic()
+        public T Instantiate()
         {
             T entity = new T();
 
@@ -92,8 +49,40 @@ namespace Hopper.Core
                 entity.Stats = new StatManager(DefaultStats);
             }
 
-            SetupEvent?.Invoke(entity);
+            InitEvent?.Invoke(entity);
             return entity;
+        }
+
+        public void RegisterSelf(ModSubRegistry subRegistry)
+        {
+            m_id = subRegistry.Add<IFactory<Entity>>(this);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            AfterPatchEvent?.Invoke(repository);
+            AfterPatchEvent = null;
+        }
+
+        public EntityFactory<T> AddBehavior<Beh>(object conf = null)
+            where Beh : Behavior, new()
+        {
+            var factory = new BehaviorFactory<Beh>();
+            var setting = new BehaviorSetting { factory = factory, config = conf };
+            m_behaviorSettings.Add(typeof(Beh), setting);
+            return this;
+        }
+
+        public EntityFactory<T> Retouch(Retoucher retoucher)
+        {
+            m_retouchers.Add(retoucher.Id, retoucher);
+            retoucher.Retouch(this);
+            return this;
+        }
+
+        public bool IsRetouched(Retoucher retoucher)
+        {
+            return m_retouchers.ContainsKey(retoucher.Id);
         }
 
         public BehaviorFactory<U> GetBehaviorFactory<U>() where U : Behavior, new()
@@ -114,7 +103,7 @@ namespace Hopper.Core
 
         public EntityFactory<T> AddSetupListener(System.Action<T> listener)
         {
-            SetupEvent += listener;
+            InitEvent += listener;
             return this;
         }
 
@@ -122,26 +111,20 @@ namespace Hopper.Core
         {
             // call the listener once the entity gets assigned 
             // a position in the world for the first time
-            SetupEvent += (e => e.InitEvent += () => listener(e));
+            InitEvent += (e => e.InitEvent += () => listener(e));
             return this;
         }
 
         public EntityFactory<T> AddDieListener(System.Action<T> listener)
         {
             // call the listener once the entity dies
-            SetupEvent += (e => e.DieEvent += () => listener(e));
+            InitEvent += (e => e.DieEvent += () => listener(e));
             return this;
         }
 
-        public EntityFactory<T> RunAtPatching(System.Action<Registry, EntityFactory<T>> callback)
+        public EntityFactory<T> SetDefaultStats(System.Func<Repository, DefaultStats> callback)
         {
-            RunAtPatchingEvent += (registry) => callback(registry, this);
-            return this;
-        }
-
-        public EntityFactory<T> SetDefaultStats(System.Func<Registry, DefaultStats> callback)
-        {
-            RunAtPatchingEvent += (registry) => DefaultStats = callback(registry);
+            AfterPatchEvent += (repository) => DefaultStats = callback(repository);
             return this;
         }
     }

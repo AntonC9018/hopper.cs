@@ -2,20 +2,15 @@ using Hopper.Core.FS;
 
 namespace Hopper.Core.Stats
 {
-    public class DefaultStats : IPatch
+    public class DefaultStats : Playground
     {
         public StatManager statManager;
-        public Registry Registry { get; private set; }
+        public Repository Repository { get; private set; }
 
-        public DefaultStats(Registry registry)
+        public DefaultStats(Repository repository)
         {
-            this.Registry = registry;
+            this.Repository = repository;
             this.statManager = new StatManager();
-        }
-
-        public void PatchKindRegistry(int kindId)
-        {
-            this.Registry.EntityFactoryPatch.Add(kindId, this);
         }
 
         public DefaultStats Set<T>(IStatPath<T> statPath, T value)
@@ -32,9 +27,9 @@ namespace Hopper.Core.Stats
             return this;
         }
 
-        public DefaultStats SetAtIndex(IStatPath<ArrayFile> statPath, int index, int value)
+        public DefaultStats SetAtIndex(IStatPath<DictFile> statPath, int index, int value)
         {
-            statManager.GetRaw(statPath.String, statPath.GetDefault(Registry))[index] = value;
+            statManager.GetRaw(statPath.String, statPath.GetDefault(Repository))[index] = value;
             return this;
         }
     }

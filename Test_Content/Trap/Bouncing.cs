@@ -17,7 +17,6 @@ namespace Hopper.Test_Content.Trap
 
         [DataMember] private bool m_hasEntityBeenOnTop;
 
-
         private void Init(object _)
         {
             m_hasBounced = false;

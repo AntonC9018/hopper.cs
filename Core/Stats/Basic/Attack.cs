@@ -7,15 +7,14 @@ namespace Hopper.Core.Stats.Basic
         public int damage;
         public int pierce;
 
-        public static Source BasicSource = new Source { resistance = 1 };
-
-        public static StatPath<Attack> Path =
-            new StatPath<Attack>
+        public static readonly Source BasicSource = new Source { resistance = 1 };
+        public static readonly SimpleStatPath<Attack> Path =
+            new SimpleStatPath<Attack>
             (
                 "atk/base",
-                registry => new Attack
+                new Attack
                 {
-                    sourceId = BasicSource.GetId(registry),
+                    sourceId = BasicSource.Id,
                     power = 1,
                     damage = 1,
                     pierce = 1
@@ -29,7 +28,7 @@ namespace Hopper.Core.Stats.Basic
             public int maxDamage;
             public int pierce;
 
-            public static SimpleStatPath<Resistance> Path = new SimpleStatPath<Resistance>(
+            public static readonly SimpleStatPath<Resistance> Path = new SimpleStatPath<Resistance>(
                 "atk/res",
                 new Resistance
                 {
@@ -43,15 +42,8 @@ namespace Hopper.Core.Stats.Basic
 
         public class Source : SourceBase<Source>
         {
-            public static class Resistance
-            {
-                public static StatPath<ArrayFile> Path =
-                    new StatPath<ArrayFile>
-                    (
-                        "atk/src_res",
-                        ArrayFilePath<Source>.GetDefaultFile
-                    );
-            }
+            public static readonly DictPatchWrapper<Source> Resistance
+                = new DictPatchWrapper<Source>("atk/src_res");
         }
     }
 }

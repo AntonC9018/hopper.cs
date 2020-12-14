@@ -4,25 +4,23 @@ using Hopper.Test_Content.Status.Freeze;
 
 namespace Hopper.Test_Content.Status
 {
-    public class StatusContent
+    public class StatusContent : ISubMod
     {
-        public Retoucher MoveCapturedRetoucher;
-        public EntityFactory<IceCube> IceCubeFactory;
-        public FreezeStatus FreezeStatus;
-
-
-        public StatusContent(CoreRetouchers retouchers)
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            MoveCapturedRetoucher = IceCube.CreateMoveCapturedRetoucher();
-            IceCubeFactory = IceCube.CreateFactory(MoveCapturedRetoucher);
-            FreezeStatus = new FreezeStatus(1, IceCubeFactory);
+            IceCube.MoveCapturedRetoucher.RegisterSelf(registry);
+            FreezeStatus.Status.RegisterSelf(registry);
+            IceCube.Factory.RegisterSelf(registry);
         }
 
-        public void RegisterSelf(Registry registry)
+        public void Patch(Repository repository)
         {
-            MoveCapturedRetoucher.RegisterSelf(registry);
-            FreezeStatus.RegisterSelf(registry);
-            IceCubeFactory.RegisterSelf(registry);
+            FreezeStatus.Status.Patch(repository);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            IceCube.Factory.AfterPatch(repository);
         }
     }
 }

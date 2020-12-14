@@ -2,12 +2,13 @@ using Hopper.Core.Chains;
 using Hopper.Utils.Chains;
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
-using Hopper.Core.Stats;
 
 namespace Hopper.Test_Content.Floor
 {
     public class StuckStatus : Status<StuckData>
     {
+        public static readonly StuckStatus Status = Create(1);
+
         public static StuckStatus Create(int defaultResValue)
         {
             var lambdas = new Lambdas();
@@ -30,20 +31,23 @@ namespace Hopper.Test_Content.Floor
         {
             public StuckStatus status;
 
-            public ChainDefBuilder CreateBuilder() => new ChainDefBuilder()
-                .AddDef(Attacking.Do)
-                .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
-                .AddDef(Digging.Do)
-                .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
-                .AddDef(Displaceable.Do)
-                .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
-                .End();
+            public ChainDefBuilder CreateBuilder()
+            {
+                return new ChainDefBuilder()
+                    .AddDef(Attacking.Do)
+                    .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
+                    .AddDef(Digging.Do)
+                    .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
+                    .AddDef(Displaceable.Do)
+                    .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
+                    .End();
+            }
 
             private void PreventActionAndDecreaseAmount(ActorEvent ev)
             {
                 if (status.IsApplied(ev.actor))
                 {
-                    status.Tinker.GetStore(ev).amount--;
+                    status.m_tinker.GetStore(ev).amount--;
                     ev.propagate = false;
                 }
             }

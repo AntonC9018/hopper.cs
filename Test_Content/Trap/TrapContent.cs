@@ -1,21 +1,23 @@
 using Hopper.Core;
-using Hopper.Core.Retouchers;
 
 namespace Hopper.Test_Content.Trap
 {
-    public class TrapContent
+    public class TrapContent : ISubMod
     {
-        public EntityFactory<BounceTrap> BounceTrapFactory;
-
-        public TrapContent()
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            BounceTrapFactory = BounceTrap.CreateFactory();
+            Bounce.Source.RegisterSelf(registry);
+            BounceTrap.Factory.RegisterSelf(registry);
         }
 
-        public void RegisterSelf(Registry registry)
+        public void Patch(Repository repository)
         {
-            Bounce.Source.RegisterOn(registry);
-            BounceTrapFactory.RegisterSelf(registry);
+            Bounce.Source.Patch(repository);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            BounceTrap.Factory.AfterPatch(repository);
         }
     }
 }

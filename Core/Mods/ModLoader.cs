@@ -18,32 +18,45 @@ namespace Hopper.Core.Mods
             modTypes.Add(typeof(T));
         }
 
-        public Registry RegisterAll()
+        public KindRegistry RegisterAll()
         {
             // Run the `Content` phase
             ModsContent mods = new ModsContent();
             foreach (System.Type modType in modTypes)
             {
                 System.Console.WriteLine($"Creating content for mod {modType.Name}...");
-                mods.m_mods[modType] = (IMod)System.Activator.CreateInstance(modType, mods);
+                mods.m_mods[modType] = (IMod)System.Activator.CreateInstance(modType);
             }
 
             // Prepare the registry
-            Registry registry = new Registry();
-            registry.ModContent = mods;
+            KindRegistry registry = new KindRegistry();
 
             // Run the `Kind` phase
             foreach (System.Type modType in modTypes)
             {
                 System.Console.WriteLine($"Registering kinds for mod {modType.Name}...");
-                mods.m_mods[modType].RegisterSelf(registry);
+                var mod = mods.m_mods[modType];
+                ModSubRegistry modSubRegistry = registry.CreateModSubRegistry(mod);
+                mod.RegisterSelf(modSubRegistry);
             }
 
-            // Run the `Patching` phase
-            System.Console.WriteLine($"Running patching...");
-            registry.RunPatching();
+            Repository repository = new Repository();
 
-            // TODO: somehow signal to start the `Instance` phase
+            // Run the `Patching` phase
+            foreach (System.Type modType in modTypes)
+            {
+                System.Console.WriteLine($"Running patching for mod {modType.Name}...");
+                var mod = mods.m_mods[modType];
+                mod.Patch(repository);
+            }
+
+            // Run the `AfterPatch` phase
+            foreach (System.Type modType in modTypes)
+            {
+                System.Console.WriteLine($"Running after_patching for mod {modType.Name}...");
+                var mod = mods.m_mods[modType];
+                mod.AfterPatch(repository);
+            }
 
             return registry;
         }

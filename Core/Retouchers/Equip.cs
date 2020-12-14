@@ -4,12 +4,11 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Retouchers
 {
-    public class Equip
+    public static class Equip
     {
-        public Retoucher OnDisplace = Retoucher
-            .SingleHandlered(Displaceable.Do, PickUp);
+        public static readonly Retoucher OnDisplace = Retoucher.SingleHandlered(Displaceable.Do, PickUp);
 
-        public void RegisterAll(Registry registry)
+        public static void RegisterAll(ModSubRegistry registry)
         {
             OnDisplace.RegisterSelf(registry);
         }

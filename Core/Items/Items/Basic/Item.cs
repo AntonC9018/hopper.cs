@@ -2,7 +2,7 @@ namespace Hopper.Core.Items
 {
     public class Item : IItem
     {
-        private int m_id;
+        public int m_id;
         public virtual ISlot<IItemContainer<IItem>> Slot => throw new System.NotImplementedException();
         public virtual int Id => m_id;
 
@@ -16,9 +16,9 @@ namespace Hopper.Core.Items
             m_metadata = meta;
         }
 
-        public virtual void RegisterSelf(Registry registry)
+        public virtual void RegisterSelf(ModSubRegistry registry)
         {
-            m_id = registry.GetKindRegistry<IItem>().Add(this);
+            m_id = registry.Add<IItem>(this);
         }
 
         public virtual void BeDestroyed(Entity entity)

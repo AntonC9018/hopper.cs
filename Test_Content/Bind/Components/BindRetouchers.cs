@@ -7,6 +7,8 @@ namespace Hopper.Test_Content.Bind
 {
     public static class BindRetouchers
     {
+        public static readonly Retoucher StopMoveRetoucher = CreateBindRetoucher(BindStatuses.StopMove);
+
         public static Retoucher CreateBindRetoucher(BindStatus bindStatus)
         {
             var lambdas = new Lambdas(bindStatus);

@@ -10,8 +10,9 @@ namespace Hopper.Core
     {
         public override bool IsPlayer => true;
 
-        public static EntityFactory<Player> CreateFactory(CoreRetouchers retouchers)
-            => new EntityFactory<Player>()
+        public static EntityFactory<Player> CreateFactory()
+        {
+            return new EntityFactory<Player>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo, null))
                 .AddBehavior<Moving>()
                 .AddBehavior<Displaceable>()
@@ -21,10 +22,11 @@ namespace Hopper.Core
                 .AddBehavior<Attacking>()
                 .AddBehavior<Digging>()
                 .AddBehavior<Pushable>()
-                .Retouch(retouchers.Skip.EmptyAttack)
-                .Retouch(retouchers.Skip.EmptyDig)
-                .Retouch(retouchers.Equip.OnDisplace)
-                .Retouch(retouchers.Reorient.OnActionSuccess)
+                .Retouch(Skip.EmptyAttack)
+                .Retouch(Skip.EmptyDig)
+                .Retouch(Equip.OnDisplace)
+                .Retouch(Reorient.OnActionSuccess)
                 .AddInitListener(e => e.Inventory = new Inventory(e));
+        }
     }
 }

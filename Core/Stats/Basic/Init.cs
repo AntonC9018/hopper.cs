@@ -1,27 +1,24 @@
+using System;
+
 namespace Hopper.Core.Stats.Basic
 {
     public static class BasicStats
     {
-        public static void Init(Registry registry)
+        public static void Patch(Repository repository)
         {
-            SourceBase<Attack.Source>.InitOn(registry);
-            Attack.BasicSource.RegisterOn(registry);
+            Attack.Source.Resistance.InitPatchSubRegistry(repository);
+            Push.Source.Resistance.InitPatchSubRegistry(repository);
+            Status.Source.Resistance.InitPatchSubRegistry(repository);
 
-            Dig.Source.RegisterOn(registry);
+            Dig.Source.Patch(repository);
+            Push.BasicSource.Patch(repository);
+        }
 
-            SourceBase<Push.Source>.InitOn(registry);
-            Push.BasicSource.RegisterOn(registry);
-
-            SourceBase<IStatus>.InitOn(registry);
-
-            registry.RunPatchingEvent += reg =>
-            {
-                Attack.Path.PatchDefaultFile(reg);
-                Attack.Source.Resistance.Path.PatchDefaultFile(reg);
-                Push.Path.PatchDefaultFile(reg);
-                Push.Source.Resistance.Path.PatchDefaultFile(reg);
-                Status.Resistance.Path.PatchDefaultFile(reg);
-            };
+        public static void AfterPatch(Repository repository)
+        {
+            Attack.Source.Resistance.CreateDefaultFile(repository);
+            Push.Source.Resistance.CreateDefaultFile(repository);
+            Status.Source.Resistance.CreateDefaultFile(repository);
         }
     }
 }

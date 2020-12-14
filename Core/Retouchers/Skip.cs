@@ -1,25 +1,22 @@
-
 using System.Linq;
-using Hopper.Utils.Chains;
 using Hopper.Core.Behaviors.Basic;
-using Hopper.Core.Targeting;
 
 namespace Hopper.Core.Retouchers
 {
-    public class Skip
+    public static class Skip
     {
-        public Retoucher EmptyAttack = Retoucher
+        public static readonly Retoucher EmptyAttack = Retoucher
             .SingleHandlered<Attacking.Event>(Attacking.Check, SkipEmptyAttack);
-        public Retoucher EmptyDig = Retoucher
+        public static readonly Retoucher EmptyDig = Retoucher
             .SingleHandlered<Digging.Event>(Digging.Check, SkipEmptyDig);
-        public Retoucher BlockedMove = Retoucher
+        public static readonly Retoucher BlockedMove = Retoucher
             .SingleHandlered<Moving.Event>(Moving.Check, SkipBlocked);
-        public Retoucher NoPlayer = Retoucher
+        public static readonly Retoucher NoPlayer = Retoucher
             .SingleHandlered<Attacking.Event>(Attacking.Check, SkipNoPlayer);
-        public Retoucher Self = Retoucher
+        public static readonly Retoucher Self = Retoucher
             .SingleHandlered<Attacking.Event>(Attacking.Check, SkipSelf);
 
-        public void RegisterAll(Registry registry)
+        public static void RegisterAll(ModSubRegistry registry)
         {
             EmptyAttack.RegisterSelf(registry);
             EmptyDig.RegisterSelf(registry);

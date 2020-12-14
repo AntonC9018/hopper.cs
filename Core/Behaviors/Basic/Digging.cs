@@ -54,14 +54,10 @@ namespace Hopper.Core.Behaviors.Basic
         {
             foreach (var target in ev.targets)
             {
+                var atkParams = new Attackable.Params(ev.dig.ToAttack(), ev.actor);
                 target.entity.Behaviors
                     .Get<Attackable>()
-                    .Activate(ev.action.direction,
-                        new Attackable.Params(
-                            ev.dig.ToAttack(ev.actor.World.m_currentRegistry),
-                            ev.actor
-                        )
-                    );
+                    .Activate(ev.action.direction, atkParams);
             }
         }
 

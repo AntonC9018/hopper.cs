@@ -16,15 +16,14 @@ namespace Hopper.Core.Stats.Basic
             };
         }
 
-        public static Source BasicSource = new Source { resistance = 1 };
-
-        public static StatPath<Push> Path =
-            new StatPath<Push>
+        public static readonly Source BasicSource = new Source { resistance = 1 };
+        public static readonly SimpleStatPath<Push> Path =
+            new SimpleStatPath<Push>
             (
                 "push/base",
-                registry => new Push
+                new Push
                 {
-                    sourceId = BasicSource.GetId(registry),
+                    sourceId = BasicSource.Id,
                     power = 1,
                     distance = 1,
                     pierce = 1
@@ -34,20 +33,14 @@ namespace Hopper.Core.Stats.Basic
         public class Resistance : StatFile
         {
             public int pierce;
-            public static readonly SimpleStatPath<Resistance> Path = new SimpleStatPath<Resistance>("push/res");
+            public static readonly SimpleStatPath<Resistance> Path
+                = new SimpleStatPath<Resistance>("push/res");
         }
 
         public class Source : SourceBase<Source>
         {
-            public static class Resistance
-            {
-                public static StatPath<ArrayFile> Path =
-                    new StatPath<ArrayFile>
-                    (
-                        "push/src_res",
-                        ArrayFilePath<Source>.GetDefaultFile
-                    );
-            }
+            public static readonly DictPatchWrapper<Source> Resistance
+                = new DictPatchWrapper<Source>("push/src_res");
         }
     }
 }

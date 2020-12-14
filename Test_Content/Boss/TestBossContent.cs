@@ -3,21 +3,23 @@ using Hopper.Core.Retouchers;
 
 namespace Hopper.Test_Content.Boss
 {
-    public class BossContent
+    public class BossContent : ISubMod
     {
-        public EntityFactory<TestBoss> TestBossFactory;
-        public EntityFactory<TestBoss.Whelp> WhelpFactory;
-
-        public BossContent(CoreRetouchers retouchers)
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            WhelpFactory = TestBoss.Whelp.CreateFactory(retouchers);
-            TestBossFactory = TestBoss.CreateFactory(retouchers, WhelpFactory);
+            TestBoss.TurnToPlayerRetoucher.RegisterSelf(registry);
+            TestBoss.Whelp.Factory.RegisterSelf(registry);
+            TestBoss.Factory.RegisterSelf(registry);
         }
 
-        public void RegisterSelf(Registry registry)
+        public void Patch(Repository repository)
         {
-            WhelpFactory.RegisterSelf(registry);
-            TestBossFactory.RegisterSelf(registry);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            TestBoss.Whelp.Factory.AfterPatch(repository);
+            TestBoss.Factory.AfterPatch(repository);
         }
     }
 }

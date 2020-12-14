@@ -1,7 +1,8 @@
 namespace Hopper.Core.Mods
 {
-    public interface IMod
+    public interface IMod : ISubMod
     {
-        void RegisterSelf(Registry registry);
+        int Offset { get; }
+        string Name { get; }
     }
 }

@@ -18,6 +18,7 @@ namespace Hopper.Test_Content.Floor
     {
         public override Layer Layer => Layer.FLOOR;
 
+        public static readonly EntityFactory<Water> Factory = CreateFactory();
         public static EntityFactory<Water> CreateFactory()
         {
             return new EntityFactory<Water>()
@@ -34,25 +35,20 @@ namespace Hopper.Test_Content.Floor
             DieEvent += DieHandler;
         }
 
-        private StuckStatus GetStuckStatus()
-        {
-            return World.m_currentRegistry.ModContent.Get<TestMod>().Floor.StuckStatus;
-        }
-
         private void Stuck(Entity entity)
         {
             if (entity.Layer.IsOfLayer(m_targetedLayer))
             {
-                GetStuckStatus().TryApplyAuto(this, entity);
+                StuckStatus.Status.TryApplyAuto(this, entity);
             }
         }
 
         private void UnStuck(Entity entity)
         {
-            var status = GetStuckStatus();
+            var status = StuckStatus.Status;
             if (status.IsApplied(entity))
             {
-                status.Tinker.GetStore(entity).amount = 0;
+                status.m_tinker.GetStore(entity).amount = 0;
             }
         }
 

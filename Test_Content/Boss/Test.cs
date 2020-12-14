@@ -8,57 +8,25 @@ namespace Hopper.Test_Content.Boss
 {
     public class TestBoss : Entity
     {
+        public static readonly Retoucher TurnToPlayerRetoucher;
+        public static readonly EntityFactory<TestBoss> Factory;
+        private static readonly Action AttackMoveAction;
+        private static readonly Action SpawnAction;
+        private static readonly Step[] Steps;
+
         private int m_whelpCount = 0;
-        private int m_whelpMax = 3;
-
-        private static Action AttackMoveAction = new CompositeAction(
-            new BehaviorAction<Attacking>(), new BehaviorAction<Moving>()
-        );
-
-        private static Action SpawnAction = new SimpleAction(
-            (e, a) => Spawn((TestBoss)e, a)
-        );
-
-        private static Step[] Steps = new[]
-        {
-            new Step
-            {
-                action = AttackMoveAction,
-                movs = Movs.Basic
-            },
-            new Step
-            {
-                action = Laser.LaserShootAction,
-                movs = Movs.Basic
-            },
-            new Step
-            {
-                repeat = 3,
-            },
-            new Step
-            {
-                action = SpawnAction,
-                movs = Movs.Basic
-            },
-        };
-
-        private static EntityFactory<Whelp> GetWhelpFactory(Entity entity)
-        {
-            return entity.World.m_currentRegistry.ModContent.Get<TestMod>().Boss.WhelpFactory;
-        }
+        private static int WhelpMax = 3;
 
         private static void Spawn(TestBoss entity, Action action)
         {
-            int toSpawn = entity.m_whelpMax - entity.m_whelpCount;
+            int toSpawn = WhelpMax - entity.m_whelpCount;
             for (int i = 0; i < toSpawn; i++)
             {
                 var pos = entity.Pos - action.direction * (i + 1);
 
-                var whelpFactory = GetWhelpFactory(entity);
-
                 if (entity.World.Grid.IsOutOfBounds(pos) == false)
                 {
-                    var whelp = entity.World.SpawnEntity(whelpFactory, pos, action.direction);
+                    var whelp = entity.World.SpawnEntity(Whelp.Factory, pos, action.direction);
                     whelp.DieEvent += () => entity.m_whelpCount--;
                 }
                 entity.m_whelpCount++;
@@ -81,17 +49,63 @@ namespace Hopper.Test_Content.Boss
             }
         }
 
-        private static Retoucher TurnToPlayerRetoucher = Retoucher
-            .SingleHandlered(Acting.Success, ev => TurnToPlayer(ev.actor));
 
         public class Whelp : Entity
         {
-            private static Step[] Steps = new[]
+            public static readonly EntityFactory<Whelp> Factory;
+            private static readonly Step[] Steps;
+
+            static Whelp()
             {
-                new Step
+                Steps = new[]
                 {
-                    repeat = 1
-                },
+                    new Step
+                    {
+                        repeat = 1
+                    },
+                    new Step
+                    {
+                        action = AttackMoveAction,
+                        movs = Movs.Basic
+                    },
+                    new Step
+                    {
+                        repeat = 1
+                    },
+                    new Step
+                    {
+                        action = AttackMoveAction,
+                        movs = Movs.Adjacent
+                    }
+                };
+                Factory = CreateFactory();
+            }
+
+            public static EntityFactory<Whelp> CreateFactory()
+            {
+                return new EntityFactory<Whelp>()
+                    .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
+                    .AddBehavior<Attacking>()
+                    .AddBehavior<Attackable>()
+                    .AddBehavior<Moving>()
+                    .AddBehavior<Displaceable>()
+                    .AddBehavior<Damageable>(new Damageable.Config(1))
+                    .Retouch(Skip.NoPlayer)
+                    .Retouch(Skip.BlockedMove)
+                    // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
+                    .Retouch(TurnToPlayerRetoucher)
+                    .AddBehavior<Sequential>(new Sequential.Config(Steps));
+            }
+        }
+
+        static TestBoss()
+        {
+            AttackMoveAction = new CompositeAction(
+                new BehaviorAction<Attacking>(), new BehaviorAction<Moving>());
+            SpawnAction = new SimpleAction(
+                (e, a) => Spawn((TestBoss)e, a));
+            Steps = new[]
+            {
                 new Step
                 {
                     action = AttackMoveAction,
@@ -99,32 +113,25 @@ namespace Hopper.Test_Content.Boss
                 },
                 new Step
                 {
-                    repeat = 1
+                    action = Laser.LaserShootAction,
+                    movs = Movs.Basic
                 },
                 new Step
                 {
-                    action = AttackMoveAction,
-                    movs = Movs.Adjacent
-                }
+                    repeat = 3,
+                },
+                new Step
+                {
+                    action = SpawnAction,
+                    movs = Movs.Basic
+                },
             };
-
-            public static EntityFactory<Whelp> CreateFactory(CoreRetouchers retouchers) =>
-                new EntityFactory<Whelp>()
-                    .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
-                    .AddBehavior<Attacking>()
-                    .AddBehavior<Attackable>()
-                    .AddBehavior<Moving>()
-                    .AddBehavior<Displaceable>()
-                    .AddBehavior<Damageable>(new Damageable.Config(1))
-                    .Retouch(retouchers.Skip.NoPlayer)
-                    .Retouch(retouchers.Skip.BlockedMove)
-                    // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
-                    .Retouch(TurnToPlayerRetoucher)
-                    .AddBehavior<Sequential>(new Sequential.Config(Steps));
+            TurnToPlayerRetoucher = Retoucher.SingleHandlered(Acting.Success, ev => TurnToPlayer(ev.actor));
+            Factory = CreateFactory();
         }
 
-        public static EntityFactory<TestBoss> CreateFactory(
-            CoreRetouchers retouchers, EntityFactory<Whelp> whelpFactory)
+
+        public static EntityFactory<TestBoss> CreateFactory()
         {
             return new EntityFactory<TestBoss>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
@@ -133,12 +140,11 @@ namespace Hopper.Test_Content.Boss
                 .AddBehavior<Moving>()
                 .AddBehavior<Displaceable>()
                 .AddBehavior<Damageable>(new Damageable.Config(5))
-                .Retouch(retouchers.Skip.NoPlayer)
-                .Retouch(retouchers.Skip.BlockedMove)
+                .Retouch(Skip.NoPlayer)
+                .Retouch(Skip.BlockedMove)
                 // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
                 .Retouch(TurnToPlayerRetoucher)
                 .AddBehavior<Sequential>(new Sequential.Config(Steps));
-
         }
     }
 }

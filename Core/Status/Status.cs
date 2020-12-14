@@ -6,8 +6,9 @@ using Hopper.Core.Behaviors.Basic;
 
 namespace Hopper.Core
 {
-    public interface IStatus : IKind
+    public interface IStatus : IKind, IPatch
     {
+        int SourceId { get; }
         void Update(Entity entity);
         bool IsApplied(Entity entity);
         // void Nullify(Entity entity);
@@ -16,41 +17,40 @@ namespace Hopper.Core
 
     public static class Status
     {
-        public static class Resistance
+        public class Source : SourceBase<Source>
         {
-            public static StatPath<ArrayFile> Path =
-                new StatPath<ArrayFile>
-                (
-                    "status/res",
-                    ArrayFilePath<IStatus>.GetDefaultFile
-                );
+            public static readonly DictPatchWrapper<Source> Resistance
+                = new DictPatchWrapper<Source>("status/res");
         }
     }
 
     public class Status<T> : IStatus where T : StatusData, new()
     {
         private IStatPath<StatusFile> m_statPath;
-        private int m_resDefaultValue;
-        private Registry m_registry;
         private int m_id;
-        protected Tinker<T> m_tinker;
+        public Tinker<T> m_tinker;
+        public Status.Source m_source;
 
-        public Tinker<T> Tinker => m_tinker;
         public int Id => m_id;
-        public SourceBase<IStatus> m_source;
+        public int SourceId => m_source.Id;
 
         public Status(IChainDef[] chainDefs, IStatPath<StatusFile> statPath, int defaultResValue)
         {
             m_statPath = statPath;
             m_tinker = new Tinker<T>(chainDefs);
-            m_source = new SourceBase<IStatus> { resistance = defaultResValue };
+            m_source = new Status.Source { resistance = defaultResValue };
         }
 
-        public void RegisterSelf(Registry registry)
+        public void RegisterSelf(ModSubRegistry registry)
         {
             m_tinker.RegisterSelf(registry);
-            m_id = registry.GetKindRegistry<IStatus>().Add(this);
-            m_source.RegisterOn(registry);
+            m_source.RegisterSelf(registry); // think about this. 
+            m_id = registry.Add<IStatus>(this);
+        }
+
+        public void Patch(Repository repository)
+        {
+            m_source.Patch(repository);
         }
 
         public virtual void Update(Entity entity)

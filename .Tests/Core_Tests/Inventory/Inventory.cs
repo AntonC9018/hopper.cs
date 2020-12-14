@@ -38,11 +38,10 @@ namespace Hopper.Tests
 
         public Inventory_Tests()
         {
-            Registry registry = new Registry();
             item_Hello = new TestItem(new ItemMetadata("Hello"));
             item_World = new TestItem(new ItemMetadata("World"));
-            item_Hello.RegisterSelf(registry);
-            item_World.RegisterSelf(registry);
+            item_Hello.m_id = 1;
+            item_World.m_id = 2;
         }
 
         [SetUp]

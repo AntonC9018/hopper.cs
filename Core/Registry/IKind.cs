@@ -2,6 +2,6 @@ namespace Hopper.Core
 {
     public interface IKind : IHaveId
     {
-        void RegisterSelf(Registry registry);
+        void RegisterSelf(ModSubRegistry registry);
     }
 }

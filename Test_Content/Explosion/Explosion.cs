@@ -10,23 +10,25 @@ namespace Hopper.Test_Content.Explosion
     public class Explosion
     {
         public static readonly Attack.Source AtkSource = new Attack.Source { resistance = 0 };
-        public static Attack BaseAtk(Registry reg) =>
+        public static readonly Push.Source PushSource = new Push.Source { resistance = 0 };
+        public static readonly WorldEventPath<IntVector2> EventPath = new WorldEventPath<IntVector2>();
+
+        private static Attack BaseAtk =>
             new Attack
             {
                 damage = 3,
                 power = 2,
-                sourceId = AtkSource.GetId(reg),
+                sourceId = AtkSource.Id,
                 pierce = 1
             };
 
-        public static readonly Push.Source PushSource = new Push.Source { resistance = 0 };
-        public static Push BasePush(Registry reg) =>
+        private static Push BasePush =>
             new Push
             {
                 power = 2,
                 pierce = 1,
                 distance = 1,
-                sourceId = PushSource.GetId(reg)
+                sourceId = PushSource.Id
             };
 
         private static Layer TargetedLayer =
@@ -38,10 +40,11 @@ namespace Hopper.Test_Content.Explosion
             | Layer.TRAP
             | Layer.FLOOR
             | Layer.WALL;
-        private static Layer SkipLayer = 0;
 
-        private static MultiAtkTargetProvider targetProvider =
+        private static readonly Layer SkipLayer = 0;
+        private static readonly MultiAtkTargetProvider targetProvider =
             new MultiAtkTargetProvider(Pattern.Under, SkipLayer, TargetedLayer);
+        private static Attackable.Params CreateMeta() => new Attackable.Params(BaseAtk, null);
 
         public static void Explode(IntVector2 pos, int radius, World world)
         {
@@ -56,13 +59,6 @@ namespace Hopper.Test_Content.Explosion
             }
         }
 
-        public static readonly WorldEventPath<IntVector2> EventPath = new WorldEventPath<IntVector2>();
-
-        private static Attackable.Params CreateMeta(Registry reg)
-        {
-            return new Attackable.Params(BaseAtk(reg), null);
-        }
-
         public static void ExplodeCell(IntVector2 pos, IntVector2 knockbackDir, World world)
         {
             var targets = targetProvider.GetTargets(
@@ -71,9 +67,9 @@ namespace Hopper.Test_Content.Explosion
             foreach (var target in targets)
             {
                 target.entity.Behaviors.Get<Attackable>()
-                    .Activate(knockbackDir, CreateMeta(world.m_currentRegistry));
+                    .Activate(knockbackDir, CreateMeta());
                 target.entity.Behaviors.TryGet<Pushable>()?
-                    .Activate(knockbackDir, BasePush(world.m_currentRegistry));
+                    .Activate(knockbackDir, BasePush);
             }
             // spawn particles through some mechanism 
             EventPath.Fire(world, pos);

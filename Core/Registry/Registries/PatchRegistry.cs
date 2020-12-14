@@ -8,14 +8,14 @@ namespace Hopper.Core
     // I thought, that for at initializtion I would pass the factories the regitry to be used
     // for getting data 
 
-    public interface IPatchRegistry<out T>
+    public interface IPatchSubRegistry<out T>
     {
         T TryGet(int id);
     }
 
-    public class PatchRegistry<T> : IPatchRegistry<T>
+    public class PatchSubRegistry<T> : IPatchSubRegistry<T>
     {
-        public Dictionary<int, T> patches;
+        public Dictionary<int, T> patches = new Dictionary<int, T>();
         public T TryGet(int id)
         {
             if (patches.ContainsKey(id))

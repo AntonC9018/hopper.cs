@@ -13,22 +13,27 @@ namespace Hopper.Core
 {
     public class CoreMod : IMod
     {
-        public string Name => "core";
-        public CoreRetouchers Retouchers;
-        public EntityFactory<DroppedItem> DroppedItemFactory;
-
-        public CoreMod(ModsContent mods)
+        public CoreMod()
         {
-            Retouchers = new CoreRetouchers();
-            DroppedItemFactory = new EntityFactory<DroppedItem>();
         }
 
-        public void RegisterSelf(Registry registry)
+        public string Name => "core";
+        public int Offset => 1;
+
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            BasicStats.Init(registry);
-            
-            Retouchers.RegisterAll(registry);
-            DroppedItemFactory.RegisterSelf(registry);
+            CoreRetouchers.RegisterAll(registry);
+            DroppedItem.Factory.RegisterSelf(registry);
+        }
+
+        public void Patch(Repository repository)
+        {
+            BasicStats.Patch(repository);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            BasicStats.AfterPatch(repository);
         }
     }
 }

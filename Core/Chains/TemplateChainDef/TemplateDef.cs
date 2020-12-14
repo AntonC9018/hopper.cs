@@ -15,9 +15,9 @@ namespace Hopper.Core.Chains
         public BehaviorFactoryPath<Event> path;
         public EvHandler<Event>[] handlers;
 
-        public void AddHandlersTo(IProvideBehaviorFactory entityFactory)
+        public void AddHandlersTo(IProvideBehaviorFactory EntityFactory)
         {
-            var chain = path(entityFactory);
+            var chain = path(EntityFactory);
             foreach (var handler in handlers)
             {
                 chain.AddHandler(handler);

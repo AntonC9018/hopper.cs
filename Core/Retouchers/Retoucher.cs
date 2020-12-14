@@ -15,9 +15,9 @@ namespace Hopper.Core
             this.m_chainDefinitions = chainDefinitions;
         }
 
-        public void RegisterSelf(Registry registry)
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            m_id = registry.Retoucher.Add(this);
+            m_id = registry.Add<Retoucher>(this);
         }
 
         // beacuse I'm sick of boilerplate for simple stuff
@@ -42,11 +42,11 @@ namespace Hopper.Core
             );
         }
 
-        public void Retouch(IProvideBehaviorFactory entityFactory)
+        public void Retouch(IProvideBehaviorFactory EntityFactory)
         {
             foreach (var def in m_chainDefinitions)
             {
-                def.AddHandlersTo(entityFactory);
+                def.AddHandlersTo(EntityFactory);
             }
         }
     }

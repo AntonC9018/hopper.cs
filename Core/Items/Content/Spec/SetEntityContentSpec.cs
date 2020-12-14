@@ -9,7 +9,7 @@ namespace Hopper.Core.Items
             this.factory = factory;
         }
 
-        public IContent CreateContent(PoolContainer pools, Registry registry)
+        public IContent CreateContent(PoolContainer pools, KindRegistry registry)
         {
             return new EntityContent(factory);
         }

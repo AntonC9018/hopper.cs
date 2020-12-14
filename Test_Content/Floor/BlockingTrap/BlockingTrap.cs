@@ -10,6 +10,10 @@ namespace Hopper.Test_Content.Floor
     public class BlockingTrap : Entity
     {
         public override Layer Layer => Layer.FLOOR;
+        [DataMember] private List<RealBarrier> m_barriers;
+
+        public static readonly EntityFactory<BlockingTrap> Factory = CreateFactory();
+        public static readonly EntityFactory<RealBarrier> BarrierFactory = CreateBarrierFactory();
 
         public static EntityFactory<BlockingTrap> CreateFactory()
         {
@@ -25,18 +29,12 @@ namespace Hopper.Test_Content.Floor
 
         private static Layer TargetedLayer = Layer.REAL;
 
-        [DataMember] private List<RealBarrier> m_barriers;
 
         private void ListenCell()
         {
             this.GetCell().EnterEvent += BlockOff;
             this.GetCell().LeaveEvent += Unblock;
             this.DieEvent += RemoveAll;
-        }
-
-        private EntityFactory<RealBarrier> GetBarrierFactory()
-        {
-            return World.m_currentRegistry.ModContent.Get<TestMod>().Floor.RealBarrierFactory;
         }
 
         private void BlockOff(Entity entity)
@@ -46,10 +44,9 @@ namespace Hopper.Test_Content.Floor
                 if (m_barriers == null)
                 {
                     m_barriers = new List<RealBarrier>(4);
-                    var barrierFactory = GetBarrierFactory();
                     foreach (var orientation in IntVector2.Zero.OrthogonallyAdjacent)
                     {
-                        m_barriers.Add(entity.World.SpawnEntity(barrierFactory, entity.Pos, orientation));
+                        m_barriers.Add(entity.World.SpawnEntity(BarrierFactory, entity.Pos, orientation));
                     }
                 }
                 // Tinker.Tink(entity, new BlockedData { applicant = this });

@@ -7,11 +7,15 @@ namespace Hopper.Utils
     */
     public class IdGenerator
     {
-        private int id = 0;
+        private int id;
         public int Count => id;
         public int GetNextId()
         {
-            return id++;
+            return ++id;
+        }
+        public void Reset()
+        {
+            id = 0;
         }
     }
 }

@@ -6,18 +6,18 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Retouchers
 {
-    public class Reorient
+    public static class Reorient
     {
-        public Retoucher OnMove = Retoucher
+        public static readonly Retoucher OnMove = Retoucher
             .SingleHandlered(Moving.Do, AnyReorient, PriorityRanks.High);
-        public Retoucher OnDisplace = Retoucher
+        public static readonly Retoucher OnDisplace = Retoucher
             .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRanks.High);
-        public Retoucher OnActionSuccess = Retoucher
+        public static readonly Retoucher OnActionSuccess = Retoucher
             .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRanks.High);
-        public Retoucher OnAttack = Retoucher
+        public static readonly Retoucher OnAttack = Retoucher
             .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRanks.High);
 
-        public void RegisterAll(Registry registry)
+        public static void RegisterAll(ModSubRegistry registry)
         {
             OnMove.RegisterSelf(registry);
             OnDisplace.RegisterSelf(registry);
@@ -29,14 +29,14 @@ namespace Hopper.Core.Retouchers
         {
             if (ev.dir != IntVector2.Zero)
             {
-                ev.actor.Reorient(ev.dir);
+                ev.actor.Reorient_(ev.dir);
             }
         }
         private static void AnyReorient(StandartEvent ev)
         {
             if (ev.action.direction != IntVector2.Zero)
             {
-                ev.actor.Reorient(ev.action.direction);
+                ev.actor.Reorient_(ev.action.direction);
             }
         }
     }

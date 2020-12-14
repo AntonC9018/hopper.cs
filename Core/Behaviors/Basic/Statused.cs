@@ -15,14 +15,13 @@ namespace Hopper.Core.Behaviors.Basic
         {
             public Entity actor;
             public Attack attack;
-            public ArrayFile resistance;
+            public DictFile resistance;
             public StatusParam[] statusParams;
         }
 
         public class Params
         {
             public StatusParam[] statusParams;
-
             public Params(StatusParam param)
             {
                 statusParams = new StatusParam[] { param };
@@ -82,13 +81,13 @@ namespace Hopper.Core.Behaviors.Basic
 
         static void SetResistance(Event ev)
         {
-            ev.resistance = ev.actor.Stats.GetLazy<ArrayFile>(Status.Resistance.Path);
+            ev.resistance = ev.actor.Stats.GetLazy(Status.Source.Resistance.Path);
         }
 
         static void ResistSomeStatuses(Event ev)
         {
             ev.statusParams = ev.statusParams
-                .Where(p => ev.resistance[p.status.Id] <= p.statusStat.power)
+                .Where(p => ev.resistance[p.status.SourceId] <= p.statusStat.power)
                 .Where(p => p.statusStat.amount > 0)
                 .ToArray();
         }
@@ -104,9 +103,8 @@ namespace Hopper.Core.Behaviors.Basic
                 .AddHandler(SetResistance, PriorityRanks.High)
                 .AddHandler(ResistSomeStatuses, PriorityRanks.Low)
 
-
-               // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
-               .End();
+                // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
+                .End();
 
             BehaviorFactory<Statused>.s_builder = builder;
         }

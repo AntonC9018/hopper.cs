@@ -6,8 +6,10 @@ namespace Hopper.Test_Content.SimpleMobs
 {
     public static class Skeleton
     {
-        public static EntityFactory<Entity> CreateFactory(CoreRetouchers retouchers) =>
-            new EntityFactory<Entity>()
+        public static readonly EntityFactory<Entity> Factory = CreateFactory();
+        public static EntityFactory<Entity> CreateFactory()
+        {
+            return new EntityFactory<Entity>()
                 .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
                 .AddBehavior<Sequential>(new Sequential.Config(CreateSequenceData()))
 
@@ -19,9 +21,10 @@ namespace Hopper.Test_Content.SimpleMobs
                 .AddBehavior<Pushable>()
                 .AddBehavior<Statused>()
 
-                .Retouch(retouchers.Skip.NoPlayer)
-                .Retouch(retouchers.Skip.BlockedMove)
-                .Retouch(retouchers.Reorient.OnActionSuccess);
+                .Retouch(Skip.NoPlayer)
+                .Retouch(Skip.BlockedMove)
+                .Retouch(Reorient.OnActionSuccess);
+        }
 
         static Step[] CreateSequenceData()
         {

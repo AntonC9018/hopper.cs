@@ -1,8 +1,12 @@
 namespace Hopper.Core
 {
-    public interface IFactory<out T> : IKind
+    public interface IFactory<out T> : IKind, IAfterPatch
     {
-        T Instantiate(Registry registry);
-        T ReInstantiate(Registry registry, int id);
+        T Instantiate();
+    }
+
+    public interface IAfterPatch
+    {
+        void AfterPatch(Repository repository);
     }
 }

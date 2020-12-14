@@ -3,30 +3,27 @@ using Hopper.Core.Retouchers;
 
 namespace Hopper.Test_Content.SimpleMobs
 {
-    public class MobsContent
+    public class MobsContent : ISubMod
     {
-        public EntityFactory<Knipper> KnipperFactory;
-        public EntityFactory<Dummy> DummyFactory;
-        public EntityFactory<Entity> SkeletonFactory;
-        public EntityFactory<Ghost> GhostFactory;
-        public Retoucher TeleportAfterAttackRetoucher;
-
-        public MobsContent(CoreRetouchers retouchers)
+        public void RegisterSelf(ModSubRegistry registry)
         {
-            KnipperFactory = Knipper.CreateFactory();
-            DummyFactory = Dummy.CreateFactory();
-            SkeletonFactory = Skeleton.CreateFactory(retouchers);
-            TeleportAfterAttackRetoucher = Ghost.CreateTeleportAfterAttack();
-            GhostFactory = Ghost.CreateFactory(TeleportAfterAttackRetoucher);
+            Knipper.Factory.RegisterSelf(registry);
+            Dummy.Factory.RegisterSelf(registry);
+            Skeleton.Factory.RegisterSelf(registry);
+            Ghost.TeleportAfterAttackRetoucher.RegisterSelf(registry);
+            Ghost.Factory.RegisterSelf(registry);
         }
 
-        public void RegisterSelf(Registry registry)
+        public void Patch(Repository repository)
         {
-            KnipperFactory.RegisterSelf(registry);
-            DummyFactory.RegisterSelf(registry);
-            SkeletonFactory.RegisterSelf(registry);
-            TeleportAfterAttackRetoucher.RegisterSelf(registry);
-            GhostFactory.RegisterSelf(registry);
+        }
+
+        public void AfterPatch(Repository repository)
+        {
+            Knipper.Factory.AfterPatch(repository);
+            Dummy.Factory.AfterPatch(repository);
+            Skeleton.Factory.AfterPatch(repository);
+            Ghost.Factory.AfterPatch(repository);
         }
     }
 }

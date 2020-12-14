@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace Hopper.Core
 {
-    public interface IInstanceRegistry
+    public interface IInstanceSubRegistry
     {
     }
 
-    public class InstanceRegistry<T, Meta> : IInstanceRegistry
+    public class InstanceSubRegistry<T, Meta> : IInstanceSubRegistry
     {
         protected Dictionary<int, T> m_map =
             new Dictionary<int, T>();
@@ -47,7 +47,7 @@ namespace Hopper.Core
         }
     }
 
-    public class InstanceRegistry<T> : IInstanceRegistry
+    public class InstanceRegistry<T> : IInstanceSubRegistry
     {
         protected Dictionary<int, T> m_map =
             new Dictionary<int, T>();

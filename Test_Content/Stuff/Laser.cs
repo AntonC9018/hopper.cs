@@ -22,29 +22,29 @@ namespace Hopper.Test_Content
     public static class Laser
     {
         public static readonly WorldEventPath<LaserInfo> EventPath = new WorldEventPath<LaserInfo>();
-
         public static readonly Attack.Source AttackSource = new Attack.Source { resistance = 1 };
-        private static Attack DefaultAttack(Registry reg) =>
+        public static readonly Push.Source PushSource = new Push.Source { resistance = 1 };
+
+        private static readonly Attack DefaultAttack =
             new Attack
             {
                 power = 1,
-                sourceId = AttackSource.GetId(reg),
+                sourceId = AttackSource.Id,
                 damage = 2,
                 pierce = 5
             };
-        public static readonly Push.Source PushSource = new Push.Source { resistance = 1 };
-        private static Push DefaultPush(Registry reg) =>
+        private static readonly Push DefaultPush =
             new Push
             {
-                sourceId = PushSource.GetId(reg),
+                sourceId = PushSource.Id,
                 power = 1,
                 distance = 1,
                 pierce = 1
             };
-        private static Layer TargetedLayer = Layer.REAL;
-        private static Layer SkipLayer = Layer.WALL;
+        private static readonly Layer TargetedLayer = Layer.REAL;
+        private static readonly Layer SkipLayer = Layer.WALL;
 
-        private static IAnonShooting DefaultShooting = new AnonShooting(
+        private static readonly IAnonShooting DefaultShooting = new AnonShooting(
             TargetedLayer, SkipLayer, DefaultAttack, DefaultPush, false);
 
         public static void Shoot(IWorldSpot spot, IntVector2 dir)
