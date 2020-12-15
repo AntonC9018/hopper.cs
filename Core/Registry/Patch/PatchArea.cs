@@ -20,7 +20,7 @@ namespace Hopper.Core.Registry
         {
             if (!PatchRegistries.ContainsKey(typeof(T)))
             {
-                System.Console.WriteLine($"A PatchRegistry of type {typeof(T)} was not found. Creating one.");
+                System.Console.WriteLine($"A Patch Subarea of type {typeof(T)} was not found. Creating one.");
                 PatchRegistries.Add(typeof(T), (IPatchSubArea<IPatch>)new PatchSubArea<T>());
             }
             return (PatchSubArea<T>)PatchRegistries[typeof(T)];
@@ -31,14 +31,14 @@ namespace Hopper.Core.Registry
             where U : IPatch
         {
             Assert.That(PatchRegistries.ContainsKey(typeof(U)),
-                $"Patch subregistry for {typeof(U)} of the requested type {typeof(T).Name} not found");
+                $"Patch Subarea for {typeof(U)} of the requested type {typeof(T).Name} not found");
             return (T)PatchRegistries[typeof(U)];
         }
 
         public void AddCustomPatchRegistry<T>(IPatchSubArea<IPatch> reg)
             where T : IPatch
         {
-            System.Console.WriteLine($"Setting a custom patch subregistry for type {typeof(T)}");
+            System.Console.WriteLine($"Setting a custom Patch Subarea for type {typeof(T)}");
             PatchRegistries.Add(typeof(T), reg);
         }
     }

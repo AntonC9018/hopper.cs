@@ -14,7 +14,6 @@ namespace Hopper.Core.Registry
 
         public void RegisterSelf(ModRegistry registry)
         {
-            System.Console.WriteLine(typeof(T));
             m_id = registry.Add<T>((T)(IExtendent)this);
         }
 

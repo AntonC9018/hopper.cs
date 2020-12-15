@@ -50,20 +50,28 @@ namespace Hopper.Core.Mods
 
             PatchArea patchArea = new PatchArea();
 
+            // Run the `Pre_Patching` phase
+            foreach (System.Type modType in modTypes)
+            {
+                System.Console.WriteLine($"Running Pre_Patching for mod {modType.Name}...");
+                var mod = mods.m_mods[modType];
+                mod.PrePatch(patchArea);
+            }
+
             // Run the `Patching` phase
             foreach (System.Type modType in modTypes)
             {
-                System.Console.WriteLine($"Running patching for mod {modType.Name}...");
+                System.Console.WriteLine($"Running Patching for mod {modType.Name}...");
                 var mod = mods.m_mods[modType];
                 mod.Patch(patchArea);
             }
 
-            // Run the `AfterPatch` phase
+            // Run the `Post_Patching` phase
             foreach (System.Type modType in modTypes)
             {
-                System.Console.WriteLine($"Running after_patching for mod {modType.Name}...");
+                System.Console.WriteLine($"Running Post_Patching for mod {modType.Name}...");
                 var mod = mods.m_mods[modType];
-                mod.Patch(patchArea);
+                mod.PostPatch(patchArea);
             }
 
             return new ModResult
