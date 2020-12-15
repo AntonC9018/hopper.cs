@@ -19,7 +19,7 @@ namespace Hopper.Core
         }
 
         public string Name => "core";
-        public int Offset => 1;
+        public int Offset => 0;
 
         public void RegisterSelf(ModSubRegistry registry)
         {
