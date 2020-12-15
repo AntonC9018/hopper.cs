@@ -19,7 +19,7 @@ namespace Hopper.Core
         public int Id => m_id;
         private int m_id;
         public event System.Action<T> InitEvent;
-        public event System.Action<Repository> AfterPatchEvent;
+        public event System.Action<PatchArea> PostPatchEvent;
         public DefaultStats DefaultStats;
 
         private Dictionary<System.Type, BehaviorSetting> m_behaviorSettings;
@@ -54,15 +54,15 @@ namespace Hopper.Core
             return entity;
         }
 
-        public void RegisterSelf(ModSubRegistry subRegistry)
+        public void RegisterSelf(ModRegistry subRegistry)
         {
             m_id = subRegistry.Add<IFactory<Entity>>(this);
         }
 
-        public void AfterPatch(Repository repository)
+        public void PostPatch(PatchArea patchArea)
         {
-            AfterPatchEvent?.Invoke(repository);
-            AfterPatchEvent = null;
+            PostPatchEvent?.Invoke(patchArea);
+            PostPatchEvent = null;
         }
 
         public EntityFactory<T> AddBehavior<Beh>(object conf = null)
@@ -123,9 +123,9 @@ namespace Hopper.Core
             return this;
         }
 
-        public EntityFactory<T> SetDefaultStats(System.Func<Repository, DefaultStats> callback)
+        public EntityFactory<T> SetDefaultStats(System.Func<PatchArea, DefaultStats> callback)
         {
-            AfterPatchEvent += (repository) => DefaultStats = callback(repository);
+            PostPatchEvent += (patchArea) => DefaultStats = callback(patchArea);
             return this;
         }
     }

@@ -5,7 +5,7 @@ namespace Hopper.Test_Content.Floor
 {
     public class FloorContent : ISubMod
     {
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             SlideStatus.Status.RegisterSelf(registry);
             StuckStatus.Status.RegisterSelf(registry);
@@ -16,18 +16,22 @@ namespace Hopper.Test_Content.Floor
             BlockingTrap.Factory.RegisterSelf(registry);
         }
 
-        public void Patch(Repository repository)
+        public void PrePatch(PatchArea patchArea)
         {
-            SlideStatus.Status.Patch(repository);
-            StuckStatus.Status.Patch(repository);
         }
 
-        public void AfterPatch(Repository repository)
+        public void Patch(PatchArea patchArea)
         {
-            IceFloor.Factory.AfterPatch(repository);
-            Water.Factory.AfterPatch(repository);
-            RealBarrier.Factory.AfterPatch(repository);
-            BlockingTrap.Factory.AfterPatch(repository);
+            SlideStatus.Status.Patch(patchArea);
+            StuckStatus.Status.Patch(patchArea);
+        }
+
+        public void PostPatch(PatchArea patchArea)
+        {
+            IceFloor.Factory.PostPatch(patchArea);
+            Water.Factory.PostPatch(patchArea);
+            RealBarrier.Factory.PostPatch(patchArea);
+            BlockingTrap.Factory.PostPatch(patchArea);
         }
     }
 }

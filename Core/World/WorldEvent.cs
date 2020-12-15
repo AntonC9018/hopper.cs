@@ -2,7 +2,7 @@ using Hopper.Core.Registry;
 
 namespace Hopper.Core
 {
-    public interface IWorldEvent : IKind, IPatch
+    public interface IWorldEvent : IKind, Registry.IPatch
     {
         IWorldEvent GetCopy();
     }
@@ -24,14 +24,14 @@ namespace Hopper.Core
             Event?.Invoke(pos);
         }
 
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             m_id = registry.Add<IWorldEvent>(this);
         }
 
-        public void Patch(Repository repository)
+        public void Patch(PatchArea patchArea)
         {
-            repository.GetPatchSubRegistry<IWorldEvent>().Add(m_id, this);
+            patchArea.GetPatchSubRegistry<IWorldEvent>().Add(m_id, this);
         }
 
         private WorldEvent(int id)

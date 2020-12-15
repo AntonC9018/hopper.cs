@@ -6,8 +6,8 @@ namespace Hopper.Core.Mods
     public class ModResult
     {
         public ModsContent mods;
-        public KindRegistry registry;
-        public Repository repository;
+        public Registry.Registry registry;
+        public PatchArea patchArea;
     }
 
     public class ModManager
@@ -37,25 +37,25 @@ namespace Hopper.Core.Mods
             }
 
             // Prepare the registry
-            KindRegistry registry = new KindRegistry();
+            Registry.Registry registry = new Registry.Registry();
 
             // Run the `Kind` phase
             foreach (System.Type modType in modTypes)
             {
                 System.Console.WriteLine($"Registering kinds for mod {modType.Name}...");
                 var mod = mods.m_mods[modType];
-                ModSubRegistry modSubRegistry = registry.CreateModSubRegistry(mod);
+                ModRegistry modSubRegistry = registry.CreateModRegistry(mod);
                 mod.RegisterSelf(modSubRegistry);
             }
 
-            Repository repository = new Repository();
+            PatchArea patchArea = new PatchArea();
 
             // Run the `Patching` phase
             foreach (System.Type modType in modTypes)
             {
                 System.Console.WriteLine($"Running patching for mod {modType.Name}...");
                 var mod = mods.m_mods[modType];
-                mod.Patch(repository);
+                mod.Patch(patchArea);
             }
 
             // Run the `AfterPatch` phase
@@ -63,14 +63,14 @@ namespace Hopper.Core.Mods
             {
                 System.Console.WriteLine($"Running after_patching for mod {modType.Name}...");
                 var mod = mods.m_mods[modType];
-                mod.AfterPatch(repository);
+                mod.Patch(patchArea);
             }
 
             return new ModResult
             {
                 mods = mods,
                 registry = registry,
-                repository = repository,
+                patchArea = patchArea,
             };
         }
     }

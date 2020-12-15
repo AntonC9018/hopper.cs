@@ -9,7 +9,7 @@ namespace Hopper.Core.Retouchers
     {
         public static readonly Retoucher OnDisplace = Retoucher.SingleHandlered(Displaceable.Do, PickUp);
 
-        public static void RegisterAll(ModSubRegistry registry)
+        public static void RegisterAll(ModRegistry registry)
         {
             OnDisplace.RegisterSelf(registry);
         }

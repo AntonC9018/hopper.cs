@@ -7,6 +7,6 @@ namespace Hopper.Core.Stats
     {
         string String { get; }
         T Path(StatManager sm);
-        T GetDefault(Repository repository);
+        T GetDefault(PatchArea patchArea);
     }
 }

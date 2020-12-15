@@ -6,7 +6,7 @@ namespace Hopper.Test_Content.SimpleMobs
 {
     public class MobsContent : ISubMod
     {
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             Knipper.Factory.RegisterSelf(registry);
             Dummy.Factory.RegisterSelf(registry);
@@ -15,16 +15,20 @@ namespace Hopper.Test_Content.SimpleMobs
             Ghost.Factory.RegisterSelf(registry);
         }
 
-        public void Patch(Repository repository)
+        public void PrePatch(PatchArea patchArea)
         {
         }
 
-        public void AfterPatch(Repository repository)
+        public void Patch(PatchArea patchArea)
         {
-            Knipper.Factory.AfterPatch(repository);
-            Dummy.Factory.AfterPatch(repository);
-            Skeleton.Factory.AfterPatch(repository);
-            Ghost.Factory.AfterPatch(repository);
+        }
+
+        public void PostPatch(PatchArea patchArea)
+        {
+            Knipper.Factory.PostPatch(patchArea);
+            Dummy.Factory.PostPatch(patchArea);
+            Skeleton.Factory.PostPatch(patchArea);
+            Ghost.Factory.PostPatch(patchArea);
         }
     }
 }

@@ -22,9 +22,9 @@ namespace Hopper.Test_Content.Trap
                 distance = 1
             };
 
-        private static DefaultStats GetDefaultStats(Repository repository)
+        private static DefaultStats GetDefaultStats(PatchArea patchArea)
         {
-            return new DefaultStats(repository).Set(Push.Path, PushStat);
+            return new DefaultStats(patchArea).Set(Push.Path, PushStat);
         }
 
         public static EntityFactory<BounceTrap> CreateFactory()

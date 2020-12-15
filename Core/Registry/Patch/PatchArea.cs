@@ -4,30 +4,30 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Registry
 {
-    public class Repository
+    public class PatchArea
     {
         public DefaultStats DefaultStats;
-        private Dictionary<System.Type, IPatchSubRegistry<IPatch>> PatchRegistries;
+        private Dictionary<System.Type, IPatchSubArea<IPatch>> PatchRegistries;
 
-        public Repository()
+        public PatchArea()
         {
             DefaultStats = new DefaultStats(this);
-            PatchRegistries = new Dictionary<System.Type, IPatchSubRegistry<IPatch>>();
+            PatchRegistries = new Dictionary<System.Type, IPatchSubArea<IPatch>>();
         }
 
-        public PatchSubRegistry<T> GetPatchSubRegistry<T>()
+        public PatchSubArea<T> GetPatchSubRegistry<T>()
             where T : IPatch
         {
             if (!PatchRegistries.ContainsKey(typeof(T)))
             {
                 System.Console.WriteLine($"A PatchRegistry of type {typeof(T)} was not found. Creating one.");
-                PatchRegistries.Add(typeof(T), (IPatchSubRegistry<IPatch>)new PatchSubRegistry<T>());
+                PatchRegistries.Add(typeof(T), (IPatchSubArea<IPatch>)new PatchSubArea<T>());
             }
-            return (PatchSubRegistry<T>)PatchRegistries[typeof(T)];
+            return (PatchSubArea<T>)PatchRegistries[typeof(T)];
         }
 
         public T GetCustomPatchRegistry<T, U>()
-            where T : IPatchSubRegistry<U>
+            where T : IPatchSubArea<U>
             where U : IPatch
         {
             Assert.That(PatchRegistries.ContainsKey(typeof(U)),
@@ -35,7 +35,7 @@ namespace Hopper.Core.Registry
             return (T)PatchRegistries[typeof(U)];
         }
 
-        public void AddCustomPatchRegistry<T>(IPatchSubRegistry<IPatch> reg)
+        public void AddCustomPatchRegistry<T>(IPatchSubArea<IPatch> reg)
             where T : IPatch
         {
             System.Console.WriteLine($"Setting a custom patch subregistry for type {typeof(T)}");

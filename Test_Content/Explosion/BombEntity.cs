@@ -29,9 +29,9 @@ namespace Hopper.Test_Content.Explosion
                 .SetDefaultStats(GetDefaultStats);
         }
 
-        private static DefaultStats GetDefaultStats(Repository repository)
+        private static DefaultStats GetDefaultStats(PatchArea patchArea)
         {
-            return new DefaultStats(repository)
+            return new DefaultStats(patchArea)
                 .SetAtIndex(Attack.Source.Resistance.Path, Explosion.AtkSource.Id, 10)
                 .Set(Push.Resistance.Path, new Push.Resistance { pierce = 0 });
         }

@@ -16,7 +16,7 @@ namespace Hopper.Core.Retouchers
         public static readonly Retoucher OnAttack = Retoucher
             .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRanks.High);
 
-        public static void RegisterAll(ModSubRegistry registry)
+        public static void RegisterAll(ModRegistry registry)
         {
             OnMove.RegisterSelf(registry);
             OnDisplace.RegisterSelf(registry);

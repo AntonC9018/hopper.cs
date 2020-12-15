@@ -16,7 +16,7 @@ namespace Hopper.Core
             this.m_chainDefinitions = chainDefinitions;
         }
 
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             m_id = registry.Add<Retoucher>(this);
         }

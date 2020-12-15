@@ -3,14 +3,14 @@ using Hopper.Core.Registry;
 
 namespace Hopper.Core.Stats
 {
-    public class DefaultStats : Playground
+    public class DefaultStats : IPatchable
     {
         public StatManager statManager;
-        public Repository Repository { get; private set; }
+        public PatchArea Repository { get; private set; }
 
-        public DefaultStats(Repository repository)
+        public DefaultStats(PatchArea patchArea)
         {
-            this.Repository = repository;
+            this.Repository = patchArea;
             this.statManager = new StatManager();
         }
 

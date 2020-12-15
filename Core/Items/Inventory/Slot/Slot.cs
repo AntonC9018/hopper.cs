@@ -13,7 +13,7 @@ namespace Hopper.Core.Items
         public static readonly SimpleSlot<CounterItemContainer<IItem>> Counter =
             new SimpleSlot<CounterItemContainer<IItem>>("counter_slot");
 
-        public static void RegisterSelf(ModSubRegistry registry)
+        public static void RegisterSelf(ModRegistry registry)
         {
             Weapon.RegisterSelf(registry);
             RangeWeapon.RegisterSelf(registry);
@@ -21,15 +21,15 @@ namespace Hopper.Core.Items
             Counter.RegisterSelf(registry);
         }
 
-        public static void Patch(Repository repository)
+        public static void Patch(PatchArea patchArea)
         {
-            Weapon.Patch(repository);
-            RangeWeapon.Patch(repository);
-            Shovel.Patch(repository);
-            Counter.Patch(repository);
+            Weapon.Patch(patchArea);
+            RangeWeapon.Patch(patchArea);
+            Shovel.Patch(patchArea);
+            Counter.Patch(patchArea);
         }
 
-        public static void AfterPatch(Repository repository)
+        public static void AfterPatch(PatchArea patchArea)
         {
         }
     }

@@ -3,7 +3,7 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Registry
 {
-    public class KindSubRegistry<T> : IKindRegistry<T>
+    public class KindRegistry<T> : IKindRegistry<T>
     {
         public IEnumerable<T> Items
         {
@@ -19,7 +19,7 @@ namespace Hopper.Core.Registry
         private Dictionary<int, T> m_items;
         private IdGenerator m_idGenerator;
 
-        public KindSubRegistry()
+        public KindRegistry()
         {
             m_items = new Dictionary<int, T>();
             m_idGenerator = new IdGenerator();

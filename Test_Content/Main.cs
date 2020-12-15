@@ -30,7 +30,7 @@ namespace Hopper.Test_Content
             new StatusContent(),
         };
 
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             Laser.EventPath.Event.RegisterSelf(registry);
             Laser.AttackSource.RegisterSelf(registry);
@@ -43,25 +43,34 @@ namespace Hopper.Test_Content
             }
         }
 
-        public void Patch(Repository repository)
-        {
-            Laser.EventPath.Event.Patch(repository);
-            Laser.AttackSource.Patch(repository);
-            Laser.PushSource.Patch(repository);
-
-            foreach (var subMod in subMods)
-            {
-                System.Console.WriteLine($"Patching submod {subMod.GetType().Name}...");
-                subMod.Patch(repository);
-            }
-        }
-
-        public void AfterPatch(Repository repository)
+        public void PrePatch(PatchArea patchArea)
         {
             foreach (var subMod in subMods)
             {
                 System.Console.WriteLine($"AfterPatching submod {subMod.GetType().Name}...");
-                subMod.AfterPatch(repository);
+                subMod.PrePatch(patchArea);
+            }
+        }
+
+        public void Patch(PatchArea patchArea)
+        {
+            Laser.EventPath.Event.Patch(patchArea);
+            Laser.AttackSource.Patch(patchArea);
+            Laser.PushSource.Patch(patchArea);
+
+            foreach (var subMod in subMods)
+            {
+                System.Console.WriteLine($"Patching submod {subMod.GetType().Name}...");
+                subMod.Patch(patchArea);
+            }
+        }
+
+        public void PostPatch(PatchArea patchArea)
+        {
+            foreach (var subMod in subMods)
+            {
+                System.Console.WriteLine($"AfterPatching submod {subMod.GetType().Name}...");
+                subMod.PostPatch(patchArea);
             }
         }
     }

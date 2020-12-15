@@ -7,7 +7,7 @@ namespace Hopper.Core.Items
         public ISuperPool EntityPool;
         public ISuperPool ItemPool;
 
-        public EntityContent GetEntity(string path, KindRegistry registry)
+        public EntityContent GetEntity(string path, Registry.Registry registry)
         {
             var poolItem = EntityPool.GetNextItem(path);
             if (poolItem == null)
@@ -19,7 +19,7 @@ namespace Hopper.Core.Items
             return null;
         }
 
-        public ItemContent GetItem(string path, KindRegistry registry)
+        public ItemContent GetItem(string path, Registry.Registry registry)
         {
             var poolItem = ItemPool.GetNextItem(path);
             if (poolItem == null)

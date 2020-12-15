@@ -21,22 +21,27 @@ namespace Hopper.Core
         public string Name => "core";
         public int Offset => 0;
 
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             CoreRetouchers.RegisterAll(registry);
             DroppedItem.Factory.RegisterSelf(registry);
             BasicSlots.RegisterSelf(registry);
         }
 
-        public void Patch(Repository repository)
+        public void PrePatch(PatchArea patchArea)
         {
-            BasicSlots.Patch(repository);
-            BasicStats.Patch(repository);
+            BasicStats.PrePatch(patchArea);
         }
 
-        public void AfterPatch(Repository repository)
+        public void Patch(PatchArea patchArea)
         {
-            BasicStats.AfterPatch(repository);
+            BasicSlots.Patch(patchArea);
+            BasicStats.Patch(patchArea);
+        }
+
+        public void PostPatch(PatchArea patchArea)
+        {
+            BasicStats.PostPatch(patchArea);
         }
     }
 }

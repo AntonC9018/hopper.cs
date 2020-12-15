@@ -5,21 +5,25 @@ namespace Hopper.Test_Content.Bind
 {
     public class BindContent : ISubMod
     {
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             BindStatuses.StopMove.RegisterSelf(registry);
             BindRetouchers.StopMoveRetoucher.RegisterSelf(registry);
             Spider.Factory.RegisterSelf(registry);
         }
 
-        public void Patch(Repository repository)
+        public void PrePatch(PatchArea patchArea)
         {
-            BindStatuses.StopMove.Patch(repository);
         }
 
-        public void AfterPatch(Repository repository)
+        public void Patch(PatchArea patchArea)
         {
-            Spider.Factory.AfterPatch(repository);
+            BindStatuses.StopMove.Patch(patchArea);
+        }
+
+        public void PostPatch(PatchArea patchArea)
+        {
+            Spider.Factory.PostPatch(patchArea);
         }
     }
 }

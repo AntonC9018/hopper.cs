@@ -30,7 +30,7 @@ namespace Hopper.Core
             m_chainDefinition = chainDefs;
         }
 
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             m_id = registry.Add<ITinker>(this);
         }

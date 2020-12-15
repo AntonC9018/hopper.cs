@@ -5,20 +5,24 @@ namespace Hopper.Test_Content.Trap
 {
     public class TrapContent : ISubMod
     {
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             Bounce.Source.RegisterSelf(registry);
             BounceTrap.Factory.RegisterSelf(registry);
         }
 
-        public void Patch(Repository repository)
+        public void PrePatch(PatchArea patchArea)
         {
-            Bounce.Source.Patch(repository);
         }
 
-        public void AfterPatch(Repository repository)
+        public void Patch(PatchArea patchArea)
         {
-            BounceTrap.Factory.AfterPatch(repository);
+            Bounce.Source.Patch(patchArea);
+        }
+
+        public void PostPatch(PatchArea patchArea)
+        {
+            BounceTrap.Factory.PostPatch(patchArea);
         }
     }
 }

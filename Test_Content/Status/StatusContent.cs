@@ -7,21 +7,25 @@ namespace Hopper.Test_Content.Status
 {
     public class StatusContent : ISubMod
     {
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             IceCube.MoveCapturedRetoucher.RegisterSelf(registry);
             FreezeStatus.Status.RegisterSelf(registry);
             IceCube.Factory.RegisterSelf(registry);
         }
 
-        public void Patch(Repository repository)
+        public void PrePatch(PatchArea patchArea)
         {
-            FreezeStatus.Status.Patch(repository);
         }
 
-        public void AfterPatch(Repository repository)
+        public void Patch(PatchArea patchArea)
         {
-            IceCube.Factory.AfterPatch(repository);
+            FreezeStatus.Status.Patch(patchArea);
+        }
+
+        public void PostPatch(PatchArea patchArea)
+        {
+            IceCube.Factory.PostPatch(patchArea);
         }
     }
 }

@@ -12,16 +12,16 @@ namespace Hopper.Core.Stats
             Path = new DictStatPath(path);
         }
 
-        public void InitPatchSubRegistry(Repository repository)
+        public void InitPatchSubRegistry(PatchArea patchArea)
         {
             var subRegistry = new DictPatchSubRegistry<T>();
-            repository.AddCustomPatchRegistry<T>(subRegistry);
+            patchArea.AddCustomPatchRegistry<T>(subRegistry);
         }
 
-        public void CreateDefaultFile(Repository repository)
+        public void CreateDefaultFile(PatchArea patchArea)
         {
-            var file = repository.GetCustomPatchRegistry<DictPatchSubRegistry<T>, T>().CreateFile();
-            repository.DefaultStats.Set(Path.String, file);
+            var file = patchArea.GetCustomPatchRegistry<DictPatchSubRegistry<T>, T>().CreateFile();
+            patchArea.DefaultStats.Set(Path.String, file);
         }
     }
 }

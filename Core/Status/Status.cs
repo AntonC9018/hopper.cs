@@ -6,7 +6,7 @@ using Hopper.Core.Behaviors.Basic;
 
 namespace Hopper.Core
 {
-    public interface IStatus : IKind, IPatch
+    public interface IStatus : IKind, Registry.IPatch
     {
         int SourceId { get; }
         void Update(Entity entity);
@@ -41,16 +41,16 @@ namespace Hopper.Core
             m_source = new Status.Source { resistance = defaultResValue };
         }
 
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             m_tinker.RegisterSelf(registry);
             m_source.RegisterSelf(registry); // think about this. 
             m_id = registry.Add<IStatus>(this);
         }
 
-        public void Patch(Repository repository)
+        public void Patch(PatchArea patchArea)
         {
-            m_source.Patch(repository);
+            m_source.Patch(patchArea);
         }
 
         public virtual void Update(Entity entity)

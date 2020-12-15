@@ -31,8 +31,8 @@ namespace Hopper.Core.Items
         // Intialize with the slots defined by default in the slots enum
         public Inventory(Entity entity)
         {
-            var repository = entity.World.m_currentRepository;
-            var patchRegistry = repository.GetPatchSubRegistry<ISlot<IItemContainer<IItem>>>();
+            var patchArea = entity.World.m_currentRepository;
+            var patchRegistry = patchArea.GetPatchSubRegistry<ISlot<IItemContainer<IItem>>>();
             m_itemSlots = new Dictionary<int, IItemContainer<IItem>>(patchRegistry.patches.Count);
             foreach (var slot in patchRegistry.patches.Values)
             {

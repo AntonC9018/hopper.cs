@@ -3,7 +3,7 @@ using Hopper.Core.Registry;
 
 namespace Hopper.Core.Stats
 {
-    public class DictPatchSubRegistry<T> : PatchSubRegistry<T> where T : IKind
+    public class DictPatchSubRegistry<T> : PatchSubArea<T> where T : IKind
     {
         public DictFile CreateFile()
         {

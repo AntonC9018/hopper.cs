@@ -17,11 +17,11 @@ namespace Hopper.Core.Stats
             return sm.GetLazy<DictFile>(this);
         }
 
-        public DictFile GetDefault(Repository repository)
+        public DictFile GetDefault(PatchArea patchArea)
         {
             // we know that at this point the stat has been initialized since it is
             // called per Repository in the startup function
-            return repository.DefaultStats.statManager.GetUnsafe<DictFile>(String);
+            return patchArea.DefaultStats.statManager.GetUnsafe<DictFile>(String);
         }
     }
 }

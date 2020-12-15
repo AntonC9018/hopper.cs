@@ -13,7 +13,7 @@ namespace Hopper.Core
         public WorldStateManager State { get; private set; }
         public PoolContainer m_pools = new PoolContainer();
         public Dictionary<int, IWorldEvent> m_events;
-        public Repository m_currentRepository;
+        public PatchArea m_currentRepository;
 
         public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
         public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
@@ -31,14 +31,14 @@ namespace Hopper.Core
             m_events = new Dictionary<int, IWorldEvent>();
         }
 
-        public World(int width, int height, Repository repository)
+        public World(int width, int height, PatchArea patchArea)
         {
             PhaseLayerExtensions.ThrowIfPhasesAreWrong();
             Grid = new GridManager(width, height);
             State = new WorldStateManager();
             m_events = new Dictionary<int, IWorldEvent>();
             m_id = 1;
-            m_currentRepository = repository;
+            m_currentRepository = patchArea;
         }
 
         public void Loop()

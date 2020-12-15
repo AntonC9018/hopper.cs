@@ -18,7 +18,7 @@ namespace Hopper.Core.Items
             m_metadata = meta;
         }
 
-        public virtual void RegisterSelf(ModSubRegistry registry)
+        public virtual void RegisterSelf(ModRegistry registry)
         {
             m_id = registry.Add<IItem>(this);
         }

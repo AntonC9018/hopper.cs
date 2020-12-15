@@ -2,13 +2,8 @@ using Hopper.Core.Registry;
 
 namespace Hopper.Core
 {
-    public interface IFactory<out T> : IKind, IAfterPatch
+    public interface IFactory<out T> : IKind, IPostPatch
     {
         T Instantiate();
-    }
-
-    public interface IAfterPatch
-    {
-        void AfterPatch(Repository repository);
     }
 }

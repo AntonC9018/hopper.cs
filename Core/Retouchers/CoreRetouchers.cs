@@ -4,7 +4,7 @@ namespace Hopper.Core.Retouchers
 {
     public static class CoreRetouchers
     {
-        public static void RegisterAll(ModSubRegistry registry)
+        public static void RegisterAll(ModRegistry registry)
         {
             Equip.RegisterAll(registry);
             Invincibility.RegisterAll(registry);

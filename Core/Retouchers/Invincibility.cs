@@ -8,7 +8,7 @@ namespace Hopper.Core.Retouchers
         public static readonly Retoucher PreventsDamage = Retoucher.SingleHandlered(Attackable.Do, PreventDamage);
         public static readonly Retoucher Decreases = Retoucher.SingleHandlered(Tick.Chain, Decrease);
 
-        public static void RegisterAll(ModSubRegistry registry)
+        public static void RegisterAll(ModRegistry registry)
         {
             PreventsDamage.RegisterSelf(registry);
             Decreases.RegisterSelf(registry);

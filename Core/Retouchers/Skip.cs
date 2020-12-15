@@ -17,7 +17,7 @@ namespace Hopper.Core.Retouchers
         public static readonly Retoucher Self = Retoucher
             .SingleHandlered<Attacking.Event>(Attacking.Check, SkipSelf);
 
-        public static void RegisterAll(ModSubRegistry registry)
+        public static void RegisterAll(ModRegistry registry)
         {
             EmptyAttack.RegisterSelf(registry);
             EmptyDig.RegisterSelf(registry);

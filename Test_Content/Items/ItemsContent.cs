@@ -7,18 +7,22 @@ namespace Hopper.Test_Content.Boss
 {
     public class ItemsContent : ISubMod
     {
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             Bow.ArrowSource.RegisterSelf(registry);
             Bow.DefaultBow.RegisterSelf(registry);
         }
 
-        public void Patch(Repository repository)
+        public void PrePatch(PatchArea patchArea)
         {
-            Bow.ArrowSource.Patch(repository);
         }
 
-        public void AfterPatch(Repository repository)
+        public void Patch(PatchArea patchArea)
+        {
+            Bow.ArrowSource.Patch(patchArea);
+        }
+
+        public void PostPatch(PatchArea patchArea)
         {
         }
     }

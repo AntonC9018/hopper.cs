@@ -5,7 +5,7 @@ namespace Hopper.Test_Content.Explosion
 {
     public class BombContent : ISubMod
     {
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             BombEntity.Factory.RegisterSelf(registry);
             Bomb.Tinker.RegisterSelf(registry);
@@ -13,15 +13,20 @@ namespace Hopper.Test_Content.Explosion
             Bomb.Item_x3.RegisterSelf(registry);
         }
 
-        public void Patch(Repository repository)
+        public void PrePatch(PatchArea patchArea)
         {
-            Explosion.EventPath.Event.Patch(repository);
-            Explosion.AtkSource.Patch(repository);
-            Explosion.PushSource.Patch(repository);
         }
 
-        public void AfterPatch(Repository repository)
+        public void Patch(PatchArea patchArea)
+        {
+            Explosion.EventPath.Event.Patch(patchArea);
+            Explosion.AtkSource.Patch(patchArea);
+            Explosion.PushSource.Patch(patchArea);
+        }
+
+        public void PostPatch(PatchArea patchArea)
         {
         }
+
     }
 }

@@ -2,7 +2,7 @@ using Hopper.Core.Registry;
 
 namespace Hopper.Core
 {
-    public interface ISubMod : IPatch, IAfterPatch, IHasContent
+    public interface ISubMod : IPrePatch, IPatch, IPostPatch, IHasContent
     {
     }
 }

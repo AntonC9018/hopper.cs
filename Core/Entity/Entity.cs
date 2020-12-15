@@ -70,7 +70,7 @@ namespace Hopper.Core
             this.m_id = id;
         }
 
-        public void RegisterSelf(ModSubRegistry registry)
+        public void RegisterSelf(ModRegistry registry)
         {
             throw new System.Exception("Entity cannot register self");
         }

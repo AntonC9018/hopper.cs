@@ -11,7 +11,7 @@ namespace Hopper.Core.Items
             this.amount = amount;
         }
 
-        public IContent CreateContent(PoolContainer pools, KindRegistry registry)
+        public IContent CreateContent(PoolContainer pools, Registry.Registry registry)
         {
             throw new System.NotImplementedException();
         }

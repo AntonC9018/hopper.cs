@@ -3,7 +3,7 @@ using Hopper.Core.Registry;
 
 namespace Hopper.Core.Stats
 {
-    public class ArrayPatch<T> : IPatchSubRegistry<T>
+    public class ArrayPatch<T> : IPatchSubArea<T>
     {
         public ArrayFile DefaultFile
         {
