@@ -1,6 +1,6 @@
 namespace Hopper.Core.Items
 {
-    public class SizedSlot<T> : SlotBase<T>, ISlot<T> where T : IResizableContainer<IItem>
+    public class SizedSlot<T> : SlotBase<T> where T : IResizableContainer<IItem>
     {
         private int m_defaultSize;
         public SizedSlot(string name, int defaultSize) : base(name)

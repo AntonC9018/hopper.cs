@@ -1,6 +1,6 @@
 namespace Hopper.Core.Items
 {
-    public class SimpleSlot<T> : SlotBase<T>, ISlot<T> where T : IItemContainer<IItem>
+    public class SimpleSlot<T> : SlotBase<T> where T : IItemContainer<IItem>
     {
         public SimpleSlot(string name) : base(name)
         {
