@@ -1,18 +1,23 @@
 namespace Hopper.Core.Registry
 {
-    public class Extendent<T> : IKind, IPatch where T : Extendent<T>
+    public interface IExtendent : IKind, IPatch
+    {
+    }
+
+    public class Extendent<T> : IExtendent where T : IExtendent
     {
         public int m_id;
         public int Id => m_id;
 
         public void RegisterSelf(ModSubRegistry registry)
         {
-            m_id = registry.Add<Extendent<T>>(this);
+            System.Console.WriteLine(typeof(T));
+            m_id = registry.Add<T>((T)(IExtendent)this);
         }
 
         public void Patch(Repository repository)
         {
-            repository.GetPatchSubRegistry<Extendent<T>>().Add(m_id, this);
+            repository.GetPatchSubRegistry<T>().Add(m_id, (T)(IExtendent)this);
         }
     }
 }

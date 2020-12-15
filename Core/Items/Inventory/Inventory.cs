@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Hopper.Utils;
 
+
 namespace Hopper.Core.Items
 {
     public class Inventory : IInventory
@@ -31,7 +32,7 @@ namespace Hopper.Core.Items
         public Inventory(Entity entity)
         {
             var repository = entity.World.m_currentRepository;
-            var patchRegistry = repository.GetPatchSubRegistry<SlotBase<IItemContainer<IItem>>>();
+            var patchRegistry = repository.GetPatchSubRegistry<ISlot<IItemContainer<IItem>>>();
             m_itemSlots = new Dictionary<int, IItemContainer<IItem>>(patchRegistry.patches.Count);
             foreach (var slot in patchRegistry.patches.Values)
             {
