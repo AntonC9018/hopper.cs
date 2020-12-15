@@ -1,4 +1,4 @@
-using Hopper.Core.Behaviors;
+using Hopper.Core.Registry;
 using Hopper.Core.Stats;
 using Hopper.Core.Chains;
 using Hopper.Core.Stats.Basic;

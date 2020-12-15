@@ -53,7 +53,7 @@ namespace Hopper.Core.Behaviors.Basic
             {
                 if (ev.actor.Inventory != null)
                 {
-                    var weapon = ev.actor.Inventory.GetContainer(Slot.Weapon)[0];
+                    var weapon = ev.actor.Inventory.GetContainer(BasicSlots.Weapon)[0];
                     if (weapon != null)
                     {
                         // Get targets from weapon, using its target provider

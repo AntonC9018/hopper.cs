@@ -1,4 +1,5 @@
 using Hopper.Core;
+using Hopper.Core.Registry;
 
 namespace Hopper.Test_Content.Trap
 {

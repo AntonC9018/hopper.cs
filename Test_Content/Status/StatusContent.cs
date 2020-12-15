@@ -1,4 +1,5 @@
 using Hopper.Core;
+using Hopper.Core.Registry;
 using Hopper.Core.Retouchers;
 using Hopper.Test_Content.Status.Freeze;
 

@@ -1,3 +1,5 @@
+using Hopper.Core.Registry;
+
 namespace Hopper.Core.Stats
 {
     // these are either static or created uniquely for kinds

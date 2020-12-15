@@ -1,5 +1,6 @@
 using Hopper.Core;
 using Hopper.Core.Items;
+using Hopper.Core.Registry;
 using Hopper.Core.Retouchers;
 
 namespace Hopper.Test_Content.Boss

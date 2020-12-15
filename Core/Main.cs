@@ -6,6 +6,7 @@
 //      3. stat registering
 using Hopper.Core.Items;
 using Hopper.Core.Mods;
+using Hopper.Core.Registry;
 using Hopper.Core.Retouchers;
 using Hopper.Core.Stats.Basic;
 
@@ -24,10 +25,12 @@ namespace Hopper.Core
         {
             CoreRetouchers.RegisterAll(registry);
             DroppedItem.Factory.RegisterSelf(registry);
+            BasicSlots.RegisterSelf(registry);
         }
 
         public void Patch(Repository repository)
         {
+            BasicSlots.Patch(repository);
             BasicStats.Patch(repository);
         }
 

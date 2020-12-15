@@ -14,7 +14,7 @@ namespace Hopper.Test_Content.Explosion
                 .End().ToStatic()
         );
         public static readonly CheckInventoryItem Item = new CheckInventoryItem(
-            new ItemMetadata("Bomb"), Tinker, Slot.Counter);
+            new ItemMetadata("Bomb"), Tinker, BasicSlots.Counter);
         public static readonly PackedItem Item_x3 = new PackedItem(
             new ItemMetadata("Bomb_x3"), Item, 3);
 

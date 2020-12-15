@@ -1,4 +1,5 @@
 using System;
+using Hopper.Core.Registry;
 
 namespace Hopper.Core.Stats.Basic
 {

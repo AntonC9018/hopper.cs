@@ -2,6 +2,7 @@ using Hopper.Utils.Chains;
 using Hopper.Core.Behaviors;
 using Newtonsoft.Json;
 using Hopper.Core.Chains;
+using Hopper.Core.Registry;
 
 namespace Hopper.Core
 {

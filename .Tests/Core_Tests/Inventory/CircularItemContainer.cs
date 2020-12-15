@@ -7,7 +7,7 @@ namespace Hopper.Tests
 {
     public class CircularItemContainer_Tests
     {
-        private static ISlot<CircularItemContainer<TestItem>> TestSlot =
+        private static SizedSlot<CircularItemContainer<TestItem>> TestSlot =
             new SizedSlot<CircularItemContainer<TestItem>>(
                 name: "Test",
                 defaultSize: 2);

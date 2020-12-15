@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Hopper.Core.Stats;
 using Hopper.Utils;
 
-namespace Hopper.Core
+namespace Hopper.Core.Registry
 {
     public class Repository
     {
@@ -30,7 +30,8 @@ namespace Hopper.Core
             where T : IPatchSubRegistry<U>
             where U : IPatch
         {
-            Assert.That(PatchRegistries.ContainsKey(typeof(U)), $"Patch subregistry for {typeof(U)} of the requested type {typeof(T).Name} not found");
+            Assert.That(PatchRegistries.ContainsKey(typeof(U)),
+                $"Patch subregistry for {typeof(U)} of the requested type {typeof(T).Name} not found");
             return (T)PatchRegistries[typeof(U)];
         }
 

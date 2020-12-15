@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Hopper.Core.Items;
 using Hopper.Core.Mods;
 
-namespace Hopper.Core
+namespace Hopper.Core.Registry
 {
     public class KindRegistry
     {
@@ -12,15 +11,7 @@ namespace Hopper.Core
 
         public KindRegistry()
         {
-            m_kindSubRegistries = new Dictionary<Type, IKindRegistry<IKind>>
-            {
-                { typeof(ITinker), new KindSubRegistry<ITinker>() },
-                { typeof(Retoucher), new KindSubRegistry<Retoucher>()},
-                { typeof(IFactory<Entity>), new KindSubRegistry<IFactory<Entity>>() },
-                { typeof(IItem), new KindSubRegistry<IItem>() },
-                { typeof(IWorldEvent), new KindSubRegistry<IWorldEvent>() },
-                { typeof(IStatus), new KindSubRegistry<IStatus>() }
-            };
+            m_kindSubRegistries = new Dictionary<Type, IKindRegistry<IKind>>();
             m_modSubRegistries = new Dictionary<int, ModSubRegistry>();
         }
 

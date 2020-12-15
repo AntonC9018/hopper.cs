@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hopper.Core.Registry;
 
 namespace Hopper.Core.Mods
 {

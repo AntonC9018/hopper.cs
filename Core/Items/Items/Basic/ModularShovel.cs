@@ -13,7 +13,7 @@ namespace Hopper.Core.Items
             ItemMetadata meta,
             ITargetProvider targetProvider,
             params IModule[] modules)
-            : base(meta, Hopper.Core.Items.Slot.Shovel, modules)
+            : base(meta, Hopper.Core.Items.BasicSlots.Shovel, modules)
         {
             m_targetProvider = targetProvider;
         }

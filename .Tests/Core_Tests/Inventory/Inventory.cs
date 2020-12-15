@@ -7,7 +7,7 @@ namespace Hopper.Tests
 {
     public class Inventory_Tests
     {
-        private static ISlot<CircularItemContainer<TestItem>> TestSlot =
+        private static SizedSlot<CircularItemContainer<TestItem>> TestSlot =
             new SizedSlot<CircularItemContainer<TestItem>>(
                 name: "Test",
                 defaultSize: 2);
@@ -42,6 +42,7 @@ namespace Hopper.Tests
             item_World = new TestItem(new ItemMetadata("World"));
             item_Hello.m_id = 1;
             item_World.m_id = 2;
+            TestSlot.m_id = 1;
         }
 
         [SetUp]
@@ -49,32 +50,37 @@ namespace Hopper.Tests
         {
             item_Hello.messages.Clear();
             item_World.messages.Clear();
+            InitInventory_WithCustomSlot();
+        }
+
+        public void InitInventory_WithCustomSlot()
+        {
+            inventory = new Inventory(null, new Dictionary<int, IItemContainer<IItem>> {
+                { TestSlot.Id, TestSlot.CreateContainer() }
+            });
         }
 
         [Test]
         public void EmptyInventory()
         {
-            inventory = new Inventory(null, new Dictionary<ISlot<IItemContainer<IItem>>, IItemContainer<IItem>>());
+            inventory = new Inventory(null, new Dictionary<int, IItemContainer<IItem>>());
         }
 
         [Test]
         public void CustomSlotIsAdded()
         {
-            inventory = new Inventory(null, new Dictionary<ISlot<IItemContainer<IItem>>, IItemContainer<IItem>>());
+            inventory = new Inventory(null, new Dictionary<int, IItemContainer<IItem>>());
             Assert.That(
                 inventory.CanEquipItem(item_Hello) == false,
                 "We can't add items to the custom slot, since the inventory has no slots");
 
-            // initialize with default slots (all members of the Slot enum)
-            inventory = new Inventory(null);
+            InitInventory_WithCustomSlot();
             Assert.That(inventory.CanEquipItem(item_Hello), "We can add items to the custom slot");
         }
 
         [Test]
         public void IsItemEquipped()
         {
-            // initialize with default slots (all members of the enum Slot)
-            inventory = new Inventory(null);
             inventory.Equip(item_Hello);
 
             Assert.AreEqual(inventory.GetContainer(TestSlot)[0], item_Hello);
@@ -84,8 +90,6 @@ namespace Hopper.Tests
         [Test]
         public void IsItemUnEquipped()
         {
-            // initialize with default slots (all members of the enum Slot)
-            inventory = new Inventory(null);
             inventory.Equip(item_Hello);   // [0]
             inventory.Unequip(item_Hello); // [1]
             Assert.AreEqual(ItemAction.Unequip, item_Hello.messages[1], "The unequip method was called");
@@ -94,8 +98,6 @@ namespace Hopper.Tests
         [Test]
         public void IsItemDestroyed()
         {
-            // initialize with default slots (all members of the enum Slot)
-            inventory = new Inventory(null);
             inventory.Equip(item_Hello);   // [0]
             inventory.Destroy(item_Hello); // [1]
             Assert.AreEqual(ItemAction.Destroy, item_Hello.messages[1], "The destroy method was called");
@@ -104,8 +106,6 @@ namespace Hopper.Tests
         [Test]
         public void IsExcessDropped()
         {
-            // initialize with default slots (all members of the enum Slot)
-            inventory = new Inventory(null);
             inventory.GetContainer(TestSlot).Size = 1;
             inventory.Equip(item_Hello); // [0]
             inventory.Equip(item_World);

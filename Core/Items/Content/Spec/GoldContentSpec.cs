@@ -1,3 +1,5 @@
+using Hopper.Core.Registry;
+
 namespace Hopper.Core.Items
 {
     public class GoldContentSpec : IContentSpec

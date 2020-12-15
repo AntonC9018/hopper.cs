@@ -16,7 +16,7 @@ namespace Hopper.Test_Content
     public class Bow
     {
         public static readonly Attack.Source ArrowSource = new Attack.Source();
-        public static readonly ISlot<IItemContainer<IItem>> Slot = Hopper.Core.Items.Slot.RangeWeapon;
+        public static readonly ISlot<IItemContainer<IItem>> Slot = Hopper.Core.Items.BasicSlots.RangeWeapon;
         public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
         public static ModularItem DefaultBow = CreateBow();
 

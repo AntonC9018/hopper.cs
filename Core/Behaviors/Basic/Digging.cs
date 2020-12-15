@@ -41,7 +41,7 @@ namespace Hopper.Core.Behaviors.Basic
                 ev.targets = new List<Target>();
                 if (ev.actor.Inventory != null)
                 {
-                    var shovel = ev.actor.Inventory.GetContainer(Slot.Shovel)[0];
+                    var shovel = ev.actor.Inventory.GetContainer(BasicSlots.Shovel)[0];
                     if (shovel != null)
                     {
                         ev.targets.AddRange(shovel.GetTargets(ev.actor, ev.action.direction));

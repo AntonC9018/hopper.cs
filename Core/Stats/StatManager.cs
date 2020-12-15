@@ -1,8 +1,7 @@
-
 using Hopper.Utils.Chains;
 using Hopper.Core.FS;
 using System.Collections.Generic;
-using Hopper.Utils;
+using Hopper.Core.Registry;
 
 namespace Hopper.Core.Stats
 {

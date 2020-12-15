@@ -13,7 +13,7 @@ namespace Hopper.Core.Items
             ItemMetadata meta,
             IBufferedAtkTargetProvider targetProvider,
             params IModule[] modules)
-            : base(meta, Hopper.Core.Items.Slot.Weapon, modules)
+            : base(meta, Hopper.Core.Items.BasicSlots.Weapon, modules)
         {
             m_targetProvider = targetProvider;
         }

@@ -1,3 +1,4 @@
+using Hopper.Core.Registry;
 using Hopper.Utils.Chains;
 using Hopper.Core.Chains;
 using Hopper.Core.Behaviors;

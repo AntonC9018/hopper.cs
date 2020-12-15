@@ -1,3 +1,4 @@
+using Hopper.Core.Registry;
 using System.Collections.Generic;
 using Hopper.Core.Behaviors;
 using Hopper.Core.Behaviors.Basic;

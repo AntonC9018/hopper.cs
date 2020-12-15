@@ -1,5 +1,6 @@
 using Hopper.Core;
 using Hopper.Core.Mods;
+using Hopper.Core.Registry;
 using Hopper.Test_Content;
 using Hopper.Test_Content.Bind;
 using Hopper.Test_Content.Boss;

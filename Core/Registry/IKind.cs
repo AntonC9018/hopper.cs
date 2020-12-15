@@ -1,4 +1,4 @@
-namespace Hopper.Core
+namespace Hopper.Core.Registry
 {
     public interface IKind : IHaveId
     {

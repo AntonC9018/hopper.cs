@@ -1,6 +1,6 @@
 using Hopper.Utils;
 
-namespace Hopper.Core
+namespace Hopper.Core.Registry
 {
     public class JustAssignmentRegistry
     {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Registry;
 using Hopper.Utils;
 
 namespace Hopper.Core
