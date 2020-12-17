@@ -6,7 +6,7 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content.Floor
 {
-    public class Sliding : Behavior, IStandartActivateable
+    public class Sliding : Behavior
     {
         public static Layer TargetedLayer = Layer.REAL;
 
@@ -24,22 +24,13 @@ namespace Hopper.Test_Content.Floor
         private void Init(Config config)
         {
             m_status = config.status;
-            m_entity.InitEvent += (() => m_entity.GetCell().EnterEvent += ApplySliding);
-            m_entity.DieEvent += (() => m_entity.GetCell().EnterEvent -= ApplySliding);
+            m_entity.InitEvent += (() => m_entity.GetCell().EnterEvent += TryApplySliding);
+            m_entity.DieEvent += (() => m_entity.GetCell().EnterEvent -= TryApplySliding);
         }
 
-        public bool Activate(Action action)
+        private void TryApplySliding(Entity entity)
         {
-            var entity = m_entity.GetCell().GetUndirectedEntityFromLayer(TargetedLayer);
-            if (entity != null)
-            {
-                ApplySliding(entity);
-            }
-            return true;
-        }
-
-        private void ApplySliding(Entity entity)
-        {
+            System.Console.WriteLine($"ENTITIY ENTERED WITH COORDINSTED {entity.Pos}");
             if (ShouldApplySliding(entity))
             {
                 // an alternative way of getting the vector of movement
@@ -60,19 +51,12 @@ namespace Hopper.Test_Content.Floor
         {
             return entity.IsOfLayer(TargetedLayer)
                 && entity.IsDirected == false
-                && IsWayFree(entity)
-                && MovedThisTurn(entity);
+                && IsWayFree(entity);
         }
 
         public static bool IsWayFree(Entity entity)
         {
             return entity.HasBlockRelative(entity.Orientation) == false;
-        }
-
-        private bool MovedThisTurn(Entity entity)
-        {
-            return entity.History.Updates
-                .Find(u => u.updateCode == UpdateCode.displaced_do) != null;
         }
     }
 }

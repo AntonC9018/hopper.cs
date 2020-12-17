@@ -27,25 +27,30 @@ namespace Hopper.Test_Content.Floor
         {
             if (m_tinker.IsTinked(entity))
             {
-                var store = m_tinker.GetStore(entity);
-
-                if (HasIceUnder(entity) == false)
+                if (DoesNotHaveIceUnder(entity))
                 {
                     Remove(entity);
                 }
             }
         }
 
-        private bool HasIceUnder(Entity entity)
+        private bool DoesNotHaveIceUnder(Entity entity)
         {
-            var floor = entity.GetCell().GetAnyEntityFromLayer(Layer.FLOOR);
-            return floor != null && floor.Behaviors.Has<Sliding>();
+            foreach (var potentiallyIce in entity.GetCell().m_entities)
+            {
+                if (potentiallyIce.Behaviors.Has<Sliding>())
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         // if we change direction during sliding, apply the newest one
         protected override void Reapply(SlideData existingData, SlideData newData)
         {
-            existingData.initialDirection = newData.initialDirection;
+            System.Console.WriteLine("Reapplying");
+            existingData.currentDirection = newData.currentDirection;
         }
 
         private class Lambdas
@@ -59,7 +64,7 @@ namespace Hopper.Test_Content.Floor
                 MakeEntitiesOnTheWaySlide(ev);
 
                 // try to slide ourselves
-                SlideIfDidnt(ev.actor);
+                SlideIfHasNot(ev.actor);
 
                 // remove the sliding status if there is anything in the way
                 if (Sliding.IsWayFree(ev.actor) == false)
@@ -73,22 +78,22 @@ namespace Hopper.Test_Content.Floor
                 var store = status.m_tinker.GetStore(ev.actor);
 
                 var entitiesOnTheWay = ev.actor
-                    .GetCellRelative(store.initialDirection)
+                    .GetCellRelative(store.currentDirection)
                     .GetAllFromLayer(Sliding.TargetedLayer);
 
                 foreach (var thing in entitiesOnTheWay)
                 {
                     if (status.IsApplied(thing))
                     {
-                        SlideIfDidnt(thing);
+                        SlideIfHasNot(thing);
                     }
                 }
             }
 
-            private void SlideIfDidnt(Entity actor)
+            private void SlideIfHasNot(Entity actor)
             {
                 var store = status.m_tinker.GetStore(actor);
-                if (store.didSlide == false)
+                if (!store.didSlide)
                 {
                     Slide(actor, store);
                 }
@@ -98,17 +103,16 @@ namespace Hopper.Test_Content.Floor
             {
                 store.didSlide = true;
 
-                var displaceable = actor.Behaviors.TryGet<Displaceable>();
-
-                if (displaceable != null)
+                if (actor.Behaviors.Has<Displaceable>())
                 {
                     var move = (Move)Move.Path.defaultFile.Copy();
-                    displaceable.Activate(store.initialDirection, move);
+                    actor.Behaviors.Get<Displaceable>().Activate(store.currentDirection, move);
                 }
             }
 
-            private void NoAction(ActorEvent ev)
+            private void NoAction(Controllable.Event ev)
             {
+                ev.action = null;
                 ev.propagate = false;
             }
 
@@ -120,15 +124,18 @@ namespace Hopper.Test_Content.Floor
                 }
             }
 
+            // private void ChangeDirection(Pushable.Event ev)
+            // {
+            //     if (status.m_tinker.IsTinked(ev.actor))
+            //     {
+            //         status.m_tinker.GetStore(ev.actor).currentDirection = ev.dir;
+            //     }
+            // }
+
+
             public ChainDefBuilder CreateBuilder() => new ChainDefBuilder()
 
-                .AddDef(Attacking.Do)
-                .AddHandler(NoAction, PriorityRanks.High)
-
-                .AddDef(Digging.Do)
-                .AddHandler(NoAction, PriorityRanks.High)
-
-                .AddDef(Moving.Do)
+                .AddDef(Controllable.Chains[InputMapping.Vector])
                 .AddHandler(NoAction, PriorityRanks.High)
 
                 .AddDef(Acting.Success)
@@ -139,6 +146,9 @@ namespace Hopper.Test_Content.Floor
 
                 .AddDef(Tick.Chain)
                 .AddHandler(ResetDidSlide, PriorityRanks.High)
+
+                // .AddDef(Pushable.Do)
+                // .AddHandler(ChangeDirection, PriorityRanks.Low)
 
                 .End();
         }

@@ -5,6 +5,9 @@ using Hopper.Core.Mods;
 using Hopper.Test_Content.Bind;
 using Hopper.Utils.Vector;
 using Hopper.Core.Stats.Basic;
+using Hopper.Test_Content.SimpleMobs;
+using System.Linq;
+using Hopper.Core.History;
 
 namespace Hopper.Tests.Test_Content
 {
@@ -24,7 +27,8 @@ namespace Hopper.Tests.Test_Content
                 .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
                 .AddBehavior<Statused>()
                 .AddBehavior<Displaceable>()
-                .AddBehavior<Moving>();
+                .AddBehavior<Moving>()
+                .AddBehavior<Attackable>();
             move_action = new BehaviorAction<Moving>();
         }
 
@@ -65,6 +69,12 @@ namespace Hopper.Tests.Test_Content
             Assert.AreEqual(0, zero_zero_cell.m_entities.Count);
             Assert.AreEqual(player.Pos, spider.Pos);
             Assert.AreEqual(player, player.GetCell().m_entities[0]);
+
+            // var test_enemy = world.SpawnEntity(Skeleton.Factory, new IntVector2(1, 1));
+            // world.Loop();
+
+            // Assert.That(player.History.Updates.Any(update => update.updateCode == UpdateCode.attacked_do));
+            // Assert.That(!spider.History.Updates.Any(update => update.updateCode == UpdateCode.attacked_do));
 
             spider.Die();
             world.Loop();

@@ -5,7 +5,7 @@ namespace Hopper.Test_Content.Floor
 {
     public class SlideData : StatusData
     {
-        public IntVector2 initialDirection;
+        public IntVector2 currentDirection;
         public bool didSlide;
 
         public SlideData()
@@ -14,7 +14,7 @@ namespace Hopper.Test_Content.Floor
 
         public SlideData(IntVector2 initialDirection)
         {
-            this.initialDirection = initialDirection;
+            this.currentDirection = initialDirection;
             this.amount = 1;
             this.didSlide = true;
         }

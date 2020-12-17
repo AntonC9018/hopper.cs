@@ -65,6 +65,10 @@ namespace Hopper.Core.Behaviors.Basic
         public class Config
         {
             public Action defaultAction;
+            public Config(Action defaultAction)
+            {
+                this.defaultAction = defaultAction;
+            }
         }
 
         public Action config_defaultAction;

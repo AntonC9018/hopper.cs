@@ -12,12 +12,12 @@ namespace Hopper.Core
 
         public GridManager(int width, int height)
         {
-            m_grid = new Cell[width, height];
+            m_grid = new Cell[height, width];
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    m_grid[i, j] = new Cell(new IntVector2(j, i), this);
+                    m_grid[j, i] = new Cell(new IntVector2(i, j), this);
                 }
             }
             m_width = width;
