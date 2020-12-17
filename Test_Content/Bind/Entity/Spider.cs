@@ -19,7 +19,7 @@ namespace Hopper.Test_Content.Bind
             var bindAction = new BehaviorAction<Binding>();
             var moveAction = new BehaviorAction<Moving>();
 
-            var bindMoveAction = new CompositeAction(bindAction, moveAction);
+            var bindMoveAction = new JoinedAction(bindAction, moveAction);
 
             var stepData = new Step[]
             {

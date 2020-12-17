@@ -55,7 +55,14 @@ namespace Hopper.Test_Content.Bind
         {
             if (ev.applyTo == null)
             {
-                ev.applyTo = ev.actor.GetCell().GetEntityFromLayer(ev.action.direction, Layer.REAL);
+                ev.applyTo = ev.actor
+                     .GetCellRelative(ev.action.direction)
+                    ?.GetEntityFromLayer(ev.action.direction, Layer.REAL);
+
+                if (ev.applyTo == null)
+                {
+                    ev.propagate = false;
+                }
             }
         }
 
