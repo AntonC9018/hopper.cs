@@ -39,9 +39,7 @@ namespace Hopper.Test_Content.Bind
 
             public void Register(Binding.Event ev)
             {
-                bool success = status.IsApplied(ev.applyTo);
-
-                if (success)
+                if (status.IsApplied(ev.applyTo))
                 {
                     ((ISelfBinder)ev.actor).BoundEntity = ev.applyTo;
                     ev.actor.ResetPosInGrid(ev.applyTo.Pos);

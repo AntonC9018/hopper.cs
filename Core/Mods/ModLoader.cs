@@ -10,11 +10,11 @@ namespace Hopper.Core.Mods
         public PatchArea patchArea;
     }
 
-    public class ModManager
+    public class ModLoader
     {
         public List<System.Type> modTypes;
 
-        public ModManager()
+        public ModLoader()
         {
             modTypes = new List<System.Type>();
             // add the indispensable one right away

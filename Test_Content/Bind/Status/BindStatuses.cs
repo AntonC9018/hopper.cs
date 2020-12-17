@@ -32,12 +32,16 @@ namespace Hopper.Test_Content.Bind
             public ChainDefBuilder CreateBaseBuilder()
             {
                 return new ChainDefBuilder()
+
                     .AddDef<Attacking.Event>(Attacking.Check)
                     .AddHandler(AttackJustMe, PriorityRanks.High)
+
                     .AddDef<Tick.Event>(Tick.Chain)
                     .AddHandler(SelfRemove, PriorityRanks.High)
+
                     .AddDef<Displaceable.Event>(Displaceable.Do)
                     .AddHandler(DisplaceMe, PriorityRanks.Low)
+
                     .End();
             }
 
@@ -64,7 +68,7 @@ namespace Hopper.Test_Content.Bind
                 var statusData = status.m_tinker.GetStore(ev);
                 if (statusData.whoApplied != null)
                 {
-                    statusData.whoApplied.Pos = ev.actor.Pos;
+                    statusData.whoApplied.ResetPosInGrid(ev.actor.Pos);
                     statusData.whoApplied.History.Add(statusData.whoApplied, UpdateCode.displaced_do);
                 }
             }
