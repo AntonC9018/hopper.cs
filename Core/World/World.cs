@@ -77,7 +77,7 @@ namespace Hopper.Core
             var entity = EntityFactory.Instantiate();
             State.RegisterEntity(entity, EntityFactory);
             entity.Init(pos, orientation, this);
-            Grid.Reset(entity, entity.Pos);
+            entity.ResetInGrid();
             return entity;
         }
 

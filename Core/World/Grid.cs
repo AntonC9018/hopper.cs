@@ -31,31 +31,6 @@ namespace Hopper.Core
             m_height = grid.GetLength(1);
         }
 
-        public void Reset(Entity entity)
-        {
-            Reset(entity, entity.Pos);
-        }
-
-        public void Reset(Entity entity, IntVector2 pos)
-        {
-            var cell = m_grid[pos.y, pos.x];
-            cell.m_entities.Add(entity);
-            cell.FireEnterEvent(entity);
-        }
-
-        public void Remove(Entity entity)
-        {
-            Remove(entity, entity.Pos);
-        }
-
-        public void Remove(Entity entity, IntVector2 pos)
-        {
-            var cell = m_grid[pos.y, pos.x];
-            bool wasRemoved = cell.m_entities.Remove(entity);
-            Assert.That(wasRemoved, "Trying to remove an entity which is not in the cell is not allowed");
-            cell.FireLeaveEvent(entity);
-        }
-
         public bool IsOutOfBounds(IntVector2 pos)
         {
             return pos.y < 0 || pos.x < 0 || pos.y >= m_height || pos.x >= m_width;

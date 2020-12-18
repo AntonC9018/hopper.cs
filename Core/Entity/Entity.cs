@@ -4,6 +4,7 @@ using Hopper.Core.Items;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats;
 using Hopper.Core.History;
+using Hopper.Utils;
 
 namespace Hopper.Core
 {
@@ -72,7 +73,7 @@ namespace Hopper.Core
 
         public void RegisterSelf(ModRegistry registry)
         {
-            throw new System.Exception("Entity cannot register self");
+            throw new Exception("Entity cannot register self");
         }
 
         public void Init(IntVector2 pos, IntVector2 orientation, World world)
@@ -97,18 +98,33 @@ namespace Hopper.Core
         public void ResetPosInGrid(IntVector2 newPos)
         {
             RemoveFromGrid();
-            World.Grid.Reset(this, newPos);
             m_pos = newPos;
+            ResetInGrid();
+        }
+
+        public void RemoveFromGrid(GridManager grid)
+        {
+            var cell = grid.GetCellAt(m_pos);
+            bool wasRemoved = cell.m_entities.Remove(this);
+            Assert.That(wasRemoved, "Trying to remove an entity which is not in the cell is not allowed");
+            cell.FireLeaveEvent(this);
+        }
+
+        public void ResetInGrid(GridManager grid)
+        {
+            var cell = grid.GetCellAt(m_pos);
+            cell.m_entities.Add(this);
+            cell.FireEnterEvent(this);
         }
 
         public void RemoveFromGrid()
         {
-            World.Grid.Remove(this, m_pos);
+            RemoveFromGrid(World.Grid);
         }
 
         public void ResetInGrid()
         {
-            World.Grid.Reset(this, m_pos);
+            ResetInGrid(World.Grid);
         }
 
         public void Reorient_(IntVector2 orientation)

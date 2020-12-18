@@ -41,7 +41,7 @@ namespace Hopper.Tests
         public void PlacesEntitiesCorrectly()
         {
             entity.Pos = new IntVector2(0, 0);
-            grid.Reset(entity);
+            entity.ResetInGrid(grid);
             var cell = grid.GetCellAt(new IntVector2(0, 0));
             Assert.AreSame(entity, cell.GetFirstEntity());
         }
@@ -50,14 +50,14 @@ namespace Hopper.Tests
         public void DeletesEntitiesCorrectly()
         {
             entity.Pos = new IntVector2(0, 0);
-            grid.Reset(entity);
-            grid.Remove(entity);
+            entity.ResetInGrid(grid);
+            entity.RemoveFromGrid(grid);
 
             var cell = grid.GetCellAt(new IntVector2(0, 0));
 
             Assert.AreEqual(0, cell.m_entities.Count);
 
-            Assert.Throws<Hopper.Utils.Exception>(() => grid.Remove(entity));
+            Assert.Throws<Hopper.Utils.Exception>(() => entity.RemoveFromGrid(grid));
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Hopper.Tests
             cell.EnterEvent += e => enteredEntity = e;
 
             entity.Pos = new IntVector2(0, 0);
-            grid.Reset(entity);
+            entity.ResetInGrid(grid);
 
             Assert.AreSame(enteredEntity, entity);
         }
@@ -83,8 +83,8 @@ namespace Hopper.Tests
             cell.LeaveEvent += e => leftEntity = e;
 
             entity.Pos = new IntVector2(0, 0);
-            grid.Reset(entity);
-            grid.Remove(entity);
+            entity.ResetInGrid(grid);
+            entity.RemoveFromGrid(grid);
 
             Assert.AreSame(leftEntity, entity);
         }
@@ -106,7 +106,7 @@ namespace Hopper.Tests
             Assert.False(cell.HasBlock(queriedDirection, entity.Layer)); // no entity place there yet
 
             entity.Pos = queriedPosition;
-            grid.Reset(entity);
+            entity.ResetInGrid(grid);
 
             Assert.True(cell.HasBlock(queriedDirection, entity.Layer));
             // wall has the wall layer type, which we disregard for this test (no walls)
@@ -154,7 +154,7 @@ namespace Hopper.Tests
             // The orientation actually controls on which side of the block it is
             directionalBlock.Orientation = IntVector2.Down;
 
-            grid.Reset(directionalBlock);
+            directionalBlock.ResetInGrid(grid);
 
             // 1
             // I set the layer of the directional block to `Wall`, see above
@@ -168,7 +168,7 @@ namespace Hopper.Tests
 
             // 3
             entity.Pos = queriedPosition;
-            grid.Reset(entity);
+            entity.ResetInGrid(grid);
 
             // If we still ignore the entity layer, nothing happens
             Assert.False(cell.HasBlock(queriedDirection, directionalBlock.Layer));
@@ -178,15 +178,15 @@ namespace Hopper.Tests
             Assert.True(cell.HasBlock(queriedDirection, entity.Layer));
 
             // 4 Setup
-            grid.Remove(entity);
-            grid.Remove(directionalBlock);
+            entity.RemoveFromGrid(grid);
+            directionalBlock.ResetInGrid(grid);
 
             queriedDirection = IntVector2.Up;
 
             directionalBlock.Pos += IntVector2.Down;
             directionalBlock.Orientation = IntVector2.Up;
 
-            grid.Reset(directionalBlock);
+            directionalBlock.ResetInGrid(grid);
 
             // 4
             Assert.True(cell.HasBlock(queriedDirection, directionalBlock.Layer));

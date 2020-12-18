@@ -33,6 +33,8 @@ namespace Hopper.Tests
         public void Setup()
         {
             world = new World(3, 3);
+            entity.Init(IntVector2.Zero, IntVector2.Zero, world);
+            wall.Init(IntVector2.Zero, IntVector2.Zero, world);
         }
 
         [Test]
@@ -54,7 +56,7 @@ namespace Hopper.Tests
             var targetProvider = TargetProvider.CreateAtk(pattern, Handlers.DefaultAtkChain);
 
             entity.Pos = new IntVector2(0, 0);
-            world.Grid.Reset(entity);
+            entity.ResetInGrid();
 
             var dummy = new Dummy(new IntVector2(0, 1), world);
             var queriedDirection = IntVector2.Up;
@@ -93,7 +95,7 @@ namespace Hopper.Tests
             var targetProvider = TargetProvider.CreateAtk(pattern, Handlers.DefaultAtkChain);
 
             entity.Pos = new IntVector2(0, 0);
-            world.Grid.Reset(entity);
+            entity.ResetInGrid();
 
             // 1
             var dummy = new Dummy(new IntVector2(0, 2), world);
@@ -105,7 +107,7 @@ namespace Hopper.Tests
 
             // 2
             wall.Pos = new IntVector2(0, 1);
-            world.Grid.Reset(wall);
+            wall.ResetInGrid();
 
             targets = targetProvider.GetTargets(dummy, queriedDirection);
 
@@ -146,7 +148,7 @@ namespace Hopper.Tests
             entity.Behaviors.Get<Attackable>().m_attackness |= Attackness.IF_NEXT_TO;
 
             entity.Pos = new IntVector2(0, 0);
-            world.Grid.Reset(entity);
+            entity.ResetInGrid();
 
             var queriedDirection = IntVector2.Up;
 
