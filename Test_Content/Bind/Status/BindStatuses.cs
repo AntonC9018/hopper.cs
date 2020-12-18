@@ -42,6 +42,8 @@ namespace Hopper.Test_Content.Bind
                     .AddDef<Displaceable.Event>(Displaceable.Do)
                     .AddHandler(DisplaceMe, PriorityRanks.Low)
 
+                    // TODO: ignore any source of attack but the basic. 
+
                     .End();
             }
 

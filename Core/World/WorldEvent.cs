@@ -2,36 +2,22 @@ using Hopper.Core.Registry;
 
 namespace Hopper.Core
 {
-    public interface IWorldEvent : IKind, Registry.IPatch
+    public interface IWorldEvent : IExtendent
     {
         IWorldEvent GetCopy();
     }
 
-    public class WorldEvent<T> : IWorldEvent
+    public class WorldEvent<T> : Extendent<IWorldEvent>, IWorldEvent
     {
-        private int m_id;
-        public int Id => m_id;
-
         public event System.Action<T> Event;
 
         public WorldEvent()
         {
-
         }
 
         public void Fire(T pos)
         {
             Event?.Invoke(pos);
-        }
-
-        public void RegisterSelf(ModRegistry registry)
-        {
-            m_id = registry.Add<IWorldEvent>(this);
-        }
-
-        public void Patch(PatchArea patchArea)
-        {
-            patchArea.GetPatchSubRegistry<IWorldEvent>().Add(m_id, this);
         }
 
         private WorldEvent(int id)

@@ -58,7 +58,7 @@ namespace Hopper.Tests.Test_Content
         {
             PushPlayer(new IntVector2(1, 0));
 
-            world.Loop(); // first one just applies, they do not slide on first turn
+            world.Loop(); // first one just applies the status effect, they do not slide on first turn
             world.Loop(); // e__ -> _e_
             world.Loop(); // _e_ -> __e
             world.Loop(); // __e -> ___e
@@ -92,6 +92,8 @@ namespace Hopper.Tests.Test_Content
             // that is, the player's displacement is in the direction that they stepped onto the 
             // ice floor with. If the player gets pushed, so does this variable, reflecting
             // the new direction.
+            // This time the player does get displaced after having been pushed, since the sliding
+            // has been already applied before the push. 
             var ice_floor_below = world.SpawnEntity(IceFloor.Factory, new IntVector2(2, 2));
             PushPlayer(new IntVector2(0, 1));
 

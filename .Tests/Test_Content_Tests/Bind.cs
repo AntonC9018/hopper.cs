@@ -8,6 +8,7 @@ using Hopper.Core.Stats.Basic;
 using Hopper.Test_Content.SimpleMobs;
 using System.Linq;
 using Hopper.Core.History;
+using Hopper.Test_Content.Explosion;
 
 namespace Hopper.Tests.Test_Content
 {
@@ -85,6 +86,25 @@ namespace Hopper.Tests.Test_Content
             world.Loop();
 
             Assert.AreEqual(new IntVector2(2, 0), player.Pos);
+        }
+
+        [Test]
+        public void Test_2()
+        {
+            var spider = world.SpawnEntity(Spider.Factory, new IntVector2(1, 1), new IntVector2(1, 0));
+            var player = world.SpawnPlayer(test_player_factory, new IntVector2(0, 0));
+            var zero_zero_cell = world.Grid.GetCellAt(IntVector2.Zero);
+
+            world.Loop();
+            world.InitializeWorldEvents();
+
+            spider.History.Clear();
+            player.History.Clear();
+
+            Explosion.Explode(IntVector2.Zero, 0, world);
+
+            Assert.That(spider.History.Updates.Any(u => u.updateCode == UpdateCode.attacked_do));
+            Assert.That(!player.History.Updates.Any(u => u.updateCode == UpdateCode.attacked_do));
         }
     }
 }
