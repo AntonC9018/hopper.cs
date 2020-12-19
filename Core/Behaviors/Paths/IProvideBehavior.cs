@@ -4,6 +4,5 @@ namespace Hopper.Core.Behaviors
     {
         T Get<T>() where T : Behavior, new();
         T TryGet<T>() where T : Behavior, new();
-        bool Has<T>() where T : Behavior, new();
     }
 }

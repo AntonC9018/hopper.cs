@@ -6,10 +6,10 @@ namespace Hopper.Utils.Chains
 
     public class Handle<Event> : Handle where Event : EventBase
     {
-        public MyListNode<IEvHandler<Event>> Item { get; private set; }
+        public MyListNode<IEvHandler<Event>> item;
         public Handle(MyListNode<IEvHandler<Event>> item)
         {
-            Item = item;
+            this.item = item;
         }
     }
 }

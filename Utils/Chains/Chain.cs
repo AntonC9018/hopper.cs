@@ -5,7 +5,6 @@ using Hopper.Utils.MyLinkedList;
 
 namespace Hopper.Utils.Chains
 {
-
     public class Chain { }
 
     public class Chain<Event> : Chain where Event : EventBase
@@ -81,12 +80,12 @@ namespace Hopper.Utils.Chains
 
         public void RemoveHandler(Handle<Event> handle)
         {
-            m_handlersToRemove.Add(handle.Item);
+            m_handlersToRemove.Add(handle.item);
         }
 
         public void RemoveHandler(Handle handle)
         {
-            m_handlersToRemove.Add(((Handle<Event>)handle).Item);
+            m_handlersToRemove.Add(((Handle<Event>)handle).item);
         }
 
         protected int MapPriority(int rank)

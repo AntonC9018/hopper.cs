@@ -27,4 +27,24 @@ namespace Hopper.Core.Behaviors
             return startingFrom.GetBehaviorFactory<Beh>().GetTemplate<Event>(name);
         }
     }
+
+    public class LinearChainPath<Event> where Event : EventBase
+    {
+        public System.Func<IProvideBehavior, Chain<Event>> ChainFunc;
+    }
+
+    // public class CustomChainPaths<Event> : IChainPaths<Event>
+    //     where Event : EventBase
+    // {
+    //     public System.Func<IProvideBehavior, Chain<Event>> chain
+    //     public Chain<Event> ChainPath(IProvideBehavior startingFrom)
+    //     {
+    //         throw new System.NotImplementedException();
+    //     }
+
+    //     public ChainTemplate<Event> TemplatePath(IProvideBehaviorFactory startingFrom)
+    //     {
+    //         throw new System.NotImplementedException();
+    //     }
+    // }
 }
