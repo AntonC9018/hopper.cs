@@ -6,11 +6,11 @@ using Newtonsoft.Json;
 namespace Hopper.Core
 {
     [DataContract]
-    public class BehaviorControl : IProvideBehavior
+    public class BehaviorControl : IWithWithChain
     {
         [DataMember]
-        private readonly Dictionary<System.Type, Behavior> m_behaviors =
-            new Dictionary<System.Type, Behavior>();
+        private readonly Dictionary<System.Type, IWithChain> m_behaviors =
+            new Dictionary<System.Type, IWithChain>();
 
         // A setup method. May also be used at runtime, but setting up
         // behaviors in factory is prefered. Feel free to use while debugging.
@@ -19,16 +19,16 @@ namespace Hopper.Core
             m_behaviors[t] = behavior;
         }
 
-        public T Get<T>() where T : Behavior, new()
+        public T Get<T>() where T : IWithChain, new()
         {
             return (T)m_behaviors[typeof(T)];
         }
 
-        public T TryGet<T>() where T : Behavior, new()
+        public T TryGet<T>() where T : IWithChain, new()
         {
             if (m_behaviors.ContainsKey(typeof(T)))
                 return (T)m_behaviors[typeof(T)];
-            return null;
+            return default(T);
         }
 
         public bool Has<T>() where T : Behavior, new()

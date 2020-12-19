@@ -8,11 +8,11 @@ namespace Hopper.Core.Chains
 {
     public class ChainDefBuilder
     {
-        List<I_CD_PartBuilder> defs = new List<I_CD_PartBuilder>();
-        public CD_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
+        List<I_ChainDef_PartBuilder> defs = new List<I_ChainDef_PartBuilder>();
+        public ChainDef_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
             where T : EventBase
         {
-            var def = new CD_PartBuilder<T>(path.ChainPath, this);
+            var def = new ChainDef_PartBuilder<T>(path.ChainPath, this);
             defs.Add(def);
             return def;
         }

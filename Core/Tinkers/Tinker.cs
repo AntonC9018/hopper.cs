@@ -65,7 +65,7 @@ namespace Hopper.Core
             }
         }
 
-        private void UntinkHandlers(TinkerData data, IProvideBehavior behaviors)
+        private void UntinkHandlers(TinkerData data, IWithWithChain behaviors)
         {
             for (int i = 0; i < data.chainHandlesArray.Length; i++)
             {

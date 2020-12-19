@@ -4,36 +4,36 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Chains
 {
-    public interface I_CD_PartBuilder
+    public interface I_ChainDef_PartBuilder
     {
         IChainDef ToStatic();
     }
 
-    public class CD_PartBuilder<Event> : I_CD_PartBuilder where Event : EventBase
+    public class ChainDef_PartBuilder<Event> : I_ChainDef_PartBuilder where Event : EventBase
     {
         public BehaviorPath<Event> path;
         private ChainDefBuilder builder;
         public List<EvHandler<Event>> handlers;
 
-        public CD_PartBuilder(BehaviorPath<Event> path, ChainDefBuilder builder)
+        public ChainDef_PartBuilder(BehaviorPath<Event> path, ChainDefBuilder builder)
         {
             this.path = path;
             this.builder = builder;
             handlers = new List<EvHandler<Event>>();
         }
 
-        public CD_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
+        public ChainDef_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
         {
             handlers.Add(handler);
             return this;
         }
 
-        public CD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
+        public ChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
         {
             return AddHandler(new EvHandler<Event>(handlerFunc, priority));
         }
 
-        public CD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, int priority)
+        public ChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, int priority)
         {
             return AddHandler(new EvHandler<Event>(handlerFunc, priority));
         }
@@ -48,7 +48,7 @@ namespace Hopper.Core.Chains
             return builder;
         }
 
-        public CD_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
+        public ChainDef_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
             where T : EventBase
         {
             return builder.AddDef<T>(path);

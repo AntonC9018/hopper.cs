@@ -3,7 +3,7 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Behaviors
 {
-    public class ConfigurableBehaviorFactory<T, Config> : IBehaviorFactory<T>, IProvidesChainTemplate
+    public class ConfigurableBehaviorFactory<T, Config> : IBehaviorFactory<T>, IWithChainTemplate
            where T : Behavior, IInitable<Config>, new()
     {
         public Config config;

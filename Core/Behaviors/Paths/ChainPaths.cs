@@ -13,7 +13,7 @@ namespace Hopper.Core.Behaviors
             this.name = name;
         }
 
-        public Chain<Event> ChainPath(IProvideBehavior startingFrom)
+        public Chain<Event> ChainPath(IWithWithChain startingFrom)
         {
             return startingFrom.TryGet<Beh>()?.GetChain<Event>(name);
         }
@@ -30,7 +30,7 @@ namespace Hopper.Core.Behaviors
 
     public class LinearChainPath<Event> where Event : EventBase
     {
-        public System.Func<IProvideBehavior, Chain<Event>> ChainFunc;
+        public System.Func<IWithWithChain, Chain<Event>> ChainFunc;
     }
 
     // public class CustomChainPaths<Event> : IChainPaths<Event>

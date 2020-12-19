@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Hopper.Core.Behaviors
 {
     [DataContract]
-    public abstract class Behavior : IProvidesChain
+    public abstract class Behavior : IWithChain
     {
         protected Dictionary<ChainName, Chain> chains;
         protected Entity m_entity;

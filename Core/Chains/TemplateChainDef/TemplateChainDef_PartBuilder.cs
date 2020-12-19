@@ -4,18 +4,18 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Chains
 {
-    public interface I_TCD_PartBuilder
+    public interface I_TemplateChainDef_PartBuilder
     {
         ITemplateChainDef ToStatic();
     }
 
-    public class TCD_PartBuilder<Event> : I_TCD_PartBuilder where Event : EventBase
+    public class TemplateChainDef_PartBuilder<Event> : I_TemplateChainDef_PartBuilder where Event : EventBase
     {
         public BehaviorFactoryPath<Event> path;
         public List<EvHandler<Event>> handlers;
         private TemplateChainDefBuilder builder;
 
-        public TCD_PartBuilder(
+        public TemplateChainDef_PartBuilder(
             BehaviorFactoryPath<Event> path, TemplateChainDefBuilder builder = null)
         {
             this.path = path;
@@ -23,13 +23,17 @@ namespace Hopper.Core.Chains
             handlers = new List<EvHandler<Event>>();
         }
 
-        public TCD_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
+        public TemplateChainDef_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
         {
             handlers.Add(handler);
             return this;
         }
 
-        public TCD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
+        public TemplateChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
+        {
+            return AddHandler(new EvHandler<Event>(handlerFunc, priority));
+        }
+        public TemplateChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, int priority)
         {
             return AddHandler(new EvHandler<Event>(handlerFunc, priority));
         }
@@ -39,7 +43,7 @@ namespace Hopper.Core.Chains
             return builder;
         }
 
-        public TCD_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
+        public TemplateChainDef_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
             where T : EventBase
         {
             return builder.AddDef<T>(path);

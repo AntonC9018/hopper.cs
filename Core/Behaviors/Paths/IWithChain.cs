@@ -2,7 +2,7 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Behaviors
 {
-    public interface IProvidesChain
+    public interface IWithChain
     {
         Chain<Event> GetChain<Event>(ChainName name) where Event : EventBase;
     }

@@ -27,7 +27,7 @@ namespace Hopper.Test_Content
             0
         );
 
-        static void PreventDamage(Attackable.Event ev)
+        private static void PreventDamage(Attackable.Event ev)
         {
             ev.atkParams.attack.damage = 0;
         }

@@ -3,13 +3,13 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Chains
 {
-    public delegate Chain<T> BehaviorPath<T>(IProvideBehavior factoryProvider)
+    public delegate Chain<T> BehaviorPath<T>(IWithWithChain factoryProvider)
         where T : EventBase;
 
     public interface IChainDef
     {
-        Handle[] AddHandlers(IProvideBehavior entity);
-        void RemoveHandlers(Handle[] handles, IProvideBehavior entity);
+        Handle[] AddHandlers(IWithWithChain entity);
+        void RemoveHandlers(Handle[] handles, IWithWithChain entity);
     }
 
     public class ChainDef<Event> : IChainDef where Event : EventBase
@@ -17,7 +17,7 @@ namespace Hopper.Core.Chains
         public BehaviorPath<Event> path;
         public IEvHandler<Event>[] handlers;
 
-        public Handle[] AddHandlers(IProvideBehavior entity)
+        public Handle[] AddHandlers(IWithWithChain entity)
         {
             var chain = path(entity);
             // TODO: think if this should be the intended behavior
@@ -34,7 +34,7 @@ namespace Hopper.Core.Chains
             return handles;
         }
 
-        public void RemoveHandlers(Handle[] handles, IProvideBehavior entity)
+        public void RemoveHandlers(Handle[] handles, IWithWithChain entity)
         {
             var chain = path(entity);
             for (int i = 0; i < handles.Length; i++)

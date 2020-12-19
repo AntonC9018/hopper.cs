@@ -4,7 +4,7 @@ namespace Hopper.Core.Behaviors
 {
     public interface IChainPath<Event> where Event : EventBase
     {
-        Chain<Event> ChainPath(IProvideBehavior startingFrom);
+        Chain<Event> ChainPath(IWithWithChain startingFrom);
     }
 
     public interface IChainTemplatePath<Event> where Event : EventBase

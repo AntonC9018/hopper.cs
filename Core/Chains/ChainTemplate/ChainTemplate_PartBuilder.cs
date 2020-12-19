@@ -4,29 +4,29 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Chains
 {
-    public interface I_CT_PartBuilder
+    public interface I_ChainTemplate_PartBuilder
     {
         IChainTemplate Template { get; }
     }
-    public class CT_PartBuilder<Event> : I_CT_PartBuilder where Event : EventBase
+    public class ChainTemplate_PartBuilder<Event> : I_ChainTemplate_PartBuilder where Event : EventBase
     {
         private ChainTemplate<Event> m_template;
         public IChainTemplate Template { get => m_template.Clone(); }
         private ChainTemplateBuilder builder;
 
-        public CT_PartBuilder(ChainTemplateBuilder builder = null)
+        public ChainTemplate_PartBuilder(ChainTemplateBuilder builder = null)
         {
             this.builder = builder;
             m_template = new ChainTemplate<Event>();
         }
 
-        public CT_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
+        public ChainTemplate_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
         {
             m_template.AddHandler(handler);
             return this;
         }
 
-        public CT_PartBuilder<Event> AddHandler(
+        public ChainTemplate_PartBuilder<Event> AddHandler(
             System.Action<Event> handlerFunc,
             PriorityRank priority = PriorityRank.Default)
         {
@@ -34,7 +34,7 @@ namespace Hopper.Core.Chains
             return this;
         }
 
-        public CT_PartBuilder<Event> AddHandler(
+        public ChainTemplate_PartBuilder<Event> AddHandler(
             System.Action<Event> handlerFunc,
             int priority)
         {
@@ -47,7 +47,7 @@ namespace Hopper.Core.Chains
             return builder;
         }
 
-        public CT_PartBuilder<T> AddTemplate<T>(ChainName name)
+        public ChainTemplate_PartBuilder<T> AddTemplate<T>(ChainName name)
             where T : EventBase
         {
             return builder.AddTemplate<T>(name);
