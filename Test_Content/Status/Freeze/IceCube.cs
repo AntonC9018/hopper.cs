@@ -2,7 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Chains;
 
-namespace Hopper.Test_Content.Status.Freeze
+namespace Hopper.Test_Content.Status.Freezing
 {
     public interface ICapture
     {
@@ -43,7 +43,7 @@ namespace Hopper.Test_Content.Status.Freeze
             // release
             iceCube.Captured.ResetInGrid();
             // remove the status effect
-            FreezeStatus.Status.Remove(iceCube.Captured);
+            Freeze.Status.Remove(iceCube.Captured);
             // TODO: apply 1 invulnerable to the captured entity
         }
     }

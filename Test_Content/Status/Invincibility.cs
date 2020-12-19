@@ -6,7 +6,6 @@ using Hopper.Core.Stats;
 
 namespace Hopper.Test_Content
 {
-
     public class Invincibility : StatusFile
     {
         public Invincibility()
@@ -15,15 +14,16 @@ namespace Hopper.Test_Content
             amount = 2;
         }
 
-        public static readonly SimpleStatPath<Invincibility> Path = new SimpleStatPath<Invincibility>("status/inv");
+        public static readonly SimpleStatPath<Invincibility> Path =
+            new SimpleStatPath<Invincibility>("status/inv", new Invincibility { power = 10, amount = 1 });
 
-        public static Status<StatusData> status = new Status<StatusData>(
+        public static readonly Status<StatusData> Status = new Status<StatusData>(
             new ChainDefBuilder()
-                .AddDef<Attackable.Event>(Attackable.Do)
-                .AddHandler(PreventDamage, PriorityRanks.High)
+                .AddDef(Attackable.Do)
+                .AddHandler(PreventDamage, PriorityMapping.High + 0x8100)
                 .End()
                 .ToStatic(),
-            Invincibility.Path, // TODO: actually add this stat
+            Invincibility.Path,
             0
         );
 

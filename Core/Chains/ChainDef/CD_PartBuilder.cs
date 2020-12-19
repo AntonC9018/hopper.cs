@@ -28,7 +28,12 @@ namespace Hopper.Core.Chains
             return this;
         }
 
-        public CD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
+        public CD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
+        {
+            return AddHandler(new EvHandler<Event>(handlerFunc, priority));
+        }
+
+        public CD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, int priority)
         {
             return AddHandler(new EvHandler<Event>(handlerFunc, priority));
         }

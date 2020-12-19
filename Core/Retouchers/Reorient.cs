@@ -8,13 +8,13 @@ namespace Hopper.Core.Retouchers
     public static class Reorient
     {
         public static readonly Retoucher OnMove = Retoucher
-            .SingleHandlered(Moving.Do, AnyReorient, PriorityRanks.High);
+            .SingleHandlered(Moving.Do, AnyReorient, PriorityRank.High);
         public static readonly Retoucher OnDisplace = Retoucher
-            .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRanks.High);
+            .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRank.High);
         public static readonly Retoucher OnActionSuccess = Retoucher
-            .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRanks.High);
+            .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRank.High);
         public static readonly Retoucher OnAttack = Retoucher
-            .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRanks.High);
+            .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRank.High);
 
         public static void RegisterAll(ModRegistry registry)
         {

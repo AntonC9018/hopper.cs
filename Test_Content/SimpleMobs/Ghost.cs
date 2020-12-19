@@ -55,7 +55,7 @@ namespace Hopper.Test_Content
                 }
             };
             TeleportAfterAttackRetoucher =
-               Retoucher.SingleHandlered(Attackable.Do, Teleport, PriorityRanks.Lowest);
+               Retoucher.SingleHandlered(Attackable.Do, Teleport, PriorityRank.Lowest);
             Factory = CreateFactory();
         }
     }

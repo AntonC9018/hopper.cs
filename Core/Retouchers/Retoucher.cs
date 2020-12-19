@@ -25,7 +25,7 @@ namespace Hopper.Core
         public static Retoucher SingleHandlered<T>(
             IChainPaths<T> path,
             System.Action<T> handler,
-            PriorityRanks priority = PriorityRanks.Default)
+            PriorityRank priority = PriorityRank.Default)
             where T : EventBase
         {
             return new Retoucher(

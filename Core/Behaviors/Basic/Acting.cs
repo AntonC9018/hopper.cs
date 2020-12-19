@@ -41,7 +41,7 @@ namespace Hopper.Core.Behaviors.Basic
                     DoingAction = false;
                     NextAction = null;
                 },
-                PriorityRanks.Low
+                PriorityRank.Low
             );
         }
 

@@ -74,8 +74,8 @@ namespace Hopper.Core.Behaviors.Basic
             DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(SetDig, PriorityRanks.High)
-                .AddHandler(SetTargets, PriorityRanks.High)
+                .AddHandler(SetDig, PriorityRank.High)
+                .AddHandler(SetTargets, PriorityRank.High)
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(Attack)

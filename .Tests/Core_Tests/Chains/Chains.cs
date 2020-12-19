@@ -89,8 +89,8 @@ namespace Hopper.Tests
         [Test]
         public void AreHandlers_CalledByPriority()
         {
-            var handle_Hello = chain.AddHandler(handler_Hello.Function, PriorityRanks.High);
-            var handle_World = chain.AddHandler(handler_World.Function, PriorityRanks.Medium);
+            var handle_Hello = chain.AddHandler(handler_Hello.Function, PriorityRank.High);
+            var handle_World = chain.AddHandler(handler_World.Function, PriorityRank.Medium);
             chain.Pass(ev);
             Assert.AreEqual("HelloWorld", recorder.recordedSequence);
         }
@@ -98,8 +98,8 @@ namespace Hopper.Tests
         [Test]
         public void AreHandlers_CalledByPriority_IndependentOfOrderTheyWereAdded()
         {
-            var handle_World = chain.AddHandler(handler_World.Function, PriorityRanks.Medium);
-            var handle_Hello = chain.AddHandler(handler_Hello.Function, PriorityRanks.High);
+            var handle_World = chain.AddHandler(handler_World.Function, PriorityRank.Medium);
+            var handle_Hello = chain.AddHandler(handler_Hello.Function, PriorityRank.High);
             chain.Pass(ev);
             Assert.AreEqual("HelloWorld", recorder.recordedSequence);
         }
@@ -107,10 +107,10 @@ namespace Hopper.Tests
         [Test]
         public void IsPropagateVerified()
         {
-            var handler_Stop = new EvHandler<EventBase>(ev => ev.propagate = false, PriorityRanks.Medium);
+            var handler_Stop = new EvHandler<EventBase>(ev => ev.propagate = false, PriorityRank.Medium);
 
-            var handle_Hello = chain.AddHandler(handler_Hello.Function, PriorityRanks.High);
-            var handle_World = chain.AddHandler(handler_World.Function, PriorityRanks.Low);
+            var handle_Hello = chain.AddHandler(handler_Hello.Function, PriorityRank.High);
+            var handle_World = chain.AddHandler(handler_World.Function, PriorityRank.Low);
             var handle_Stop = chain.AddHandler(handler_Stop);
 
             // use the default stop function, which checks `propagation`
@@ -122,11 +122,11 @@ namespace Hopper.Tests
         [Test]
         public void EventHandler_IsNotModified()
         {
-            var handler_test = new EvHandler<EventBase>(ev => { }, PriorityRanks.Medium);
-            Assert.AreEqual((int)PriorityRanks.Medium, handler_test.Priority);
+            var handler_test = new EvHandler<EventBase>(ev => { }, PriorityRank.Medium);
+            Assert.AreEqual((int)PriorityRank.Medium, handler_test.Priority);
             chain.AddHandler(handler_test);
             chain.Pass(ev);
-            Assert.AreEqual((int)PriorityRanks.Medium, handler_test.Priority);
+            Assert.AreEqual((int)PriorityRank.Medium, handler_test.Priority);
         }
 
         [Test]

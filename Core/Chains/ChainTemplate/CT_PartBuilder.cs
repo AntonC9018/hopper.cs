@@ -28,9 +28,17 @@ namespace Hopper.Core.Chains
 
         public CT_PartBuilder<Event> AddHandler(
             System.Action<Event> handlerFunc,
-            PriorityRanks priority = PriorityRanks.Default)
+            PriorityRank priority = PriorityRank.Default)
         {
             m_template.AddHandler(handlerFunc, priority);
+            return this;
+        }
+
+        public CT_PartBuilder<Event> AddHandler(
+            System.Action<Event> handlerFunc,
+            int priority)
+        {
+            m_template.AddHandler(new EvHandler<Event>(handlerFunc, priority));
             return this;
         }
 

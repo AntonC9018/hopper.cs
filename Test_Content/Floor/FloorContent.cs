@@ -22,7 +22,7 @@ namespace Hopper.Test_Content.Floor
 
         public void Patch(PatchArea patchArea)
         {
-            Stuck.Status.Patch(patchArea);
+            Slide.Status.Patch(patchArea);
             Stuck.Status.Patch(patchArea);
         }
 

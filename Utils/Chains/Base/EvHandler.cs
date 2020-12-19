@@ -2,19 +2,25 @@ namespace Hopper.Utils.Chains
 {
     public class EvHandler<Event> : IEvHandler<Event> where Event : EventBase
     {
-        public int Priority { get; set; } = (int)PriorityRanks.Medium;
+        public int Priority { get; set; } = (int)PriorityRank.Medium;
         private System.Action<Event> handlerFunction;
 
-        public EvHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
+        public EvHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
         {
-            handlerFunction = handlerFunc;
+            this.handlerFunction = handlerFunc;
             this.Priority = (int)priority;
+        }
+
+        public EvHandler(System.Action<Event> handlerFunc, int priority)
+        {
+            this.handlerFunction = handlerFunc;
+            this.Priority = priority;
         }
 
         public EvHandler(IEvHandler<Event> evHandler)
         {
-            handlerFunction = evHandler.Call;
-            Priority = evHandler.Priority;
+            this.handlerFunction = evHandler.Call;
+            this.Priority = evHandler.Priority;
         }
 
         public void Call(Event ev)

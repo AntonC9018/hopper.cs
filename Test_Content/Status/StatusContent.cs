@@ -1,7 +1,6 @@
 using Hopper.Core;
 using Hopper.Core.Registries;
-using Hopper.Core.Retouchers;
-using Hopper.Test_Content.Status.Freeze;
+using Hopper.Test_Content.Status.Freezing;
 
 namespace Hopper.Test_Content.Status
 {
@@ -9,8 +8,9 @@ namespace Hopper.Test_Content.Status
     {
         public void RegisterSelf(ModRegistry registry)
         {
+            Invincibility.Status.RegisterSelf(registry);
             IceCube.MoveCapturedRetoucher.RegisterSelf(registry);
-            FreezeStatus.Status.RegisterSelf(registry);
+            Freeze.Status.RegisterSelf(registry);
             IceCube.Factory.RegisterSelf(registry);
         }
 
@@ -20,7 +20,8 @@ namespace Hopper.Test_Content.Status
 
         public void Patch(PatchArea patchArea)
         {
-            FreezeStatus.Status.Patch(patchArea);
+            Invincibility.Status.Patch(patchArea);
+            Freeze.Status.Patch(patchArea);
         }
 
         public void PostPatch(PatchArea patchArea)

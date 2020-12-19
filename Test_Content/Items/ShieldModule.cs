@@ -19,9 +19,9 @@ namespace Hopper.Test_Content
             m_pierceIncrease = pierceIncrease;
             var builder = new ChainDefBuilder()
                 .AddDef(Attackable.Check)
-                .AddHandler(BlockDirection, PriorityRanks.High)
+                .AddHandler(BlockDirection, PriorityRank.High)
                 .AddDef(Attackable.Do)
-                .AddHandler(AbsorbDamageAndBreak, PriorityRanks.High)
+                .AddHandler(AbsorbDamageAndBreak, PriorityRank.High)
                 .End();
             m_tinker = new Tinker<TinkerData>(builder.ToStatic());
         }

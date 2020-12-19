@@ -95,7 +95,7 @@ namespace Hopper.Core
         public static Tinker<T> SingleHandlered<Event>(
             IChainPaths<Event> path,
             System.Action<Event> handler,
-            PriorityRanks priority = PriorityRanks.Default)
+            PriorityRank priority = PriorityRank.Default)
             where Event : EventBase
         {
             return new Tinker<T>(

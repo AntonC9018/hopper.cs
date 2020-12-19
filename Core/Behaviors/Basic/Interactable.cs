@@ -57,8 +57,8 @@ namespace Hopper.Core.Behaviors.Basic
                 .AddTemplate<Event>(ChainName.Check)
 
                 .AddTemplate<Event>(ChainName.Do)
-                .AddHandler(Die, PriorityRanks.Medium)
-                .AddHandler(Release, PriorityRanks.Medium)
+                .AddHandler(Die, PriorityRank.Medium)
+                .AddHandler(Release, PriorityRank.Medium)
                 .End();
         }
     }

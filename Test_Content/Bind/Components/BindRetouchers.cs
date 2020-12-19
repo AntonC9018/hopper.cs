@@ -13,7 +13,7 @@ namespace Hopper.Test_Content.Bind
             var builder = new TemplateChainDefBuilder()
 
                 .AddDef(Tick.Chain)
-                .AddHandler(FreeIfHostIsDead, PriorityRanks.High)
+                .AddHandler(FreeIfHostIsDead, PriorityRank.High)
 
                 .AddDef(Binding.Do)
                 .AddHandler(lambdas.Register)

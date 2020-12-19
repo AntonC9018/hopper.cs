@@ -34,7 +34,7 @@ namespace Hopper.Utils.Chains
 
         public ChainTemplate<Event> AddHandler(
             System.Action<Event> handlerFunc,
-            PriorityRanks priority = PriorityRanks.Default)
+            PriorityRank priority = PriorityRank.Default)
         {
             AddHandler(new EvHandler<Event>(handlerFunc, priority));
             return this;

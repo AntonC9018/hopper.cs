@@ -103,8 +103,8 @@ namespace Hopper.Core.Behaviors.Basic
             DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(SetResistance, PriorityRanks.High)
-                .AddHandler(ResistSomeStatuses, PriorityRanks.Low)
+                .AddHandler(SetResistance, PriorityRank.High)
+                .AddHandler(ResistSomeStatuses, PriorityRank.Low)
 
                 // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
                 .End();

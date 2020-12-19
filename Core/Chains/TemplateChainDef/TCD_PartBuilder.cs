@@ -29,7 +29,7 @@ namespace Hopper.Core.Chains
             return this;
         }
 
-        public TCD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRanks priority = PriorityRanks.Default)
+        public TCD_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
         {
             return AddHandler(new EvHandler<Event>(handlerFunc, priority));
         }

@@ -9,7 +9,7 @@ namespace Hopper.Test_Content
         public static ChainDefBuilder AddHandler_InsteadOf_Attack_Dig_Move(
             this ChainDefBuilder builder,
             System.Action<EventBase> handler,
-            PriorityRanks priority = PriorityRanks.Default)
+            PriorityRank priority = PriorityRank.Default)
         {
             return builder
                 .AddDef(Attacking.Do)
@@ -26,7 +26,7 @@ namespace Hopper.Test_Content
         public static ChainDefBuilder AddHandler_ToAllVectorInputs(
             this ChainDefBuilder builder,
             System.Action<Controllable.Event> handler,
-            PriorityRanks priority = PriorityRanks.Default)
+            PriorityRank priority = PriorityRank.Default)
         {
             return builder
 

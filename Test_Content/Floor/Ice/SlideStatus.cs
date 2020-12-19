@@ -134,16 +134,16 @@ namespace Hopper.Test_Content.Floor
             public ChainDefBuilder CreateBuilder() => new ChainDefBuilder()
 
                 .AddDef(Controllable.Chains[InputMapping.Vector])
-                .AddHandler(NoAction, PriorityRanks.High)
+                .AddHandler(NoAction, PriorityRank.High)
 
                 .AddDef(Acting.Success)
-                .AddHandler(SlideInstead, PriorityRanks.High)
+                .AddHandler(SlideInstead, PriorityRank.High)
 
                 .AddDef(Acting.Fail)
-                .AddHandler(SlideInstead, PriorityRanks.High)
+                .AddHandler(SlideInstead, PriorityRank.High)
 
                 .AddDef(Tick.Chain)
-                .AddHandler(ResetDidSlide, PriorityRanks.High)
+                .AddHandler(ResetDidSlide, PriorityRank.High)
 
                 // .AddDef(Pushable.Do)
                 // .AddHandler(ChangeDirection, PriorityRanks.Low)

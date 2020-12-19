@@ -32,13 +32,13 @@ namespace Hopper.Test_Content.Bind
                 return new ChainDefBuilder()
 
                     .AddDef<Attacking.Event>(Attacking.Check)
-                    .AddHandler(AttackJustMe, PriorityRanks.High)
+                    .AddHandler(AttackJustMe, PriorityRank.High)
 
                     .AddDef<Tick.Event>(Tick.Chain)
-                    .AddHandler(SelfRemove, PriorityRanks.High)
+                    .AddHandler(SelfRemove, PriorityRank.High)
 
                     .AddDef<Displaceable.Event>(Displaceable.Do)
-                    .AddHandler(DisplaceMe, PriorityRanks.Low)
+                    .AddHandler(DisplaceMe, PriorityRank.Low)
 
                     // TODO: ignore any source of attack but the basic. 
 

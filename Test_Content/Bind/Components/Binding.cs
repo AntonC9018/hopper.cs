@@ -15,10 +15,10 @@ namespace Hopper.Test_Content.Bind
 
         public static readonly SimpleStatPath<Bind> Path =
             new SimpleStatPath<Bind>("status/bind");
-        public static readonly Retoucher StopMoveRetoucher =
-            BindRetouchers.CreateBindRetoucher(Bind.StopMoveStatus);
         public static readonly BindStatus StopMoveStatus =
             BindStatuses.CreateStopMoveBindStatus();
+        public static readonly Retoucher StopMoveRetoucher =
+            BindRetouchers.CreateBindRetoucher(Bind.StopMoveStatus);
     }
 
     public class Binding : Behavior, IInitable<BindStatus>, IStandartActivateable

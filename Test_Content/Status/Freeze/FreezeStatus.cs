@@ -3,15 +3,14 @@ using Hopper.Core;
 using Hopper.Test_Content.Utils;
 using Hopper.Utils.Chains;
 
-namespace Hopper.Test_Content.Status.Freeze
+namespace Hopper.Test_Content.Status.Freezing
 {
     public class FreezeStatus : Status<FreezeData>
     {
-        public static readonly FreezeStatus Status;
         private static readonly ChainDefBuilder builder;
 
         public FreezeStatus(int defaultResValue)
-            : base(builder.ToStatic(), FreezeStat.Path, defaultResValue)
+            : base(builder.ToStatic(), Freeze.Path, defaultResValue)
         {
         }
 
@@ -52,8 +51,7 @@ namespace Hopper.Test_Content.Status.Freeze
         static FreezeStatus()
         {
             builder = new ChainDefBuilder()
-                .AddHandler_InsteadOf_Attack_Dig_Move(Handlers.StopPropagate, PriorityRanks.High);
-            Status = new FreezeStatus(1);
+                .AddHandler_InsteadOf_Attack_Dig_Move(Handlers.StopPropagate, PriorityRank.High);
         }
     }
 }

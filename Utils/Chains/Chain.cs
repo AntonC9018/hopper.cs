@@ -9,10 +9,14 @@ namespace Hopper.Utils.Chains
 
     public class Chain<Event> : Chain where Event : EventBase
     {
-        public const int NUM_PRIORITY_RANKS = (int)PriorityRanks.Highest + 1;
-        public const int PRIORITY_STEP = 5;
+        public const int NUM_PRIORITY_RANKS = (int)PriorityRank.Highest + 1;
+        public const int PRIORITY_STEP = 0x08;
         private int[] m_priorityRanksMap = {
-            5000, 6000, 7000, 8000, 9000
+            PriorityMapping.Lowest,
+            PriorityMapping.Low,
+            PriorityMapping.Medium,
+            PriorityMapping.High,
+            PriorityMapping.Highest,
         };
         protected bool b_dirty;
 
@@ -46,7 +50,7 @@ namespace Hopper.Utils.Chains
 
         public Handle<Event> AddHandler(
             System.Action<Event> handlerFunction,
-            PriorityRanks priority = PriorityRanks.Default)
+            PriorityRank priority = PriorityRank.Default)
         {
             return AddHandler(new EvHandler<Event>(handlerFunction, priority));
         }

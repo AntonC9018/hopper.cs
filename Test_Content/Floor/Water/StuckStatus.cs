@@ -34,11 +34,11 @@ namespace Hopper.Test_Content.Floor
             {
                 return new ChainDefBuilder()
                     .AddDef(Attacking.Do)
-                    .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
+                    .AddHandler(PreventActionAndDecreaseAmount, PriorityRank.High)
                     .AddDef(Digging.Do)
-                    .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
+                    .AddHandler(PreventActionAndDecreaseAmount, PriorityRank.High)
                     .AddDef(Displaceable.Do)
-                    .AddHandler(PreventActionAndDecreaseAmount, PriorityRanks.High)
+                    .AddHandler(PreventActionAndDecreaseAmount, PriorityRank.High)
                     .End();
             }
 

@@ -97,7 +97,7 @@ namespace Hopper.Core.Behaviors.Basic
             DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(ConvertFromMove, PriorityRanks.High)
+                .AddHandler(ConvertFromMove, PriorityRank.High)
 
                 .AddTemplate<Event>(ChainName.Do)
                 .AddHandler(DisplaceRemove)

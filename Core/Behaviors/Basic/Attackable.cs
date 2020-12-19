@@ -111,16 +111,15 @@ namespace Hopper.Core.Behaviors.Basic
             DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(SetResistance, PriorityRanks.High)
-                .AddHandler(ResistSource, PriorityRanks.Low)
-                .AddHandler(Armor, PriorityRanks.Low)
+                .AddHandler(SetResistance, PriorityMapping.Medium + 0x8000)
+                .AddHandler(ResistSource, PriorityMapping.Low + 0x8000)
+                .AddHandler(Armor, PriorityRank.Low + 0x2000)
 
                 .AddTemplate<Event>(ChainName.Do)
-                .AddHandler(TakeHit)
-                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacked_do))
+                .AddHandler(TakeHit, PriorityMapping.Low + 0x8000)
+                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacked_do), PriorityMapping.Low + 0x2000)
 
                 .End();
         }
-
     }
 }

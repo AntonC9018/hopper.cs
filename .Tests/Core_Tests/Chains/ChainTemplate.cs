@@ -60,8 +60,8 @@ namespace Hopper.Tests
         [Test]
         public void HandlerPriority_WorksCorrectly()
         {
-            chainTemplate.AddHandler(handler_World.Function, PriorityRanks.Low);
-            chainTemplate.AddHandler(handler_Hello.Function, PriorityRanks.High);
+            chainTemplate.AddHandler(handler_World.Function, PriorityRank.Low);
+            chainTemplate.AddHandler(handler_Hello.Function, PriorityRank.High);
             var chain = (Chain<EventBase>)chainTemplate.Init();
             chain.Pass(ev);
             Assert.AreEqual("HelloWorld", recorder.recordedSequence);
@@ -70,8 +70,8 @@ namespace Hopper.Tests
         [Test]
         public void OrderOfHandlers_IsCorrect_ForRepeatedInits()
         {
-            chainTemplate.AddHandler(handler_World.Function, PriorityRanks.Low);
-            chainTemplate.AddHandler(handler_Hello.Function, PriorityRanks.High);
+            chainTemplate.AddHandler(handler_World.Function, PriorityRank.Low);
+            chainTemplate.AddHandler(handler_Hello.Function, PriorityRank.High);
 
             var chain = (Chain<EventBase>)chainTemplate.Init();
             chain.Pass(ev);
