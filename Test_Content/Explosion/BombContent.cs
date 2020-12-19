@@ -3,7 +3,7 @@ using Hopper.Core.Registries;
 
 namespace Hopper.Test_Content.Explosion
 {
-    public class BombContent : ISubMod
+    internal class BombContent : ISubMod
     {
         public void RegisterSelf(ModRegistry registry)
         {

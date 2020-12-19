@@ -3,7 +3,7 @@ using Hopper.Core.Registries;
 
 namespace Hopper.Test_Content.Floor
 {
-    public class WallsContent : ISubMod
+    internal class WallsContent : ISubMod
     {
         public void RegisterSelf(ModRegistry registry)
         {

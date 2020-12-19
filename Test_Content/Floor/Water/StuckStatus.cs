@@ -7,7 +7,6 @@ namespace Hopper.Test_Content.Floor
 {
     public class StuckStatus : Status<StuckData>
     {
-        public static readonly StuckStatus Status = Create(1);
 
         public static StuckStatus Create(int defaultResValue)
         {
@@ -19,7 +18,7 @@ namespace Hopper.Test_Content.Floor
         }
 
         public StuckStatus(IChainDef[] chainDefs, int defaultResValue)
-            : base(chainDefs, StuckStat.Path, defaultResValue)
+            : base(chainDefs, Stuck.Path, defaultResValue)
         {
         }
 

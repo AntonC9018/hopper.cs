@@ -13,7 +13,12 @@ namespace Hopper.Test_Content.Bind
             amount = System.Int32.MaxValue;
         }
 
-        public static readonly SimpleStatPath<Bind> Path = new SimpleStatPath<Bind>("status/bind");
+        public static readonly SimpleStatPath<Bind> Path =
+            new SimpleStatPath<Bind>("status/bind");
+        public static readonly Retoucher StopMoveRetoucher =
+            BindRetouchers.CreateBindRetoucher(Bind.StopMoveStatus);
+        public static readonly BindStatus StopMoveStatus =
+            BindStatuses.CreateStopMoveBindStatus();
     }
 
     public class Binding : Behavior, IInitable<BindStatus>, IStandartActivateable

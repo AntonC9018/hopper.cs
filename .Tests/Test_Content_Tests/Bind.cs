@@ -48,7 +48,7 @@ namespace Hopper.Tests.Test_Content
 
             world.Loop();
 
-            Assert.That(BindStatuses.StopMove.IsApplied(player));
+            Assert.That(Bind.StopMoveStatus.IsApplied(player));
             Assert.AreEqual(player.Pos, spider.Pos);
             Assert.AreEqual(2, zero_zero_cell.m_entities.Count);
             Assert.AreEqual(player, zero_zero_cell.m_entities[0]);
@@ -56,7 +56,7 @@ namespace Hopper.Tests.Test_Content
             player.Behaviors.Get<Acting>().NextAction = move_action.WithDir(IntVector2.Right);
             world.Loop();
 
-            Assert.That(BindStatuses.StopMove.IsApplied(player));
+            Assert.That(Bind.StopMoveStatus.IsApplied(player));
             Assert.AreEqual(IntVector2.Zero, player.Pos);
             Assert.AreEqual(player.Pos, spider.Pos);
 
@@ -80,7 +80,7 @@ namespace Hopper.Tests.Test_Content
             spider.Die();
             world.Loop();
 
-            Assert.That(BindStatuses.StopMove.IsApplied(player) == false);
+            Assert.That(Bind.StopMoveStatus.IsApplied(player) == false);
 
             player.Behaviors.Get<Acting>().NextAction = move_action.WithDir(IntVector2.Right);
             world.Loop();

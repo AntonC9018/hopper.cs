@@ -5,7 +5,7 @@ using Hopper.Test_Content.Status.Freeze;
 
 namespace Hopper.Test_Content.Status
 {
-    public class StatusContent : ISubMod
+    internal class StatusContent : ISubMod
     {
         public void RegisterSelf(ModRegistry registry)
         {

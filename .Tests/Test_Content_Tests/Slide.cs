@@ -78,7 +78,7 @@ namespace Hopper.Tests.Test_Content
             // the sliding does not affect the actual position directly. 
             // It simply applies a status effect.
             Assert.AreEqual(new IntVector2(1, 1), player.Pos);
-            Assert.That(SlideStatus.Status.IsApplied(player));
+            Assert.That(Slide.Status.IsApplied(player));
 
             // Voluntary moving gets prevented by changing the default action
             var calculatedAction = player.Behaviors.Get<Controllable>()
@@ -97,11 +97,11 @@ namespace Hopper.Tests.Test_Content
             var ice_floor_below = world.SpawnEntity(IceFloor.Factory, new IntVector2(2, 2));
             PushPlayer(new IntVector2(0, 1));
 
-            var x = (SlideData)player.Tinkers.GetStore(SlideStatus.Status.m_tinker);
+            var x = (SlideData)player.Tinkers.GetStore(Slide.Status.m_tinker);
 
             Assert.AreEqual(new IntVector2(2, 2), player.Pos);
             Assert.AreEqual(new IntVector2(0, 1), x.currentDirection);
-            Assert.That(SlideStatus.Status.IsApplied(player));
+            Assert.That(Slide.Status.IsApplied(player));
 
             world.Loop();
 

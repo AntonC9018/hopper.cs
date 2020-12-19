@@ -30,22 +30,22 @@ namespace Hopper.Test_Content.Floor
 
         private void ListenCell()
         {
-            this.GetCell().EnterEvent += Stuck;
-            this.GetCell().LeaveEvent += UnStuck;
+            this.GetCell().EnterEvent += ApplyStuck;
+            this.GetCell().LeaveEvent += RemoveStuck;
             DieEvent += DieHandler;
         }
 
-        private void Stuck(Entity entity)
+        private void ApplyStuck(Entity entity)
         {
             if (entity.Layer.IsOfLayer(m_targetedLayer))
             {
-                StuckStatus.Status.TryApplyAuto(this, entity);
+                Stuck.Status.TryApplyAuto(this, entity);
             }
         }
 
-        private void UnStuck(Entity entity)
+        private void RemoveStuck(Entity entity)
         {
-            var status = StuckStatus.Status;
+            var status = Stuck.Status;
             if (status.IsApplied(entity))
             {
                 status.m_tinker.GetStore(entity).amount = 0;
@@ -54,11 +54,11 @@ namespace Hopper.Test_Content.Floor
 
         private void DieHandler()
         {
-            this.GetCell().EnterEvent -= Stuck;
-            this.GetCell().LeaveEvent -= UnStuck;
+            this.GetCell().EnterEvent -= ApplyStuck;
+            this.GetCell().LeaveEvent -= RemoveStuck;
             foreach (var ent in this.GetCell().GetAllFromLayer(m_targetedLayer))
             {
-                UnStuck(ent);
+                RemoveStuck(ent);
             }
         }
     }

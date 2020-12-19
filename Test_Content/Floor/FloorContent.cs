@@ -3,12 +3,12 @@ using Hopper.Core.Registries;
 
 namespace Hopper.Test_Content.Floor
 {
-    public class FloorContent : ISubMod
+    internal class FloorContent : ISubMod
     {
         public void RegisterSelf(ModRegistry registry)
         {
-            SlideStatus.Status.RegisterSelf(registry);
-            StuckStatus.Status.RegisterSelf(registry);
+            Slide.Status.RegisterSelf(registry);
+            Stuck.Status.RegisterSelf(registry);
 
             IceFloor.Factory.RegisterSelf(registry);
             Water.Factory.RegisterSelf(registry);
@@ -22,8 +22,8 @@ namespace Hopper.Test_Content.Floor
 
         public void Patch(PatchArea patchArea)
         {
-            SlideStatus.Status.Patch(patchArea);
-            StuckStatus.Status.Patch(patchArea);
+            Stuck.Status.Patch(patchArea);
+            Stuck.Status.Patch(patchArea);
         }
 
         public void PostPatch(PatchArea patchArea)

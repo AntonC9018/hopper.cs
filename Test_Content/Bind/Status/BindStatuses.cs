@@ -10,8 +10,6 @@ namespace Hopper.Test_Content.Bind
 {
     public class BindStatuses
     {
-        public static readonly BindStatus StopMove = CreateStopMoveBindStatus();
-
         public static BindStatus CreateStopMoveBindStatus()
         {
             var lambdas = new Lambdas();

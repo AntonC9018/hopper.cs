@@ -52,9 +52,9 @@ namespace Hopper.Test_Content.Bind
                 .AddBehavior(Sequential.Preset(new Sequential.Config(CreateSequenceData())))
                 .AddBehavior(Displaceable.Preset)
                 .AddBehavior(Moving.Preset)
-                .AddBehavior(Binding.Preset(BindStatuses.StopMove))
+                .AddBehavior(Binding.Preset(Bind.StopMoveStatus))
                 .AddBehavior(Attackable.DefaultPreset)
-                .Retouch(BindRetouchers.StopMoveRetoucher);
+                .Retouch(Bind.StopMoveRetoucher);
         }
     }
 }

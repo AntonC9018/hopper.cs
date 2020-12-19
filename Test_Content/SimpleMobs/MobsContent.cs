@@ -4,7 +4,7 @@ using Hopper.Core.Retouchers;
 
 namespace Hopper.Test_Content.SimpleMobs
 {
-    public class MobsContent : ISubMod
+    internal class MobsContent : ISubMod
     {
         public void RegisterSelf(ModRegistry registry)
         {

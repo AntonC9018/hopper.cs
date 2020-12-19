@@ -7,20 +7,18 @@ namespace Hopper.Test_Content.Bind
 {
     public static class BindRetouchers
     {
-        public static readonly Retoucher StopMoveRetoucher = CreateBindRetoucher(BindStatuses.StopMove);
-
         public static Retoucher CreateBindRetoucher(BindStatus bindStatus)
         {
             var lambdas = new Lambdas(bindStatus);
             var builder = new TemplateChainDefBuilder()
 
-                .AddDef<Tick.Event>(Tick.Chain)
+                .AddDef(Tick.Chain)
                 .AddHandler(FreeIfHostIsDead, PriorityRanks.High)
 
-                .AddDef<Binding.Event>(Binding.Do)
+                .AddDef(Binding.Do)
                 .AddHandler(lambdas.Register)
 
-                .AddDef<Displaceable.Event>(Displaceable.Check)
+                .AddDef(Displaceable.Check)
                 .AddHandler(SkipDisplaceIfBinding)
 
                 .End();

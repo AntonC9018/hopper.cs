@@ -3,7 +3,7 @@ using Hopper.Core.Registries;
 
 namespace Hopper.Test_Content.Trap
 {
-    public class TrapContent : ISubMod
+    internal class TrapContent : ISubMod
     {
         public void RegisterSelf(ModRegistry registry)
         {

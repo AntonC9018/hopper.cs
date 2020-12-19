@@ -8,7 +8,6 @@ namespace Hopper.Test_Content.Floor
 {
     public class SlideStatus : Status<SlideData>
     {
-        public static readonly SlideStatus Status = Create(1);
         public static SlideStatus Create(int defaultResValue)
         {
             var lambdas = new Lambdas();

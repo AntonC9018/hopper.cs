@@ -4,7 +4,7 @@ using Hopper.Core.Retouchers;
 
 namespace Hopper.Test_Content.Boss
 {
-    public class BossContent : ISubMod
+    internal class BossContent : ISubMod
     {
         public void RegisterSelf(ModRegistry registry)
         {

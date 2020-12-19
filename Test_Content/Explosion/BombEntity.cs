@@ -14,7 +14,7 @@ namespace Hopper.Test_Content.Explosion
         public static readonly SimpleAction DefaultExplodeAction;
         public static readonly SimpleAction DieAction;
         public static readonly JoinedAction DieAndExplodeAction;
-        private static Step[] Steps;
+        private static readonly Step[] Steps;
 
         public static EntityFactory<BombEntity> CreateFactory()
         {
