@@ -80,7 +80,7 @@ namespace Hopper.Core.Behaviors.Basic
         private static void TakeHit(Event ev)
         {
             // if pierce is high enough, resist the taken damage altogether
-            if (ev.resistance.pierce > ev.atkParams.attack.pierce)
+            if (ev.resistance.pierce <= ev.atkParams.attack.pierce)
             {
                 ev.actor.Behaviors.TryGet<Damageable>()?.Activate(ev.atkParams.attack.damage);
             }
