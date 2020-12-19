@@ -1,6 +1,4 @@
-using Hopper.Utils;
 using Hopper.Utils.Vector;
-using System.Collections.Generic;
 
 namespace Hopper.Core
 {

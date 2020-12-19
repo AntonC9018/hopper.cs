@@ -15,7 +15,7 @@ namespace Hopper.Core
         GOLD = 0b_0001_0000,
         FLOOR = 0b_0010_0000,
         TRAP = 0b_0100_0000,
-        DROPPED = 0b_1000_0000
+        DROPPED = 0b_1000_0000,
     }
 
     public static class ExtendedLayer

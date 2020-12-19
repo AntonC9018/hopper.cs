@@ -68,8 +68,14 @@ namespace Hopper.Test_Content.Explosion
             {
                 target.entity.Behaviors.Get<Attackable>()
                     .Activate(knockbackDir, CreateMeta());
-                target.entity.Behaviors.TryGet<Pushable>()?
-                    .Activate(knockbackDir, BasePush);
+                target.entity.Behaviors.TryGet<Pushable>()
+                    ?.Activate(knockbackDir, BasePush);
+
+                // complete block stops consequent exposions (kind of ugly, leave for now)
+                if (target.entity.Layer == ExtendedLayer.BLOCK)
+                {
+                    break;
+                }
             }
             // spawn particles through some mechanism 
             EventPath.Fire(world, pos);

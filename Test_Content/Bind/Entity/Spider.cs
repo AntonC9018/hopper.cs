@@ -1,7 +1,6 @@
 using System.Runtime.Serialization;
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
-using Hopper.Utils;
 
 namespace Hopper.Test_Content.Bind
 {
@@ -9,10 +8,9 @@ namespace Hopper.Test_Content.Bind
     public class Spider : Entity, ISelfBinder
     {
         public static readonly EntityFactory<Spider> Factory = CreateFactory();
-        public Spider() : base() { }
 
-        [DataMember]
-        public Entity BoundEntity { get; set; }
+        [DataMember] public Entity BoundEntity { get; set; }
+        public override Layer Layer => BoundEntity == null ? Layer.REAL : ExtendedLayer.BLOCK;
 
         private static Step[] CreateSequenceData()
         {
