@@ -49,7 +49,6 @@ namespace Hopper.Test_Content.Floor
         // if we change direction during sliding, apply the newest one
         protected override void Reapply(SlideData existingData, SlideData newData)
         {
-            System.Console.WriteLine("Reapplying");
             existingData.currentDirection = newData.currentDirection;
         }
 

@@ -94,20 +94,22 @@ namespace Hopper.Core.Targeting
             weaponEvent.targets = newTargets;
         }
 
-        public static Chain<TargetEvent<AtkTarget>> DefaultAtkChain;
-        public static Chain<TargetEvent<AtkTarget>> MultiAtkChain;
+        public static StaticChain<TargetEvent<AtkTarget>> DefaultAtkChain;
+        public static StaticChain<TargetEvent<AtkTarget>> MultiAtkChain;
 
         static Handlers()
         {
-            DefaultAtkChain = new Chain<TargetEvent<AtkTarget>>();
-            DefaultAtkChain.AddHandler(LeaveAttackableAndBlocks);
-            DefaultAtkChain.AddHandler(DiscardUnreachable);
-            DefaultAtkChain.AddHandler(TakeFirst_ThatCanBeAttacked_ByDefault);
+            DefaultAtkChain = new StaticChain<TargetEvent<AtkTarget>>(
+                LeaveAttackableAndBlocks,
+                DiscardUnreachable,
+                TakeFirst_ThatCanBeAttacked_ByDefault
+            );
 
-            MultiAtkChain = new Chain<TargetEvent<AtkTarget>>();
-            MultiAtkChain.AddHandler(LeaveAttackableAndBlocks);
-            MultiAtkChain.AddHandler(DiscardUnreachable);
-            MultiAtkChain.AddHandler(TakeAll_ThatCanBeAttacked_ByDefault);
+            MultiAtkChain = new StaticChain<TargetEvent<AtkTarget>>(
+                LeaveAttackableAndBlocks,
+                DiscardUnreachable,
+                TakeAll_ThatCanBeAttacked_ByDefault
+            );
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Hopper.Core.Targeting
 
         public static BufferedAtkTargetProvider CreateAtk(
             IPattern pattern,
-            Chain<TargetEvent<AtkTarget>> chain
+            StaticChain<TargetEvent<AtkTarget>> chain
         )
         {
             return new BufferedAtkTargetProvider(
@@ -22,7 +22,7 @@ namespace Hopper.Core.Targeting
 
         public static BufferedAtkTargetProvider CreateAtk(
             IPattern pattern,
-            Chain<TargetEvent<AtkTarget>> chain,
+            StaticChain<TargetEvent<AtkTarget>> chain,
             System.Func<TargetEvent<AtkTarget>, bool> stop
         )
         {

@@ -21,7 +21,6 @@ namespace Hopper.Test_Content.Floor
 
         private void TryApplySliding(Entity entity)
         {
-            System.Console.WriteLine($"ENTITIY ENTERED WITH COORDINSTED {entity.Pos}");
             if (ShouldApplySliding(entity))
             {
                 // an alternative way of getting the vector of movement

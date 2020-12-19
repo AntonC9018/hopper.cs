@@ -9,13 +9,13 @@ namespace Hopper.Core.Targeting
     public class BufferedAtkTargetProvider : IBufferedAtkTargetProvider
     {
         private IPattern m_pattern;
-        private Chain<TargetEvent<AtkTarget>> m_chain;
+        private StaticChain<TargetEvent<AtkTarget>> m_chain;
         private System.Func<TargetEvent<AtkTarget>, bool> m_stopFunc;
         private Layer m_targetLayer;
 
         public BufferedAtkTargetProvider(
             IPattern pattern,
-            Chain<TargetEvent<AtkTarget>> chain,
+            StaticChain<TargetEvent<AtkTarget>> chain,
             System.Func<TargetEvent<AtkTarget>, bool> stopFunc,
             Layer targetLayer)
         {
