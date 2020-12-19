@@ -10,7 +10,7 @@ namespace Hopper.Test_Content.Bind
         public static readonly EntityFactory<Spider> Factory = CreateFactory();
 
         [DataMember] public Entity BoundEntity { get; set; }
-        public override Layer Layer => BoundEntity == null ? Layer.REAL : ExtendedLayer.BLOCK;
+        public override Layer Layer => BoundEntity == null ? Layer.REAL : ExtendedLayer.ABOVE;
 
         private static Step[] CreateSequenceData()
         {

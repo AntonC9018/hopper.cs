@@ -71,13 +71,14 @@ namespace Hopper.Tests.Test_Content
             Assert.AreEqual(player.Pos, spider.Pos);
             Assert.AreEqual(player, player.GetCell().m_entities[0]);
 
-            // var test_enemy = world.SpawnEntity(Skeleton.Factory, new IntVector2(1, 1));
-            // world.Loop();
+            var test_enemy = world.SpawnEntity(Skeleton.Factory, player.Pos + new IntVector2(1, 0));
+            world.Loop();
 
-            // Assert.That(player.History.Updates.Any(update => update.updateCode == UpdateCode.attacked_do));
-            // Assert.That(!spider.History.Updates.Any(update => update.updateCode == UpdateCode.attacked_do));
+            Assert.That(player.History.Updates.Any(update => update.updateCode == UpdateCode.attacked_do));
+            Assert.That(!spider.History.Updates.Any(update => update.updateCode == UpdateCode.attacked_do));
 
             spider.Die();
+            test_enemy.Die();
             world.Loop();
 
             Assert.That(Bind.StopMoveStatus.IsApplied(player) == false);

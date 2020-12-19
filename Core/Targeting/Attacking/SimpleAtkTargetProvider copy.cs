@@ -20,7 +20,7 @@ namespace Hopper.Core.Targeting
             Cell cell = spot.GetCellRelative(direction);
             if (cell != null && cell.HasBlock(direction, m_skipLayer) == false)
             {
-                Entity entity = cell.GetEntityFromLayer(direction, Layer.WALL);
+                Entity entity = cell.GetEntityFromLayer(direction, m_targetLayer);
                 if (entity != null
                     && entity.Behaviors.Has<Attackable>()
                     && entity.Behaviors.Get<Attackable>().IsAttackable(spot))

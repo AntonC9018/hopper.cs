@@ -1,21 +1,22 @@
 using Hopper.Core.Registries;
 using System.Linq;
 using Hopper.Core.Behaviors.Basic;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Retouchers
 {
     public static class Skip
     {
         public static readonly Retoucher EmptyAttack = Retoucher
-            .SingleHandlered<Attacking.Event>(Attacking.Check, SkipEmptyAttack);
+            .SingleHandlered<Attacking.Event>(Attacking.Check, SkipEmptyAttack, PriorityRank.Low);
         public static readonly Retoucher EmptyDig = Retoucher
-            .SingleHandlered<Digging.Event>(Digging.Check, SkipEmptyDig);
+            .SingleHandlered<Digging.Event>(Digging.Check, SkipEmptyDig, PriorityRank.Low);
         public static readonly Retoucher BlockedMove = Retoucher
-            .SingleHandlered<Moving.Event>(Moving.Check, SkipBlocked);
+            .SingleHandlered<Moving.Event>(Moving.Check, SkipBlocked, PriorityRank.Low);
         public static readonly Retoucher NoPlayer = Retoucher
-            .SingleHandlered<Attacking.Event>(Attacking.Check, SkipNoPlayer);
+            .SingleHandlered<Attacking.Event>(Attacking.Check, SkipNoPlayer, PriorityRank.Low);
         public static readonly Retoucher Self = Retoucher
-            .SingleHandlered<Attacking.Event>(Attacking.Check, SkipSelf);
+            .SingleHandlered<Attacking.Event>(Attacking.Check, SkipSelf, PriorityRank.Low);
 
         public static void RegisterAll(ModRegistry registry)
         {
@@ -43,8 +44,7 @@ namespace Hopper.Core.Retouchers
 
         private static void SkipNoPlayer(Attacking.Event ev)
         {
-            ev.propagate = ev.targets
-                .Any(t => t.entity.IsPlayer);
+            ev.propagate = ev.targets.Any(t => t.entity.IsPlayer);
         }
 
         private static void SkipSelf(Attacking.Event ev)

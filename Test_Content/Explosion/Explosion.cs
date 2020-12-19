@@ -39,7 +39,8 @@ namespace Hopper.Test_Content.Explosion
             | Layer.REAL
             | Layer.TRAP
             | Layer.FLOOR
-            | Layer.WALL;
+            | Layer.WALL
+            | ExtendedLayer.ABOVE;
 
         private static readonly Layer SkipLayer = 0;
         private static readonly MultiAtkTargetProvider targetProvider =
@@ -72,7 +73,7 @@ namespace Hopper.Test_Content.Explosion
                     ?.Activate(knockbackDir, BasePush);
 
                 // complete block stops consequent exposions (kind of ugly, leave for now)
-                if (target.entity.Layer == ExtendedLayer.BLOCK)
+                if (target.entity.Layer.IsOfLayer(ExtendedLayer.ABOVE))
                 {
                     break;
                 }
