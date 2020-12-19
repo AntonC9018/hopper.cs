@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hopper.Core.Items;
 using Hopper.Core.Stats;
 using Hopper.Utils;
 
@@ -7,6 +8,7 @@ namespace Hopper.Core.Registries
     public class PatchArea
     {
         public DefaultStats DefaultStats;
+        public Pools DefaultPools;
         private Dictionary<System.Type, IPatchSubArea<IPatch>> PatchRegistries;
         public readonly Registry registry;
 

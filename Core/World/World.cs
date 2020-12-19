@@ -11,7 +11,7 @@ namespace Hopper.Core
     {
         public GridManager Grid { get; private set; }
         public WorldStateManager State { get; private set; }
-        public Pools m_pools = new Pools();
+        public Pools m_pools;
         public Dictionary<int, IWorldEvent> m_events;
         public PatchArea m_currentRepository;
 
@@ -39,6 +39,8 @@ namespace Hopper.Core
             m_events = new Dictionary<int, IWorldEvent>();
             m_id = 1;
             m_currentRepository = patchArea;
+            // add possibility of cipying this from another world
+            m_pools = patchArea.DefaultPools.Copy();
         }
 
         public void Loop()

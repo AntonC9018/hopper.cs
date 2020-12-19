@@ -1,7 +1,7 @@
 using Hopper.Core.Mods;
 using Hopper.Test_Content;
 
-namespace Hopper.Tests.Test_Content
+namespace Hopper.Tests
 {
     public static class SetupThing
     {

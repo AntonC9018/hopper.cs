@@ -6,8 +6,8 @@ namespace Hopper.Core.Registries
 {
     public class Registry
     {
-        private Dictionary<Type, IKindRegistry<IKind>> m_kindRegistries;
-        private Dictionary<int, ModRegistry> m_modRegistries;
+        public readonly Dictionary<Type, IKindRegistry<IKind>> m_kindRegistries;
+        public readonly Dictionary<int, ModRegistry> m_modRegistries;
 
         public Registry()
         {

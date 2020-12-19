@@ -20,10 +20,7 @@ namespace Hopper.Core.Behaviors.Basic
 
         public void Init(IContentSpec spec)
         {
-            // TODO:
-            // m_entity.InitEvent +=
-            //     () => m_content = config.contentSpec.CreateContent(
-            //         m_entity.World.m_pools, m_entity.World.m_currentRepository);
+            m_entity.InitEvent += () => m_content = spec.CreateContent(m_entity.World.m_pools);
         }
 
         public bool Activate()

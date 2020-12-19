@@ -41,6 +41,7 @@ namespace Hopper.Core.Items
                 {
                     subpool.items.Add(m_items[it.id]);
                 }
+                subpool.InitializeDeck(m_rng);
             }
         }
 
@@ -98,7 +99,7 @@ namespace Hopper.Core.Items
             }
         }
 
-        public SuperPool<SP> Copy()
+        public ISuperPool Copy()
         {
             return new SuperPool<SP>(this);
         }
