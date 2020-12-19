@@ -27,15 +27,6 @@ namespace Hopper.Test_Content.Bind
             return new Retoucher(builder.ToStatic());
         }
 
-        private static void NoExplosion(Attackable.Event ev)
-        {
-            System.Console.WriteLine(ev.atkParams.attack.sourceId);
-            if (ev.atkParams.attack.sourceId == Explosion.Explosion.AtkSource.Id)
-            {
-                ev.atkParams.attack.damage = 0;
-            }
-        }
-
         private class Lambdas
         {
             public BindStatus status;
