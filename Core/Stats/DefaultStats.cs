@@ -17,20 +17,20 @@ namespace Hopper.Core.Stats
         public DefaultStats Set<T>(IStatPath<T> statPath, T value)
             where T : File, new()
         {
-            statManager.GetRaw(statPath.String, value);
+            statManager.GetRawLazy(statPath.String, value);
             return this;
         }
 
         public DefaultStats Set<T>(string path, T value)
             where T : File, new()
         {
-            statManager.GetRaw(path, value);
+            statManager.GetRawLazy(path, value);
             return this;
         }
 
         public DefaultStats SetAtIndex(IStatPath<DictFile> statPath, int index, int value)
         {
-            statManager.GetRaw(statPath.String, statPath.GetDefault(Repository))[index] = value;
+            statManager.GetRawLazy(statPath.String, statPath.GetDefault(Repository))[index] = value;
             return this;
         }
     }

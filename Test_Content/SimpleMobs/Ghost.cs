@@ -35,7 +35,7 @@ namespace Hopper.Test_Content
                 .AddBehavior(Pushable.Preset)
                 .AddBehavior(Acting.Preset(new Acting.Config(Algos.EnemyAlgo)))
                 .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)))
-                .AddBehavior(Damageable.Preset(5))
+                .AddBehavior(Damageable.Preset)
                 .Retouch(TeleportAfterAttackRetoucher);
         }
 

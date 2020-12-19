@@ -25,7 +25,7 @@ namespace Hopper.Test_Content.Floor
         public static EntityFactory<RealBarrier> CreateBarrierFactory() =>
             RealBarrier.CreateFactory()
                 .AddBehavior(Attackable.DefaultPreset)
-                .AddBehavior(Damageable.Preset(5));
+                .AddBehavior(Damageable.Preset);
 
         private static Layer TargetedLayer = Layer.REAL;
 

@@ -18,7 +18,7 @@ namespace Hopper.Core
                 .AddBehavior(Displaceable.Preset)
                 // .AddBehavior(Controllable.Preset) // needs to be reconfigured
                 .AddBehavior(Attackable.DefaultPreset)
-                .AddBehavior(Damageable.Preset(5))
+                .AddBehavior(Damageable.Preset)
                 .AddBehavior(Attacking.Preset)
                 .AddBehavior(Digging.Preset)
                 .AddBehavior(Pushable.Preset)

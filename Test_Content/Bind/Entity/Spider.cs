@@ -52,7 +52,7 @@ namespace Hopper.Test_Content.Bind
                 .AddBehavior(Moving.Preset)
                 .AddBehavior(Binding.Preset(Bind.StopMoveStatus))
                 .AddBehavior(Attackable.DefaultPreset)
-                .AddBehavior(Damageable.Preset(2))
+                .AddBehavior(Damageable.Preset)
                 .Retouch(Bind.StopMoveRetoucher);
         }
     }

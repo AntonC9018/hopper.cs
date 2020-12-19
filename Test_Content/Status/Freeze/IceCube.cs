@@ -27,7 +27,7 @@ namespace Hopper.Test_Content.Status.Freezing
                 .AddBehavior(Displaceable.Preset)
                 .AddBehavior(Attackable.DefaultPreset)
                 .AddBehavior(Pushable.Preset)
-                .AddBehavior(Damageable.Preset(5))
+                .AddBehavior(Damageable.Preset)
                 .Retouch(MoveCapturedRetoucher)
                 .AddDieListener(ReleaseOnDeath);
         }

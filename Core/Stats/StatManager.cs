@@ -112,13 +112,13 @@ namespace Hopper.Core.Stats
 
         // This one is probably going to be used just for initial setup
         // The question of attributing default, entity-specific stats is still open
-        public T GetRaw<T>(IStatPath<T> statPath) where T : File
+        public T GetRawLazy<T>(IStatPath<T> statPath) where T : File
         {
             var defaultValue = statPath.GetDefault(m_patchArea);
-            return GetRaw(statPath.String, defaultValue);
+            return GetRawLazy(statPath.String, defaultValue);
         }
 
-        public T GetRaw<T>(string path, T defaultFile) where T : File
+        public T GetRawLazy<T>(string path, T defaultFile) where T : File
         {
             var defaultValue = new StatFileContainer<T>(defaultFile);
             var statFile = (StatFileContainer<T>)m_fs.GetFileLazy(path, defaultValue);

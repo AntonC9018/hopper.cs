@@ -32,7 +32,7 @@ namespace Hopper.Test_Content.SimpleMobs
                 .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)))
                 .AddBehavior(Acting.Preset(new Acting.Config(Algos.StepBased)))
                 .AddBehavior(Moving.Preset)
-                .AddBehavior(Damageable.Preset(5))
+                .AddBehavior(Damageable.Preset)
                 .AddBehavior(Displaceable.Preset);
         }
 
