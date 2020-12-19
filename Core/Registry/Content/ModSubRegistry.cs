@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Hopper.Core.Registry
+namespace Hopper.Core.Registries
 {
     public class ModRegistry
     {

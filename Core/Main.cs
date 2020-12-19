@@ -6,7 +6,7 @@
 //      3. stat registering
 using Hopper.Core.Items;
 using Hopper.Core.Mods;
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 using Hopper.Core.Retouchers;
 using Hopper.Core.Stats.Basic;
 

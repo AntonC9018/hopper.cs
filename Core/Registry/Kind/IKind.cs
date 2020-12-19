@@ -1,4 +1,4 @@
-namespace Hopper.Core.Registry
+namespace Hopper.Core.Registries
 {
     /*
         `Kind` basically means static content that gets assigned an id by the Kind Registry.

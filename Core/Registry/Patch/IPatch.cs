@@ -1,4 +1,4 @@
-namespace Hopper.Core.Registry
+namespace Hopper.Core.Registries
 {
     // Initializes Patchable objects and/or Patch Subareas on the Patch Area
     public interface IPrePatch

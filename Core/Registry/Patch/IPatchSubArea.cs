@@ -1,4 +1,4 @@
-namespace Hopper.Core.Registry
+namespace Hopper.Core.Registries
 {
     // The motivation for this new type of registry is that
     // On initialization entity facctories require some additional data, dependent on the current registry

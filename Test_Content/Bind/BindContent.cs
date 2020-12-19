@@ -1,5 +1,5 @@
 using Hopper.Core;
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 
 namespace Hopper.Test_Content.Bind
 {

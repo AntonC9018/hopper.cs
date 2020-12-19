@@ -2,17 +2,19 @@ using System.Collections.Generic;
 using Hopper.Core.Stats;
 using Hopper.Utils;
 
-namespace Hopper.Core.Registry
+namespace Hopper.Core.Registries
 {
     public class PatchArea
     {
         public DefaultStats DefaultStats;
         private Dictionary<System.Type, IPatchSubArea<IPatch>> PatchRegistries;
+        public readonly Registry registry;
 
-        public PatchArea()
+        public PatchArea(Registry parentRegistry)
         {
             DefaultStats = new DefaultStats(this);
             PatchRegistries = new Dictionary<System.Type, IPatchSubArea<IPatch>>();
+            registry = parentRegistry;
         }
 
         public PatchSubArea<T> GetPatchSubRegistry<T>()

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 
 namespace Hopper.Core.Mods
 {
     public class ModResult
     {
         public ModsContent mods;
-        public Registry.Registry registry;
+        public Registries.Registry registry;
         public PatchArea patchArea;
     }
 
@@ -37,7 +37,7 @@ namespace Hopper.Core.Mods
             }
 
             // Prepare the registry
-            Registry.Registry registry = new Registry.Registry();
+            Registries.Registry registry = new Registries.Registry();
 
             // Run the `Kind` phase
             foreach (System.Type modType in modTypes)
@@ -48,7 +48,7 @@ namespace Hopper.Core.Mods
                 mod.RegisterSelf(modSubRegistry);
             }
 
-            PatchArea patchArea = new PatchArea();
+            PatchArea patchArea = new PatchArea(registry);
 
             // Run the `Pre_Patching` phase
             foreach (System.Type modType in modTypes)

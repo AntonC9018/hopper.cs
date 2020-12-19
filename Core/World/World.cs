@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Core.Items;
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core
@@ -11,7 +11,7 @@ namespace Hopper.Core
     {
         public GridManager Grid { get; private set; }
         public WorldStateManager State { get; private set; }
-        public PoolContainer m_pools = new PoolContainer();
+        public Pools m_pools = new Pools();
         public Dictionary<int, IWorldEvent> m_events;
         public PatchArea m_currentRepository;
 
@@ -138,11 +138,6 @@ namespace Hopper.Core
         {
             return SpawnDroppedItem(item, pos, IntVector2.Zero);
         }
-
-        // public void SpawnParticle(int id)
-        // {
-        //     SpawnParticleEvent?.Invoke(id);
-        // }
 
         public void InitializeWorldEvents()
         {

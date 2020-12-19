@@ -96,6 +96,7 @@ namespace Hopper.Core.Behaviors.Basic
 
         public static readonly Dictionary<InputMapping, ChainPaths<Controllable, Event>> Chains
             = new Dictionary<InputMapping, ChainPaths<Controllable, Event>>();
+
         public static readonly ChainTemplateBuilder DefaultBuilder;
         public static ConfigurableBehaviorFactory<Controllable, Action> Preset(Action defaultAction)
             => new ConfigurableBehaviorFactory<Controllable, Action>(DefaultBuilder, defaultAction);

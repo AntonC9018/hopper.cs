@@ -1,4 +1,4 @@
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 
 namespace Hopper.Core.Items
 {
@@ -11,9 +11,9 @@ namespace Hopper.Core.Items
             m_poolPath = poolPath;
         }
 
-        public IContent CreateContent(PoolContainer pools, Registry.Registry registry)
+        public IContent CreateContent(Pools pools)
         {
-            return pools.GetItem(m_poolPath, registry);
+            return pools.GetItem(m_poolPath);
         }
     }
 }

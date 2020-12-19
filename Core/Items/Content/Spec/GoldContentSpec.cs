@@ -1,4 +1,4 @@
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 
 namespace Hopper.Core.Items
 {
@@ -11,7 +11,7 @@ namespace Hopper.Core.Items
             this.amount = amount;
         }
 
-        public IContent CreateContent(PoolContainer pools, Registry.Registry registry)
+        public IContent CreateContent(Pools pools)
         {
             throw new System.NotImplementedException();
         }

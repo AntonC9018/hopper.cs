@@ -1,4 +1,4 @@
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 using System.Collections.Generic;
 using Hopper.Core.Behaviors;
 using Hopper.Core.Behaviors.Basic;
@@ -47,9 +47,9 @@ namespace Hopper.Core
             return entity;
         }
 
-        public void RegisterSelf(ModRegistry subRegistry)
+        public void RegisterSelf(ModRegistry registry)
         {
-            m_id = subRegistry.Add<IFactory<Entity>>(this);
+            m_id = registry.Add<IFactory<Entity>>(this);
         }
 
         public void PostPatch(PatchArea patchArea)

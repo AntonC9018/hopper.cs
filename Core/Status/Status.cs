@@ -1,4 +1,4 @@
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 using Hopper.Core.Stats;
 using Hopper.Core.Chains;
 using Hopper.Core.Stats.Basic;
@@ -6,7 +6,7 @@ using Hopper.Core.Behaviors.Basic;
 
 namespace Hopper.Core
 {
-    public interface IStatus : IKind, Registry.IPatch
+    public interface IStatus : IKind, Registries.IPatch
     {
         int SourceId { get; }
         void Update(Entity entity);

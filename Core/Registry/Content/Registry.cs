@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Hopper.Core.Mods;
 
-namespace Hopper.Core.Registry
+namespace Hopper.Core.Registries
 {
     public class Registry
     {
@@ -20,6 +20,11 @@ namespace Hopper.Core.Registry
             var modRegistry = new ModRegistry(mod.Offset, m_kindRegistries);
             m_modRegistries.Add(mod.Offset, modRegistry);
             return modRegistry;
+        }
+
+        public IKindRegistry<T> GetKindRegistry<T>() where T : IKind
+        {
+            return (IKindRegistry<T>)m_kindRegistries[typeof(T)];
         }
     }
 }

@@ -1,4 +1,4 @@
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 using Hopper.Core.Stats;
 
 namespace Hopper.Core.Items

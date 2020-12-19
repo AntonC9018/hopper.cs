@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Hopper.Core.Registry
+namespace Hopper.Core.Registries
 {
     /*
         It assignes Id's to a class of objects. E.g. all `Items` will be assigned id's by

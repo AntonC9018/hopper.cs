@@ -1,4 +1,4 @@
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 using System.Linq;
 using Hopper.Core.Behaviors.Basic;
 

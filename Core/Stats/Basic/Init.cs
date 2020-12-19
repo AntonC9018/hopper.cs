@@ -1,5 +1,5 @@
 using System;
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 
 namespace Hopper.Core.Stats.Basic
 {

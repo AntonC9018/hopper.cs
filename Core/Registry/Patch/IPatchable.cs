@@ -1,4 +1,4 @@
-namespace Hopper.Core.Registry
+namespace Hopper.Core.Registries
 {
     /*
         This is a tag interface.

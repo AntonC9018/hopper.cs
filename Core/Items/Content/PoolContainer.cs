@@ -1,46 +1,54 @@
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 
 namespace Hopper.Core.Items
 {
-    public class PoolContainer
+    public class PoolContainer<T> where T : IKind
     {
-        public ISuperPool EntityPool;
-        public ISuperPool ItemPool;
+        public ISuperPool pool;
 
-        public EntityContent GetEntity(string path, Registry.Registry registry)
+        public T Get(string path, Registry registry)
         {
-            var poolItem = EntityPool.GetNextItem(path);
+            var poolItem = pool.GetNextItem(path);
             if (poolItem == null)
             {
-                return null;
+                return default(T);
             }
-            // var factory = registry.EntityFactory.Get(poolItem.id);
-            // return new EntityContent(factory);
-            return null;
+            return registry.GetKindRegistry<T>().Get(poolItem.id);
+        }
+    }
+
+    public class Pools
+    {
+        public Registry registry;
+        public readonly PoolContainer<IFactory<Entity>> entityContainer;
+        public readonly PoolContainer<IItem> itemContainer;
+
+        public Pools()
+        {
+            this.entityContainer = new PoolContainer<IFactory<Entity>>();
+            this.itemContainer = new PoolContainer<IItem>();
         }
 
-        public ItemContent GetItem(string path, Registry.Registry registry)
+        public EntityContent GetEntity(string path)
         {
-            var poolItem = ItemPool.GetNextItem(path);
-            if (poolItem == null)
-            {
-                return null;
-            }
-            // var item = registry.Items.Get(poolItem.id);
-            // return new ItemContent(item);
-            return null;
+            return new EntityContent(entityContainer.Get(path, registry));
+        }
+
+        public ItemContent GetItem(string path)
+        {
+            return new ItemContent(itemContainer.Get(path, registry));
         }
 
         public void UseThrowawayPools()
         {
-            EntityPool = new ThrowawayPool();
-            ItemPool = new ThrowawayPool();
+            entityContainer.pool = new ThrowawayPool();
+            itemContainer.pool = new ThrowawayPool();
         }
 
         public void UsePools(ISuperPool entityPool, ISuperPool itemPool)
         {
-            this.EntityPool = entityPool;
-            this.ItemPool = itemPool;
+            entityContainer.pool = entityPool;
+            itemContainer.pool = itemPool;
         }
     }
 }

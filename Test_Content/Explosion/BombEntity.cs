@@ -1,6 +1,6 @@
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
-using Hopper.Core.Registry;
+using Hopper.Core.Registries;
 using Hopper.Core.Retouchers;
 using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;
