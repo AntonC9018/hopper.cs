@@ -18,14 +18,14 @@ namespace Hopper.Test_Content.Floor
         public static EntityFactory<BlockingTrap> CreateFactory()
         {
             return new EntityFactory<BlockingTrap>()
-                .AddBehavior<Attackable>()
+                .AddBehavior(Attackable.DefaultPreset)
                 .AddInitListener(trap => trap.ListenCell());
         }
 
         public static EntityFactory<RealBarrier> CreateBarrierFactory() =>
             RealBarrier.CreateFactory()
-                .AddBehavior<Attackable>()
-                .AddBehavior<Damageable>();
+                .AddBehavior(Attackable.DefaultPreset)
+                .AddBehavior(Damageable.Preset(5));
 
         private static Layer TargetedLayer = Layer.REAL;
 

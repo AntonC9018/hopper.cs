@@ -24,10 +24,10 @@ namespace Hopper.Test_Content.Status.Freeze
         public static EntityFactory<IceCube> CreateFactory()
         {
             return new EntityFactory<IceCube>()
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Attackable>()
-                .AddBehavior<Pushable>()
-                .AddBehavior<Damageable>()
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Attackable.DefaultPreset)
+                .AddBehavior(Pushable.Preset)
+                .AddBehavior(Damageable.Preset(5))
                 .Retouch(MoveCapturedRetoucher)
                 .AddDieListener(ReleaseOnDeath);
         }

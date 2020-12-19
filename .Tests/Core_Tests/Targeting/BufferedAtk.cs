@@ -21,9 +21,7 @@ namespace Hopper.Tests
             // this is necessary since whether the entity is attackable or not
             // (more precisely, the entities attackness)
             // matters in whether the other targets will be ignored.
-            var attackable = new Attackable();
-            attackable.GenerateChains(BehaviorFactory<Attackable>.s_builder.Templates);
-            attackable.m_attackness = Attackness.ALWAYS;
+            var attackable = Attackable.DefaultPreset.Instantiate(entity);
             entity.Behaviors.Add(typeof(Attackable), attackable);
 
             wall = new Wall();

@@ -84,17 +84,17 @@ namespace Hopper.Test_Content.Boss
             public static EntityFactory<Whelp> CreateFactory()
             {
                 return new EntityFactory<Whelp>()
-                    .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
-                    .AddBehavior<Attacking>()
-                    .AddBehavior<Attackable>()
-                    .AddBehavior<Moving>()
-                    .AddBehavior<Displaceable>()
-                    .AddBehavior<Damageable>(new Damageable.Config(1))
+                    .AddBehavior(Acting.Preset(new Acting.Config(Algos.EnemyAlgo)))
+                    .AddBehavior(Attacking.Preset)
+                    .AddBehavior(Attackable.DefaultPreset)
+                    .AddBehavior(Moving.Preset)
+                    .AddBehavior(Displaceable.Preset)
+                    .AddBehavior(Damageable.Preset(1))
                     .Retouch(Skip.NoPlayer)
                     .Retouch(Skip.BlockedMove)
                     // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
                     .Retouch(TurnToPlayerRetoucher)
-                    .AddBehavior<Sequential>(new Sequential.Config(Steps));
+                    .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)));
             }
         }
 
@@ -134,17 +134,17 @@ namespace Hopper.Test_Content.Boss
         public static EntityFactory<TestBoss> CreateFactory()
         {
             return new EntityFactory<TestBoss>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
-                .AddBehavior<Attacking>()
-                .AddBehavior<Attackable>()
-                .AddBehavior<Moving>()
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Damageable>(new Damageable.Config(5))
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.EnemyAlgo)))
+                .AddBehavior(Attacking.Preset)
+                .AddBehavior(Attackable.DefaultPreset)
+                .AddBehavior(Moving.Preset)
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Damageable.Preset(5))
                 .Retouch(Skip.NoPlayer)
                 .Retouch(Skip.BlockedMove)
                 // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
                 .Retouch(TurnToPlayerRetoucher)
-                .AddBehavior<Sequential>(new Sequential.Config(Steps));
+                .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)));
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Hopper.Core.Behaviors.Basic
     }
 
     [DataContract]
-    public class Controllable : Behavior
+    public class Controllable : Behavior, IInitable<Action>
     {
 
         public class Event : StandartEvent
@@ -65,17 +65,13 @@ namespace Hopper.Core.Behaviors.Basic
         public class Config
         {
             public Action defaultAction;
-            public Config(Action defaultAction)
-            {
-                this.defaultAction = defaultAction;
-            }
         }
 
         public Action config_defaultAction;
 
-        private void Init(Config config)
+        public void Init(Action defaultAction)
         {
-            config_defaultAction = config.defaultAction;
+            config_defaultAction = defaultAction;
         }
 
         public Action ConvertInputToAction(InputMapping input)
@@ -100,20 +96,21 @@ namespace Hopper.Core.Behaviors.Basic
 
         public static readonly Dictionary<InputMapping, ChainPaths<Controllable, Event>> Chains
             = new Dictionary<InputMapping, ChainPaths<Controllable, Event>>();
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static ConfigurableBehaviorFactory<Controllable, Action> Preset(Action defaultAction)
+            => new ConfigurableBehaviorFactory<Controllable, Action>(DefaultBuilder, defaultAction);
 
         static Controllable()
         {
-            var builder = new ChainTemplateBuilder();
+            DefaultBuilder = new ChainTemplateBuilder();
 
             // set up all chain paths for the input mappings
             // set up all templates
             foreach (InputMapping name in InputMapping.Members)
             {
-                builder.AddTemplate<Event>(name);
+                DefaultBuilder.AddTemplate<Event>(name);
                 Chains[name] = new ChainPaths<Controllable, Event>(name);
             }
-
-            BehaviorFactory<Controllable>.s_builder = builder;
         }
     }
 }

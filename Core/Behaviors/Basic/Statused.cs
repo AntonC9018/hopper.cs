@@ -9,7 +9,7 @@ using Hopper.Core.Stats;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Statused : Behavior
+    public class Statused : Behavior, IInitable
     {
         public class Event : EventBase
         {
@@ -29,12 +29,10 @@ namespace Hopper.Core.Behaviors.Basic
         }
 
         [DataMember]
-        private HashSet<IStatus> m_appliedStatuses;
+        private HashSet<IStatus> m_appliedStatuses = new HashSet<IStatus>();
 
-        private void Init(object _)
+        public void Init()
         {
-            m_appliedStatuses = new HashSet<IStatus>();
-
             // this should be refactored into a retoucher
             Tick.Chain.ChainPath(m_entity.Behaviors).AddHandler(
                 e => UpdateStatuses()
@@ -93,11 +91,16 @@ namespace Hopper.Core.Behaviors.Basic
         }
 
         public static readonly ChainPaths<Statused, Event> Check;
+
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static InitableBehaviorFactory<Statused> Preset =>
+            new InitableBehaviorFactory<Statused>(DefaultBuilder);
+
         static Statused()
         {
             Check = new ChainPaths<Statused, Event>(ChainName.Check);
 
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(SetResistance, PriorityRanks.High)
@@ -105,8 +108,6 @@ namespace Hopper.Core.Behaviors.Basic
 
                 // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
                 .End();
-
-            BehaviorFactory<Statused>.s_builder = builder;
         }
 
     }

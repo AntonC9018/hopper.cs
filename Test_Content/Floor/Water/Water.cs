@@ -22,7 +22,7 @@ namespace Hopper.Test_Content.Floor
         public static EntityFactory<Water> CreateFactory()
         {
             return new EntityFactory<Water>()
-                .AddBehavior<Attackable>()
+                .AddBehavior(Attackable.DefaultPreset)
                 .AddInitListener(water => water.ListenCell());
         }
 

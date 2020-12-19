@@ -39,7 +39,7 @@ namespace Hopper.Test_Content
         public static EntityFactory<Gold> CreateFactory()
         {
             return new EntityFactory<Gold>()
-                .AddBehavior<Attackable>();
+                .AddBehavior(Attackable.DefaultPreset);
         }
 
         private static void PickUp(Displaceable.Event ev)

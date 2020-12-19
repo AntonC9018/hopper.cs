@@ -30,11 +30,14 @@ namespace Hopper.Test_Content.Trap
         public static EntityFactory<BounceTrap> CreateFactory()
         {
             return new EntityFactory<BounceTrap>()
-                .AddBehavior<Attackable>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo,
-                        e => action.Copy().WithDir(e.Orientation))
-                )
-                .AddBehavior<Bouncing>()
+                .AddBehavior(Attackable.DefaultPreset)
+                .AddBehavior(Acting.Preset(
+                    new Acting.Config(
+                        Algos.SimpleAlgo,
+                        e => action.Copy().WithDir(e.Orientation)
+                    )
+                ))
+                .AddBehavior(Bouncing.Preset)
                 .SetDefaultStats(GetDefaultStats);
             // .SetDefaultStats(defaultStats); // run at patching
         }

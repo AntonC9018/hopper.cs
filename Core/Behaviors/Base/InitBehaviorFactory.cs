@@ -3,15 +3,13 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Behaviors
 {
-    public class ConfigurableBehaviorFactory<T, Config> : IBehaviorFactory<T>, IProvidesChainTemplate
-           where T : Behavior, IInitable<Config>, new()
+    public class InitableBehaviorFactory<T> : IBehaviorFactory<T>
+        where T : Behavior, IInitable, new()
     {
-        public Config config;
         public ConfiglessBehaviorFactory<T> configlessFactory;
 
-        public ConfigurableBehaviorFactory(ChainTemplateBuilder builder, Config config)
+        public InitableBehaviorFactory(ChainTemplateBuilder builder)
         {
-            this.config = config;
             configlessFactory = new ConfiglessBehaviorFactory<T>(builder);
         }
 
@@ -23,7 +21,7 @@ namespace Hopper.Core.Behaviors
         public T Instantiate(Entity entity)
         {
             var behavior = configlessFactory.Instantiate(entity);
-            behavior.Init(config);
+            behavior.Init();
             return behavior;
         }
     }

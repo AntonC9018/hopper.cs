@@ -24,13 +24,13 @@ namespace Hopper.Tests.Test_Content
         {
             move_action = new BehaviorAction<Moving>();
             test_player_factory = new EntityFactory<Player>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
-                .AddBehavior<Statused>()
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Moving>()
-                .AddBehavior<Pushable>()
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)))
+                .AddBehavior(Statused.Preset)
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Moving.Preset)
+                .AddBehavior(Pushable.Preset)
                 .Retouch(Reorient.OnDisplace)
-                .AddBehavior<Controllable>(new Controllable.Config(move_action));
+                .AddBehavior(Controllable.Preset(move_action));
 
             mod_result = SetupThing.SetupContent();
         }

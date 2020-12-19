@@ -19,12 +19,12 @@ namespace Hopper.Test_Content.Explosion
         public static EntityFactory<BombEntity> CreateFactory()
         {
             return new EntityFactory<BombEntity>()
-                .AddBehavior<Attackable>(new Attackable.Config(Attackness.CAN_BE_ATTACKED_IF_NEXT_TO))
-                .AddBehavior<Pushable>()
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
-                .AddBehavior<Sequential>(new Sequential.Config(Steps))
-                .AddBehavior<Statused>()
+                .AddBehavior(Attackable.Preset(Attackness.CAN_BE_ATTACKED_IF_NEXT_TO))
+                .AddBehavior(Pushable.Preset)
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)))
+                .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)))
+                .AddBehavior(Statused.Preset)
                 .Retouch(Reorient.OnDisplace)
                 .SetDefaultStats(GetDefaultStats);
         }

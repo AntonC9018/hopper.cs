@@ -9,7 +9,7 @@ using Hopper.Core.Chains;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Attackable : Behavior
+    public class Attackable : Behavior, IInitable<Attackness>
     {
         public class Event : ActorEvent
         {
@@ -31,18 +31,9 @@ namespace Hopper.Core.Behaviors.Basic
             }
         }
 
-        public class Config
+        public void Init(Attackness attackness)
         {
-            public Attackness attackness;
-            public Config(Attackness attackness)
-            {
-                this.attackness = attackness;
-            }
-        }
-
-        private void Init(Config config)
-        {
-            m_attackness = config == null ? Attackness.ALWAYS : config.attackness;
+            m_attackness = attackness;
         }
 
         public bool Activate(IntVector2 dir, Params attackableParams)
@@ -106,12 +97,18 @@ namespace Hopper.Core.Behaviors.Basic
         public static readonly ChainPaths<Attackable, Event> Check;
         public static readonly ChainPaths<Attackable, Event> Do;
 
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static ConfigurableBehaviorFactory<Attackable, Attackness> DefaultPreset
+            => new ConfigurableBehaviorFactory<Attackable, Attackness>(DefaultBuilder, Attackness.ALWAYS);
+        public static ConfigurableBehaviorFactory<Attackable, Attackness> Preset(Attackness attackness)
+            => new ConfigurableBehaviorFactory<Attackable, Attackness>(DefaultBuilder, attackness);
+
         static Attackable()
         {
             Do = new ChainPaths<Attackable, Event>(ChainName.Do);
             Check = new ChainPaths<Attackable, Event>(ChainName.Check);
 
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(SetResistance, PriorityRanks.High)
@@ -123,8 +120,6 @@ namespace Hopper.Core.Behaviors.Basic
                 .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacked_do))
 
                 .End();
-
-            BehaviorFactory<Attackable>.s_builder = builder;
         }
 
     }

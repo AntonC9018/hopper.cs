@@ -9,7 +9,7 @@ namespace Hopper.Test_Content.SimpleMobs
         public static EntityFactory<Dummy> CreateFactory()
         {
             return new EntityFactory<Dummy>()
-                .AddBehavior<Attackable>();
+                .AddBehavior(Attackable.DefaultPreset);
         }
     }
 }

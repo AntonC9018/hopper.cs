@@ -27,13 +27,13 @@ namespace Hopper.Test_Content.SimpleMobs
         public static EntityFactory<Knipper> CreateFactory()
         {
             return new EntityFactory<Knipper>()
-                .AddBehavior<Attackable>()
-                .AddBehavior<Pushable>()
-                .AddBehavior<Sequential>(new Sequential.Config(Steps))
-                .AddBehavior<Acting>(new Acting.Config(Algos.StepBased))
-                .AddBehavior<Moving>()
-                .AddBehavior<Damageable>()
-                .AddBehavior<Displaceable>();
+                .AddBehavior(Attackable.DefaultPreset)
+                .AddBehavior(Pushable.Preset)
+                .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)))
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.StepBased)))
+                .AddBehavior(Moving.Preset)
+                .AddBehavior(Damageable.Preset(5))
+                .AddBehavior(Displaceable.Preset);
         }
 
         static Knipper()

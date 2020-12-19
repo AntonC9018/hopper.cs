@@ -40,10 +40,10 @@ namespace Hopper
         {
             var slot = new SizedSlot<CircularItemContainer, Hopper.Core.Items.IItem>("blocking", 1);
             var shield = new Hopper.Core.Items.ModularItem(new ItemMetadata("Test_Shield"), slot, ShieldModule.CreateFront(2));
-            var enemy.Factory = new EntityFactory<Entity>().AddBehavior<Attackable>();
+            var enemy.Factory = new EntityFactory<Entity>().AddBehavior(Attackable.DefaultPreset);
             var player.Factory = new EntityFactory<Entity>()
-                .AddBehavior<Attacking>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo));
+                .AddBehavior(Attacking.Preset)
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)));
             var world = new World(5, 5);
             var player = world.SpawnPlayer(player.Factory, new IntVector2(1, 1));
             player.Reorient(new IntVector2(1, 0));
@@ -62,11 +62,11 @@ namespace Hopper
         {
             var world = new World(5, 5);
             var p_fact = new EntityFactory<Entity>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
-                .AddBehavior<Attacking>()
-                .AddBehavior<Moving>()
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Statused>()
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)))
+                .AddBehavior(Attacking.Preset)
+                .AddBehavior(Moving.Preset)
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Statused.Preset)
                 .Retouch(Hopper.Core.Retouchers.Reorient.OnDisplace)
                 .Retouch(Hopper.Core.Retouchers.Skip.EmptyAttack);
 
@@ -107,8 +107,8 @@ namespace Hopper
         {
             var world = new World(5, 5);
             var p_fact = new EntityFactory<Entity>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
-                .AddBehavior<Attacking>();
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)))
+                .AddBehavior(Attacking.Preset);
             var player = world.SpawnPlayer(p_fact, new IntVector2(1, 1));
             player.Stats.GetRaw(Attack.Path).damage = 10;
 
@@ -180,7 +180,7 @@ namespace Hopper
         {
             var content = new TestContent();
             var interactableEntityFactory = new EntityFactory<Entity>()
-                .AddBehavior<Interactable>();
+                .AddBehavior(Interactable.Preset);
             var world = new World(1, 1);
             var entity = world.SpawnEntity(interactableEntityFactory, new IntVector2(0, 0));
             var interactable = entity.Behaviors.Get<Interactable>();
@@ -210,13 +210,13 @@ namespace Hopper
         static void Serialize()
         {
             var player.Factory = new EntityFactory<Player>();
-            player.Factory.AddBehavior<Attackable>();
-            player.Factory.AddBehavior<Attacking>();
-            player.Factory.AddBehavior<Displaceable>();
-            player.Factory.AddBehavior<Moving>();
-            player.Factory.AddBehavior<Pushable>();
-            player.Factory.AddBehavior<Statused>();
-            player.Factory.AddBehavior<Sequential>(new Sequential.Config(new Step[0]));
+            player.Factory.AddBehavior(Attackable.DefaultPreset);
+            player.Factory.AddBehavior(Attacking.Preset);
+            player.Factory.AddBehavior(Displaceable.Preset);
+            player.Factory.AddBehavior(Moving.Preset);
+            player.Factory.AddBehavior(Pushable.Preset);
+            player.Factory.AddBehavior(Statused.Preset);
+            player.Factory.AddBehavior(Sequential.Preset(new Sequential.Config(new Step[0])));
             System.Console.WriteLine("Set up player.Factory");
 
             var player = player.Factory.Instantiate();
@@ -264,17 +264,17 @@ namespace Hopper
             Registry.Default.Tinker.SetServerMap(packed);
 
             var player.Factory = new EntityFactory<Player>();
-            player.Factory.AddBehavior<Attackable>();
-            player.Factory.AddBehavior<Attacking>();
-            player.Factory.AddBehavior<Displaceable>();
-            player.Factory.AddBehavior<Moving>();
-            player.Factory.AddBehavior<Pushable>();
-            player.Factory.AddBehavior<Statused>();
+            player.Factory.AddBehavior(Attackable.DefaultPreset);
+            player.Factory.AddBehavior(Attacking.Preset);
+            player.Factory.AddBehavior(Displaceable.Preset);
+            player.Factory.AddBehavior(Moving.Preset);
+            player.Factory.AddBehavior(Pushable.Preset);
+            player.Factory.AddBehavior(Statused.Preset);
             System.Console.WriteLine("Set up player.Factory");
 
             Acting.Config playerActingConf = new Acting.Config(Algos.SimpleAlgo, null);
 
-            player.Factory.AddBehavior<Acting>(playerActingConf);
+            player.Factory.AddBehavior(Acting.Preset(playerActingConf));
             player.Factory.Retouch(Hopper.Core.Retouchers.Skip.EmptyAttack);
 
             // this one's for the equip demo
@@ -282,16 +282,16 @@ namespace Hopper
 
 
             var enemy.Factory = new EntityFactory<Entity>();
-            enemy.Factory.AddBehavior<Attackable>();
-            enemy.Factory.AddBehavior<Attacking>();
-            enemy.Factory.AddBehavior<Displaceable>();
-            enemy.Factory.AddBehavior<Moving>();
-            enemy.Factory.AddBehavior<Pushable>();
+            enemy.Factory.AddBehavior(Attackable.DefaultPreset);
+            enemy.Factory.AddBehavior(Attacking.Preset);
+            enemy.Factory.AddBehavior(Displaceable.Preset);
+            enemy.Factory.AddBehavior(Moving.Preset);
+            enemy.Factory.AddBehavior(Pushable.Preset);
 
 
             Acting.Config enemyActingConf = new Acting.Config(Algos.EnemyAlgo);
 
-            enemy.Factory.AddBehavior<Acting>(enemyActingConf);
+            enemy.Factory.AddBehavior(Acting.Preset(enemyActingConf));
 
 
             var attackAction = new BehaviorAction<Attacking>();
@@ -308,7 +308,7 @@ namespace Hopper
 
             var sequenceConfig = new Sequential.Config(stepData);
 
-            enemy.Factory.AddBehavior<Sequential>(sequenceConfig);
+            enemy.Factory.AddBehavior(Sequential.Preset(sequenceConfig));
             System.Console.WriteLine("Set up enemy.Factory");
 
             Entity player = player.Factory.Instantiate();

@@ -3,25 +3,13 @@ using System.Runtime.Serialization;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Damageable : Behavior
+    public class Damageable : Behavior, IInitable<int>
     {
-        public class Config
-        {
-            public int health;
-            public Config(int health)
-            {
-                this.health = health;
-            }
-        }
-
         public int m_health = 5;
 
-        private void Init(Config config)
+        public void Init(int health)
         {
-            if (config != null)
-            {
-                m_health = config.health;
-            }
+            m_health = health;
         }
 
         public bool Activate(int damage)
@@ -34,5 +22,8 @@ namespace Hopper.Core.Behaviors.Basic
             }
             return false;
         }
+
+        public static ConfigurableBehaviorFactory<Damageable, int> Preset(int health)
+            => new ConfigurableBehaviorFactory<Damageable, int>(null, health);
     }
 }

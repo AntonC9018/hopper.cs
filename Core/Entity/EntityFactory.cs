@@ -6,30 +6,23 @@ using Hopper.Core.Stats;
 
 namespace Hopper.Core
 {
-    public class BehaviorSetting
-    {
-        public IBehaviorFactory factory;
-        public object config;
-    }
-
     public class EntityFactory<T> : IFactory<T>, IProvideBehaviorFactory
         where T : Entity, new()
     {
-
         public int Id => m_id;
         private int m_id;
         public event System.Action<T> InitEvent;
         public event System.Action<PatchArea> PostPatchEvent;
         public DefaultStats DefaultStats;
 
-        private Dictionary<System.Type, BehaviorSetting> m_behaviorSettings;
+        private Dictionary<System.Type, IBehaviorFactory<Behavior>> m_behaviorFactories;
         private Dictionary<int, Retoucher> m_retouchers;
 
         public EntityFactory()
         {
-            m_behaviorSettings = new Dictionary<System.Type, BehaviorSetting>();
+            m_behaviorFactories = new Dictionary<System.Type, IBehaviorFactory<Behavior>>();
             m_retouchers = new Dictionary<int, Retoucher>();
-            AddBehavior<Tick>();
+            AddBehavior(Tick.Preset);
         }
 
         public T Instantiate()
@@ -37,11 +30,11 @@ namespace Hopper.Core
             T entity = new T();
 
             // Instantiate and save behaviors
-            foreach (var kvp in m_behaviorSettings)
+            foreach (var kvp in m_behaviorFactories)
             {
                 var type = kvp.Key;
                 var setting = kvp.Value;
-                var behavior = setting.factory.Instantiate(entity, setting.config);
+                var behavior = setting.Instantiate(entity);
                 entity.Behaviors.Add(type, behavior);
             }
 
@@ -65,12 +58,10 @@ namespace Hopper.Core
             PostPatchEvent = null;
         }
 
-        public EntityFactory<T> AddBehavior<Beh>(object conf = null)
+        public EntityFactory<T> AddBehavior<Beh>(IBehaviorFactory<Beh> factory)
             where Beh : Behavior, new()
         {
-            var factory = new BehaviorFactory<Beh>();
-            var setting = new BehaviorSetting { factory = factory, config = conf };
-            m_behaviorSettings.Add(typeof(Beh), setting);
+            m_behaviorFactories.Add(typeof(Beh), factory);
             return this;
         }
 
@@ -86,19 +77,21 @@ namespace Hopper.Core
             return m_retouchers.ContainsKey(retoucher.Id);
         }
 
-        public BehaviorFactory<U> GetBehaviorFactory<U>() where U : Behavior, new()
+        public IBehaviorFactory<U> GetBehaviorFactory<U>() where U : Behavior, new()
         {
-            return (BehaviorFactory<U>)m_behaviorSettings[typeof(U)].factory;
+            return (IBehaviorFactory<U>)m_behaviorFactories[typeof(U)];
         }
 
         public bool HasBehaviorFactory<U>() where U : Behavior, new()
         {
-            return m_behaviorSettings.ContainsKey(typeof(U));
+            return m_behaviorFactories.ContainsKey(typeof(U));
         }
 
-        public EntityFactory<T> ReconfigureBehavior<U>(object config) where U : Behavior, new()
+        public EntityFactory<T> ReconfigureBehavior<U, Config>(Config config)
+            where U : Behavior, IInitable<Config>, new()
         {
-            m_behaviorSettings[typeof(U)].config = config;
+            var factory = (ConfigurableBehaviorFactory<U, Config>)m_behaviorFactories[typeof(U)];
+            factory.config = config;
             return this;
         }
 

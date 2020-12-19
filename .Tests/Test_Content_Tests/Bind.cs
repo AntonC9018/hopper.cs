@@ -23,13 +23,13 @@ namespace Hopper.Tests.Test_Content
         public Bind_Tests()
         {
             mod_result = SetupThing.SetupContent();
-            test_entity_factory = new EntityFactory<Entity>().AddBehavior<Statused>();
+            test_entity_factory = new EntityFactory<Entity>().AddBehavior(Statused.Preset);
             test_player_factory = new EntityFactory<Player>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.SimpleAlgo))
-                .AddBehavior<Statused>()
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Moving>()
-                .AddBehavior<Attackable>();
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)))
+                .AddBehavior(Statused.Preset)
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Moving.Preset)
+                .AddBehavior(Attackable.DefaultPreset);
             move_action = new BehaviorAction<Moving>();
         }
 

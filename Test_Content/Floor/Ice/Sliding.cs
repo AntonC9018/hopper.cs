@@ -6,24 +6,15 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content.Floor
 {
-    public class Sliding : Behavior
+    public class Sliding : Behavior, IInitable<SlideStatus>
     {
         public static Layer TargetedLayer = Layer.REAL;
 
-        public class Config
-        {
-            public SlideStatus status;
-            public Config(SlideStatus status)
-            {
-                this.status = status;
-            }
-        }
-
         private SlideStatus m_status;
 
-        private void Init(Config config)
+        public void Init(SlideStatus status)
         {
-            m_status = config.status;
+            m_status = status;
             m_entity.InitEvent += (() => m_entity.GetCell().EnterEvent += TryApplySliding);
             m_entity.DieEvent += (() => m_entity.GetCell().EnterEvent -= TryApplySliding);
         }
@@ -58,5 +49,8 @@ namespace Hopper.Test_Content.Floor
         {
             return entity.HasBlockRelative(entity.Orientation) == false;
         }
+
+        public static ConfigurableBehaviorFactory<Sliding, SlideStatus> Preset(SlideStatus slideStatus)
+            => new ConfigurableBehaviorFactory<Sliding, SlideStatus>(null, slideStatus);
     }
 }

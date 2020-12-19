@@ -11,8 +11,6 @@ namespace Hopper.Core.Behaviors.Basic
     [DataContract]
     public class Digging : Behavior, IStandartActivateable
     {
-        public static Attack.Source DigAttackSource;
-
         public class Event : StandartEvent
         {
             public Dig dig;
@@ -63,12 +61,17 @@ namespace Hopper.Core.Behaviors.Basic
 
         public static readonly ChainPaths<Digging, Event> Check;
         public static readonly ChainPaths<Digging, Event> Do;
+
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static ConfiglessBehaviorFactory<Digging> Preset =>
+            new ConfiglessBehaviorFactory<Digging>(DefaultBuilder);
+
         static Digging()
         {
             Check = new ChainPaths<Digging, Event>(ChainName.Check);
             Do = new ChainPaths<Digging, Event>(ChainName.Do);
 
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(SetDig, PriorityRanks.High)
@@ -78,11 +81,6 @@ namespace Hopper.Core.Behaviors.Basic
                 .AddHandler(Attack)
 
                 .End();
-
-            // _do.AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do));
-
-            BehaviorFactory<Digging>.s_builder = builder;
-            AssureRun(typeof(Dig));
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Hopper.Test_Content.Bind
         public static readonly SimpleStatPath<Bind> Path = new SimpleStatPath<Bind>("status/bind");
     }
 
-    public class Binding : Behavior, IStandartActivateable
+    public class Binding : Behavior, IInitable<BindStatus>, IStandartActivateable
     {
         public class Event : StandartEvent
         {
@@ -25,16 +25,11 @@ namespace Hopper.Test_Content.Bind
             public Entity applyTo;
         }
 
-        public class Config
-        {
-            public BindStatus bindStatus;
-        }
-
         public BindStatus config_bindStatus;
 
-        private void Init(Config config)
+        public void Init(BindStatus bindStatus)
         {
-            config_bindStatus = config.bindStatus;
+            config_bindStatus = bindStatus;
         }
 
         public bool Activate(Action action) => Activate(action, null);
@@ -78,12 +73,17 @@ namespace Hopper.Test_Content.Bind
 
         public static readonly ChainPaths<Binding, Event> Check;
         public static readonly ChainPaths<Binding, Event> Do;
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+
+        public static ConfigurableBehaviorFactory<Binding, BindStatus> Preset(BindStatus status)
+             => new ConfigurableBehaviorFactory<Binding, BindStatus>(DefaultBuilder, status);
+
         static Binding()
         {
             Check = new ChainPaths<Binding, Event>(ChainName.Check);
             Do = new ChainPaths<Binding, Event>(ChainName.Do);
 
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(GetTarget)
@@ -93,8 +93,6 @@ namespace Hopper.Test_Content.Bind
                 .AddHandler(BindTarget)
                 //  .AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do))
                 .End();
-
-            BehaviorFactory<Binding>.s_builder = builder;
         }
     }
 }

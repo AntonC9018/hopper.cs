@@ -1,4 +1,3 @@
-using Hopper.Core.Chains;
 using Hopper.Utils.Chains;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -27,7 +26,7 @@ namespace Hopper.Core.Behaviors
             return (Chain<Event>)chains[name];
         }
 
-        public bool CheckDoCycle<Event>(Event ev)
+        protected bool CheckDoCycle<Event>(Event ev)
             where Event : EventBase, new()
         {
             GetChain<Event>(ChainName.Check).Pass(ev);
@@ -42,11 +41,6 @@ namespace Hopper.Core.Behaviors
         internal void _SetEntity(Entity entity)
         {
             m_entity = entity;
-        }
-
-        protected static void AssureRun(System.Type type)
-        {
-            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
         }
     }
 }

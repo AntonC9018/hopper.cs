@@ -18,10 +18,10 @@ namespace Hopper.Tests.Test_Content
         public Bounce_Tests()
         {
             test_factory = new EntityFactory<Entity>()
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Pushable>();
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Pushable.Preset);
             mod_result = SetupThing.SetupContent();
-            // .AddBehavior<Statused>();
+            // .AddBehavior(Statused.Preset);
         }
 
         [SetUp]

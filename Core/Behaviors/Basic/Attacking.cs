@@ -138,12 +138,16 @@ namespace Hopper.Core.Behaviors.Basic
         public static readonly ChainPaths<Attacking, Event> Check;
         public static readonly ChainPaths<Attacking, Event> Do;
 
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static ConfiglessBehaviorFactory<Attacking> Preset
+            => new ConfiglessBehaviorFactory<Attacking>(DefaultBuilder);
+
         static Attacking()
         {
             Check = new ChainPaths<Attacking, Event>(ChainName.Check);
             Do = new ChainPaths<Attacking, Event>(ChainName.Do);
 
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(SetTargets, PriorityRanks.Medium)
@@ -155,8 +159,6 @@ namespace Hopper.Core.Behaviors.Basic
                 .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacking_do))
 
                 .End();
-
-            BehaviorFactory<Attacking>.s_builder = builder;
         }
     }
 }

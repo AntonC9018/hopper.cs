@@ -28,14 +28,14 @@ namespace Hopper.Test_Content
         public static EntityFactory<Ghost> CreateFactory()
         {
             return new EntityFactory<Ghost>()
-                .AddBehavior<Moving>()
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Attacking>()
-                .AddBehavior<Attackable>()
-                .AddBehavior<Pushable>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
-                .AddBehavior<Sequential>(new Sequential.Config(Steps))
-                .AddBehavior<Damageable>()
+                .AddBehavior(Moving.Preset)
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Attacking.Preset)
+                .AddBehavior(Attackable.DefaultPreset)
+                .AddBehavior(Pushable.Preset)
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.EnemyAlgo)))
+                .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)))
+                .AddBehavior(Damageable.Preset(5))
                 .Retouch(TeleportAfterAttackRetoucher);
         }
 

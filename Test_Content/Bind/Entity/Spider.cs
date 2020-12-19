@@ -48,15 +48,12 @@ namespace Hopper.Test_Content.Bind
         public static EntityFactory<Spider> CreateFactory()
         {
             return new EntityFactory<Spider>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
-                .AddBehavior<Sequential>(new Sequential.Config(CreateSequenceData()))
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Moving>()
-                .AddBehavior<Binding>(new Binding.Config
-                {
-                    bindStatus = BindStatuses.StopMove
-                })
-                .AddBehavior<Attackable>()
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.EnemyAlgo)))
+                .AddBehavior(Sequential.Preset(new Sequential.Config(CreateSequenceData())))
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Moving.Preset)
+                .AddBehavior(Binding.Preset(BindStatuses.StopMove))
+                .AddBehavior(Attackable.DefaultPreset)
                 .Retouch(BindRetouchers.StopMoveRetoucher);
         }
     }

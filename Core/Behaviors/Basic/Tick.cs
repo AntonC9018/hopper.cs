@@ -17,12 +17,16 @@ namespace Hopper.Core.Behaviors.Basic
         }
 
         public static readonly ChainPaths<Tick, Event> Chain;
+
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static ConfiglessBehaviorFactory<Tick> Preset =>
+            new ConfiglessBehaviorFactory<Tick>(DefaultBuilder);
+
         static Tick()
         {
             Chain = new ChainPaths<Tick, Event>(ChainName.Default);
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
                 .AddTemplate<Event>(ChainName.Default).End();
-            BehaviorFactory<Tick>.s_builder = builder;
         }
     }
 }

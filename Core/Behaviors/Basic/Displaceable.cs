@@ -84,12 +84,17 @@ namespace Hopper.Core.Behaviors.Basic
         public static readonly ChainPaths<Displaceable, Event> Check;
         public static readonly ChainPaths<Displaceable, Event> Do;
 
+
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static ConfiglessBehaviorFactory<Displaceable> Preset =>
+            new ConfiglessBehaviorFactory<Displaceable>(DefaultBuilder);
+
         static Displaceable()
         {
             Check = new ChainPaths<Displaceable, Event>(ChainName.Check);
             Do = new ChainPaths<Displaceable, Event>(ChainName.Do);
 
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(ConvertFromMove, PriorityRanks.High)
@@ -100,8 +105,6 @@ namespace Hopper.Core.Behaviors.Basic
                 .AddHandler(DisplaceAddBack)
 
                 .End();
-
-            BehaviorFactory<Displaceable>.s_builder = builder;
         }
 
     }

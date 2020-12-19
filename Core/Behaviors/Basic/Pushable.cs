@@ -60,12 +60,17 @@ namespace Hopper.Core.Behaviors.Basic
 
         public static readonly ChainPaths<Pushable, Event> Check;
         public static readonly ChainPaths<Pushable, Event> Do;
+
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static ConfiglessBehaviorFactory<Pushable> Preset =>
+            new ConfiglessBehaviorFactory<Pushable>(DefaultBuilder);
+
         static Pushable()
         {
             Check = new ChainPaths<Pushable, Event>(ChainName.Check);
             Do = new ChainPaths<Pushable, Event>(ChainName.Do);
 
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
                 .AddHandler(SetResistance, PriorityRanks.High)
@@ -77,8 +82,6 @@ namespace Hopper.Core.Behaviors.Basic
                 .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.pushed_do))
 
                 .End();
-
-            BehaviorFactory<Pushable>.s_builder = builder;
         }
     }
 }

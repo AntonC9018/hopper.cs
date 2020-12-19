@@ -7,7 +7,7 @@ using Hopper.Utils;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Sequential : Behavior
+    public class Sequential : Behavior, IInitable<Sequential.Config>
     {
         public class Config
         {
@@ -31,7 +31,7 @@ namespace Hopper.Core.Behaviors.Basic
 
         public Action CurrentAction => m_sequence.CurrentAction;
 
-        private void Init(Config config)
+        public void Init(Config config)
         {
             m_sequence = config.GetSequence();
 
@@ -49,5 +49,8 @@ namespace Hopper.Core.Behaviors.Basic
         {
             m_sequence.ApplyCurrentAlgo(ev);
         }
+
+        public static ConfigurableBehaviorFactory<Sequential, Config> Preset(Config config)
+            => new ConfigurableBehaviorFactory<Sequential, Config>(null, config);
     }
 }

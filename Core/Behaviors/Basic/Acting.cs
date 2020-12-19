@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Acting : Behavior
+    public class Acting : Behavior, IInitable<Acting.Config>
     {
         public class Config
         {
@@ -29,13 +29,11 @@ namespace Hopper.Core.Behaviors.Basic
         public bool DoingAction { get; private set; }
         public bool DidActionSucceed { get; private set; }
         public Action NextAction { get; set; }
-        private System.Func<Entity, Action> config_CalculateAction;
-        private System.Action<Event> config_DoActionFunc;
+        private Config m_config;
 
-        private void Init(Config config)
+        public void Init(Config config)
         {
-            config_CalculateAction = config.CalculateAction;
-            config_DoActionFunc = config.DoAction;
+            m_config = config;
             Tick.Chain.ChainPath(m_entity.Behaviors).AddHandler(
                 e =>
                 {
@@ -74,7 +72,7 @@ namespace Hopper.Core.Behaviors.Basic
             if (ev.propagate)
             {
                 ev.success = true;
-                config_DoActionFunc(ev);
+                m_config.DoAction(ev);
             }
 
             ev.propagate = true;
@@ -93,15 +91,19 @@ namespace Hopper.Core.Behaviors.Basic
 
         public void CalculateNextAction()
         {
-            if (NextAction == null && config_CalculateAction != null)
+            if (NextAction == null && m_config.CalculateAction != null)
             {
-                NextAction = config_CalculateAction(m_entity);
+                NextAction = m_config.CalculateAction(m_entity);
             }
         }
 
         public static readonly ChainPaths<Acting, Event> Check;
         public static readonly ChainPaths<Acting, Event> Fail;
         public static readonly ChainPaths<Acting, Event> Success;
+
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static ConfigurableBehaviorFactory<Acting, Config> Preset(Config config) =>
+            new ConfigurableBehaviorFactory<Acting, Config>(DefaultBuilder, config);
 
         static Acting()
         {
@@ -110,13 +112,11 @@ namespace Hopper.Core.Behaviors.Basic
             Fail = new ChainPaths<Acting, Event>(ChainName.Fail);
             Success = new ChainPaths<Acting, Event>(ChainName.Success);
 
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
                 .AddTemplate<Event>(ChainName.Check)
                 .AddTemplate<Event>(ChainName.Fail)
                 .AddTemplate<Event>(ChainName.Success)
                 .End();
-
-            BehaviorFactory<Acting>.s_builder = builder;
         }
 
     }

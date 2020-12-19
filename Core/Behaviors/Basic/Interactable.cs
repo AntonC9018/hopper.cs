@@ -6,18 +6,8 @@ using Hopper.Core.Chains;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public partial class Interactable : Behavior
+    public partial class Interactable : Behavior, IInitable<IContentSpec>
     {
-        public class Config
-        {
-            public IContentSpec contentSpec;
-
-            public Config(IContentSpec contentSpec)
-            {
-                this.contentSpec = contentSpec;
-            }
-        }
-
         public class Event : ActorEvent
         {
             public IContent content;
@@ -28,15 +18,12 @@ namespace Hopper.Core.Behaviors.Basic
         // maybe include a flag to prevent that.
         public IContent m_content;
 
-        private void Init(Config config)
+        public void Init(IContentSpec spec)
         {
-            if (config != null)
-            {
-                // TODO:
-                // m_entity.InitEvent +=
-                //     () => m_content = config.contentSpec.CreateContent(
-                //         m_entity.World.m_pools, m_entity.World.m_currentRepository);
-            }
+            // TODO:
+            // m_entity.InitEvent +=
+            //     () => m_content = config.contentSpec.CreateContent(
+            //         m_entity.World.m_pools, m_entity.World.m_currentRepository);
         }
 
         public bool Activate()
@@ -56,12 +43,16 @@ namespace Hopper.Core.Behaviors.Basic
         public static readonly ChainPaths<Interactable, Event> Check;
         public static readonly ChainPaths<Interactable, Event> Do;
 
+        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static ConfigurableBehaviorFactory<Interactable, IContentSpec> Preset(IContentSpec spec) =>
+            new ConfigurableBehaviorFactory<Interactable, IContentSpec>(DefaultBuilder, spec);
+
         static Interactable()
         {
             Check = new ChainPaths<Interactable, Event>(ChainName.Check);
             Do = new ChainPaths<Interactable, Event>(ChainName.Do);
 
-            var builder = new ChainTemplateBuilder()
+            DefaultBuilder = new ChainTemplateBuilder()
 
                 .AddTemplate<Event>(ChainName.Check)
 
@@ -69,8 +60,6 @@ namespace Hopper.Core.Behaviors.Basic
                 .AddHandler(Die, PriorityRanks.Medium)
                 .AddHandler(Release, PriorityRanks.Medium)
                 .End();
-
-            BehaviorFactory<Interactable>.s_builder = builder;
         }
     }
 }

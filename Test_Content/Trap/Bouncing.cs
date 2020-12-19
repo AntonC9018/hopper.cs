@@ -9,7 +9,7 @@ using Hopper.Utils.Vector;
 namespace Hopper.Test_Content.Trap
 {
     [DataContract]
-    public class Bouncing : Behavior, IStandartActivateable
+    public class Bouncing : Behavior, IInitable, IStandartActivateable
     {
         private bool m_hasBounced;
         private bool m_isEnterListenerApplied;
@@ -17,7 +17,7 @@ namespace Hopper.Test_Content.Trap
 
         [DataMember] private bool m_hasEntityBeenOnTop;
 
-        private void Init(object _)
+        public void Init()
         {
             m_hasBounced = false;
             // automatically update the whether an entity left on top of us
@@ -115,5 +115,8 @@ namespace Hopper.Test_Content.Trap
             }
             m_hasBounced = false;
         }
+
+        public static readonly InitableBehaviorFactory<Bouncing> Preset
+            = new InitableBehaviorFactory<Bouncing>(null);
     }
 }

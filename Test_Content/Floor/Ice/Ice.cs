@@ -11,8 +11,8 @@ namespace Hopper.Test_Content.Floor
         public static EntityFactory<IceFloor> CreateFactory(SlideStatus slideStatus)
         {
             return new EntityFactory<IceFloor>()
-                .AddBehavior<Attackable>() // bombs can destroy it
-                .AddBehavior<Sliding>(new Sliding.Config(slideStatus));
+                .AddBehavior(Attackable.DefaultPreset) // bombs can destroy it
+                .AddBehavior(Sliding.Preset(slideStatus));
         }
     }
 }

@@ -8,18 +8,17 @@ namespace Hopper.Core.Chains
     {
         protected Dictionary<ChainName, I_CT_PartBuilder> m_templateBuilders
             = new Dictionary<ChainName, I_CT_PartBuilder>();
-        public Dictionary<ChainName, IChainTemplate> Templates
+
+        public Dictionary<ChainName, IChainTemplate> CreateTemplates()
         {
-            get
+            var templates = new Dictionary<ChainName, IChainTemplate>();
+            foreach (var key in m_templateBuilders.Keys)
             {
-                var templates = new Dictionary<ChainName, IChainTemplate>();
-                foreach (var key in m_templateBuilders.Keys)
-                {
-                    templates.Add(key, m_templateBuilders[key].Template);
-                }
-                return templates;
+                templates.Add(key, m_templateBuilders[key].Template);
             }
+            return templates;
         }
+
         public CT_PartBuilder<T> AddTemplate<T>(ChainName name) where T : EventBase
         {
             var builder = new CT_PartBuilder<T>(this);

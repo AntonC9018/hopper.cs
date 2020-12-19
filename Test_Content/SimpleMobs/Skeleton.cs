@@ -10,16 +10,16 @@ namespace Hopper.Test_Content.SimpleMobs
         public static EntityFactory<Entity> CreateFactory()
         {
             return new EntityFactory<Entity>()
-                .AddBehavior<Acting>(new Acting.Config(Algos.EnemyAlgo))
-                .AddBehavior<Sequential>(new Sequential.Config(CreateSequenceData()))
+                .AddBehavior(Acting.Preset(new Acting.Config(Algos.EnemyAlgo)))
+                .AddBehavior(Sequential.Preset(new Sequential.Config(CreateSequenceData())))
 
-                .AddBehavior<Attacking>()
-                .AddBehavior<Moving>()
+                .AddBehavior(Attacking.Preset)
+                .AddBehavior(Moving.Preset)
 
-                .AddBehavior<Displaceable>()
-                .AddBehavior<Attackable>()
-                .AddBehavior<Pushable>()
-                .AddBehavior<Statused>()
+                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Attackable.DefaultPreset)
+                .AddBehavior(Pushable.Preset)
+                .AddBehavior(Statused.Preset)
 
                 .Retouch(Skip.NoPlayer)
                 .Retouch(Skip.BlockedMove)
