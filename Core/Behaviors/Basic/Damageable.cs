@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Damageable : Behavior, IInitable<int>
+    public class Damageable : Behavior, IInitable
     {
         public int m_health = 5;
 
@@ -23,7 +23,7 @@ namespace Hopper.Core.Behaviors.Basic
             return false;
         }
 
-        public static ConfigurableBehaviorFactory<Damageable, int> Preset(int health)
-            => new ConfigurableBehaviorFactory<Damageable, int>(null, health);
+        public static InitableBehaviorFactory<Damageable> Preset
+            => new InitableBehaviorFactory<Damageable>(null);
     }
 }
