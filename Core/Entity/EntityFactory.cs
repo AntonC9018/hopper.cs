@@ -6,11 +6,9 @@ using Hopper.Core.Stats;
 
 namespace Hopper.Core
 {
-    public class EntityFactory<T> : IFactory<T>, IProvideBehaviorFactory
+    public class EntityFactory<T> : Kind<IFactory<Entity>>, IFactory<T>, IProvideBehaviorFactory
         where T : Entity, new()
     {
-        public int Id => m_id;
-        private int m_id;
         public event System.Action<T> InitEvent;
         public event System.Action<PatchArea> PostPatchEvent;
         public DefaultStats DefaultStats;
@@ -45,11 +43,6 @@ namespace Hopper.Core
 
             InitEvent?.Invoke(entity);
             return entity;
-        }
-
-        public void RegisterSelf(ModRegistry registry)
-        {
-            m_id = registry.Add<IFactory<Entity>>(this);
         }
 
         public void PostPatch(PatchArea patchArea)

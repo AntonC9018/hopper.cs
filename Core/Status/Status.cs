@@ -24,14 +24,12 @@ namespace Hopper.Core
         }
     }
 
-    public class Status<T> : IStatus where T : StatusData, new()
+    public class Status<T> : Kind<IStatus>, IStatus where T : StatusData, new()
     {
         private IStatPath<StatusFile> m_statPath;
-        private int m_id;
         public Tinker<T> m_tinker;
         public Status.Source m_source;
 
-        public int Id => m_id;
         public int SourceId => m_source.Id;
 
         public Status(IChainDef[] chainDefs, IStatPath<StatusFile> statPath, int defaultResValue)
@@ -41,7 +39,7 @@ namespace Hopper.Core
             m_source = new Status.Source { resistance = defaultResValue };
         }
 
-        public void RegisterSelf(ModRegistry registry)
+        public override void RegisterSelf(ModRegistry registry)
         {
             m_tinker.RegisterSelf(registry);
             m_source.RegisterSelf(registry); // think about this. 

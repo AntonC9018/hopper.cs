@@ -7,16 +7,8 @@ namespace Hopper.Core.Registries
     {
     }
 
-    public class Extendent<T> : IExtendent where T : IExtendent
+    public class Extendent<T> : Kind<IExtendent>, IExtendent where T : IExtendent
     {
-        public int m_id;
-        public int Id => m_id;
-
-        public void RegisterSelf(ModRegistry registry)
-        {
-            m_id = registry.Add<T>((T)(IExtendent)this);
-        }
-
         public void Patch(PatchArea patchArea)
         {
             patchArea.GetPatchSubRegistry<T>().Add(m_id, (T)(IExtendent)this);

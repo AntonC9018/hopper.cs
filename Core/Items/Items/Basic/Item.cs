@@ -2,11 +2,9 @@ using Hopper.Core.Registries;
 
 namespace Hopper.Core.Items
 {
-    public class Item : IItem
+    public class Item : Kind<IItem>, IItem
     {
-        public int m_id;
         public virtual ISlot<IItemContainer<IItem>> Slot => throw new System.NotImplementedException();
-        public virtual int Id => m_id;
 
         // Metadata
         // TODO: might be useful to make this `name` a metadata class / struct
@@ -16,11 +14,6 @@ namespace Hopper.Core.Items
         public Item(ItemMetadata meta)
         {
             m_metadata = meta;
-        }
-
-        public virtual void RegisterSelf(ModRegistry registry)
-        {
-            m_id = registry.Add<IItem>(this);
         }
 
         public virtual void BeDestroyed(Entity entity)

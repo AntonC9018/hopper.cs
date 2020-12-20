@@ -25,4 +25,15 @@ namespace Hopper.Core.Registries
     {
         void RegisterSelf(ModRegistry registry);
     }
+
+    public abstract class Kind<T> : IKind where T : IKind
+    {
+        public int m_id;
+        public virtual int Id => m_id;
+
+        public virtual void RegisterSelf(ModRegistry registry)
+        {
+            m_id = registry.Add<T>((T)(IKind)this);
+        }
+    }
 }

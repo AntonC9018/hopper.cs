@@ -19,20 +19,13 @@ namespace Hopper.Core
         bool IsTinked(Entity entity);
     }
 
-    public class Tinker<T> : ITinker where T : TinkerData, new()
+    public class Tinker<T> : Kind<ITinker>, ITinker where T : TinkerData, new()
     {
-        public int Id => m_id;
-        private int m_id;
         protected IChainDef[] m_chainDefinition;
 
         public Tinker(params IChainDef[] chainDefs)
         {
             m_chainDefinition = chainDefs;
-        }
-
-        public void RegisterSelf(ModRegistry registry)
-        {
-            m_id = registry.Add<ITinker>(this);
         }
 
         public void Tink(Entity entity)

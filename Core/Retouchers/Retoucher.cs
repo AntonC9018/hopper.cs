@@ -5,20 +5,13 @@ using Hopper.Core.Behaviors;
 
 namespace Hopper.Core
 {
-    public class Retoucher : IKind
+    public class Retoucher : Kind<Retoucher>
     {
-        public int Id => m_id;
-        private int m_id;
         private ITemplateChainDef[] m_chainDefinitions;
 
         public Retoucher(ITemplateChainDef[] chainDefinitions)
         {
             this.m_chainDefinitions = chainDefinitions;
-        }
-
-        public void RegisterSelf(ModRegistry registry)
-        {
-            m_id = registry.Add<Retoucher>(this);
         }
 
         // beacuse I'm sick of boilerplate for simple stuff
