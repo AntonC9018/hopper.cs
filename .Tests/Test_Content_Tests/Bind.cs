@@ -27,7 +27,7 @@ namespace Hopper.Tests.Test_Content
             test_player_factory = new EntityFactory<Player>()
                 .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)))
                 .AddBehavior(Statused.Preset)
-                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Displaceable.DefaultPreset)
                 .AddBehavior(Moving.Preset)
                 .AddBehavior(Attackable.DefaultPreset);
             move_action = new BehaviorAction<Moving>();

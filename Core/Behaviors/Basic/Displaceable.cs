@@ -7,7 +7,7 @@ using Hopper.Core.Chains;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Displaceable : Behavior
+    public class Displaceable : Behavior, IInitable<Layer>
     {
         public class Event : ActorEvent
         {
@@ -18,21 +18,11 @@ namespace Hopper.Core.Behaviors.Basic
             public Layer blockLayer;
         }
 
-        public class Config
-        {
-            public Layer blockLayer;
-
-            public Config(Layer blockLayer)
-            {
-                this.blockLayer = blockLayer;
-            }
-        }
-
         private Layer m_blockLayer;
 
-        private void Init(Config config)
+        public void Init(Layer blockLayer)
         {
-            m_blockLayer = (config == null) ? ExtendedLayer.BLOCK : config.blockLayer;
+            m_blockLayer = blockLayer;
         }
 
         public bool Activate(IntVector2 dir, Move move)
@@ -86,8 +76,11 @@ namespace Hopper.Core.Behaviors.Basic
 
 
         public static readonly ChainTemplateBuilder DefaultBuilder;
-        public static ConfiglessBehaviorFactory<Displaceable> Preset =>
-            new ConfiglessBehaviorFactory<Displaceable>(DefaultBuilder);
+
+        public static ConfigurableBehaviorFactory<Displaceable, Layer> DefaultPreset =>
+            new ConfigurableBehaviorFactory<Displaceable, Layer>(DefaultBuilder, ExtendedLayer.BLOCK);
+        public static ConfigurableBehaviorFactory<Displaceable, Layer> Preset(Layer layer) =>
+            new ConfigurableBehaviorFactory<Displaceable, Layer>(DefaultBuilder, layer);
 
         static Displaceable()
         {

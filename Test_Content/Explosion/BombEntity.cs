@@ -21,7 +21,7 @@ namespace Hopper.Test_Content.Explosion
             return new EntityFactory<BombEntity>()
                 .AddBehavior(Attackable.Preset(Attackness.CAN_BE_ATTACKED_IF_NEXT_TO))
                 .AddBehavior(Pushable.Preset)
-                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Displaceable.DefaultPreset)
                 .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)))
                 .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)))
                 .AddBehavior(Statused.Preset)

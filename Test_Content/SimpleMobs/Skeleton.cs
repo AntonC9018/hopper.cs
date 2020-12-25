@@ -16,7 +16,7 @@ namespace Hopper.Test_Content.SimpleMobs
                 .AddBehavior(Attacking.Preset)
                 .AddBehavior(Moving.Preset)
 
-                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Displaceable.DefaultPreset)
                 .AddBehavior(Attackable.DefaultPreset)
                 .AddBehavior(Pushable.Preset)
                 .AddBehavior(Statused.Preset)

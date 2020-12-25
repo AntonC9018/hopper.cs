@@ -15,7 +15,7 @@ namespace Hopper.Core
             return new EntityFactory<Player>()
                 .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo, null)))
                 .AddBehavior(Moving.Preset)
-                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Displaceable.DefaultPreset)
                 // .AddBehavior(Controllable.Preset) // needs to be reconfigured
                 .AddBehavior(Attackable.DefaultPreset)
                 .AddBehavior(Damageable.Preset)

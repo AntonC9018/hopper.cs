@@ -33,7 +33,7 @@ namespace Hopper.Test_Content.SimpleMobs
                 .AddBehavior(Acting.Preset(new Acting.Config(Algos.StepBased)))
                 .AddBehavior(Moving.Preset)
                 .AddBehavior(Damageable.Preset)
-                .AddBehavior(Displaceable.Preset);
+                .AddBehavior(Displaceable.DefaultPreset);
         }
 
         static Knipper()

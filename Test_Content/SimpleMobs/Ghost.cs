@@ -29,7 +29,7 @@ namespace Hopper.Test_Content
         {
             return new EntityFactory<Ghost>()
                 .AddBehavior(Moving.Preset)
-                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Displaceable.DefaultPreset)
                 .AddBehavior(Attacking.Preset)
                 .AddBehavior(Attackable.DefaultPreset)
                 .AddBehavior(Pushable.Preset)

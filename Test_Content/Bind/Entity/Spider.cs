@@ -48,7 +48,7 @@ namespace Hopper.Test_Content.Bind
             return new EntityFactory<Spider>()
                 .AddBehavior(Acting.Preset(new Acting.Config(Algos.EnemyAlgo)))
                 .AddBehavior(Sequential.Preset(new Sequential.Config(CreateSequenceData())))
-                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Displaceable.DefaultPreset)
                 .AddBehavior(Moving.Preset)
                 .AddBehavior(Binding.Preset(Bind.StopMoveStatus))
                 .AddBehavior(Attackable.DefaultPreset)

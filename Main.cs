@@ -65,7 +65,7 @@ namespace Hopper
                 .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)))
                 .AddBehavior(Attacking.Preset)
                 .AddBehavior(Moving.Preset)
-                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Displaceable.DefaultPreset)
                 .AddBehavior(Statused.Preset)
                 .Retouch(Hopper.Core.Retouchers.Reorient.OnDisplace)
                 .Retouch(Hopper.Core.Retouchers.Skip.EmptyAttack);
@@ -212,7 +212,7 @@ namespace Hopper
             var player.Factory = new EntityFactory<Player>();
             player.Factory.AddBehavior(Attackable.DefaultPreset);
             player.Factory.AddBehavior(Attacking.Preset);
-            player.Factory.AddBehavior(Displaceable.Preset);
+            player.Factory.AddBehavior(Displaceable.DefaultPreset);
             player.Factory.AddBehavior(Moving.Preset);
             player.Factory.AddBehavior(Pushable.Preset);
             player.Factory.AddBehavior(Statused.Preset);
@@ -266,7 +266,7 @@ namespace Hopper
             var player.Factory = new EntityFactory<Player>();
             player.Factory.AddBehavior(Attackable.DefaultPreset);
             player.Factory.AddBehavior(Attacking.Preset);
-            player.Factory.AddBehavior(Displaceable.Preset);
+            player.Factory.AddBehavior(Displaceable.DefaultPreset);
             player.Factory.AddBehavior(Moving.Preset);
             player.Factory.AddBehavior(Pushable.Preset);
             player.Factory.AddBehavior(Statused.Preset);
@@ -284,7 +284,7 @@ namespace Hopper
             var enemy.Factory = new EntityFactory<Entity>();
             enemy.Factory.AddBehavior(Attackable.DefaultPreset);
             enemy.Factory.AddBehavior(Attacking.Preset);
-            enemy.Factory.AddBehavior(Displaceable.Preset);
+            enemy.Factory.AddBehavior(Displaceable.DefaultPreset);
             enemy.Factory.AddBehavior(Moving.Preset);
             enemy.Factory.AddBehavior(Pushable.Preset);
 

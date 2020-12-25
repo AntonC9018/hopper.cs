@@ -24,7 +24,7 @@ namespace Hopper.Test_Content.Status.Freezing
         public static EntityFactory<IceCube> CreateFactory()
         {
             return new EntityFactory<IceCube>()
-                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Displaceable.DefaultPreset)
                 .AddBehavior(Attackable.DefaultPreset)
                 .AddBehavior(Pushable.Preset)
                 .AddBehavior(Damageable.Preset)

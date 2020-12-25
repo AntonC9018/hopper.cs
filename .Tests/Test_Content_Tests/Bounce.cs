@@ -18,7 +18,7 @@ namespace Hopper.Tests.Test_Content
         public Bounce_Tests()
         {
             test_factory = new EntityFactory<Entity>()
-                .AddBehavior(Displaceable.Preset)
+                .AddBehavior(Displaceable.DefaultPreset)
                 .AddBehavior(Pushable.Preset);
             mod_result = SetupThing.SetupContent();
             // .AddBehavior(Statused.Preset);
