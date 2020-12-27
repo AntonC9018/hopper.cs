@@ -10,7 +10,9 @@ The file `main.cs` contains some demo code. You may look through it to assess th
 
 ## View
 
-There is one WIP `View` implementation based on unity, see [this repo](https://github.com/AntonC9018/hopper-unity).
+There is one WIP `View` I'm currently working on, see [this](https://github.com/AntonC9018/hopper-godot).
+
+There also an implementation based on unity, see [this repo](https://github.com/AntonC9018/hopper-unity).
 
 # Introduction
 
