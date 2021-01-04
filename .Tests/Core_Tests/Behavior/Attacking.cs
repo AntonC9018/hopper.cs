@@ -1,0 +1,84 @@
+using Hopper.Core;
+using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.History;
+using Hopper.Core.Items;
+using Hopper.Core.Mods;
+using Hopper.Core.Registries;
+using Hopper.Test_Content.Explosion;
+using Hopper.Test_Content.SimpleMobs;
+using Hopper.Utils;
+using Hopper.Utils.Chains;
+using Hopper.Utils.Vector;
+using NUnit.Framework;
+
+namespace Hopper.Tests
+{
+    public class Attacking_Tests
+    {
+        public World world;
+        public ModResult result;
+        public Entity attacking_entity;
+        public Entity dummy;
+        public EntityFactory<Entity> attacking_entity_factory;
+        public EntityFactory<Dummy> dummy_factory;
+        public Action attack_action;
+
+        public Attacking_Tests()
+        {
+            result = SetupThing.SetupContent();
+            attacking_entity_factory = new EntityFactory<Entity>().AddBehavior(Attacking.Preset);
+            dummy_factory = Dummy.Factory;
+            attack_action = new BehaviorAction<Attacking>();
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            world = new World(3, 3, result.patchArea);
+            dummy = world.SpawnEntity(dummy_factory, new IntVector2(1, 1));
+            attacking_entity = world.SpawnEntity(attacking_entity_factory, new IntVector2(0, 1));
+        }
+
+        public Entity GetFirstEntity()
+        {
+            return world.Grid.GetCellAt(IntVector2.Zero).GetFirstEntity();
+        }
+
+        public void AttackRight()
+        {
+            attacking_entity.Behaviors.Get<Attacking>().Activate(attack_action.WithDir(new IntVector2(1, 0)));
+        }
+
+        [Test]
+        public void AttackingWithoutInventory_WorksAsDagger()
+        {
+            AttackRight();
+            NUnit.Framework.Assert.IsNotNull(dummy.History.Updates.Find(u => u.updateCode == UpdateCode.attacked_do));
+            NUnit.Framework.Assert.IsNotNull(attacking_entity.History.Updates.Find(u => u.updateCode == UpdateCode.attacking_do));
+        }
+
+        [Test]
+        public void AttackingWithInventory_FailsIfNoWeapon()
+        {
+            attacking_entity.Inventory = new Inventory(attacking_entity);
+            AttackRight();
+            NUnit.Framework.Assert.IsNull(dummy.History.Updates.Find(u => u.updateCode == UpdateCode.attacked_do));
+
+            // though the attacking by default is considered to have worked
+            NUnit.Framework.Assert.IsNotNull(attacking_entity.History.Updates.Find(u => u.updateCode == UpdateCode.attacking_do));
+        }
+
+        [Test]
+        public void AttackingPushes()
+        {
+            // Add pushable behavior
+            var pushable = Pushable.Preset.Instantiate(dummy);
+            dummy.Behaviors.Add(typeof(Pushable), pushable);
+            // As well as displaceable
+            var displaceable = Displaceable.DefaultPreset.Instantiate(dummy);
+            dummy.Behaviors.Add(typeof(Displaceable), displaceable);
+            AttackRight();
+            NUnit.Framework.Assert.IsNotNull(dummy.History.Updates.Find(u => u.updateCode == UpdateCode.pushed_do));
+        }
+    }
+}

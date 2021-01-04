@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hopper.Core.FS
+namespace Hopper.Utils.FS
 {
     // T is the base type of file this FS can hold
     public class FS<T> where T : File

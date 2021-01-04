@@ -40,7 +40,7 @@ namespace Hopper.Core
             m_id = 1;
             m_currentRepository = patchArea;
             // add possibility of cipying this from another world
-            m_pools = patchArea.DefaultPools.Copy();
+            m_pools = patchArea.DefaultPools?.Copy();
         }
 
         public void Loop()

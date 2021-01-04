@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Hopper.Core.FS;
+using Hopper.Utils.FS;
 using System.Collections.Generic;
 
 namespace Hopper.Tests

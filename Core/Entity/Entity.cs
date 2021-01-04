@@ -40,7 +40,7 @@ namespace Hopper.Core
 
 
         // These field store persistent state
-        [DataMember] public IInventory Inventory { get; protected set; }
+        [DataMember] public IInventory Inventory { get; set; }
 
         [DataMember(Order = 1)] public BehaviorControl Behaviors { get; private set; }
         [DataMember(Order = 2)] public TinkerControl Tinkers { get; private set; }

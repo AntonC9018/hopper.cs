@@ -1,4 +1,4 @@
-namespace Hopper.Core.FS
+namespace Hopper.Utils.FS
 {
     public class File : Node
     {

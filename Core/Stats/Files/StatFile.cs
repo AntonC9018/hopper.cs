@@ -1,4 +1,4 @@
-using Hopper.Core.FS;
+using Hopper.Utils.FS;
 using System.Reflection;
 
 namespace Hopper.Core.Stats
