@@ -4,12 +4,12 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Predictions
 {
-    public class Prediction
+    public class Predictor
     {
         public World world;
         public Faction targetedFaction;
 
-        public Prediction(World world, Faction targetedFaction)
+        public Predictor(World world, Faction targetedFaction)
         {
             this.world = world;
             this.targetedFaction = targetedFaction;

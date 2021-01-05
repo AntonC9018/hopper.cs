@@ -14,7 +14,7 @@ namespace Hopper.Tests
         public ModResult result;
         public EntityFactory<Player> playerFactory;
         public World world;
-        public Prediction prediction;
+        public Predictor prediction;
 
         public Prediction_Tests()
         {
@@ -26,7 +26,7 @@ namespace Hopper.Tests
         public void Setup()
         {
             world = new World(3, 3, result.patchArea);
-            prediction = new Prediction(world, Faction.Player);
+            prediction = new Predictor(world, Faction.Player);
         }
 
         [Test]
