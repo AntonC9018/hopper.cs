@@ -30,12 +30,16 @@ namespace Hopper.Core
         }
 
         public virtual Layer Layer => Layer.REAL;
+        public virtual Faction Faction => Faction.Enemy; // by default, entities are enemies
         public virtual bool IsDirected => false;
-        public virtual bool IsPlayer => false;
+        public bool IsPlayer => Faction.IsOfFaction(Faction.Player);
 
-        // state
-        // isDead is set to true when the entity needs to be filtered out 
-        // and removed from the internal lists
+        /// <summary>
+        /// <c>IsDead</c> is set to true when the entity needs to be removed from the world entity lists.
+        /// Dead entities do not, by default, execute actions and are removed from the world grid.
+        /// Do not try to attack or kill an already dead entity.
+        /// To kill an entity, use the <c>Die()</c> method.
+        /// </summary>
         [DataMember] public bool IsDead { get; protected set; }
 
 

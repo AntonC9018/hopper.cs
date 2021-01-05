@@ -1,6 +1,6 @@
 namespace Hopper.Core.Registries
 {
-    /*
+    /** <summary>
         `Kind` basically means static content that gets assigned an id by the Kind Registry.
         
         Kinds are instances of specific classes. 
@@ -20,12 +20,14 @@ namespace Hopper.Core.Registries
 
         Kinds are opposed to Instances, which are expected to be reinstantiated, 
         while also having id's.
+        </summary>
     */
     public interface IKind : IHaveId
     {
         void RegisterSelf(ModRegistry registry);
     }
 
+    /// <inheritdoc cref="IKind"/>
     public abstract class Kind<T> : IKind where T : IKind
     {
         public int m_id;

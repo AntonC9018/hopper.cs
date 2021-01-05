@@ -8,7 +8,7 @@ namespace Hopper.Core
     [DataContract]
     public class Player : Entity
     {
-        public override bool IsPlayer => true;
+        public override Faction Faction => Faction.Player;
 
         public static EntityFactory<Player> CreateFactory()
         {
