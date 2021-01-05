@@ -41,11 +41,14 @@ namespace Hopper.Test_Content
                 distance = 1,
                 pierce = 1
             };
-        private static readonly Layer TargetedLayer = Layer.REAL;
-        private static readonly Layer SkipLayer = Layer.WALL;
+        private static readonly TargetLayers TargetLayers = new TargetLayers
+        {
+            targeted = Layer.REAL,
+            skip = Layer.WALL
+        };
 
         private static readonly IAnonShooting DefaultShooting = new AnonShooting(
-            TargetedLayer, SkipLayer, DefaultAttack, DefaultPush, false);
+            TargetLayers, DefaultAttack, DefaultPush, false);
 
         public static void Shoot(IWorldSpot spot, IntVector2 dir)
         {

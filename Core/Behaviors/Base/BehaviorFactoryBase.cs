@@ -23,7 +23,10 @@ namespace Hopper.Core.Behaviors
         {
             T behavior = new T();
             behavior._SetEntity(entity);
-            behavior.GenerateChains(templates);
+            if (templates != null)
+            {
+                behavior.GenerateChains(templates);
+            }
             return behavior;
         }
     }

@@ -9,11 +9,10 @@ namespace Hopper.Test_Content
     public class NormalShooting : ShootingShared, INormalShooting
     {
         public NormalShooting(
-            Layer targetedLayer,
-            Layer skipLayer,
+            TargetLayers layers,
             bool stopOnFailedAttack)
 
-            : base(targetedLayer, skipLayer, stopOnFailedAttack)
+            : base(layers, stopOnFailedAttack)
         {
         }
 

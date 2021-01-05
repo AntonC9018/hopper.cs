@@ -6,7 +6,6 @@ using Hopper.Core.Mods;
 using Hopper.Core.Registries;
 using Hopper.Test_Content.Explosion;
 using Hopper.Test_Content.SimpleMobs;
-using Hopper.Utils;
 using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
@@ -53,8 +52,8 @@ namespace Hopper.Tests
         public void AttackingWithoutInventory_WorksAsDagger()
         {
             AttackRight();
-            NUnit.Framework.Assert.IsNotNull(dummy.History.Updates.Find(u => u.updateCode == UpdateCode.attacked_do));
-            NUnit.Framework.Assert.IsNotNull(attacking_entity.History.Updates.Find(u => u.updateCode == UpdateCode.attacking_do));
+            Assert.True(dummy.Did(UpdateCode.attacked_do));
+            Assert.True(attacking_entity.Did(UpdateCode.attacking_do));
         }
 
         [Test]
@@ -62,10 +61,11 @@ namespace Hopper.Tests
         {
             attacking_entity.Inventory = new Inventory(attacking_entity);
             AttackRight();
-            NUnit.Framework.Assert.IsNull(dummy.History.Updates.Find(u => u.updateCode == UpdateCode.attacked_do));
+
+            Assert.False(dummy.Did(UpdateCode.attacked_do));
 
             // though the attacking by default is considered to have worked
-            NUnit.Framework.Assert.IsNotNull(attacking_entity.History.Updates.Find(u => u.updateCode == UpdateCode.attacking_do));
+            Assert.True(attacking_entity.Did(UpdateCode.attacking_do));
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace Hopper.Tests
             var displaceable = Displaceable.DefaultPreset.Instantiate(dummy);
             dummy.Behaviors.Add(typeof(Displaceable), displaceable);
             AttackRight();
-            NUnit.Framework.Assert.IsNotNull(dummy.History.Updates.Find(u => u.updateCode == UpdateCode.pushed_do));
+            Assert.True(dummy.Did(UpdateCode.pushed_do));
         }
     }
 }

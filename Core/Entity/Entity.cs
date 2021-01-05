@@ -134,6 +134,8 @@ namespace Hopper.Core
 
         public void Die()
         {
+            Assert.That(!IsDead, "Must not be dead to die");
+
             IsDead = true;
             RemoveFromGrid();
 

@@ -12,8 +12,6 @@ namespace Hopper.Core.Behaviors
 
         public void GenerateChains(Dictionary<ChainName, IChainTemplate> templates)
         {
-            if (templates == null)
-                return;
             chains = new Dictionary<ChainName, Chain>();
             foreach (var kvp in templates)
             {

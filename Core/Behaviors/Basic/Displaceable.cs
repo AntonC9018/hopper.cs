@@ -18,11 +18,11 @@ namespace Hopper.Core.Behaviors.Basic
             public Layer blockLayer;
         }
 
-        private Layer m_blockLayer;
+        public Layer blockLayer;
 
         public void Init(Layer blockLayer)
         {
-            m_blockLayer = blockLayer;
+            this.blockLayer = blockLayer;
         }
 
         public bool Activate(IntVector2 dir, Move move)
@@ -32,7 +32,7 @@ namespace Hopper.Core.Behaviors.Basic
                 actor = m_entity,
                 dir = dir,
                 move = move,
-                blockLayer = m_blockLayer
+                blockLayer = blockLayer
             };
             return CheckDoCycle<Event>(ev);
         }

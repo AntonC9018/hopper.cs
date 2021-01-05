@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Hopper.Utils.Vector
 {
     [DataContract]
-    public struct IntVector2
+    public struct IntVector2 : IEquatable<IntVector2>
     {
         [DataMember] public int x;
         [DataMember] public int y;
@@ -232,6 +232,11 @@ namespace Hopper.Utils.Vector
                 x = x > 0 ? x : -x,
                 y = y > 0 ? y : -y
             };
+        }
+
+        public bool Equals(IntVector2 other)
+        {
+            return x == other.x && y == other.y;
         }
 
         public static bool operator ==(IntVector2 rhs, IntVector2 lhs)

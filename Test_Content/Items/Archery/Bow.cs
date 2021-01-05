@@ -4,6 +4,7 @@ using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.History;
 using Hopper.Core.Items;
 using Hopper.Core.Stats.Basic;
+using Hopper.Core.Targeting;
 
 namespace Hopper.Test_Content
 {
@@ -95,7 +96,7 @@ namespace Hopper.Test_Content
         public static ModularItem CreateBow()
         {
             var defaultShooting = new AnonShooting(
-                Layer.REAL, Layer.WALL, defaultArrowAttack, null, true
+                new TargetLayers { skip = Layer.WALL, targeted = Layer.REAL }, defaultArrowAttack, null, true
             );
             var module = CreateModule(defaultShooting);
             return new ModularItem(new ItemMetadata("Default_Bow"), Slot, module);

@@ -7,17 +7,14 @@ namespace Hopper.Core.Targeting
     public class MultiAtkTargetProvider : ITargetProvider
     {
         private IPattern m_pattern;
-        private Layer m_skipLayer;
-        private Layer m_targetLayer;
+        private TargetLayers m_targetLayers;
 
         public MultiAtkTargetProvider(
             IPattern pattern,
-            Layer skipLayer,
-            Layer targetLayer)
+            TargetLayers layers)
         {
             m_pattern = pattern;
-            m_skipLayer = skipLayer;
-            m_targetLayer = targetLayer;
+            m_targetLayers = layers;
         }
 
         public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 direction)
@@ -25,9 +22,9 @@ namespace Hopper.Core.Targeting
             foreach (var rotatedPiece in m_pattern.GetPieces(spot, direction))
             {
                 Cell cell = spot.GetCellRelative(rotatedPiece.pos);
-                if (cell != null && cell.HasBlock(direction, m_skipLayer) == false)
+                if (cell != null && cell.HasBlock(direction, m_targetLayers.skip) == false)
                 {
-                    var entities = cell.GetAllFromLayer(direction, m_targetLayer);
+                    var entities = cell.GetAllFromLayer(direction, m_targetLayers.targeted);
                     foreach (var entity in entities)
                     {
                         if (entity.Behaviors.Has<Attackable>())

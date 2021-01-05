@@ -31,20 +31,22 @@ namespace Hopper.Test_Content.Explosion
                 sourceId = PushSource.Id
             };
 
-        private static Layer TargetedLayer =
-            Layer.DROPPED
-            | Layer.GOLD
-            | Layer.MISC
-            | Layer.PROJECTILE
-            | Layer.REAL
-            | Layer.TRAP
-            | Layer.FLOOR
-            | Layer.WALL
-            | ExtendedLayer.ABOVE;
+        private static TargetLayers TargetLayers = new TargetLayers
+        {
+            targeted = Layer.DROPPED
+                | Layer.GOLD
+                | Layer.MISC
+                | Layer.PROJECTILE
+                | Layer.REAL
+                | Layer.TRAP
+                | Layer.FLOOR
+                | Layer.WALL
+                | ExtendedLayer.ABOVE,
+            skip = 0
+        };
 
-        private static readonly Layer SkipLayer = 0;
         private static readonly MultiAtkTargetProvider targetProvider =
-            new MultiAtkTargetProvider(Pattern.Under, SkipLayer, TargetedLayer);
+            new MultiAtkTargetProvider(Pattern.Under, TargetLayers);
         private static Attackable.Params CreateMeta() => new Attackable.Params(BaseAtk, null);
 
         public static void Explode(IntVector2 pos, int radius, World world)

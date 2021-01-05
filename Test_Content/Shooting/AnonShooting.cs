@@ -12,13 +12,12 @@ namespace Hopper.Test_Content
         private Push m_push; // TODO: take from function
 
         public AnonShooting(
-            Layer targetedLayer,
-            Layer skipLayer,
+            TargetLayers layers,
             Attack attack,
             Push push,
             bool stopAfterFirstAttack)
 
-            : base(targetedLayer, skipLayer, stopAfterFirstAttack)
+            : base(layers, stopAfterFirstAttack)
         {
             m_attack = attack;
             m_push = push;

@@ -76,5 +76,15 @@ namespace Hopper.Core.History
                 updateCode
             );
         }
+
+        static public bool Did(this Entity entity, UpdateCode code)
+        {
+            return Was(entity.History, code);
+        }
+
+        static public bool Was(this History<EntityState> history, UpdateCode code)
+        {
+            return history.Updates.Find(u => u.updateCode == code) != null;
+        }
     }
 }

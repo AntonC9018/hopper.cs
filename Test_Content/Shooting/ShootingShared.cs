@@ -10,14 +10,12 @@ namespace Hopper.Test_Content
     {
         public static readonly UpdateCode UpdateCode = new UpdateCode("shooting");
 
-        private Layer m_targetedLayer;
-        private Layer m_skipLayer;
+        private TargetLayers m_targetLayers;
         protected bool m_stopAfterFirstAttack;
 
-        protected ShootingShared(Layer targetedLayer, Layer skipLayer, bool stopAfterFirstAttack)
+        protected ShootingShared(TargetLayers layers, bool stopAfterFirstAttack)
         {
-            m_targetedLayer = targetedLayer;
-            m_skipLayer = skipLayer;
+            m_targetLayers = layers;
             m_stopAfterFirstAttack = stopAfterFirstAttack;
         }
 
@@ -62,13 +60,13 @@ namespace Hopper.Test_Content
                 var cell = spot.GetCellRelative(currentOffsetVec);
 
                 // off the world or a block is in the way
-                if (cell == null || cell.HasBlock(direction, m_skipLayer))
+                if (cell == null || cell.HasBlock(direction, m_targetLayers.skip))
                 {
                     info.last_checked_pos = spot.Pos + currentOffsetVec;
                     return info;
                 }
 
-                var target = cell.GetEntityFromLayer(direction, m_targetedLayer);
+                var target = cell.GetEntityFromLayer(direction, m_targetLayers.targeted);
                 if (target != null)
                 {
                     info.attacked_targets.Add(target);

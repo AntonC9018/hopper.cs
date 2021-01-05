@@ -29,7 +29,6 @@ namespace Hopper.Test_Content.Floor
 
         private static Layer TargetedLayer = Layer.REAL;
 
-
         private void ListenCell()
         {
             this.GetCell().EnterEvent += BlockOff;

@@ -6,6 +6,7 @@ using Hopper.Test_Content.Bind;
 using Hopper.Test_Content.Boss;
 using Hopper.Test_Content.Explosion;
 using Hopper.Test_Content.Floor;
+using Hopper.Test_Content.Projectiles;
 using Hopper.Test_Content.SimpleMobs;
 using Hopper.Test_Content.Status;
 using Hopper.Test_Content.Trap;
@@ -28,6 +29,7 @@ namespace Hopper.Test_Content
             new WallsContent(),
             new TrapContent(),
             new StatusContent(),
+            new ProjectileContent()
         };
 
         public void RegisterSelf(ModRegistry registry)
