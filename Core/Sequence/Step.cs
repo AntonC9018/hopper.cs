@@ -74,10 +74,5 @@ namespace Hopper.Core
             if (exitFunction != null)
                 exitFunction(e);
         }
-
-        public List<IntVector2> GetMovs(Entity e)
-        {
-            return movs(e, action);
-        }
     }
 }

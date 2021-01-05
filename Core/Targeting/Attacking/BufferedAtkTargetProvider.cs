@@ -3,12 +3,13 @@ using Hopper.Utils.Chains;
 using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Stats.Basic;
 using Hopper.Utils.Vector;
+using Hopper.Core.Predictions;
 
 namespace Hopper.Core.Targeting
 {
     public class BufferedAtkTargetProvider : IBufferedAtkTargetProvider
     {
-        private IPattern m_pattern;
+        public IPattern Pattern { get; private set; }
         private StaticChain<TargetEvent<AtkTarget>> m_chain;
         private System.Func<TargetEvent<AtkTarget>, bool> m_stopFunc;
         private Layer m_targetLayer;
@@ -19,7 +20,7 @@ namespace Hopper.Core.Targeting
             System.Func<TargetEvent<AtkTarget>, bool> stopFunc,
             Layer targetLayer)
         {
-            m_pattern = pattern;
+            Pattern = pattern;
             m_chain = chain;
             m_stopFunc = stopFunc;
             m_targetLayer = targetLayer;
@@ -34,7 +35,7 @@ namespace Hopper.Core.Targeting
                 targets = new List<AtkTarget>()
             };
 
-            foreach (var rotatedPiece in m_pattern.GetPieces(spot, direction))
+            foreach (var rotatedPiece in Pattern.GetPieces(direction))
             {
                 Cell cell = spot.GetCellRelative(rotatedPiece.pos);
                 if (cell != null)

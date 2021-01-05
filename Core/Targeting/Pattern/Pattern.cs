@@ -1,16 +1,17 @@
 using System.Collections.Generic;
+using Hopper.Core.Predictions;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting
 {
-    public interface IPattern
+    public interface IPattern : INeutralPredictable
     {
-        IEnumerable<Piece> GetPieces(IWorldSpot spot, IntVector2 dir);
+        IEnumerable<Piece> GetPieces(IntVector2 dir);
     }
 
     public class Pattern : IPattern
     {
-        public IEnumerable<Piece> GetPieces(IWorldSpot spot, IntVector2 dir)
+        public IEnumerable<Piece> GetPieces(IntVector2 dir)
         {
             double angle = IntVector2.Right.AngleTo(dir);
             foreach (var piece in pieces)
@@ -32,5 +33,21 @@ namespace Hopper.Core.Targeting
 
         public static Pattern Default = new Pattern(Piece.Default);
         public static Pattern Under = new Pattern(Piece.Under);
+
+        public IEnumerable<IntVector2> GetPositions(IntVector2 direction)
+        {
+            foreach (var piece in GetPieces(direction))
+            {
+                yield return piece.pos;
+            }
+        }
+
+        public IEnumerable<IntVector2> GetNeutralPositions(IntVector2 direction)
+        {
+            foreach (var piece in GetPieces(direction))
+            {
+                yield return piece.pos;
+            }
+        }
     }
 }

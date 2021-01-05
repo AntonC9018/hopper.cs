@@ -6,20 +6,20 @@ namespace Hopper.Core.Targeting
 {
     public class MultiAtkTargetProvider : ITargetProvider
     {
-        private IPattern m_pattern;
+        public IPattern Pattern { get; private set; }
         private TargetLayers m_targetLayers;
 
         public MultiAtkTargetProvider(
             IPattern pattern,
             TargetLayers layers)
         {
-            m_pattern = pattern;
+            Pattern = pattern;
             m_targetLayers = layers;
         }
 
         public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 direction)
         {
-            foreach (var rotatedPiece in m_pattern.GetPieces(spot, direction))
+            foreach (var rotatedPiece in Pattern.GetPieces(direction))
             {
                 Cell cell = spot.GetCellRelative(rotatedPiece.pos);
                 if (cell != null && cell.HasBlock(direction, m_targetLayers.skip) == false)

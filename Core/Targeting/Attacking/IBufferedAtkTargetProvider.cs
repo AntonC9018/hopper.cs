@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hopper.Core.Predictions;
 using Hopper.Core.Stats.Basic;
 using Hopper.Utils.Vector;
 
@@ -9,7 +10,7 @@ namespace Hopper.Core.Targeting
     // It also has info on atkness.
     // This might be needed for figuring out which swipe animation to play.
     // This is basically only useful for player weapons.
-    public interface IBufferedAtkTargetProvider
+    public interface IBufferedAtkTargetProvider : IWithPattern
     {
         List<AtkTarget> GetTargets(IWorldSpot spot, IntVector2 direction);
     }

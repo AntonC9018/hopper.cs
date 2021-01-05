@@ -1,20 +1,17 @@
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Hopper.Core.Behaviors.Basic;
 using Hopper.Utils;
-using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
     [DataContract]
-    public class Sequence : ISequence
+    public class Sequence
     {
-        private Step[] stepData;
+        private Step[] m_steps;
 
-        public Sequence(params Step[] stepData)
+        public Sequence(params Step[] steps)
         {
-            Assert.AreNotEqual(0, stepData.Length, "The step data must include at least one step");
-            this.stepData = stepData;
+            Assert.AreNotEqual(0, steps.Length, "The step data must include at least one step");
+            this.m_steps = steps;
         }
 
         [DataMember] private int currentStepIndex = 0;
@@ -24,14 +21,16 @@ namespace Hopper.Core
         {
             get
             {
-                return stepData[currentStepIndex].action?.Copy();
+                return m_steps[currentStepIndex].action?.Copy();
             }
         }
+
+        public Step CurrentStep => m_steps[currentStepIndex];
 
         public void TickAction(Entity actor)
         {
             currentRepeatCount++;
-            Step currentStep = stepData[currentStepIndex];
+            Step currentStep = m_steps[currentStepIndex];
 
             if (!currentStep.IsRepeatLimitMet(currentRepeatCount))
                 return;
@@ -40,22 +39,12 @@ namespace Hopper.Core
 
             if (relativeIndex != 0)
             {
-                currentStepIndex += relativeIndex + stepData.Length;
-                currentStepIndex %= stepData.Length;
+                currentStepIndex += relativeIndex + m_steps.Length;
+                currentStepIndex %= m_steps.Length;
                 currentRepeatCount = 0;
                 currentStep.Exit(actor);
-                stepData[currentStepIndex].Enter(actor);
+                m_steps[currentStepIndex].Enter(actor);
             }
-        }
-
-        public List<IntVector2> GetMovs(Entity actor)
-        {
-            return stepData[currentStepIndex].GetMovs(actor);
-        }
-
-        public void ApplyCurrentAlgo(Acting.Event ev)
-        {
-            stepData[currentStepIndex].algo(ev);
         }
     }
 }

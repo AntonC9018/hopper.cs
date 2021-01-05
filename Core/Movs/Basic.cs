@@ -5,8 +5,7 @@ namespace Hopper.Core
 {
     public static partial class Movs
     {
-
-        public static List<IntVector2> Basic(Entity e, Action a)
+        public static List<IntVector2> Basic(Entity e)
         {
             Entity player = e.GetClosestPlayer();
             var list = new List<IntVector2>();
@@ -40,7 +39,7 @@ namespace Hopper.Core
             return list;
         }
 
-        public static List<IntVector2> Adjacent(Entity e, Action a)
+        public static List<IntVector2> Adjacent(Entity e)
         {
             Entity player = e.GetClosestPlayer();
             var list = new List<IntVector2>();
@@ -71,12 +70,12 @@ namespace Hopper.Core
             return list;
         }
 
-        public static List<IntVector2> Straight(Entity e, Action a)
+        public static List<IntVector2> Straight(Entity e)
         {
             return new List<IntVector2> { e.Orientation };
         }
 
-        public static List<IntVector2> Diagonal(Entity e, Action a)
+        public static List<IntVector2> Diagonal(Entity e)
         {
             Entity player = e.GetClosestPlayer();
             var list = new List<IntVector2>();

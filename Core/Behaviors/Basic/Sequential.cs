@@ -11,9 +11,9 @@ namespace Hopper.Core.Behaviors.Basic
     {
         public class Config
         {
-            public readonly System.Func<ISequence> GetSequence;
+            public readonly System.Func<Sequence> GetSequence;
 
-            public Config(System.Func<ISequence> GetSequence)
+            public Config(System.Func<Sequence> GetSequence)
             {
                 this.GetSequence = GetSequence;
             }
@@ -27,27 +27,28 @@ namespace Hopper.Core.Behaviors.Basic
 
         [DataMember]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        private ISequence m_sequence;
+        public Sequence Sequence { get; private set; }
 
-        public Action CurrentAction => m_sequence.CurrentAction;
+        public Action CurrentAction => Sequence.CurrentAction;
 
         public void Init(Config config)
         {
-            m_sequence = config.GetSequence();
+            Sequence = config.GetSequence();
 
             Tick.Chain.ChainPath(m_entity.Behaviors).AddHandler(
-                e => m_sequence.TickAction(m_entity)
+                e => Sequence.TickAction(m_entity)
             );
         }
 
         public List<IntVector2> GetMovs()
         {
-            return m_sequence.GetMovs(m_entity);
+            Assert.That(Sequence.CurrentStep.movs != null);
+            return Sequence.CurrentStep.movs(m_entity);
         }
 
         public void ApplyCurrentAlgo(Acting.Event ev)
         {
-            m_sequence.ApplyCurrentAlgo(ev);
+            Sequence.CurrentStep.algo(ev);
         }
 
         public static ConfigurableBehaviorFactory<Sequential, Config> Preset(Config config)

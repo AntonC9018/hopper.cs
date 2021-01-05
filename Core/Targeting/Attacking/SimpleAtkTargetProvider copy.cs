@@ -6,6 +6,7 @@ namespace Hopper.Core.Targeting
 {
     public class SingleAtkTargetProvider : ITargetProvider
     {
+        public IPattern Pattern => Targeting.Pattern.Default;
         private Layer m_skipLayer;
         private Layer m_targetLayer;
 

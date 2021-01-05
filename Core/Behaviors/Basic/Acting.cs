@@ -1,5 +1,7 @@
 using Hopper.Core.Chains;
 using Hopper.Utils.Chains;
+using Hopper.Utils.Vector;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Hopper.Core.Behaviors.Basic
@@ -95,6 +97,31 @@ namespace Hopper.Core.Behaviors.Basic
             {
                 NextAction = m_config.CalculateAction(m_entity);
             }
+        }
+
+        public IEnumerable<IntVector2> GetPossibleDirections()
+        {
+            // This will have to be patched, if any other multidirectional algos appear
+            // that depend on something else than the movs function.
+            if (NextAction != null)
+            {
+                if (m_entity.Behaviors.Has<Sequential>())
+                {
+                    var currentStep = m_entity.Behaviors.Get<Sequential>().Sequence.CurrentStep;
+                    if (currentStep.movs != null)
+                    {
+                        foreach (var dir in currentStep.movs(m_entity))
+                        {
+                            yield return dir;
+                        }
+                    }
+                }
+                else
+                {
+                    yield return NextAction.direction;
+                }
+            }
+            yield break;
         }
 
         public static readonly ChainPaths<Acting, Event> Check;

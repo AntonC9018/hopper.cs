@@ -18,6 +18,8 @@ namespace Hopper.Core.Items
             m_targetProvider = targetProvider;
         }
 
+        public IPattern Pattern => m_targetProvider.Pattern;
+
         public IEnumerable<Target> GetTargets(IWorldSpot spot, IntVector2 dir)
         {
             return m_targetProvider.GetTargets(spot, dir);

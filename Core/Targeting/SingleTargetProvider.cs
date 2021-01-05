@@ -5,8 +5,10 @@ namespace Hopper.Core.Targeting
 {
     public class SingleTargetProvider : ITargetProvider
     {
+        public IPattern Pattern => Targeting.Pattern.Default;
         private Layer m_skipLayer;
         private Layer m_targetLayer;
+
 
         public SingleTargetProvider(Layer skipLayer, Layer targetLayer)
         {

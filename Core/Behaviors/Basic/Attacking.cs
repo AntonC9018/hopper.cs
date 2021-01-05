@@ -7,11 +7,12 @@ using Hopper.Core.Stats.Basic;
 using System.Linq;
 using Hopper.Utils.Vector;
 using Hopper.Core.Chains;
+using Hopper.Core.Predictions;
 
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Attacking : Behavior, IStandartActivateable
+    public class Attacking : Behavior, IStandartActivateable, IBadPredictable
     {
         public class Event : StandartEvent
         {
@@ -53,8 +54,7 @@ namespace Hopper.Core.Behaviors.Basic
             {
                 if (ev.actor.Inventory != null)
                 {
-                    var weapon = ev.actor.Inventory.GetContainer(BasicSlots.Weapon)[0];
-                    if (weapon != null)
+                    if (ev.actor.Inventory.GetWeapon(out var weapon))
                     {
                         // Get targets from weapon, using its target provider
                         // TODO: Save these initial targets at history or something
@@ -133,6 +133,24 @@ namespace Hopper.Core.Behaviors.Basic
         public static void ApplyPush(Entity attacked, IntVector2 direction, Push push)
         {
             attacked.Behaviors.Get<Pushable>().Activate(direction, push);
+        }
+
+        public IEnumerable<IntVector2> GetBadPositions(IntVector2 direction)
+        {
+            if (m_entity.Inventory != null)
+            {
+                if (m_entity.Inventory.GetWeapon(out var weapon))
+                {
+                    foreach (var relativePos in weapon.Pattern.GetNeutralPositions(direction))
+                    {
+                        yield return m_entity.Pos + relativePos;
+                    }
+                }
+            }
+            else
+            {
+                yield return m_entity.Pos + direction;
+            }
         }
 
         public static readonly ChainPaths<Attacking, Event> Check;
