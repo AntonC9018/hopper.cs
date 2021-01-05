@@ -9,7 +9,7 @@ namespace Hopper.Test_Content.Boss
     public class TestBoss : Entity
     {
         public static readonly Retoucher TurnToPlayerRetoucher;
-        public static readonly EntityFactory<TestBoss> Factory;
+        public static EntityFactory<TestBoss> Factory;
         private static readonly Action AttackMoveAction;
         private static readonly Action SpawnAction;
         private static readonly Step[] Steps;
@@ -52,7 +52,7 @@ namespace Hopper.Test_Content.Boss
 
         public class Whelp : Entity
         {
-            public static readonly EntityFactory<Whelp> Factory;
+            public static EntityFactory<Whelp> Factory;
             private static readonly Step[] Steps;
 
             static Whelp()
@@ -78,7 +78,6 @@ namespace Hopper.Test_Content.Boss
                         movs = Movs.Adjacent
                     }
                 };
-                Factory = CreateFactory();
             }
 
             public static EntityFactory<Whelp> CreateFactory()
@@ -127,7 +126,6 @@ namespace Hopper.Test_Content.Boss
                 },
             };
             TurnToPlayerRetoucher = Retoucher.SingleHandlered(Acting.Success, ev => TurnToPlayer(ev.actor));
-            Factory = CreateFactory();
         }
 
 

@@ -10,9 +10,13 @@ namespace Hopper.Test_Content.Floor
             Slide.Status.RegisterSelf(registry);
             Stuck.Status.RegisterSelf(registry);
 
+            IceFloor.Factory = IceFloor.CreateFactory(Slide.Status);
             IceFloor.Factory.RegisterSelf(registry);
+            Water.Factory = Water.CreateFactory();
             Water.Factory.RegisterSelf(registry);
+            RealBarrier.Factory = RealBarrier.CreateFactory();
             RealBarrier.Factory.RegisterSelf(registry);
+            BlockingTrap.Factory = BlockingTrap.CreateFactory();
             BlockingTrap.Factory.RegisterSelf(registry);
         }
 

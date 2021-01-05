@@ -8,6 +8,7 @@ namespace Hopper.Test_Content.Explosion
         public void RegisterSelf(ModRegistry registry)
         {
             Explosion.EventPath.Event.RegisterSelf(registry);
+            BombEntity.Factory = BombEntity.CreateFactory();
             BombEntity.Factory.RegisterSelf(registry);
             Bomb.Tinker.RegisterSelf(registry);
             Bomb.Item.RegisterSelf(registry);

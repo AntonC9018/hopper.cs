@@ -8,7 +8,7 @@ namespace Hopper.Test_Content.Trap
 {
     public class BounceTrap : Entity
     {
-        public static readonly EntityFactory<BounceTrap> Factory = CreateFactory();
+        public static EntityFactory<BounceTrap> Factory;
 
         public override Layer Layer => Layer.TRAP;
         public static readonly Action action = new BehaviorAction<Bouncing>();

@@ -24,6 +24,7 @@ namespace Hopper.Core
         public void RegisterSelf(ModRegistry registry)
         {
             CoreRetouchers.RegisterAll(registry);
+            DroppedItem.Factory = DroppedItem.CreateFactory();
             DroppedItem.Factory.RegisterSelf(registry);
             BasicSlots.RegisterSelf(registry);
         }

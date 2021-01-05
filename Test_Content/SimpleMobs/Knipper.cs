@@ -6,7 +6,7 @@ namespace Hopper.Test_Content.SimpleMobs
 {
     public class Knipper : Entity
     {
-        public static readonly EntityFactory<Knipper> Factory;
+        public static EntityFactory<Knipper> Factory;
         private static readonly Step[] Steps;
 
         private static System.Func<Entity, Result> IsPlayerClose(int success, int fail)

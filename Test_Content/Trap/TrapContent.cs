@@ -8,6 +8,7 @@ namespace Hopper.Test_Content.Trap
         public void RegisterSelf(ModRegistry registry)
         {
             Bounce.Source.RegisterSelf(registry);
+            BounceTrap.Factory = BounceTrap.CreateFactory();
             BounceTrap.Factory.RegisterSelf(registry);
         }
 

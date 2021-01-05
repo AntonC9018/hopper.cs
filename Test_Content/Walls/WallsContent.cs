@@ -7,6 +7,7 @@ namespace Hopper.Test_Content.Floor
     {
         public void RegisterSelf(ModRegistry registry)
         {
+            Barrier.Factory = Barrier.CreateFactory();
             Barrier.Factory.RegisterSelf(registry);
         }
 

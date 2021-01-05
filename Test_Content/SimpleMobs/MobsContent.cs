@@ -8,10 +8,14 @@ namespace Hopper.Test_Content.SimpleMobs
     {
         public void RegisterSelf(ModRegistry registry)
         {
+            Knipper.Factory = Knipper.CreateFactory();
             Knipper.Factory.RegisterSelf(registry);
+            Dummy.Factory = Dummy.CreateFactory();
             Dummy.Factory.RegisterSelf(registry);
+            Skeleton.Factory = Skeleton.CreateFactory();
             Skeleton.Factory.RegisterSelf(registry);
             Ghost.TeleportAfterAttackRetoucher.RegisterSelf(registry);
+            Ghost.Factory = Ghost.CreateFactory();
             Ghost.Factory.RegisterSelf(registry);
         }
 

@@ -5,7 +5,7 @@ namespace Hopper.Core.Items
         public IItem Item { get; set; }
         public override Layer Layer => Layer.DROPPED;
 
-        public static readonly EntityFactory<DroppedItem> Factory = CreateFactory();
+        public static EntityFactory<DroppedItem> Factory;
         public static EntityFactory<DroppedItem> CreateFactory()
         {
             return new EntityFactory<DroppedItem>();

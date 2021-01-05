@@ -6,7 +6,7 @@ namespace Hopper.Test_Content
 {
     public class Ghost : Entity
     {
-        public static readonly EntityFactory<Ghost> Factory;
+        public static EntityFactory<Ghost> Factory;
         public static readonly Retoucher TeleportAfterAttackRetoucher;
         public static readonly Action Action;
         private static readonly Layer TeleportedLayer;

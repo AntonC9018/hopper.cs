@@ -18,7 +18,7 @@ namespace Hopper.Test_Content.Floor
     {
         public override Layer Layer => Layer.FLOOR;
 
-        public static readonly EntityFactory<Water> Factory = CreateFactory();
+        public static EntityFactory<Water> Factory;
         public static EntityFactory<Water> CreateFactory()
         {
             return new EntityFactory<Water>()

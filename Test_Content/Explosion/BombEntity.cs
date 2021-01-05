@@ -10,7 +10,7 @@ namespace Hopper.Test_Content.Explosion
 {
     public class BombEntity : Entity
     {
-        public static readonly EntityFactory<BombEntity> Factory;
+        public static EntityFactory<BombEntity> Factory;
         public static readonly SimpleAction DefaultExplodeAction;
         public static readonly SimpleAction DieAction;
         public static readonly JoinedAction DieAndExplodeAction;

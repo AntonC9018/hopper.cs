@@ -12,7 +12,7 @@ namespace Hopper.Test_Content.Floor
         public override Layer Layer => Layer.FLOOR;
         [DataMember] private List<RealBarrier> m_barriers;
 
-        public static readonly EntityFactory<BlockingTrap> Factory = CreateFactory();
+        public static EntityFactory<BlockingTrap> Factory;
         public static readonly EntityFactory<RealBarrier> BarrierFactory = CreateBarrierFactory();
 
         public static EntityFactory<BlockingTrap> CreateFactory()
