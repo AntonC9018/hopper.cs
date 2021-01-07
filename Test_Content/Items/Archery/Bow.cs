@@ -5,6 +5,7 @@ using Hopper.Core.History;
 using Hopper.Core.Items;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Targeting;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content
 {
@@ -34,8 +35,8 @@ namespace Hopper.Test_Content
         public readonly TinkerModule ShootingModule;
 
         private Tinker<BowTinkerData> m_shootTinker;
-        private SimpleAction m_chargeAction;
-        private Action m_shootAction;
+        private UndirectedAction m_chargeAction;
+        private DirectedAction m_shootAction;
         private INormalShooting m_shooting;
 
         private Bow(INormalShooting shooting)
@@ -48,22 +49,22 @@ namespace Hopper.Test_Content
                     .End().ToStatic()
             );
             m_shooting = shooting;
-            m_chargeAction = new SimpleAction(ToggleCharging);
-            m_shootAction = new SimpleAction(Shoot);
+            m_chargeAction = Action.CreateSimple(ToggleCharging);
+            m_shootAction = Action.CreateSimple(Shoot);
             ShootingModule = new TinkerModule(m_shootTinker);
         }
 
-        private void Shoot(Entity entity, Action action)
+        private void Shoot(Entity entity, IntVector2 direction)
         {
             var store = m_shootTinker.GetStore(entity);
             if (store.numCharges > 0)
             {
                 store.numCharges--;
-                m_shooting.Shoot(entity, action);
+                m_shooting.Shoot(entity, direction);
             }
         }
 
-        private void ToggleCharging(Entity entity, Action action)
+        private void ToggleCharging(Entity entity)
         {
             var store = m_shootTinker.GetStore(entity);
             store.numCharges = 1 - store.numCharges;
@@ -80,7 +81,7 @@ namespace Hopper.Test_Content
             var store = m_shootTinker.GetStore(ev);
             if (store.numCharges > 0)
             {
-                ev.action = m_shootAction.WithDir(ev.action.direction);
+                ev.action = m_shootAction;
             }
         }
 

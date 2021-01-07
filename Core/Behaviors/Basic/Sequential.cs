@@ -29,7 +29,7 @@ namespace Hopper.Core.Behaviors.Basic
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public Sequence Sequence { get; private set; }
 
-        public Action CurrentAction => Sequence.CurrentAction;
+        public ParticularAction CurrentAction => Sequence.CurrentAction;
 
         public void Init(Config config)
         {

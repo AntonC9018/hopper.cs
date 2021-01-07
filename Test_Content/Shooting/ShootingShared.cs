@@ -19,9 +19,9 @@ namespace Hopper.Test_Content
             m_stopAfterFirstAttack = stopAfterFirstAttack;
         }
 
-        public static void ShootingPrelude(Entity entity, Action action)
+        public static void ShootingPrelude(Entity entity, IntVector2 direction)
         {
-            entity.Reorient_(action.direction);
+            entity.Reorient_(direction);
             entity.History.Add(entity, UpdateCode);
         }
         /*

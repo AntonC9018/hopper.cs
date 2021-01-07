@@ -33,9 +33,9 @@ namespace Hopper.Core.Retouchers
         }
         private static void AnyReorient(StandartEvent ev)
         {
-            if (ev.action.direction != IntVector2.Zero)
+            if (ev.direction != IntVector2.Zero)
             {
-                ev.actor.Reorient_(ev.action.direction);
+                ev.actor.Reorient_(ev.direction);
             }
         }
     }

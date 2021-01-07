@@ -35,19 +35,23 @@ namespace Hopper.Core.Predictions
                             continue;
                         }
 
-                        // For now, just highlight the attacking. Ignore e.g. lasers.
-                        // It should in principle be more scalable. 
-                        // For this, the action should store an object that implements the IBadPrediction interface
-                        // and we have to somehow know to retrieve this object out of there.
-                        if (acting.NextAction.ContainsAction(typeof(BehaviorAction<Attacking>)))
+                        if (acting.NextAction is ParticularDirectedAction)
                         {
-                            var attacking = entity.Behaviors.Get<Attacking>();
+                            var action = (ParticularDirectedAction)acting.NextAction;
                             foreach (var direction in acting.GetPossibleDirections())
                             {
-                                foreach (var pos in attacking.GetBadPositions(direction))
+                                foreach (var pos in action.Predict(entity, direction))
                                 {
                                     set.Add(pos);
                                 }
+                            }
+                        }
+                        else
+                        {
+                            var action = (ParticularUndirectedAction)acting.NextAction;
+                            foreach (var pos in action.Predict(entity))
+                            {
+                                set.Add(pos);
                             }
                         }
                     }

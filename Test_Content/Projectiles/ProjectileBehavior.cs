@@ -25,8 +25,8 @@ namespace Hopper.Test_Content.Projectiles
         }
 
         /// <summary>
-        /// Attacks the entity looking in the direction specified by action. Otherwise, 
-        /// moves in the direction specified by action, after which tries to attack whatever is
+        /// Attacks the entity looking in the specified direction. Otherwise, 
+        /// moves in the specified direction, after which tries to attack whatever is
         /// at the same cell as the projectile at that point. Would not attack if provided direction of zero.
         /// Would start watching the cell's <c>EnterEvent</c> and attack entities that enter the cell 
         /// until the end of loop. Attacking is only done on entities at the <c>targetLayer</c>, given at config. 
@@ -35,12 +35,12 @@ namespace Hopper.Test_Content.Projectiles
         /// <remarks>
         /// In the future, should add a `Do` chain that should be traversed instead of attacking entities directly.
         /// </remarks>
-        public bool Activate(Action action)
+        public bool Activate(IntVector2 direction)
         {
-            // Assert.AreNotEqual(IntVector2.Zero, action.direction, "Must be moving somewhere");
+            // Assert.AreNotEqual(IntVector2.Zero, direction, "Must be moving somewhere");
 
             // If the projectile is not floating at one spot
-            if (action.direction != IntVector2.Zero)
+            if (direction != IntVector2.Zero)
             {
                 Assert.That(!m_entity.Behaviors.Get<Displaceable>().blockLayer.IsOfLayer(Layer.WALL),
                     "We should be able to move INTO walls");
@@ -50,7 +50,7 @@ namespace Hopper.Test_Content.Projectiles
                 var target = m_entity.GetCell().m_entities.Find(
                     e => e.IsOfLayer(targetedLayer)
                         && !e.IsDirected
-                        && e.Orientation == -action.direction
+                        && e.Orientation == -direction
                         && e != m_entity
                 );
 
@@ -63,7 +63,7 @@ namespace Hopper.Test_Content.Projectiles
                 {
                     // Move in the direction specified by action.
                     var move = m_entity.Stats.GetLazy(Move.Path);
-                    m_entity.Behaviors.Get<Displaceable>().Activate(action.direction, move);
+                    m_entity.Behaviors.Get<Displaceable>().Activate(direction, move);
                 }
             }
 

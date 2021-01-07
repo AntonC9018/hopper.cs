@@ -16,7 +16,7 @@ namespace Hopper.Tests.Test_Content
     {
         public readonly EntityFactory<Entity> test_entity_factory;
         public readonly EntityFactory<Player> test_player_factory;
-        public readonly Action move_action;
+        public readonly DirectedAction move_action;
         public readonly ModResult mod_result;
         public World world;
 
@@ -30,7 +30,7 @@ namespace Hopper.Tests.Test_Content
                 .AddBehavior(Displaceable.DefaultPreset)
                 .AddBehavior(Moving.Preset)
                 .AddBehavior(Attackable.DefaultPreset);
-            move_action = new BehaviorAction<Moving>();
+            move_action = Action.CreateBehavioral<Moving>();
         }
 
         [SetUp]
@@ -53,7 +53,7 @@ namespace Hopper.Tests.Test_Content
             Assert.AreEqual(2, zero_zero_cell.m_entities.Count);
             Assert.AreEqual(player, zero_zero_cell.m_entities[0]);
 
-            player.Behaviors.Get<Acting>().NextAction = move_action.WithDir(IntVector2.Right);
+            player.Behaviors.Get<Acting>().NextAction = move_action.ToDirectedParticular(IntVector2.Right);
             world.Loop();
 
             Assert.That(Bind.StopMoveStatus.IsApplied(player));
@@ -83,7 +83,7 @@ namespace Hopper.Tests.Test_Content
 
             Assert.That(Bind.StopMoveStatus.IsApplied(player) == false);
 
-            player.Behaviors.Get<Acting>().NextAction = move_action.WithDir(IntVector2.Right);
+            player.Behaviors.Get<Acting>().NextAction = move_action.ToDirectedParticular(IntVector2.Right);
             world.Loop();
 
             Assert.AreEqual(new IntVector2(2, 0), player.Pos);

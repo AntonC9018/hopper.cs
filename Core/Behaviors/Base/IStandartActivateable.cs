@@ -1,7 +1,9 @@
+using Hopper.Utils.Vector;
+
 namespace Hopper.Core.Behaviors
 {
     public interface IStandartActivateable
     {
-        bool Activate(Action action);
+        bool Activate(IntVector2 direction);
     }
 }

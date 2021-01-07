@@ -28,10 +28,9 @@ namespace Hopper.Test_Content.SimpleMobs
 
         static Step[] CreateSequenceData()
         {
-            var attackAction = new BehaviorAction<Attacking>();
-            var moveAction = new BehaviorAction<Moving>();
-            var attackMoveAction = new CompositeAction(
-                new Action[] { attackAction, moveAction }
+            var attackMoveAction = Action.CreateCompositeDirected(
+                Action.CreateBehavioral<Attacking>(),
+                Action.CreateBehavioral<Moving>()
             );
 
             var stepData = new Step[]

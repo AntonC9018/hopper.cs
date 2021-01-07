@@ -25,7 +25,7 @@ namespace Hopper.Test_Content.Trap
             m_entity.DieEvent += (() => m_entity.GetCell().LeaveEvent -= GetUnpushed);
         }
 
-        public bool Activate(Action action)
+        public bool Activate(IntVector2 direction)
         {
             if (m_entity.Orientation == IntVector2.Zero)
             {

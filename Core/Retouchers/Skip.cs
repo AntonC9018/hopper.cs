@@ -39,7 +39,7 @@ namespace Hopper.Core.Retouchers
 
         private static void SkipBlocked(Moving.Event ev)
         {
-            ev.propagate = ev.actor.HasBlockRelative(ev.action.direction) == false;
+            ev.propagate = ev.actor.HasBlockRelative(ev.direction) == false;
         }
 
         private static void SkipNoPlayer(Attacking.Event ev)

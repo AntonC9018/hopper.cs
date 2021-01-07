@@ -11,7 +11,7 @@ namespace Hopper.Core.Behaviors.Basic
     {
         public class Config
         {
-            public System.Func<Entity, Action> CalculateAction;
+            public System.Func<Entity, ParticularAction> CalculateAction;
             public System.Action<Acting.Event> DoAction;
 
             public Config(System.Action<Acting.Event> doAction)
@@ -20,7 +20,7 @@ namespace Hopper.Core.Behaviors.Basic
                 CalculateAction = ent => ent.Behaviors.Get<Sequential>().CurrentAction;
             }
 
-            public Config(System.Action<Acting.Event> doAction, System.Func<Entity, Action> calculateAction)
+            public Config(System.Action<Acting.Event> doAction, System.Func<Entity, ParticularAction> calculateAction)
             {
                 CalculateAction = calculateAction;
                 DoAction = doAction;
@@ -30,7 +30,7 @@ namespace Hopper.Core.Behaviors.Basic
         public bool DidAction { get; private set; }
         public bool DoingAction { get; private set; }
         public bool DidActionSucceed { get; private set; }
-        public Action NextAction { get; set; }
+        public ParticularAction NextAction { get; set; }
         private Config m_config;
 
         public void Init(Config config)
@@ -47,8 +47,9 @@ namespace Hopper.Core.Behaviors.Basic
             );
         }
 
-        public class Event : StandartEvent
+        public class Event : ActorEvent
         {
+            public ParticularAction action;
             public bool success = false;
         }
 
@@ -118,7 +119,7 @@ namespace Hopper.Core.Behaviors.Basic
                 }
                 else
                 {
-                    yield return NextAction.direction;
+                    yield return ((ParticularDirectedAction)NextAction).direction;
                 }
             }
             yield break;

@@ -10,7 +10,7 @@ namespace Hopper.Test_Content
     }
     public interface INormalShooting
     {
-        ShootingInfo Shoot(Entity entity, Action action);
+        ShootingInfo Shoot(Entity entity, IntVector2 direction);
     }
     public interface IAnyShooting : IAnonShooting, INormalShooting
     {

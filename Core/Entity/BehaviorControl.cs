@@ -19,19 +19,19 @@ namespace Hopper.Core
             m_behaviors[t] = behavior;
         }
 
-        public T Get<T>() where T : IWithChain, new()
+        public T Get<T>() where T : IWithChain
         {
             return (T)m_behaviors[typeof(T)];
         }
 
-        public T TryGet<T>() where T : IWithChain, new()
+        public T TryGet<T>() where T : IWithChain
         {
             if (m_behaviors.ContainsKey(typeof(T)))
                 return (T)m_behaviors[typeof(T)];
             return default(T);
         }
 
-        public bool Has<T>() where T : Behavior, new()
+        public bool Has<T>() where T : Behavior
         {
             return m_behaviors.ContainsKey(typeof(T));
         }

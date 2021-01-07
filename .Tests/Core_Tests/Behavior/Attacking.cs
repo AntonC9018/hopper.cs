@@ -20,14 +20,12 @@ namespace Hopper.Tests
         public Entity dummy;
         public EntityFactory<Entity> attacking_entity_factory;
         public EntityFactory<Dummy> dummy_factory;
-        public Action attack_action;
 
         public Attacking_Tests()
         {
             result = SetupThing.SetupContent();
             attacking_entity_factory = new EntityFactory<Entity>().AddBehavior(Attacking.Preset);
             dummy_factory = Dummy.Factory;
-            attack_action = new BehaviorAction<Attacking>();
         }
 
         [SetUp]
@@ -45,7 +43,7 @@ namespace Hopper.Tests
 
         public void AttackRight()
         {
-            attacking_entity.Behaviors.Get<Attacking>().Activate(attack_action.WithDir(new IntVector2(1, 0)));
+            attacking_entity.Behaviors.Get<Attacking>().Activate(new IntVector2(1, 0));
         }
 
         [Test]

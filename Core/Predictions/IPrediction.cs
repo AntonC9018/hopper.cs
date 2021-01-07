@@ -3,17 +3,17 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Predictions
 {
-    public interface INeutralPredictable
+    public interface IPredictable
     {
-        IEnumerable<IntVector2> GetNeutralPositions(IntVector2 direction);
-    }
-    public interface IGoodPredictable
-    {
-        IEnumerable<IntVector2> GetGoodPositions(IntVector2 direction);
     }
 
-    public interface IBadPredictable
+    public interface IDirectedPredictable : IPredictable
     {
-        IEnumerable<IntVector2> GetBadPositions(IntVector2 direction);
+        IEnumerable<IntVector2> GetPositions(IntVector2 direction);
+    }
+
+    public interface IUndirectedPredictable : IPredictable
+    {
+        IEnumerable<IntVector2> GetPositions();
     }
 }

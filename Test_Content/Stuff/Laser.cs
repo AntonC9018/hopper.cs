@@ -57,8 +57,7 @@ namespace Hopper.Test_Content
             EventPath.Fire(spot.World, laser_info);
         }
 
-        public static readonly SimpleAction LaserShootAction = new SimpleAction(
-            (e, a) => Laser.Shoot(e, a.direction)
-        );
+        public static readonly DirectedAction LaserShootAction =
+            Action.CreateSimple((e, d) => Laser.Shoot(e, d));
     }
 }

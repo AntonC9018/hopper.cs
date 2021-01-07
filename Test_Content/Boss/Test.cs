@@ -10,23 +10,23 @@ namespace Hopper.Test_Content.Boss
     {
         public static readonly Retoucher TurnToPlayerRetoucher;
         public static EntityFactory<TestBoss> Factory;
-        private static readonly Action AttackMoveAction;
-        private static readonly Action SpawnAction;
+        private static readonly DirectedAction AttackMoveAction;
+        private static readonly DirectedAction SpawnAction;
         private static readonly Step[] Steps;
 
         private int m_whelpCount = 0;
         private static int WhelpMax = 3;
 
-        private static void Spawn(TestBoss entity, Action action)
+        private static void Spawn(TestBoss entity, IntVector2 direction)
         {
             int toSpawn = WhelpMax - entity.m_whelpCount;
             for (int i = 0; i < toSpawn; i++)
             {
-                var pos = entity.Pos - action.direction * (i + 1);
+                var pos = entity.Pos - direction * (i + 1);
 
                 if (entity.World.Grid.IsOutOfBounds(pos) == false)
                 {
-                    var whelp = entity.World.SpawnEntity(Whelp.Factory, pos, action.direction);
+                    var whelp = entity.World.SpawnEntity(Whelp.Factory, pos, direction);
                     whelp.DieEvent += () => entity.m_whelpCount--;
                 }
                 entity.m_whelpCount++;
@@ -99,10 +99,13 @@ namespace Hopper.Test_Content.Boss
 
         static TestBoss()
         {
-            AttackMoveAction = new CompositeAction(
-                new BehaviorAction<Attacking>(), new BehaviorAction<Moving>());
-            SpawnAction = new SimpleAction(
-                (e, a) => Spawn((TestBoss)e, a));
+            AttackMoveAction = Action.CreateCompositeDirected(
+                Action.CreateBehavioral<Attacking>(),
+                Action.CreateBehavioral<Moving>()
+            );
+
+            SpawnAction = Action.CreateSimple((e, d) => Spawn((TestBoss)e, d));
+
             Steps = new[]
             {
                 new Step

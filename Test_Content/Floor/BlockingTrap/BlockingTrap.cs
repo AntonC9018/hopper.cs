@@ -95,7 +95,7 @@ namespace Hopper.Test_Content.Floor
         // {
         //     var store = Tinker.GetStore(ev);
         //     var barrier = store.applicant.m_barriers?.Find(
-        //         b => ev.action.direction == b.Orientation);
+        //         b => ev.direction == b.Orientation);
         //     if (barrier != null && barrier.IsDead == false)
         //     {
         //         ev.targets = new List<Core.Targeting.AtkTarget>();

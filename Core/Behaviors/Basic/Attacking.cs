@@ -12,7 +12,7 @@ using Hopper.Core.Predictions;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Attacking : Behavior, IStandartActivateable, IBadPredictable
+    public class Attacking : Behavior, IStandartActivateable, IDirectedPredictable
     {
         public class Event : StandartEvent
         {
@@ -22,16 +22,16 @@ namespace Hopper.Core.Behaviors.Basic
         }
 
         private static List<Target> GenerateTargetsDefault(Event ev)
-            => TargetProvider.SimpleAttack.GetTargets(ev.actor, ev.action.direction).ToList();
+            => TargetProvider.SimpleAttack.GetTargets(ev.actor, ev.direction).ToList();
 
-        public bool Activate(Action action) => Activate(action, null);
-        public bool Activate(Action action, List<Target> targets)
+        public bool Activate(IntVector2 direction) => Activate(direction, null);
+        public bool Activate(IntVector2 direction, List<Target> targets)
         {
             var ev = new Event
             {
                 targets = targets,
                 actor = m_entity,
-                action = action
+                direction = direction
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -61,7 +61,7 @@ namespace Hopper.Core.Behaviors.Basic
                         // since we don't want out event to have excessive data. 
                         // It may be useful in some cases, but not yet
                         ev.targets = weapon
-                            .GetTargets(ev.actor, ev.action.direction)
+                            .GetTargets(ev.actor, ev.direction)
                             .ConvertAll(t => new Target(t.entity, t.piece.dir));
                     }
                     else
@@ -135,13 +135,13 @@ namespace Hopper.Core.Behaviors.Basic
             attacked.Behaviors.Get<Pushable>().Activate(direction, push);
         }
 
-        public IEnumerable<IntVector2> GetBadPositions(IntVector2 direction)
+        public IEnumerable<IntVector2> GetPositions(IntVector2 direction)
         {
             if (m_entity.Inventory != null)
             {
                 if (m_entity.Inventory.GetWeapon(out var weapon))
                 {
-                    foreach (var relativePos in weapon.Pattern.GetNeutralPositions(direction))
+                    foreach (var relativePos in weapon.Pattern.GetPositions(direction))
                     {
                         yield return m_entity.Pos + relativePos;
                     }

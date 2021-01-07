@@ -50,7 +50,7 @@ namespace Hopper
             var enemy = world.SpawnEntity(enemy.Factory, new IntVector2(2, 1));
             enemy.Reorient(new IntVector2(-1, 0));
             shield.BeEquipped(enemy);
-            var attackAction = new BehaviorAction<Attacking>();
+            var attackAction = Action.CreateBehavioral<Attacking>();
             player.Behaviors.Get<Acting>().NextAction = attackAction.WithDir(new IntVector2(1, 0));
             world.Loop();
             player.Stats.GetRaw(Attack.Path).pierce += 2;
@@ -75,8 +75,8 @@ namespace Hopper
             var ice1 = world.SpawnEntity(ice_fact, new IntVector2(2, 1));
             var ice2 = world.SpawnEntity(ice_fact, new IntVector2(3, 1));
             var action = new CompositeAction(
-                new BehaviorAction<Attacking>(),
-                new BehaviorAction<Moving>()
+                Action.CreateBehavioral<Attacking>(),
+                Action.CreateBehavioral<Moving>()
             );
             void SetAction(IntVector2 vec) => player.Behaviors.Get<Acting>().NextAction
                 = action.Copy().WithDir(vec);
@@ -114,7 +114,7 @@ namespace Hopper
 
             var ghost = world.SpawnEntity(Ghost.CreateFactory(), player.Pos + IntVector2.Right);
             player.Behaviors.Get<Acting>().NextAction =
-                new BehaviorAction<Attacking>().WithDir(IntVector2.Right);
+                Action.CreateBehavioral<Attacking>().WithDir(IntVector2.Right);
 
             world.Loop();
 
@@ -134,7 +134,7 @@ namespace Hopper
             System.Console.WriteLine($"Gold amount: {gold.Amount}");
 
             player.Behaviors.Get<Acting>().NextAction =
-                new BehaviorAction<Moving>().WithDir(IntVector2.Right);
+                Action.CreateBehavioral<Moving>().WithDir(IntVector2.Right);
             world.Loop();
 
             System.Console.WriteLine($"Is gold dead? {gold.IsDead}");
@@ -148,7 +148,7 @@ namespace Hopper
             var trap = world.SpawnEntity(BounceTrap.Factory, new IntVector2(1, 2));
             trap.Reorient(new IntVector2(1, 0));
             player.Behaviors.Get<Acting>().NextAction =
-                new BehaviorAction<Moving>().WithDir(new IntVector2(0, 1));
+                Action.CreateBehavioral<Moving>().WithDir(new IntVector2(0, 1));
             world.Loop();
             System.Console.WriteLine($"Player is at {player.Pos}");
         }
@@ -294,8 +294,8 @@ namespace Hopper
             enemy.Factory.AddBehavior(Acting.Preset(enemyActingConf));
 
 
-            var attackAction = new BehaviorAction<Attacking>();
-            var moveAction = new BehaviorAction<Moving>();
+            var attackAction = Action.CreateBehavioral<Attacking>();
+            var moveAction = Action.CreateBehavioral<Moving>();
             CompositeAction attackMoveAction = new CompositeAction(
                 new Action[] { attackAction, moveAction }
             );

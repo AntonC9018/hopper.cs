@@ -44,7 +44,7 @@ namespace Hopper.Test_Content.SimpleMobs
                 new Step
                 {
                     successFunction = IsPlayerClose(fail : 1, success : 2),
-                    action = new BehaviorAction<Moving>(),
+                    action = Action.CreateBehavioral<Moving>(),
                     movs = Movs.Basic,
                     algo = Algos.EnemyAlgo
                 },

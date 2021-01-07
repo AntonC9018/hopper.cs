@@ -8,7 +8,7 @@ namespace Hopper.Test_Content
     {
         public static EntityFactory<Ghost> Factory;
         public static readonly Retoucher TeleportAfterAttackRetoucher;
-        public static readonly Action Action;
+        public static readonly Action GhostAction;
         private static readonly Layer TeleportedLayer;
         private static readonly Step[] Steps;
 
@@ -41,16 +41,16 @@ namespace Hopper.Test_Content
 
         static Ghost()
         {
-            Action = new CompositeAction(
-                new BehaviorAction<Attacking>(),
-                new BehaviorAction<Moving>()
+            GhostAction = Action.CreateCompositeDirected(
+                Action.CreateBehavioral<Attacking>(),
+                Action.CreateBehavioral<Moving>()
             );
             TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.GOLD;
             Steps = new Step[]
             {
                 new Step
                 {
-                    action = Action,
+                    action = GhostAction,
                     movs = Movs.Basic
                 }
             };

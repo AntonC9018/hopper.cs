@@ -23,9 +23,9 @@ namespace Hopper.Test_Content
             m_push = push;
         }
 
-        public ShootingInfo Shoot(Entity entity, Action action)
+        public ShootingInfo Shoot(Entity entity, IntVector2 direction)
         {
-            return ShootAnon((IWorldSpot)entity, action.direction);
+            return ShootAnon((IWorldSpot)entity, direction);
         }
 
         public ShootingInfo ShootAnon(IWorldSpot spot, IntVector2 direction)

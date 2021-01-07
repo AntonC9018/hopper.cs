@@ -11,7 +11,7 @@ namespace Hopper.Test_Content.Trap
         public static EntityFactory<BounceTrap> Factory;
 
         public override Layer Layer => Layer.TRAP;
-        public static readonly Action action = new BehaviorAction<Bouncing>();
+        public static readonly DirectedAction BounceAction = Action.CreateBehavioral<Bouncing>();
 
         public static readonly Push PushStat =
             new Push
@@ -34,7 +34,7 @@ namespace Hopper.Test_Content.Trap
                 .AddBehavior(Acting.Preset(
                     new Acting.Config(
                         Algos.SimpleAlgo,
-                        e => action.Copy().WithDir(e.Orientation)
+                        e => BounceAction.ToDirectedParticular(e.Orientation)
                     )
                 ))
                 .AddBehavior(Bouncing.Preset)

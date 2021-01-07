@@ -13,7 +13,7 @@ namespace Hopper.Tests.Test_Content
     {
         public readonly EntityFactory<Player> test_player_factory;
 
-        public readonly Action move_action;
+        public readonly DirectedAction move_action;
         public readonly ModResult mod_result;
         public World world;
         public Player player;
@@ -22,7 +22,7 @@ namespace Hopper.Tests.Test_Content
 
         public Slide_Tests()
         {
-            move_action = new BehaviorAction<Moving>();
+            move_action = Action.CreateBehavioral<Moving>();
             test_player_factory = new EntityFactory<Player>()
                 .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo)))
                 .AddBehavior(Statused.Preset)

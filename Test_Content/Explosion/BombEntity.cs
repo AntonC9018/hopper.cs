@@ -11,9 +11,9 @@ namespace Hopper.Test_Content.Explosion
     public class BombEntity : Entity
     {
         public static EntityFactory<BombEntity> Factory;
-        public static readonly SimpleAction DefaultExplodeAction;
-        public static readonly SimpleAction DieAction;
-        public static readonly JoinedAction DieAndExplodeAction;
+        public static readonly UndirectedAction DefaultExplodeAction;
+        public static readonly UndirectedAction DieAction;
+        public static readonly UndirectedAction DieAndExplodeAction;
         private static readonly Step[] Steps;
 
         public static EntityFactory<BombEntity> CreateFactory()
@@ -38,12 +38,12 @@ namespace Hopper.Test_Content.Explosion
 
         static BombEntity()
         {
-            DefaultExplodeAction = new SimpleAction(
-               (e, _) => Explosion.Explode(e.Pos, 1, e.World));
-            DieAction = new SimpleAction(
-               (e, _) => e.Die());
-            DieAndExplodeAction =
-               new JoinedAction(DieAction, DefaultExplodeAction);
+            DefaultExplodeAction = Action.CreateSimple(
+                e => Explosion.Explode(e.Pos, 1, e.World)
+            );
+            DieAction = Action.CreateSimple(e => e.Die());
+            DieAndExplodeAction = Action.CreateJoinedUndirected(DieAction, DefaultExplodeAction);
+
             Steps = new Step[]
             {
                 new Step

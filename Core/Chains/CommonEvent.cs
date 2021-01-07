@@ -1,4 +1,5 @@
 using Hopper.Utils.Chains;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
@@ -8,6 +9,6 @@ namespace Hopper.Core
     }
     public class StandartEvent : ActorEvent
     {
-        public Action action;
+        public IntVector2 direction;
     }
 }

@@ -1,13 +1,14 @@
 using Hopper.Utils.Chains;
 using Hopper.Core.Behaviors.Basic;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
     public static partial class Algos
     {
-        static bool AskMove(Acting.Event ev)
+        static bool AskMove(Entity actor, IntVector2 direction)
         {
-            var e = ev.actor.GetCell().GetAllFromLayer(ev.action.direction, Layer.REAL);
+            var e = actor.GetCell().GetAllFromLayer(direction, Layer.REAL);
             bool success = false;
             foreach (var entity in e)
             {
@@ -24,24 +25,32 @@ namespace Hopper.Core
             return success;
         }
 
-        static bool Iterate(Acting.Event ev)
+        static bool Iterate(Entity actor, ParticularDirectedAction action)
         {
-            bool success = ev.action.Do(ev.actor);
+            bool success = action.Do(actor);
 
             if (!success)
             {
-                bool otherEntitySuccess = AskMove(ev);
+                bool otherEntitySuccess = AskMove(actor, action.direction);
 
                 if (otherEntitySuccess)
-                    return Iterate(ev);
+                {
+                    return Iterate(actor, action);
+                }
             }
 
             return success;
         }
 
-        public static void EnemyAlgo(EventBase _ev)
+        public static void EnemyAlgo(Acting.Event ev)
         {
-            var ev = (Acting.Event)_ev;
+            if (ev.action is ParticularUndirectedAction)
+            {
+                ev.action.Do(ev.actor);
+                return;
+            }
+
+            var action = (ParticularDirectedAction)ev.action;
 
             var dirs = ev.actor.Behaviors.Get<Sequential>().GetMovs();
 
@@ -54,8 +63,8 @@ namespace Hopper.Core
 
             foreach (var dir in dirs)
             {
-                ev.action.direction = dir;
-                if (Iterate(ev))
+                action.direction = dir;
+                if (Iterate(ev.actor, action))
                 {
                     ev.success = true;
                     return;

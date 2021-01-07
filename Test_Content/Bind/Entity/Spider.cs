@@ -14,10 +14,10 @@ namespace Hopper.Test_Content.Bind
 
         private static Step[] CreateSequenceData()
         {
-            var bindAction = new BehaviorAction<Binding>();
-            var moveAction = new BehaviorAction<Moving>();
+            var bindAction = Action.CreateBehavioral<Binding>();
+            var moveAction = Action.CreateBehavioral<Moving>();
 
-            var bindMoveAction = new JoinedAction(bindAction, moveAction);
+            var bindMoveAction = Action.CreateJoinedDirected(bindAction, moveAction);
 
             var stepData = new Step[]
             {

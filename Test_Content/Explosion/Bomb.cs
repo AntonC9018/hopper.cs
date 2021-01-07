@@ -10,7 +10,11 @@ namespace Hopper.Test_Content.Explosion
         public static readonly Tinker<TinkerData> Tinker = new Tinker<TinkerData>(
             new ChainDefBuilder()
                 .AddDef(Controllable.Chains[InputMapping.Weapon_0])
-                .AddHandler((ev) => ev.SetAction(placeBombAction, ev.actor.Orientation))
+                .AddHandler(ev =>
+                {
+                    ev.action = placeBombAction;
+                    ev.direction = ev.actor.Orientation;
+                })
                 .End().ToStatic()
         );
         public static readonly CheckInventoryItem Item = new CheckInventoryItem(
@@ -18,13 +22,13 @@ namespace Hopper.Test_Content.Explosion
         public static readonly PackedItem Item_x3 = new PackedItem(
             new ItemMetadata("Bomb_x3"), Item, 3);
 
-        public static SimpleAction placeBombAction => new SimpleAction(
-            (e, a) =>
+        public static DirectedAction placeBombAction => Action.CreateSimple(
+            (e, direction) =>
             {
                 var targetPos = e.Pos;
-                if (e.HasBlockRelative(a.direction) == false)
+                if (e.HasBlockRelative(direction) == false)
                 {
-                    targetPos += a.direction;
+                    targetPos += direction;
                 }
 
                 // Place the bomb in the world only after the reals move

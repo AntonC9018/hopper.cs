@@ -5,6 +5,7 @@ using Hopper.Core.Targeting;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Chains;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Behaviors.Basic
 {
@@ -17,12 +18,12 @@ namespace Hopper.Core.Behaviors.Basic
             public List<Target> targets;
         }
 
-        public bool Activate(Action action)
+        public bool Activate(IntVector2 direction)
         {
             var ev = new Event
             {
                 actor = m_entity,
-                action = action
+                direction = direction
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -42,7 +43,7 @@ namespace Hopper.Core.Behaviors.Basic
                     var shovel = ev.actor.Inventory.GetContainer(BasicSlots.Shovel)[0];
                     if (shovel != null)
                     {
-                        ev.targets.AddRange(shovel.GetTargets(ev.actor, ev.action.direction));
+                        ev.targets.AddRange(shovel.GetTargets(ev.actor, ev.direction));
                     }
                 }
             }
@@ -55,7 +56,7 @@ namespace Hopper.Core.Behaviors.Basic
                 var atkParams = new Attackable.Params(ev.dig.ToAttack(), ev.actor);
                 target.entity.Behaviors
                     .Get<Attackable>()
-                    .Activate(ev.action.direction, atkParams);
+                    .Activate(ev.direction, atkParams);
             }
         }
 

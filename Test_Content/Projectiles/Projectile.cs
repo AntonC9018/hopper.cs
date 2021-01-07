@@ -15,8 +15,8 @@ namespace Hopper.Test_Content.Projectiles
             return new DefaultStats(patchArea).Set(Health.Path, new Health { amount = 1 });
         }
 
-        public static BehaviorAction<ProjectileBehavior> ProjectileAction =>
-            new BehaviorAction<ProjectileBehavior>();
+        public static DirectedAction ProjectileAction =>
+            Action.CreateBehavioral<ProjectileBehavior>();
 
         public static EntityFactory<Projectile> CreateFactory()
         {
@@ -27,7 +27,7 @@ namespace Hopper.Test_Content.Projectiles
                 .SetDefaultStats(CreateDefaultStats)
                 .AddBehavior(ProjectileBehavior.Preset(Layer.REAL | Layer.WALL | Layer.PROJECTILE))
                 .AddBehavior(Acting.Preset(
-                    new Acting.Config(Algos.SimpleAlgo, e => ProjectileAction.WithDir(e.Orientation)))
+                    new Acting.Config(Algos.SimpleAlgo, e => ProjectileAction.ToDirectedParticular(e.Orientation)))
                 );
 
         }

@@ -16,23 +16,23 @@ namespace Hopper.Test_Content
         {
         }
 
-        private void ShootOnceNormal(Entity attacker, Entity attacked, Action action)
+        private void ShootOnceNormal(Entity attacker, Entity attacked, IntVector2 direction)
         {
             if (attacked != null && attacked.Behaviors.Has<Attackable>())
             {
                 var target = new Target(attacked, IntVector2.Zero);
 
                 var success = attacker.Behaviors.Get<Attacking>()
-                    .Activate(action, new List<Target>(1) { target });
+                    .Activate(direction, new List<Target>(1) { target });
             }
         }
 
-        public ShootingInfo Shoot(Entity entity, Action action)
+        public ShootingInfo Shoot(Entity entity, IntVector2 direction)
         {
-            var info = GetInitialShootInfo(entity, action.direction);
+            var info = GetInitialShootInfo(entity, direction);
             foreach (var target in info.attacked_targets)
             {
-                ShootOnceNormal(entity, target, action);
+                ShootOnceNormal(entity, target, direction);
             }
             return info;
         }

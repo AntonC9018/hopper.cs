@@ -2,6 +2,7 @@
 using Hopper.Core;
 using Hopper.Core.Stats;
 using Hopper.Core.Behaviors;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content.Bind
 {
@@ -37,13 +38,13 @@ namespace Hopper.Test_Content.Bind
             config_bindStatus = bindStatus;
         }
 
-        public bool Activate(Action action) => Activate(action, null);
-        public bool Activate(Action action, Entity applyTo)
+        public bool Activate(IntVector2 direction) => Activate(direction, null);
+        public bool Activate(IntVector2 direction, Entity applyTo)
         {
             var ev = new Event
             {
                 actor = m_entity,
-                action = action,
+                direction = direction,
                 applyTo = applyTo,
                 statusStat = config_bindStatus.GetStat(m_entity),
                 bindStatus = config_bindStatus
@@ -56,8 +57,8 @@ namespace Hopper.Test_Content.Bind
             if (ev.applyTo == null)
             {
                 ev.applyTo = ev.actor
-                     .GetCellRelative(ev.action.direction)
-                    ?.GetEntityFromLayer(ev.action.direction, Layer.REAL);
+                     .GetCellRelative(ev.direction)
+                    ?.GetEntityFromLayer(ev.direction, Layer.REAL);
 
                 if (ev.applyTo == null)
                 {

@@ -42,29 +42,23 @@ namespace Hopper.Core.Behaviors.Basic
     [DataContract]
     public class Controllable : Behavior, IInitable<Action>
     {
-
-        public class Event : StandartEvent
+        public class Event : ActorEvent
         {
-            public void SetAction(Action action, IntVector2 dir)
-            {
-                this.action = action.Copy();
-                this.action.direction = dir;
-            }
+            public Action action;
+            public IntVector2 direction;
 
-            public void SetAction(Action action)
+            public ParticularAction ToParticular()
             {
-                var prev = this.action;
-                this.action = action.Copy();
-                if (prev != null)
+                if (action == null)
                 {
-                    this.action.direction = prev.direction;
+                    return null;
                 }
+                if (action is DirectedAction)
+                {
+                    return ((DirectedAction)action).ToDirectedParticular(direction);
+                }
+                return action.ToParticular();
             }
-        }
-
-        public class Config
-        {
-            public Action defaultAction;
         }
 
         public Action config_defaultAction;
@@ -74,24 +68,23 @@ namespace Hopper.Core.Behaviors.Basic
             config_defaultAction = defaultAction;
         }
 
-        public Action ConvertInputToAction(InputMapping input)
+        public ParticularAction ConvertInputToAction(InputMapping input)
         {
             var ev = new Event { actor = m_entity };
             GetChain<Event>(input).Pass(ev);
-            return ev.action;
+            return ev.ToParticular();
         }
 
-        public Action ConvertVectorToAction(IntVector2 direction)
+        public ParticularAction ConvertVectorToAction(IntVector2 direction)
         {
-            var ev = new Event { actor = m_entity };
-            ev.SetAction(config_defaultAction, direction);
+            var ev = new Event
+            {
+                actor = m_entity,
+                action = config_defaultAction,
+                direction = direction
+            };
             GetChain<Event>(InputMapping.Vector).Pass(ev);
-            return ev.action;
-        }
-
-        static System.Action<Event> Default(IntVector2 dir)
-        {
-            return ev => ev.SetAction(ev.actor.Behaviors.Get<Controllable>().config_defaultAction, dir);
+            return ev.ToParticular();
         }
 
         public static readonly Dictionary<InputMapping, ChainPaths<Controllable, Event>> Chains

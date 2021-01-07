@@ -17,11 +17,11 @@ namespace Hopper.Core
         [DataMember] private int currentStepIndex = 0;
         [DataMember] private int currentRepeatCount = 0;
 
-        public Action CurrentAction
+        public ParticularAction CurrentAction
         {
             get
             {
-                return m_steps[currentStepIndex].action?.Copy();
+                return m_steps[currentStepIndex].action?.ToParticular();
             }
         }
 

@@ -2,6 +2,7 @@ using System.Runtime.Serialization;
 using Hopper.Utils.Chains;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Chains;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Behaviors.Basic
 {
@@ -14,12 +15,12 @@ namespace Hopper.Core.Behaviors.Basic
             public Move move;
         }
 
-        public bool Activate(Action action)
+        public bool Activate(IntVector2 direction)
         {
             var ev = new Event
             {
                 actor = m_entity,
-                action = action
+                direction = direction
             };
             return CheckDoCycle<Event>(ev);
         }
@@ -34,7 +35,7 @@ namespace Hopper.Core.Behaviors.Basic
 
         private static void Displace(Event ev)
         {
-            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.action.direction, ev.move);
+            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.direction, ev.move);
         }
 
         public static readonly ChainPaths<Moving, Event> Check;
