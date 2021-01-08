@@ -10,7 +10,7 @@ namespace Hopper.Test_Content.Boss
         public void RegisterSelf(ModRegistry registry)
         {
             Bow.ArrowSource.RegisterSelf(registry);
-            Bow.DefaultBow.RegisterSelf(registry);
+            Bow.DefaultItem.RegisterSelf(registry);
         }
 
         public void PrePatch(PatchArea patchArea)

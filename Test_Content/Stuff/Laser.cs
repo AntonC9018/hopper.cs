@@ -47,7 +47,7 @@ namespace Hopper.Test_Content
             skip = Layer.WALL
         };
 
-        private static readonly IAnonShooting DefaultShooting = new AnonShooting(
+        private static readonly AnonShooting DefaultShooting = new AnonShooting(
             TargetLayers, DefaultAttack, DefaultPush, false);
 
         public static void Shoot(IWorldSpot spot, IntVector2 dir)
@@ -58,6 +58,6 @@ namespace Hopper.Test_Content
         }
 
         public static readonly DirectedAction LaserShootAction =
-            Action.CreateSimple((e, d) => Laser.Shoot(e, d));
+            Action.CreateSimple(Laser.Shoot, DefaultShooting.Predict);
     }
 }

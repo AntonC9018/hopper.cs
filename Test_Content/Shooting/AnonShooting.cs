@@ -6,7 +6,7 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content
 {
-    public class AnonShooting : ShootingShared, IAnyShooting
+    public class AnonShooting : ShootingShared, INormalShooting, IAnonShooting
     {
         private Attack m_attack; // TODO: take from function
         private Push m_push; // TODO: take from function

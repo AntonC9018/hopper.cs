@@ -12,7 +12,7 @@ using Hopper.Core.Predictions;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Attacking : Behavior, IStandartActivateable, IDirectedPredictable
+    public class Attacking : Behavior, IStandartActivateable, IBehaviorPredictable
     {
         public class Event : StandartEvent
         {
@@ -135,13 +135,13 @@ namespace Hopper.Core.Behaviors.Basic
             attacked.Behaviors.Get<Pushable>().Activate(direction, push);
         }
 
-        public IEnumerable<IntVector2> GetPositions(IntVector2 direction)
+        public IEnumerable<IntVector2> Predict(IntVector2 direction)
         {
             if (m_entity.Inventory != null)
             {
                 if (m_entity.Inventory.GetWeapon(out var weapon))
                 {
-                    foreach (var relativePos in weapon.Pattern.GetPositions(direction))
+                    foreach (var relativePos in weapon.Pattern.Predict(direction))
                     {
                         yield return m_entity.Pos + relativePos;
                     }

@@ -6,6 +6,8 @@ using Hopper.Core.Items;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Hopper.Test_Content
 {
@@ -20,26 +22,37 @@ namespace Hopper.Test_Content
         public static readonly Attack.Source ArrowSource = new Attack.Source();
         public static readonly ISlot<IItemContainer<IItem>> Slot = Hopper.Core.Items.BasicSlots.RangeWeapon;
         public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
-        public static ModularItem DefaultBow = CreateBow();
+        public static readonly Attack DefaultArrowAttack =
+            new Attack
+            {
+                sourceId = ArrowSource.Id,
+                power = 1,
+                pierce = 1,
+                damage = 1
+            };
+        public static readonly AnonShooting DefaultShooting = new AnonShooting(
+            new TargetLayers { skip = Layer.WALL, targeted = Layer.REAL }, DefaultArrowAttack, null, true
+        );
+        public static ModularItem DefaultItem = CreateDefault();
 
+        public static ModularItem CreateDefault()
+        {
+            return new ModularItem(new ItemMetadata("Default_Bow"), Slot, CreateModule(DefaultShooting));
+        }
 
         // use this function to get a module for your item
         public static TinkerModule CreateModule(INormalShooting shooting)
         {
-            return new Bow(shooting).ShootingModule;
+            var bow = new Bow(shooting);
+            return new TinkerModule(bow.m_shootTinker);
         }
-        // TODO: either add more functions to generate more types of these
-        // or make Bow's members all public.
 
-        // public Tinker<BowTinkerData> Tinker => m_shootTinker;
-        public readonly TinkerModule ShootingModule;
+        public readonly Tinker<BowTinkerData> m_shootTinker;
+        public readonly UndirectedAction m_chargeAction;
+        public readonly DirectedAction m_shootAction;
+        public readonly INormalShooting m_shooting;
 
-        private Tinker<BowTinkerData> m_shootTinker;
-        private UndirectedAction m_chargeAction;
-        private DirectedAction m_shootAction;
-        private INormalShooting m_shooting;
-
-        private Bow(INormalShooting shooting)
+        public Bow(INormalShooting shooting)
         {
             m_shootTinker = new Tinker<BowTinkerData>(
                 new ChainDefBuilder()
@@ -50,8 +63,7 @@ namespace Hopper.Test_Content
             );
             m_shooting = shooting;
             m_chargeAction = Action.CreateSimple(ToggleCharging);
-            m_shootAction = Action.CreateSimple(Shoot);
-            ShootingModule = new TinkerModule(m_shootTinker);
+            m_shootAction = Action.CreateSimple(Shoot, Predict);
         }
 
         private void Shoot(Entity entity, IntVector2 direction)
@@ -62,6 +74,15 @@ namespace Hopper.Test_Content
                 store.numCharges--;
                 m_shooting.Shoot(entity, direction);
             }
+        }
+
+        private IEnumerable<IntVector2> Predict(Entity entity, IntVector2 direction)
+        {
+            if (m_shootTinker.GetStore(entity).numCharges > 0)
+            {
+                return m_shooting.Predict(entity, direction);
+            }
+            return Enumerable.Empty<IntVector2>();
         }
 
         private void ToggleCharging(Entity entity)
@@ -83,24 +104,6 @@ namespace Hopper.Test_Content
             {
                 ev.action = m_shootAction;
             }
-        }
-
-        public static readonly Attack defaultArrowAttack =
-            new Attack
-            {
-                sourceId = ArrowSource.Id,
-                power = 1,
-                pierce = 1,
-                damage = 1
-            };
-
-        public static ModularItem CreateBow()
-        {
-            var defaultShooting = new AnonShooting(
-                new TargetLayers { skip = Layer.WALL, targeted = Layer.REAL }, defaultArrowAttack, null, true
-            );
-            var module = CreateModule(defaultShooting);
-            return new ModularItem(new ItemMetadata("Default_Bow"), Slot, module);
         }
     }
 }

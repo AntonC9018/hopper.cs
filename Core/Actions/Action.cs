@@ -172,7 +172,7 @@ namespace Hopper.Core
             var action = new DirectedAction();
             action.function = ActivateBehavior<T>;
 
-            if (typeof(IDirectedPredictable).IsAssignableFrom(typeof(T)))
+            if (typeof(IBehaviorPredictable).IsAssignableFrom(typeof(T)))
             {
                 action.predict = PredictViaBehavior<T>;
             }
@@ -239,8 +239,8 @@ namespace Hopper.Core
             where T : Behavior, IStandartActivateable
         {
             Assert.That(entity.Behaviors.Has<T>(), "Cannot predict if the target behavior is missing");
-            Assert.That(entity.Behaviors.Get<T>() is IDirectedPredictable, "Cannot predict if the target behavior is not predictable");
-            return ((IDirectedPredictable)entity.Behaviors.Get<T>()).GetPositions(direction);
+            Assert.That(entity.Behaviors.Get<T>() is IBehaviorPredictable, "Cannot predict if the target behavior is not predictable");
+            return ((IBehaviorPredictable)entity.Behaviors.Get<T>()).Predict(direction);
         }
     }
 }

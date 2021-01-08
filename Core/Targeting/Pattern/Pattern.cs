@@ -4,7 +4,7 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting
 {
-    public interface IPattern : IDirectedPredictable
+    public interface IPattern : IBehaviorPredictable
     {
         IEnumerable<Piece> GetPieces(IntVector2 dir);
     }
@@ -34,7 +34,7 @@ namespace Hopper.Core.Targeting
         public static Pattern Default = new Pattern(Piece.Default);
         public static Pattern Under = new Pattern(Piece.Under);
 
-        public IEnumerable<IntVector2> GetPositions(IntVector2 direction)
+        public IEnumerable<IntVector2> Predict(IntVector2 direction)
         {
             foreach (var piece in GetPieces(direction))
             {

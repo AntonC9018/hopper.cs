@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Hopper.Core;
 using Hopper.Core.History;
+using Hopper.Core.Predictions;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;
@@ -30,12 +32,12 @@ namespace Hopper.Test_Content
             For example, here we would:
                     1. generate the targets on the fly, which is messy in the target provider
                     2. stop generating the targets, once a block is met, which is impossible
-                    with the target provider, since it does two passes: one for getting
-                    all the possile targets and the other one for cleaning them up.
+                       with the target provider, since it does two passes: one for getting
+                       all the possile targets and the other one for cleaning them up.
                     3. get info on the positions checked, which is again impossible with
-                    the target provider, since it removes the targets which didn't target
-                    an entity and if you make it to not do that, then what is the point
-                    of `target` provider?
+                       the target provider, since it removes the targets which didn't target
+                       an entity and if you make it to not do that, then what is the point
+                       of `target` provider?
             I can't come up with a good abstraction for this yet, so I'm going to implement it
             separately for shooting here and we'll see later. Implementing inefficient hacks
             to the current target provider algorithm for first makes me feel bad and for second
@@ -78,6 +80,25 @@ namespace Hopper.Test_Content
                 }
 
                 currentOffsetVec += direction;
+            }
+        }
+
+        public IEnumerable<IntVector2> Predict(IWorldSpot spot, IntVector2 direction)
+        {
+            IntVector2 currentPos = spot.Pos + direction;
+            while (true)
+            {
+                var cell = spot.World.Grid.GetCellAt(currentPos);
+
+                // off the world or a block is in the way
+                if (cell == null || cell.HasBlock(direction, m_targetLayers.skip))
+                {
+                    yield break;
+                }
+
+                yield return currentPos;
+
+                currentPos += direction;
             }
         }
     }
