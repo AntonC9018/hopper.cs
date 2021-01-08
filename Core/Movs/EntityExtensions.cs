@@ -18,5 +18,11 @@ namespace Hopper.Core
             }
             return closestPlayer;
         }
+
+        public static bool TryGetClosestPlayer(this Entity entity, out Entity player)
+        {
+            player = GetClosestPlayer(entity);
+            return player != null;
+        }
     }
 }

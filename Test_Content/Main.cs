@@ -49,7 +49,7 @@ namespace Hopper.Test_Content
         {
             foreach (var subMod in subMods)
             {
-                System.Console.WriteLine($"AfterPatching submod {subMod.GetType().Name}...");
+                System.Console.WriteLine($"Pre_Patching submod {subMod.GetType().Name}...");
                 subMod.PrePatch(patchArea);
             }
         }
@@ -71,7 +71,7 @@ namespace Hopper.Test_Content
         {
             foreach (var subMod in subMods)
             {
-                System.Console.WriteLine($"AfterPatching submod {subMod.GetType().Name}...");
+                System.Console.WriteLine($"Post_Patching submod {subMod.GetType().Name}...");
                 subMod.PostPatch(patchArea);
             }
         }

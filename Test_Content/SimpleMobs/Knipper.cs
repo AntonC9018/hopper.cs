@@ -13,9 +13,12 @@ namespace Hopper.Test_Content.SimpleMobs
         {
             return e =>
             {
-                var player = e.GetClosestPlayer();
-                var absOffsetVec = (player.Pos - e.Pos).Abs();
-                bool close = absOffsetVec.x <= 1 && absOffsetVec.y <= 1;
+                bool close = false;
+                if (e.TryGetClosestPlayer(out var player))
+                {
+                    var absOffsetVec = (player.Pos - e.Pos).Abs();
+                    close = absOffsetVec.x <= 1 && absOffsetVec.y <= 1;
+                }
                 return new Result
                 {
                     index = close ? success : fail

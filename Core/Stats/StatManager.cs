@@ -66,7 +66,7 @@ namespace Hopper.Core.Stats
             m_modifierCounts = new Dictionary<Modifier, int>();
             m_fs = new StatFS();
             m_fs.BaseDir.CopyDirectoryStructureFrom(defaultStats.statManager.m_fs.BaseDir);
-            m_patchArea = defaultStats.Repository;
+            m_patchArea = defaultStats.PatchArea;
         }
 
         public void AddStatModifier<T>(StatModifier<T> modifier) where T : File, IAddableWith<T>

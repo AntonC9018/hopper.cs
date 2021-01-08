@@ -14,6 +14,7 @@ namespace Hopper.Core.Stats.Basic
 
         public static void Patch(PatchArea patchArea)
         {
+            Attack.BasicSource.Patch(patchArea);
             Dig.Source.Patch(patchArea);
             Push.BasicSource.Patch(patchArea);
         }

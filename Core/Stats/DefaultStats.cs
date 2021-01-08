@@ -6,11 +6,11 @@ namespace Hopper.Core.Stats
     public class DefaultStats : IPatchable
     {
         public StatManager statManager;
-        public PatchArea Repository { get; private set; }
+        public PatchArea PatchArea { get; private set; }
 
         public DefaultStats(PatchArea patchArea)
         {
-            this.Repository = patchArea;
+            this.PatchArea = patchArea;
             this.statManager = new StatManager();
         }
 
@@ -30,7 +30,7 @@ namespace Hopper.Core.Stats
 
         public DefaultStats SetAtIndex(IStatPath<DictFile> statPath, int index, int value)
         {
-            statManager.GetRawLazy(statPath.String, statPath.GetDefault(Repository))[index] = value;
+            statManager.GetRawLazy(statPath.String, statPath.GetDefault(PatchArea))[index] = value;
             return this;
         }
     }
