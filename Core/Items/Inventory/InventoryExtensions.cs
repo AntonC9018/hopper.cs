@@ -8,5 +8,12 @@ namespace Hopper.Core.Items
             weapon = container[0];
             return weapon != null;
         }
+
+        public static bool GetShovel(this IInventory inventory, out ModularShovel shovel)
+        {
+            var container = inventory.GetContainer(BasicSlots.Shovel);
+            shovel = container[0];
+            return shovel != null;
+        }
     }
 }

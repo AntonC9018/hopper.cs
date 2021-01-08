@@ -24,6 +24,9 @@ namespace Hopper.Utils.Chains
         private List<MyListNode<IEvHandler<Event>>> m_handlersToRemove
             = new List<MyListNode<IEvHandler<Event>>>();
 
+        public Dictionary<System.Action<Event>, Handle<Event>> priorities =
+            new Dictionary<Action<Event>, Handle<Event>>();
+
         public IEnumerable<IEvHandler<Event>> Handlers =>
             m_handlers.GetEnumerator().ToIEnumerable();
 

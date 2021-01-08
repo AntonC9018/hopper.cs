@@ -40,8 +40,7 @@ namespace Hopper.Core.Behaviors.Basic
                 ev.targets = new List<Target>();
                 if (ev.actor.Inventory != null)
                 {
-                    var shovel = ev.actor.Inventory.GetContainer(BasicSlots.Shovel)[0];
-                    if (shovel != null)
+                    if (ev.actor.Inventory.GetShovel(out var shovel))
                     {
                         ev.targets.AddRange(shovel.GetTargets(ev.actor, ev.direction));
                     }
@@ -53,10 +52,7 @@ namespace Hopper.Core.Behaviors.Basic
         {
             foreach (var target in ev.targets)
             {
-                var atkParams = new Attackable.Params(ev.dig.ToAttack(), ev.actor);
-                target.entity.Behaviors
-                    .Get<Attackable>()
-                    .Activate(ev.direction, atkParams);
+                Attacking.TryApplyAttack(target.entity, ev.direction, ev.dig.ToAttack(), ev.actor);
             }
         }
 
