@@ -13,6 +13,7 @@ namespace Hopper.Core.Behaviors.Basic
         public void Activate()
         {
             var ev = new Event { actor = m_entity };
+            System.Console.WriteLine(m_entity);
             GetChain<Event>(ChainName.Default).Pass(ev);
         }
 

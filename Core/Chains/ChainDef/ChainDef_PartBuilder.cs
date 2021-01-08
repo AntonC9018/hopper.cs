@@ -19,12 +19,12 @@ namespace Hopper.Core.Chains
         {
             this.path = path;
             this.builder = builder;
-            handlers = new List<Stuff<Event>>();
+            this.handlers = new List<Stuff<Event>>();
         }
 
         public ChainDef_PartBuilder<Event> AddHandler(Stuff<Event> handler)
         {
-            handlers.Add(handler);
+            this.handlers.Add(handler);
             return this;
         }
 

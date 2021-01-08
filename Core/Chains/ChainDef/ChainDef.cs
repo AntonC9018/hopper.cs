@@ -29,7 +29,7 @@ namespace Hopper.Core.Chains
             var handles = new Handle[infos.Length];
             for (int i = 0; i < infos.Length; i++)
             {
-                handles[i] = chain.AddHandler(infos[i].handler, infos[i].priority);
+                handles[i] = chain.AddHandler(infos[i].handler, (PriorityRank)infos[i].priority);
             }
             return handles;
         }

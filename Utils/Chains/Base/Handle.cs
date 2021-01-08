@@ -12,5 +12,11 @@ namespace Hopper.Utils.Chains
         {
             this.item = item;
         }
+
+
+        public override string ToString()
+        {
+            return item.ToString();
+        }
     }
 }
