@@ -80,8 +80,7 @@ namespace Hopper.Core.Behaviors.Basic
         {
             foreach (var target in ev.targets)
             {
-                System.Console.WriteLine($"Attacking {target.entity}");
-                ApplyAttack(target.entity, target.direction, (Attack)ev.attack.Copy(), ev.actor);
+                TryApplyAttack(target.entity, target.direction, (Attack)ev.attack.Copy(), ev.actor);
             }
         }
 
@@ -102,7 +101,7 @@ namespace Hopper.Core.Behaviors.Basic
         public static bool TryApplyAttack(
             Entity attacked, IntVector2 direction, Attack attack, Entity attacker)
         {
-            if (attacked.Behaviors.Has<Attackable>())
+            if (attacked.Behaviors.Has<Attackable>() && !attacked.IsDead)
             {
                 return attacked.Behaviors.Get<Attackable>()
                     .Activate(direction, new Attackable.Params(attack, attacker));
@@ -127,7 +126,10 @@ namespace Hopper.Core.Behaviors.Basic
 
         public static void TryApplyPush(Entity attacked, IntVector2 direction, Push push)
         {
-            attacked.Behaviors.TryGet<Pushable>()?.Activate(direction, push);
+            if (!attacked.IsDead && attacked.Behaviors.Has<Pushable>())
+            {
+                attacked.Behaviors.Get<Pushable>().Activate(direction, push);
+            }
         }
 
         public static void ApplyPush(Entity attacked, IntVector2 direction, Push push)
