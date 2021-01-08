@@ -12,7 +12,7 @@ namespace Hopper.Core.Chains
     public class TemplateChainDef_PartBuilder<Event> : I_TemplateChainDef_PartBuilder where Event : EventBase
     {
         public BehaviorFactoryPath<Event> path;
-        public List<EvHandler<Event>> handlers;
+        public List<Stuff<Event>> infos;
         private TemplateChainDefBuilder builder;
 
         public TemplateChainDef_PartBuilder(
@@ -20,22 +20,22 @@ namespace Hopper.Core.Chains
         {
             this.path = path;
             this.builder = builder;
-            handlers = new List<EvHandler<Event>>();
+            infos = new List<Stuff<Event>>();
         }
 
-        public TemplateChainDef_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
+        public TemplateChainDef_PartBuilder<Event> AddHandler(Stuff<Event> handler)
         {
-            handlers.Add(handler);
+            infos.Add(handler);
             return this;
         }
 
         public TemplateChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
         {
-            return AddHandler(new EvHandler<Event>(handlerFunc, priority));
+            return AddHandler(new Stuff<Event> { handler = handlerFunc, priority = (int)priority });
         }
         public TemplateChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, int priority)
         {
-            return AddHandler(new EvHandler<Event>(handlerFunc, priority));
+            return AddHandler(new Stuff<Event> { handler = handlerFunc, priority = priority });
         }
 
         public TemplateChainDefBuilder End()
@@ -51,7 +51,7 @@ namespace Hopper.Core.Chains
 
         public ITemplateChainDef ToStatic()
         {
-            return new TemplateChainDef<Event> { path = path, handlers = handlers.ToArray() };
+            return new TemplateChainDef<Event> { path = path, handlers = infos.ToArray() };
         }
     }
 }

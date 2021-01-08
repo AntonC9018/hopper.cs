@@ -81,7 +81,7 @@ namespace Hopper.Tests.Test_Content
             test_enemy.Die();
             world.Loop();
 
-            Assert.That(Bind.StopMoveStatus.IsApplied(player) == false);
+            Assert.False(Bind.StopMoveStatus.IsApplied(player));
 
             player.Behaviors.Get<Acting>().NextAction = move_action.ToDirectedParticular(IntVector2.Right);
             world.Loop();

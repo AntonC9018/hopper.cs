@@ -62,7 +62,7 @@ namespace Hopper.Core.Behaviors.Basic
             foreach (var status in m_appliedStatuses.ToList())
             {
                 status.Update(m_entity);
-                if (status.IsApplied(m_entity) == false)
+                if (!status.IsApplied(m_entity))
                 {
                     m_appliedStatuses.Remove(status);
                 }

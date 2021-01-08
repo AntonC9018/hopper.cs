@@ -27,9 +27,9 @@ namespace Hopper.Core
                     new TemplateChainDef<T>
                     {
                         path = path.TemplatePath,
-                        handlers = new EvHandler<T>[]
+                        handlers = new Stuff<T>[]
                         {
-                            new EvHandler<T>(handler, priority)
+                            new Stuff<T> {handler = handler, priority = (int)priority }
                         }
                     }
                 }

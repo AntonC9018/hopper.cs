@@ -15,7 +15,7 @@ namespace Hopper.Core.Chains
     public class ChainDef<Event> : IChainDef where Event : EventBase
     {
         public BehaviorPath<Event> path;
-        public IEvHandler<Event>[] handlers;
+        public Stuff<Event>[] infos;
 
         public Handle[] AddHandlers(IWithWithChain entity)
         {
@@ -26,10 +26,10 @@ namespace Hopper.Core.Chains
             {
                 return new Handle[0];
             }
-            var handles = new Handle[handlers.Length];
-            for (int i = 0; i < handlers.Length; i++)
+            var handles = new Handle[infos.Length];
+            for (int i = 0; i < infos.Length; i++)
             {
-                handles[i] = chain.AddHandler(handlers[i]);
+                handles[i] = chain.AddHandler(infos[i].handler, infos[i].priority);
             }
             return handles;
         }

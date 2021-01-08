@@ -1,3 +1,4 @@
+using System;
 using Hopper.Utils.MyLinkedList;
 
 namespace Hopper.Utils.Chains
@@ -6,8 +7,8 @@ namespace Hopper.Utils.Chains
 
     public class Handle<Event> : Handle where Event : EventBase
     {
-        public MyListNode<IEvHandler<Event>> item;
-        public Handle(MyListNode<IEvHandler<Event>> item)
+        public MyListNode<Action<Event>> item;
+        public Handle(MyListNode<Action<Event>> item)
         {
             this.item = item;
         }

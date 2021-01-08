@@ -11,78 +11,59 @@ namespace Hopper.Utils.Chains
     {
         public const int NUM_PRIORITY_RANKS = (int)PriorityRank.Highest + 1;
         public const int PRIORITY_STEP = 0x08;
-        private int[] m_priorityRanksMap = {
+        internal int[] m_priorityRanksMap = {
             PriorityMapping.Lowest,
             PriorityMapping.Low,
             PriorityMapping.Medium,
             PriorityMapping.High,
             PriorityMapping.Highest,
         };
-        protected bool b_dirty;
-
-        private MyLinkedList<IEvHandler<Event>> m_handlers;
-        private List<MyListNode<IEvHandler<Event>>> m_handlersToRemove
-            = new List<MyListNode<IEvHandler<Event>>>();
-
-        public Dictionary<System.Action<Event>, Handle<Event>> priorities =
-            new Dictionary<Action<Event>, Handle<Event>>();
-
-        public IEnumerable<IEvHandler<Event>> Handlers =>
-            m_handlers.GetEnumerator().ToIEnumerable();
+        internal bool m_dirty;
+        internal MyLinkedList<Action<Event>> m_handlers;
+        internal List<MyListNode<Action<Event>>> m_handlersToRemove;
+        internal Dictionary<MyListNode<Action<Event>>, int> m_priorities;
 
         public Chain()
         {
-            m_handlers = new MyLinkedList<IEvHandler<Event>>();
+            m_handlers = new MyLinkedList<Action<Event>>();
+            m_priorities = new Dictionary<MyListNode<Action<Event>>, int>();
+            m_handlersToRemove = new List<MyListNode<Action<Event>>>();
         }
 
-        // Assumes the given list is sorted        
-        public Chain(MyLinkedList<IEvHandler<Event>> list)
-        {
-            m_handlers = list;
-            b_dirty = false;
-        }
-
-        public Handle<Event> AddHandler(IEvHandler<Event> handler)
-        {
-            b_dirty = true;
-            var evHandlerCopy = new EvHandler<Event>(handler);
-            evHandlerCopy.Priority = MapPriority(evHandlerCopy.Priority);
-            m_handlers.AddFront(evHandlerCopy);
-            return new Handle<Event>(m_handlers.Head);
-        }
-
-        public Handle<Event> AddHandler(
-            System.Action<Event> handlerFunction,
+        public Handle<Event> AddHandler(Action<Event> handlerFunction,
             PriorityRank priority = PriorityRank.Default)
         {
-            return AddHandler(new EvHandler<Event>(handlerFunction, priority));
+            return AddHandler(handlerFunction, MapPriority((int)priority));
+        }
+
+        public Handle<Event> AddHandler(Action<Event> handlerFunction, int priority)
+        {
+            m_dirty = true;
+            m_handlers.AddFront(handlerFunction);
+            m_priorities.Add(m_handlers.head, priority);
+            return new Handle<Event>(m_handlers.head);
         }
 
         public void Pass(Event ev)
         {
             CleanUp();
-            foreach (var handler in m_handlers)
+            foreach (var node in m_handlers)
             {
                 if (!ev.propagate)
                     return;
-                handler.Call(ev);
+                node.item(ev);
             }
         }
 
         public void Pass(Event ev, System.Func<Event, bool> stopFunc)
         {
             CleanUp();
-            foreach (var handler in m_handlers)
+            foreach (var node in m_handlers)
             {
                 if (stopFunc(ev))
                     return;
-                handler.Call(ev);
+                node.item(ev);
             }
-        }
-
-        public void RemoveHandler(MyListNode<IEvHandler<Event>> handle)
-        {
-            m_handlersToRemove.Add(handle);
         }
 
         public void RemoveHandler(Handle<Event> handle)
@@ -95,7 +76,7 @@ namespace Hopper.Utils.Chains
             m_handlersToRemove.Add(((Handle<Event>)handle).item);
         }
 
-        protected int MapPriority(int rank)
+        internal int MapPriority(int rank)
         {
             // given a rank
             if (rank < NUM_PRIORITY_RANKS)
@@ -111,11 +92,12 @@ namespace Hopper.Utils.Chains
 
         protected void CleanUp()
         {
-            foreach (var handle in m_handlersToRemove)
+            foreach (var node in m_handlersToRemove)
             {
-                m_handlers.RemoveNode(handle);
+                m_handlers.RemoveNode(node);
+                m_priorities.Remove(node);
             }
-            if (b_dirty)
+            if (m_dirty)
             {
                 SortHandlers();
             }
@@ -124,8 +106,8 @@ namespace Hopper.Utils.Chains
 
         internal void SortHandlers()
         {
-            m_handlers.Sort((a, b) => a.Priority - b.Priority);
-            b_dirty = false;
+            m_handlers.Sort((a, b) => m_priorities[a] - m_priorities[b]);
+            m_dirty = false;
         }
     }
 }

@@ -1,4 +1,5 @@
 
+using System;
 using Hopper.Core.Behaviors;
 using Hopper.Utils.Chains;
 
@@ -20,25 +21,22 @@ namespace Hopper.Core.Chains
             m_template = new ChainTemplate<Event>();
         }
 
-        public ChainTemplate_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
+        public ChainTemplate_PartBuilder<Event> AddHandler(Action<Event> handler)
         {
             m_template.AddHandler(handler);
             return this;
         }
 
-        public ChainTemplate_PartBuilder<Event> AddHandler(
-            System.Action<Event> handlerFunc,
+        public ChainTemplate_PartBuilder<Event> AddHandler(Action<Event> handlerFunc,
             PriorityRank priority = PriorityRank.Default)
         {
             m_template.AddHandler(handlerFunc, priority);
             return this;
         }
 
-        public ChainTemplate_PartBuilder<Event> AddHandler(
-            System.Action<Event> handlerFunc,
-            int priority)
+        public ChainTemplate_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, int priority)
         {
-            m_template.AddHandler(new EvHandler<Event>(handlerFunc, priority));
+            m_template.AddHandler(handlerFunc, priority);
             return this;
         }
 

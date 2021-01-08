@@ -13,16 +13,16 @@ namespace Hopper.Core.Chains
     {
         public BehaviorPath<Event> path;
         private ChainDefBuilder builder;
-        public List<EvHandler<Event>> handlers;
+        public List<Stuff<Event>> handlers;
 
         public ChainDef_PartBuilder(BehaviorPath<Event> path, ChainDefBuilder builder)
         {
             this.path = path;
             this.builder = builder;
-            handlers = new List<EvHandler<Event>>();
+            handlers = new List<Stuff<Event>>();
         }
 
-        public ChainDef_PartBuilder<Event> AddHandler(EvHandler<Event> handler)
+        public ChainDef_PartBuilder<Event> AddHandler(Stuff<Event> handler)
         {
             handlers.Add(handler);
             return this;
@@ -30,17 +30,17 @@ namespace Hopper.Core.Chains
 
         public ChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
         {
-            return AddHandler(new EvHandler<Event>(handlerFunc, priority));
+            return AddHandler(new Stuff<Event> { handler = handlerFunc, priority = (int)priority });
         }
 
         public ChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, int priority)
         {
-            return AddHandler(new EvHandler<Event>(handlerFunc, priority));
+            return AddHandler(new Stuff<Event> { handler = handlerFunc, priority = priority });
         }
 
         public IChainDef ToStatic()
         {
-            return new ChainDef<Event> { path = path, handlers = handlers.ToArray() };
+            return new ChainDef<Event> { path = path, infos = handlers.ToArray() };
         }
 
         public ChainDefBuilder End()

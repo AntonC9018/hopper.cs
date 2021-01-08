@@ -21,7 +21,7 @@ namespace Hopper.Test_Content.Bind
 
         public static void AddNoMove(ChainDefBuilder builder)
         {
-            builder.AddDef<Moving.Event>(Moving.Check)
+            builder.AddDef(Moving.Check)
                    .AddHandler(Utils.Handlers.StopMove);
         }
 
@@ -31,13 +31,13 @@ namespace Hopper.Test_Content.Bind
             {
                 return new ChainDefBuilder()
 
-                    .AddDef<Attacking.Event>(Attacking.Check)
+                    .AddDef(Attacking.Check)
                     .AddHandler(AttackJustMe, PriorityRank.High)
 
-                    .AddDef<Tick.Event>(Tick.Chain)
+                    .AddDef(Tick.Chain)
                     .AddHandler(SelfRemove, PriorityRank.High)
 
-                    .AddDef<Displaceable.Event>(Displaceable.Do)
+                    .AddDef(Displaceable.Do)
                     .AddHandler(DisplaceMe, PriorityRank.Low)
 
                     // TODO: ignore any source of attack but the basic. 

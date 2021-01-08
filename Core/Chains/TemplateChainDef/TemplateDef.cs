@@ -13,14 +13,14 @@ namespace Hopper.Core.Chains
     public class TemplateChainDef<Event> : ITemplateChainDef where Event : EventBase
     {
         public BehaviorFactoryPath<Event> path;
-        public EvHandler<Event>[] handlers;
+        public Stuff<Event>[] handlers;
 
         public void AddHandlersTo(IProvideBehaviorFactory EntityFactory)
         {
             var chain = path(EntityFactory);
-            foreach (var handler in handlers)
+            foreach (var info in handlers)
             {
-                chain.AddHandler(handler);
+                chain.AddHandler(info.handler, (PriorityRank)info.priority);
             }
         }
     }
