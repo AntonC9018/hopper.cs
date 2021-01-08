@@ -35,6 +35,7 @@ namespace Hopper.Core.Predictions
                             continue;
                         }
 
+                        // TODO: Add support for good/bad predicted positions (currenlty, all are processed as one thing)
                         if (acting.NextAction is ParticularDirectedAction)
                         {
                             var action = (ParticularDirectedAction)acting.NextAction;

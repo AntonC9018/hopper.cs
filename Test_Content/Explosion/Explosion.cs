@@ -49,6 +49,25 @@ namespace Hopper.Test_Content.Explosion
             new MultiAtkTargetProvider(Pattern.Under, TargetLayers);
         private static Attackable.Params CreateMeta() => new Attackable.Params(BaseAtk, null);
 
+        // TODO: Add a parameter for exposion attack stat
+        public static UndirectedAction DefaultExplodeAction(int radius) =>
+            Action.CreateSimple(
+                e => Explosion.Explode(e.Pos, radius, e.World),
+                e => PredictExplodePositions(e, radius)
+            );
+
+        /// <summary>
+        /// Predict function for an explosion of a given radius.
+        /// Will need to be modified when instead of positions we allow info structs.
+        /// </summary>
+        public static IEnumerable<IntVector2> PredictExplodePositions(Entity entity, int radius)
+        {
+            foreach (var vec in Spiral(-radius, -radius, radius, radius))
+            {
+                yield return entity.Pos + vec;
+            }
+        }
+
         public static void Explode(IntVector2 pos, int radius, World world)
         {
             foreach (var vec in Spiral(-radius, -radius, radius, radius))

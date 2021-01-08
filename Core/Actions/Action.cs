@@ -7,8 +7,8 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
-    public delegate IEnumerable<IntVector2> PredictDirected(Entity entity, IntVector2 direction);
-    public delegate IEnumerable<IntVector2> PredictUndirected(Entity entity);
+    public delegate IEnumerable<IntVector2> DirectedPredict(Entity entity, IntVector2 direction);
+    public delegate IEnumerable<IntVector2> UndirectedPredict(Entity entity);
     public delegate bool DirectedDo(Entity entity, IntVector2 direction);
     public delegate bool UndirectedDo(Entity entity);
 
@@ -24,7 +24,7 @@ namespace Hopper.Core
             return CreateCompositeDirected(functions, predicts.Length > 0 ? predicts : null);
         }
 
-        public static DirectedAction CreateCompositeDirected(DirectedDo[] functions, PredictDirected[] predicts = null)
+        public static DirectedAction CreateCompositeDirected(DirectedDo[] functions, DirectedPredict[] predicts = null)
         {
             var action = new DirectedAction();
 
@@ -52,7 +52,7 @@ namespace Hopper.Core
             return CreateCompositeUndirected(functions, predicts.Length > 0 ? predicts : null);
         }
 
-        public static UndirectedAction CreateCompositeUndirected(UndirectedDo[] functions, PredictUndirected[] predicts = null)
+        public static UndirectedAction CreateCompositeUndirected(UndirectedDo[] functions, UndirectedPredict[] predicts = null)
         {
             var action = new UndirectedAction();
 
@@ -80,7 +80,7 @@ namespace Hopper.Core
             return CreateJoinedDirected(functions, predicts.Length > 0 ? predicts : null);
         }
 
-        public static DirectedAction CreateJoinedDirected(DirectedDo[] functions, PredictDirected[] predicts = null)
+        public static DirectedAction CreateJoinedDirected(DirectedDo[] functions, DirectedPredict[] predicts = null)
         {
             var action = new DirectedAction();
 
@@ -101,7 +101,7 @@ namespace Hopper.Core
             return action;
         }
 
-        public static DirectedAction CreateSimple(DirectedDo function, PredictDirected predict = null)
+        public static DirectedAction CreateSimple(DirectedDo function, DirectedPredict predict = null)
         {
             return new DirectedAction
             {
@@ -110,7 +110,7 @@ namespace Hopper.Core
             };
         }
 
-        public static DirectedAction CreateSimple(System.Action<Entity, IntVector2> function, PredictDirected predict = null)
+        public static DirectedAction CreateSimple(System.Action<Entity, IntVector2> function, DirectedPredict predict = null)
         {
             return new DirectedAction
             {
@@ -119,7 +119,7 @@ namespace Hopper.Core
             };
         }
 
-        public static UndirectedAction CreateSimple(UndirectedDo function, PredictUndirected predict = null)
+        public static UndirectedAction CreateSimple(UndirectedDo function, UndirectedPredict predict = null)
         {
             return new UndirectedAction
             {
@@ -128,7 +128,7 @@ namespace Hopper.Core
             };
         }
 
-        public static UndirectedAction CreateSimple(System.Action<Entity> function, PredictUndirected predict = null)
+        public static UndirectedAction CreateSimple(System.Action<Entity> function, UndirectedPredict predict = null)
         {
             return new UndirectedAction
             {
@@ -145,7 +145,7 @@ namespace Hopper.Core
             return CreateJoinedUndirected(functions, predicts.Length > 0 ? predicts : null);
         }
 
-        public static UndirectedAction CreateJoinedUndirected(UndirectedDo[] functions, PredictUndirected[] predicts = null)
+        public static UndirectedAction CreateJoinedUndirected(UndirectedDo[] functions, UndirectedPredict[] predicts = null)
         {
             var action = new UndirectedAction();
 
@@ -180,7 +180,7 @@ namespace Hopper.Core
             return action;
         }
 
-        private static void FillInPredicts(DirectedAction action, PredictDirected[] predicts)
+        private static void FillInPredicts(DirectedAction action, DirectedPredict[] predicts)
         {
             if (predicts != null)
             {
@@ -188,7 +188,7 @@ namespace Hopper.Core
             }
         }
 
-        private static void FillInPredicts(UndirectedAction action, PredictUndirected[] predicts)
+        private static void FillInPredicts(UndirectedAction action, UndirectedPredict[] predicts)
         {
             if (predicts != null)
             {
@@ -198,7 +198,7 @@ namespace Hopper.Core
 
         private class ClosureDirectedPredicts
         {
-            public PredictDirected[] predicts;
+            public DirectedPredict[] predicts;
 
             public IEnumerable<IntVector2> PredictAll(Entity entity, IntVector2 direction)
             {
@@ -214,7 +214,7 @@ namespace Hopper.Core
 
         private class ClosureUndirectedPredicts
         {
-            public PredictUndirected[] predicts;
+            public UndirectedPredict[] predicts;
 
             public IEnumerable<IntVector2> PredictAll(Entity entity)
             {

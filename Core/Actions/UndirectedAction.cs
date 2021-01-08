@@ -3,7 +3,7 @@ namespace Hopper.Core
     public class UndirectedAction : Action
     {
         public UndirectedDo function;
-        public PredictUndirected predict;
+        public UndirectedPredict predict;
 
         public ParticularUndirectedAction ToUndirectedParticular()
         {

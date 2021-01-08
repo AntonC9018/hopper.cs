@@ -5,7 +5,7 @@ namespace Hopper.Core
     public class DirectedAction : Action
     {
         public DirectedDo function;
-        public PredictDirected predict;
+        public DirectedPredict predict;
 
         public ParticularDirectedAction ToAction()
         {

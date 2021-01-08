@@ -13,7 +13,7 @@ namespace Hopper.Core
             this.action = action;
         }
 
-        public ParticularUndirectedAction(UndirectedDo function, PredictUndirected predict = null)
+        public ParticularUndirectedAction(UndirectedDo function, UndirectedPredict predict = null)
         {
             action.function = function;
             action.predict = predict;

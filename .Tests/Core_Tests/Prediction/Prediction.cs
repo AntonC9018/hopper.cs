@@ -3,6 +3,7 @@ using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
 using Hopper.Core.Mods;
 using Hopper.Core.Predictions;
+using Hopper.Test_Content.Explosion;
 using Hopper.Test_Content.SimpleMobs;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
@@ -59,6 +60,14 @@ namespace Hopper.Tests
             Assert.AreEqual(2, predictedPositions.Count());
             Assert.True(predictedPositions.Contains(new IntVector2(1, 0)));
             Assert.True(predictedPositions.Contains(new IntVector2(0, 1)));
+        }
+
+        [Test]
+        public void ExplosionPredictionWorks()
+        {
+            var entity = world.SpawnEntity(Dummy.Factory, new IntVector2(1, 1));
+            var predictions = Explosion.DefaultExplodeAction(1).predict(entity).ToArray();
+            Assert.AreEqual(9, predictions.Length, "Would explode 9 cells");
         }
     }
 }
