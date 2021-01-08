@@ -23,7 +23,7 @@ namespace Hopper.Test_Content.SimpleMobs
 
                 .Retouch(Skip.NoPlayer)
                 .Retouch(Skip.BlockedMove)
-                .Retouch(Reorient.OnActionSuccess);
+                .Retouch(Reorient.OnActionSuccessToClosestPlayer);
         }
 
         static Step[] CreateSequenceData()

@@ -8,7 +8,6 @@ namespace Hopper.Test_Content.Boss
 {
     public class TestBoss : Entity
     {
-        public static readonly Retoucher TurnToPlayerRetoucher;
         public static EntityFactory<TestBoss> Factory;
         private static readonly DirectedAction AttackMoveAction;
         private static readonly DirectedAction SpawnAction;
@@ -32,23 +31,6 @@ namespace Hopper.Test_Content.Boss
                 entity.m_whelpCount++;
             }
         }
-
-        private static void TurnToPlayer(Entity entity)
-        {
-            var player = entity.GetClosestPlayer();
-            var diff = player.Pos - entity.Pos;
-            var sign = diff.Sign();
-            var abs = diff.Abs();
-            if (abs.x > abs.y)
-            {
-                entity.Orientation = new IntVector2(sign.x, 0);
-            }
-            if (abs.y > abs.x)
-            {
-                entity.Orientation = new IntVector2(0, sign.y);
-            }
-        }
-
 
         public class Whelp : Entity
         {
@@ -92,7 +74,7 @@ namespace Hopper.Test_Content.Boss
                     .Retouch(Skip.NoPlayer)
                     .Retouch(Skip.BlockedMove)
                     // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
-                    .Retouch(TurnToPlayerRetoucher)
+                    .Retouch(Reorient.OnActionSuccessToClosestPlayer)
                     .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)));
             }
         }
@@ -128,7 +110,6 @@ namespace Hopper.Test_Content.Boss
                     movs = Movs.Basic
                 },
             };
-            TurnToPlayerRetoucher = Retoucher.SingleHandlered(Acting.Success, ev => TurnToPlayer(ev.actor));
         }
 
 
@@ -144,7 +125,7 @@ namespace Hopper.Test_Content.Boss
                 .Retouch(Skip.NoPlayer)
                 .Retouch(Skip.BlockedMove)
                 // .Retouch(Core.Retouchers.Reorient.OnActionSuccess)
-                .Retouch(TurnToPlayerRetoucher)
+                .Retouch(Reorient.OnActionSuccessToClosestPlayer)
                 .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)));
         }
     }

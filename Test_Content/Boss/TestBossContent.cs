@@ -8,7 +8,6 @@ namespace Hopper.Test_Content.Boss
     {
         public void RegisterSelf(ModRegistry registry)
         {
-            TestBoss.TurnToPlayerRetoucher.RegisterSelf(registry);
             TestBoss.Whelp.Factory = TestBoss.Whelp.CreateFactory();
             TestBoss.Whelp.Factory.RegisterSelf(registry);
             TestBoss.Factory = TestBoss.CreateFactory();

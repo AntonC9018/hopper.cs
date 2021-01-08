@@ -12,9 +12,11 @@ namespace Hopper.Core.Retouchers
         public static readonly Retoucher OnDisplace = Retoucher
             .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRank.High);
         public static readonly Retoucher OnActionSuccess = Retoucher
-            .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRank.High);
+            .SingleHandlered(Acting.Success, ActingReorient, PriorityRank.High);
         public static readonly Retoucher OnAttack = Retoucher
             .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRank.High);
+        public static readonly Retoucher OnActionSuccessToClosestPlayer = Retoucher
+            .SingleHandlered(Acting.Success, ToPlayer, PriorityRank.High);
 
         public static void RegisterAll(ModRegistry registry)
         {
@@ -22,20 +24,41 @@ namespace Hopper.Core.Retouchers
             OnDisplace.RegisterSelf(registry);
             OnActionSuccess.RegisterSelf(registry);
             OnAttack.RegisterSelf(registry);
+            OnActionSuccessToClosestPlayer.RegisterSelf(registry);
         }
 
-        private static void AnyReorient(Displaceable.Event ev)
-        {
-            if (ev.dir != IntVector2.Zero)
-            {
-                ev.actor.Reorient_(ev.dir);
-            }
-        }
         private static void AnyReorient(StandartEvent ev)
         {
             if (ev.direction != IntVector2.Zero)
             {
-                ev.actor.Reorient_(ev.direction);
+                ev.actor.Orientation = ev.direction;
+            }
+        }
+
+        private static void ActingReorient(Acting.Event ev)
+        {
+            if (ev.action is ParticularDirectedAction)
+            {
+                ev.actor.Orientation = ((ParticularDirectedAction)ev.action).direction;
+            }
+        }
+
+        private static void ToPlayer(ActorEvent ev)
+        {
+            if (ev.actor.TryGetClosestPlayer(out var player))
+            {
+                var diff = player.Pos - ev.actor.Pos;
+                var sign = diff.Sign();
+                var abs = diff.Abs();
+                if (abs.x > abs.y)
+                {
+                    ev.actor.Orientation = new IntVector2(sign.x, 0);
+                }
+                if (abs.y > abs.x)
+                {
+                    ev.actor.Orientation = new IntVector2(0, sign.y);
+                }
+
             }
         }
     }

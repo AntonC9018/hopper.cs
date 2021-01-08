@@ -9,12 +9,11 @@ namespace Hopper.Core.Behaviors.Basic
     [DataContract]
     public class Displaceable : Behavior, IInitable<Layer>
     {
-        public class Event : ActorEvent
+        public class Event : StandartEvent
         {
             public Entity entity;
             public Move move;
             public IntVector2 newPos;
-            public IntVector2 dir;
             public Layer blockLayer;
         }
 
@@ -30,7 +29,7 @@ namespace Hopper.Core.Behaviors.Basic
             var ev = new Event
             {
                 actor = m_entity,
-                dir = dir,
+                direction = dir,
                 move = move,
                 blockLayer = blockLayer
             };
@@ -43,13 +42,13 @@ namespace Hopper.Core.Behaviors.Basic
 
             do
             {
-                if (ev.actor.HasBlockRelative(ev.dir * i, ev.blockLayer))
+                if (ev.actor.HasBlockRelative(ev.direction * i, ev.blockLayer))
                     break;
                 i++;
             } while (i < ev.move.power);
             i--;
 
-            ev.newPos = ev.actor.GetPosRelative(ev.dir * i);
+            ev.newPos = ev.actor.GetPosRelative(ev.direction * i);
 
             // TODO: in this case you should probably add the bump to the history and stop
             // also this should be done in the do chain
