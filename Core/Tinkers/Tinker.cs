@@ -97,9 +97,9 @@ namespace Hopper.Core
                     new ChainDef<Event>
                     {
                         path = path.ChainPath,
-                        infos = new Stuff<Event>[]
+                        infos = new Handler<Event>[]
                         {
-                            new Stuff<Event>{ handler = handler, priority = (int)priority }
+                            new Handler<Event>{ handler = handler, priority = (int)priority }
                         }
                     }
                 }

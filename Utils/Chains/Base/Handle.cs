@@ -7,12 +7,11 @@ namespace Hopper.Utils.Chains
 
     public class Handle<Event> : Handle where Event : EventBase
     {
-        public MyListNode<Action<Event>> item;
-        public Handle(MyListNode<Action<Event>> item)
+        public MyListNode<Handler<Event>> item;
+        public Handle(MyListNode<Handler<Event>> item)
         {
             this.item = item;
         }
-
 
         public override string ToString()
         {

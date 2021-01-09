@@ -23,17 +23,17 @@ namespace Hopper.Utils.MyLinkedList
             node.RemoveSelf();
         }
 
-        public System.Collections.Generic.IEnumerator<MyListNode<T>> GetEnumerator()
+        public System.Collections.Generic.IEnumerator<T> GetEnumerator()
         {
             var node = head;
             while (node != null)
             {
-                yield return node;
+                yield return node.item;
                 node = node.next;
             }
         }
 
-        public delegate int CompareFunc(MyListNode<T> a, MyListNode<T> b);
+        public delegate int CompareFunc(T a, T b);
 
         // sorts in descending order
         public void Sort(CompareFunc compareFunc)
@@ -61,7 +61,7 @@ namespace Hopper.Utils.MyLinkedList
                     {
                         MyListNode<T> smaller;
                         // Using <= instead of < gives us sort stability
-                        if (rightEmpty || (!leftEmpty && compareFunc(left, right) > 0))
+                        if (rightEmpty || (!leftEmpty && compareFunc(left.item, right.item) > 0))
                         {
                             smaller = left; left = left.next; --leftSize;
                             leftEmpty = leftSize == 0;

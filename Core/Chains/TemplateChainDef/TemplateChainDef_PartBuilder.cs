@@ -12,7 +12,7 @@ namespace Hopper.Core.Chains
     public class TemplateChainDef_PartBuilder<Event> : I_TemplateChainDef_PartBuilder where Event : EventBase
     {
         public BehaviorFactoryPath<Event> path;
-        public List<Stuff<Event>> infos;
+        public List<Handler<Event>> infos;
         private TemplateChainDefBuilder builder;
 
         public TemplateChainDef_PartBuilder(
@@ -20,10 +20,10 @@ namespace Hopper.Core.Chains
         {
             this.path = path;
             this.builder = builder;
-            infos = new List<Stuff<Event>>();
+            infos = new List<Handler<Event>>();
         }
 
-        public TemplateChainDef_PartBuilder<Event> AddHandler(Stuff<Event> handler)
+        public TemplateChainDef_PartBuilder<Event> AddHandler(Handler<Event> handler)
         {
             infos.Add(handler);
             return this;
@@ -31,11 +31,11 @@ namespace Hopper.Core.Chains
 
         public TemplateChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, PriorityRank priority = PriorityRank.Default)
         {
-            return AddHandler(new Stuff<Event> { handler = handlerFunc, priority = (int)priority });
+            return AddHandler(new Handler<Event> { handler = handlerFunc, priority = (int)priority });
         }
         public TemplateChainDef_PartBuilder<Event> AddHandler(System.Action<Event> handlerFunc, int priority)
         {
-            return AddHandler(new Stuff<Event> { handler = handlerFunc, priority = priority });
+            return AddHandler(new Handler<Event> { handler = handlerFunc, priority = priority });
         }
 
         public TemplateChainDefBuilder End()

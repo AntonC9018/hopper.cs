@@ -13,7 +13,7 @@ namespace Hopper.Core.Chains
     public class TemplateChainDef<Event> : ITemplateChainDef where Event : EventBase
     {
         public BehaviorFactoryPath<Event> path;
-        public Stuff<Event>[] handlers;
+        public Handler<Event>[] handlers;
 
         public void AddHandlersTo(IProvideBehaviorFactory EntityFactory)
         {

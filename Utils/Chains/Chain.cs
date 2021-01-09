@@ -19,50 +19,53 @@ namespace Hopper.Utils.Chains
             PriorityMapping.Highest,
         };
         internal bool m_dirty;
-        internal MyLinkedList<Action<Event>> m_handlers;
-        internal List<MyListNode<Action<Event>>> m_handlersToRemove;
-        internal Dictionary<MyListNode<Action<Event>>, int> m_priorities;
+        internal MyLinkedList<Handler<Event>> m_handlers;
+        internal List<MyListNode<Handler<Event>>> m_handlersToRemove;
 
         public Chain()
         {
-            m_handlers = new MyLinkedList<Action<Event>>();
-            m_priorities = new Dictionary<MyListNode<Action<Event>>, int>();
-            m_handlersToRemove = new List<MyListNode<Action<Event>>>();
+            m_handlers = new MyLinkedList<Handler<Event>>();
+            m_handlersToRemove = new List<MyListNode<Handler<Event>>>();
         }
 
         public Handle<Event> AddHandler(Action<Event> handlerFunction,
             PriorityRank priority = PriorityRank.Default)
         {
-            return AddHandler(handlerFunction, MapPriority((int)priority));
+            return AddHandler(handlerFunction, (int)priority);
         }
 
         public Handle<Event> AddHandler(Action<Event> handlerFunction, int priority)
         {
+            return AddHandler(new Handler<Event> { handler = handlerFunction, priority = priority });
+        }
+
+        public Handle<Event> AddHandler(Handler<Event> handler)
+        {
             m_dirty = true;
-            m_handlers.AddFront(handlerFunction);
-            m_priorities.Add(m_handlers.head, priority);
+            handler.priority = MapPriority(handler.priority);
+            m_handlers.AddFront(handler);
             return new Handle<Event>(m_handlers.head);
         }
 
         public void Pass(Event ev)
         {
             CleanUp();
-            foreach (var node in m_handlers)
+            foreach (var handler in m_handlers)
             {
                 if (!ev.propagate)
                     return;
-                node.item(ev);
+                handler.handler(ev);
             }
         }
 
         public void Pass(Event ev, System.Func<Event, bool> stopFunc)
         {
             CleanUp();
-            foreach (var node in m_handlers)
+            foreach (var handler in m_handlers)
             {
                 if (stopFunc(ev))
                     return;
-                node.item(ev);
+                handler.handler(ev);
             }
         }
 
@@ -95,7 +98,6 @@ namespace Hopper.Utils.Chains
             foreach (var node in m_handlersToRemove)
             {
                 m_handlers.RemoveNode(node);
-                m_priorities.Remove(node);
             }
             if (m_dirty)
             {
@@ -106,7 +108,7 @@ namespace Hopper.Utils.Chains
 
         internal void SortHandlers()
         {
-            m_handlers.Sort((a, b) => m_priorities[a] - m_priorities[b]);
+            m_handlers.Sort((a, b) => a.priority - b.priority);
             m_dirty = false;
         }
     }

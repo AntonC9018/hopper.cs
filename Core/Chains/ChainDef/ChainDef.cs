@@ -15,7 +15,7 @@ namespace Hopper.Core.Chains
     public class ChainDef<Event> : IChainDef where Event : EventBase
     {
         public BehaviorPath<Event> path;
-        public Stuff<Event>[] infos;
+        public Handler<Event>[] infos;
 
         public Handle[] AddHandlers(IWithWithChain entity)
         {
