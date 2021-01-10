@@ -2,17 +2,15 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Hopper.Core;
 using Hopper.Core.Behaviors.Basic;
-using Hopper.Test_Content;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content.Floor
 {
-    public class BlockingTrap : Entity
+    public class BlockingTrap : Trap
     {
-        public override Layer Layer => Layer.FLOOR;
         [DataMember] private List<RealBarrier> m_barriers;
 
-        public static EntityFactory<BlockingTrap> Factory;
+        public static EntityFactory<BlockingTrap> Factory = CreateFactory();
         public static readonly EntityFactory<RealBarrier> BarrierFactory = CreateBarrierFactory();
 
         public static EntityFactory<BlockingTrap> CreateFactory()

@@ -9,7 +9,6 @@ using Hopper.Test_Content.Floor;
 using Hopper.Test_Content.Projectiles;
 using Hopper.Test_Content.SimpleMobs;
 using Hopper.Test_Content.Status;
-using Hopper.Test_Content.Trap;
 
 namespace Hopper.Test_Content
 {

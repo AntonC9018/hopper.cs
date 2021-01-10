@@ -8,9 +8,7 @@ namespace Hopper.Test_Content.Boss
     {
         public void RegisterSelf(ModRegistry registry)
         {
-            TestBoss.Whelp.Factory = TestBoss.Whelp.CreateFactory();
             TestBoss.Whelp.Factory.RegisterSelf(registry);
-            TestBoss.Factory = TestBoss.CreateFactory();
             TestBoss.Factory.RegisterSelf(registry);
         }
 

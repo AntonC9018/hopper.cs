@@ -19,7 +19,7 @@ namespace Hopper.Test_Content.Status.Freezing
                 .AddHandler(DisplaceCaptured)
                 .End().ToStatic()
         );
-        public static EntityFactory<IceCube> Factory;
+        public static EntityFactory<IceCube> Factory = CreateFactory();
 
         public static EntityFactory<IceCube> CreateFactory()
         {

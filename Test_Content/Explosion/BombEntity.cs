@@ -52,7 +52,7 @@ namespace Hopper.Test_Content.Explosion
                     action = DieAndExplodeAction
                 }
             };
-            Factory = BombEntity.CreateFactory();
+            Factory = CreateFactory();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Hopper.Test_Content.SimpleMobs
 {
     public static class Skeleton
     {
-        public static EntityFactory<Entity> Factory;
+        public static EntityFactory<Entity> Factory = CreateFactory();
         public static EntityFactory<Entity> CreateFactory()
         {
             return new EntityFactory<Entity>()

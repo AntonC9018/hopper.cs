@@ -7,7 +7,7 @@ namespace Hopper.Test_Content.Bind
     [DataContract]
     public class Spider : Entity, ISelfBinder
     {
-        public static EntityFactory<Spider> Factory;
+        public static EntityFactory<Spider> Factory = CreateFactory();
 
         [DataMember] public Entity BoundEntity { get; set; }
         public override Layer Layer => BoundEntity == null ? Layer.REAL : ExtendedLayer.ABOVE;

@@ -7,7 +7,7 @@ namespace Hopper.Test_Content
         public override bool IsDirected => true;
         public override Layer Layer => Layer.WALL;
 
-        public static EntityFactory<Barrier> Factory;
+        public static EntityFactory<Barrier> Factory = CreateFactory();
         public static EntityFactory<Barrier> CreateFactory()
         {
             return new EntityFactory<Barrier>();

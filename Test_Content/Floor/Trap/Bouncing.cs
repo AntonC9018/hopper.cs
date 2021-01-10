@@ -6,7 +6,7 @@ using Hopper.Core.Stats.Basic;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content.Trap
+namespace Hopper.Test_Content.Floor
 {
     [DataContract]
     public class Bouncing : Behavior, IInitable, IStandartActivateable

@@ -4,15 +4,12 @@ using Hopper.Core.Registries;
 using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;
 
-namespace Hopper.Test_Content.Trap
+namespace Hopper.Test_Content.Floor
 {
-    public class BounceTrap : Entity
+    public static class BounceTrap
     {
-        public static EntityFactory<BounceTrap> Factory;
-
-        public override Layer Layer => Layer.TRAP;
+        public static EntityFactory<Trap> Factory = CreateFactory();
         public static readonly DirectedAction BounceAction = Action.CreateBehavioral<Bouncing>();
-
         public static readonly Push PushStat =
             new Push
             {
@@ -27,9 +24,9 @@ namespace Hopper.Test_Content.Trap
             return new DefaultStats(patchArea).Set(Push.Path, PushStat);
         }
 
-        public static EntityFactory<BounceTrap> CreateFactory()
+        public static EntityFactory<Trap> CreateFactory()
         {
-            return new EntityFactory<BounceTrap>()
+            return new EntityFactory<Trap>()
                 .AddBehavior(Attackable.DefaultPreset)
                 .AddBehavior(Acting.Preset(
                     new Acting.Config(

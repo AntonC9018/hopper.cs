@@ -6,7 +6,7 @@ using Hopper.Core.Behaviors.Basic;
 
 namespace Hopper.Core
 {
-    public interface IStatus : IKind, Registries.IPatch
+    public interface IStatus : IExtendent
     {
         int SourceId { get; }
         void Update(Entity entity);

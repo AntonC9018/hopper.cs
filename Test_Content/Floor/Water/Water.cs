@@ -18,12 +18,18 @@ namespace Hopper.Test_Content.Floor
     {
         public override Layer Layer => Layer.FLOOR;
 
-        public static EntityFactory<Water> Factory;
+        public static EntityFactory<Water> Factory = CreateFactory();
         public static EntityFactory<Water> CreateFactory()
         {
             return new EntityFactory<Water>()
                 .AddBehavior(Attackable.DefaultPreset)
                 .AddInitListener(water => water.ListenCell());
+        }
+
+        public void FreezeUp()
+        {
+            Die();
+            World.SpawnEntity(IceFloor.Factory, m_pos);
         }
 
         private Layer m_targetedLayer = Layer.REAL;

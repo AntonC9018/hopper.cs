@@ -1,7 +1,7 @@
 using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;
 
-namespace Hopper.Test_Content.Trap
+namespace Hopper.Test_Content.Floor
 {
     public class Bounce : StatFile
     {

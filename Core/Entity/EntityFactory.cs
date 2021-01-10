@@ -14,12 +14,10 @@ namespace Hopper.Core
         public DefaultStats DefaultStats;
 
         private Dictionary<System.Type, IBehaviorFactory<Behavior>> m_behaviorFactories;
-        private Dictionary<int, Retoucher> m_retouchers;
 
         public EntityFactory()
         {
             m_behaviorFactories = new Dictionary<System.Type, IBehaviorFactory<Behavior>>();
-            m_retouchers = new Dictionary<int, Retoucher>();
             AddBehavior(Tick.Preset);
         }
 
@@ -60,14 +58,8 @@ namespace Hopper.Core
 
         public EntityFactory<T> Retouch(Retoucher retoucher)
         {
-            m_retouchers.Add(retoucher.Id, retoucher);
             retoucher.Retouch(this);
             return this;
-        }
-
-        public bool IsRetouched(Retoucher retoucher)
-        {
-            return m_retouchers.ContainsKey(retoucher.Id);
         }
 
         public IBehaviorFactory<U> GetBehaviorFactory<U>() where U : Behavior, new()

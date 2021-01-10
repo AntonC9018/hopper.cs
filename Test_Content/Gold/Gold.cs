@@ -32,7 +32,7 @@ namespace Hopper.Test_Content
             return gold;
         }
 
-        public static EntityFactory<Gold> Factory;
+        public static EntityFactory<Gold> Factory = CreateFactory();
         public static readonly Retoucher PickUpRetoucher =
             Retoucher.SingleHandlered(Displaceable.Do, PickUp);
 

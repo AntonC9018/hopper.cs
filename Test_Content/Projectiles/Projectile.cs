@@ -32,6 +32,6 @@ namespace Hopper.Test_Content.Projectiles
 
         }
 
-        public static EntityFactory<Projectile> SimpleFactory;
+        public static EntityFactory<Projectile> SimpleFactory = CreateFactory();
     }
 }

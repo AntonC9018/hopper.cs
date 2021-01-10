@@ -11,7 +11,7 @@ namespace Hopper.Test_Content.Status
             Invincibility.Status.RegisterSelf(registry);
             IceCube.MoveCapturedRetoucher.RegisterSelf(registry);
             Freeze.Status.RegisterSelf(registry);
-            IceCube.Factory = IceCube.CreateFactory();
+
             IceCube.Factory.RegisterSelf(registry);
         }
 

@@ -7,7 +7,6 @@ namespace Hopper.Test_Content.Projectiles
     {
         public void RegisterSelf(ModRegistry registry)
         {
-            Projectile.SimpleFactory = Projectile.CreateFactory();
             Projectile.SimpleFactory.RegisterSelf(registry);
         }
 

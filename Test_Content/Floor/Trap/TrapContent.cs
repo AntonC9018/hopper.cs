@@ -1,15 +1,13 @@
 using Hopper.Core;
 using Hopper.Core.Registries;
 
-namespace Hopper.Test_Content.Trap
+namespace Hopper.Test_Content.Floor
 {
     internal class TrapContent : ISubMod
     {
         public void RegisterSelf(ModRegistry registry)
         {
-            Bounce.Source.RegisterSelf(registry);
-            BounceTrap.Factory = BounceTrap.CreateFactory();
-            BounceTrap.Factory.RegisterSelf(registry);
+            
         }
 
         public void PrePatch(PatchArea patchArea)
@@ -18,12 +16,10 @@ namespace Hopper.Test_Content.Trap
 
         public void Patch(PatchArea patchArea)
         {
-            Bounce.Source.Patch(patchArea);
         }
 
         public void PostPatch(PatchArea patchArea)
         {
-            BounceTrap.Factory.PostPatch(patchArea);
         }
     }
 }

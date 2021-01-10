@@ -9,7 +9,7 @@ namespace Hopper.Test_Content.Bind
         {
             Bind.StopMoveStatus.RegisterSelf(registry);
             Bind.StopMoveRetoucher.RegisterSelf(registry);
-            Spider.Factory = Spider.CreateFactory();
+
             Spider.Factory.RegisterSelf(registry);
         }
 

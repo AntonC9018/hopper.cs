@@ -60,6 +60,7 @@ namespace Hopper.Test_Content.Boss
                         movs = Movs.Adjacent
                     }
                 };
+                Factory = CreateFactory();
             }
 
             public static EntityFactory<Whelp> CreateFactory()
@@ -110,6 +111,8 @@ namespace Hopper.Test_Content.Boss
                     movs = Movs.Basic
                 },
             };
+
+            Factory = CreateFactory();
         }
 
 

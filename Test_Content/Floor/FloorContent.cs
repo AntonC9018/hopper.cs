@@ -9,15 +9,13 @@ namespace Hopper.Test_Content.Floor
         {
             Slide.Status.RegisterSelf(registry);
             Stuck.Status.RegisterSelf(registry);
+            Bounce.Source.RegisterSelf(registry);
 
-            IceFloor.Factory = IceFloor.CreateFactory(Slide.Status);
             IceFloor.Factory.RegisterSelf(registry);
-            Water.Factory = Water.CreateFactory();
             Water.Factory.RegisterSelf(registry);
-            RealBarrier.Factory = RealBarrier.CreateFactory();
             RealBarrier.Factory.RegisterSelf(registry);
-            BlockingTrap.Factory = BlockingTrap.CreateFactory();
             BlockingTrap.Factory.RegisterSelf(registry);
+            BounceTrap.Factory.RegisterSelf(registry);
         }
 
         public void PrePatch(PatchArea patchArea)
@@ -28,6 +26,7 @@ namespace Hopper.Test_Content.Floor
         {
             Slide.Status.Patch(patchArea);
             Stuck.Status.Patch(patchArea);
+            Bounce.Source.Patch(patchArea);
         }
 
         public void PostPatch(PatchArea patchArea)
@@ -36,6 +35,7 @@ namespace Hopper.Test_Content.Floor
             Water.Factory.PostPatch(patchArea);
             RealBarrier.Factory.PostPatch(patchArea);
             BlockingTrap.Factory.PostPatch(patchArea);
+            BounceTrap.Factory.PostPatch(patchArea);
         }
     }
 }
