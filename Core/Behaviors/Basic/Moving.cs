@@ -34,7 +34,7 @@ namespace Hopper.Core.Behaviors.Basic
                     ev.move = ev.actor.Stats.GetLazy(Move.Path);
                 }
             },
-            // @Incomplete hardcode a reasonaly priority value
+            // @Incomplete hardcode a reasonable priority value
             priority = (int)PriorityRank.High
         };
 
@@ -44,14 +44,14 @@ namespace Hopper.Core.Behaviors.Basic
             {
                 ev.actor.Behaviors.Get<Displaceable>().Activate(ev.direction, ev.move);
             },
-            // @Incomplete hardcode a reasonaly priority value
+            // @Incomplete hardcode a reasonable priority value
             priority = (int)PriorityRank.Default
         };
 
         public static Handler<Event> UpdateHistoryHandler = new Handler<Event>
         {
             handler = Utils.AddHistoryEvent(History.UpdateCode.move_do),
-            // @Incomplete hardcode a reasonaly priority value
+            // @Incomplete hardcode a reasonable priority value
             priority = (int)PriorityRank.Default
         };
 
