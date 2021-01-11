@@ -46,6 +46,13 @@ namespace Hopper.Utils.Chains
             return this;
         }
 
+        public ChainTemplate<Event> AddHandler(Handler<Event> handler)
+        {
+            m_areHandlersCached = false;
+            m_handlers.Add(handler);
+            return this;
+        }
+
         public Chain Init()
         {
             if (m_areHandlersCached)

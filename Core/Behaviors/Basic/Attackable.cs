@@ -8,12 +8,16 @@ using Hopper.Core.Chains;
 
 namespace Hopper.Core.Behaviors.Basic
 {
+    /// <summary>
+    /// Allows the entity to be attacked.
+    /// Note that the entity won't take damage, unless it is also <c>Damageable</c>.
+    /// Related update codes: <c>attacked_do</c>.
+    /// </summary>
     [DataContract]
     public class Attackable : Behavior, IInitable<Attackness>
     {
         public class Event : ActorEvent
         {
-            public Entity entity;
             public Params atkParams;
             public IntVector2 dir;
             public Attack.Resistance resistance;
@@ -31,6 +35,9 @@ namespace Hopper.Core.Behaviors.Basic
             }
         }
 
+        /// <summary> Specifies the criteria used for deciding whether this entity will be targeted by an attack </summary>
+        public Attackness m_attackness;
+        
         public void Init(Attackness attackness)
         {
             m_attackness = attackness;
@@ -47,18 +54,50 @@ namespace Hopper.Core.Behaviors.Basic
             return CheckDoCycle<Event>(ev);
         }
 
-        private static void SetResistance(Event ev)
+        /// <returns>
+        /// Returns true if the owner of the queried attackable behavior can be attacked by the given attacker
+        /// </returns>
+        public bool IsAttackable(IWorldSpot attacker)
         {
-            ev.resistance = ev.actor.Stats.GetLazy(Attack.Resistance.Path);
+            // if can be attacked only if next to
+            if (m_attackness.Is(Attackness.CAN_BE_ATTACKED_IF_NEXT_TO))
+            {
+                // returns true if the attacker is next to the entity
+                return attacker == null || (attacker.Pos - m_entity.Pos).Abs().ComponentSum() <= 1;
+            }
+            // if can be attacked by default
+            return m_attackness.Is(Attackness.CAN_BE_ATTACKED | Attackness.BY_DEFAULT);
         }
 
-        private static void ResistSource(Event ev)
+        /// <summary>
+        /// This is one of the default handlers used by the CHECK chain. 
+        /// Sets the initial resistance stat from stats manager.
+        /// </summary>
+        public static Handler<Event> SetResistanceHandler = new Handler<Event>
         {
-            if (GetSourceResistance(ev) > ev.atkParams.attack.power)
+            handler = (Event ev) =>
             {
-                ev.atkParams.attack.damage = 0;
-            }
-        }
+                ev.resistance = ev.actor.Stats.GetLazy(Attack.Resistance.Path);
+            },
+            priority = PriorityMapping.Medium + 0x8000
+        };
+
+        /// <summary>
+        /// This is one of the default handlers used by the CHECK chain. 
+        /// It queries attack source resistance stat, and sets the attack damage to 0 
+        /// if the resistance to the source specified by the attack is greater than the attack power.
+        /// </summary>
+        public static Handler<Event> ResistSourceHandler = new Handler<Event>
+        {
+            handler = (Event ev) =>
+            {
+                if (GetSourceResistance(ev) > ev.atkParams.attack.power)
+                {
+                    ev.atkParams.attack.damage = 0;
+                }
+            },
+            priority = PriorityMapping.Low + 0x8000
+        };
 
         private static int GetSourceResistance(Event ev)
         {
@@ -66,60 +105,77 @@ namespace Hopper.Core.Behaviors.Basic
             return sourceRes[ev.atkParams.attack.sourceId];
         }
 
-        private static void Armor(Event ev)
+        /// <summary>
+        /// This is one of the default handlers used by the CHECK chain. 
+        /// If the damage is not already zero, it decreases it by the armor amount.
+        /// </summary>
+        public static Handler<Event> ArmorHandler = new Handler<Event>
         {
-            if (ev.atkParams.attack.damage > 0)
+            handler = (Event ev) =>
             {
-                ev.atkParams.attack.damage = Maths.Clamp(
-                    ev.atkParams.attack.damage - ev.resistance.armor,
-                    ev.resistance.minDamage,
-                    ev.resistance.maxDamage);
-            }
-        }
+                if (ev.atkParams.attack.damage > 0)
+                {
+                    ev.atkParams.attack.damage = Maths.Clamp(
+                        ev.atkParams.attack.damage - ev.resistance.armor,
+                        ev.resistance.minDamage,
+                        ev.resistance.maxDamage);
+                }
+            },
+            priority = PriorityMapping.Low + 0x2000
+        };
 
-        private static void TakeHit(Event ev)
+        /// <summary>
+        /// This is one of the default handlers used by the DO chain. 
+        /// It activates the <c>Damageable</c> behavior if the attack's pierce is as high as the pierce resistance.
+        /// </summary>
+        public static Handler<Event> TakeHitHandler = new Handler<Event>
         {
-            // if pierce is high enough, resist the taken damage altogether
-            if (ev.resistance.pierce <= ev.atkParams.attack.pierce)
+            handler = (Event ev) =>
             {
-                ev.actor.Behaviors.TryGet<Damageable>()?.Activate(ev.atkParams.attack.damage);
-            }
-        }
+                // if pierce is high enough, resist the taken damage altogether
+                if (ev.resistance.pierce <= ev.atkParams.attack.pierce)
+                {
+                    ev.actor.Behaviors.TryGet<Damageable>()?.Activate(ev.atkParams.attack.damage);
+                }
+            },
+            priority = PriorityMapping.Low + 0x8000
+        };
 
-        public Attackness m_attackness;
-
-        public bool IsAttackable(IWorldSpot attacker)
+        /// <summary>
+        /// This is one of the default handlers used by the DO chain. 
+        /// </summary>
+        public static Handler<Event> UpdateHistoryHandler = new Handler<Event>
         {
-            return m_attackness == Attackness.ALWAYS || m_attackness == Attackness.IF_NEXT_TO
-                && (attacker == null || (attacker.Pos - m_entity.Pos).Abs().ComponentSum() <= 1);
-        }
+            handler = Utils.AddHistoryEvent(History.UpdateCode.attacked_do),
+            priority = PriorityMapping.Low + 0x2000
+        };
 
-        public static readonly ChainPaths<Attackable, Event> Check;
-        public static readonly ChainPaths<Attackable, Event> Do;
+        public static readonly ChainPaths<Attackable, Event> Check = new ChainPaths<Attackable, Event>(ChainName.Check);
+        public static readonly ChainPaths<Attackable, Event> Do = new ChainPaths<Attackable, Event>(ChainName.Do);
 
-        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static readonly ChainTemplateBuilder DefaultBuilder = 
+            new ChainTemplateBuilder()
+                .AddTemplate<Event>(ChainName.Check)
+                    .AddHandler(SetResistanceHandler)
+                    .AddHandler(ResistSourceHandler)
+                    .AddHandler(ArmorHandler)
+                .AddTemplate<Event>(ChainName.Do)
+                    .AddHandler(TakeHitHandler)
+                    .AddHandler(UpdateHistoryHandler)
+                .End();
+
+        /// <summary>
+        /// The preset of attackable that uses the default handlers.
+        /// The attackness is set to ALWAYS.
+        /// </summary>
         public static ConfigurableBehaviorFactory<Attackable, Attackness> DefaultPreset
             => new ConfigurableBehaviorFactory<Attackable, Attackness>(DefaultBuilder, Attackness.ALWAYS);
+
+        /// <summary>
+        /// The preset of attackable that uses the default handlers.
+        /// It lets you specify the attackness that you wish.
+        /// </summary>
         public static ConfigurableBehaviorFactory<Attackable, Attackness> Preset(Attackness attackness)
             => new ConfigurableBehaviorFactory<Attackable, Attackness>(DefaultBuilder, attackness);
-
-        static Attackable()
-        {
-            Do = new ChainPaths<Attackable, Event>(ChainName.Do);
-            Check = new ChainPaths<Attackable, Event>(ChainName.Check);
-
-            DefaultBuilder = new ChainTemplateBuilder()
-
-                .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(SetResistance, PriorityMapping.Medium + 0x8000)
-                .AddHandler(ResistSource, PriorityMapping.Low + 0x8000)
-                .AddHandler(Armor, PriorityRank.Low + 0x2000)
-
-                .AddTemplate<Event>(ChainName.Do)
-                .AddHandler(TakeHit, PriorityMapping.Low + 0x8000)
-                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.attacked_do), PriorityMapping.Low + 0x2000)
-
-                .End();
-        }
     }
 }

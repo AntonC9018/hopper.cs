@@ -25,7 +25,7 @@ namespace Hopper.Test_Content
         public static readonly Attack.Source AttackSource = new Attack.Source { resistance = 1 };
         public static readonly Push.Source PushSource = new Push.Source { resistance = 1 };
 
-        private static readonly Attack DefaultAttack =
+        private static Attack DefaultAttack =
             new Attack
             {
                 power = 1,
@@ -33,7 +33,7 @@ namespace Hopper.Test_Content
                 damage = 2,
                 pierce = 5
             };
-        private static readonly Push DefaultPush =
+        private static Push DefaultPush =
             new Push
             {
                 sourceId = PushSource.Id,

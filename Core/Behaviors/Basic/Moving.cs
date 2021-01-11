@@ -25,42 +25,49 @@ namespace Hopper.Core.Behaviors.Basic
             return CheckDoCycle<Event>(ev);
         }
 
-        private static void SetBase(Event ev)
+        public static Handler<Event> SetBaseHandler = new Handler<Event>
         {
-            if (ev.move == null)
+            handler = (Event ev) =>
             {
-                ev.move = ev.actor.Stats.GetLazy(Move.Path);
-            }
-        }
+                if (ev.move == null)
+                {
+                    ev.move = ev.actor.Stats.GetLazy(Move.Path);
+                }
+            },
+            // @Incomplete hardcode a reasonaly priority value
+            priority = (int)PriorityRank.High
+        };
 
-        private static void Displace(Event ev)
+        public static Handler<Event> DisplaceHandler = new Handler<Event>
         {
-            ev.actor.Behaviors.Get<Displaceable>().Activate(ev.direction, ev.move);
-        }
+            handler = (Event ev) =>
+            {
+                ev.actor.Behaviors.Get<Displaceable>().Activate(ev.direction, ev.move);
+            },
+            // @Incomplete hardcode a reasonaly priority value
+            priority = (int)PriorityRank.Default
+        };
 
-        public static readonly ChainPaths<Moving, Event> Check;
-        public static readonly ChainPaths<Moving, Event> Do;
+        public static Handler<Event> UpdateHistoryHandler = new Handler<Event>
+        {
+            handler = Utils.AddHistoryEvent(History.UpdateCode.move_do),
+            // @Incomplete hardcode a reasonaly priority value
+            priority = (int)PriorityRank.Default
+        };
 
+        public static readonly ChainPaths<Moving, Event> Check = new ChainPaths<Moving, Event>(ChainName.Check);
+        public static readonly ChainPaths<Moving, Event> Do = new ChainPaths<Moving, Event>(ChainName.Do);
 
-        public static readonly ChainTemplateBuilder DefaultBuilder;
+        public static readonly ChainTemplateBuilder DefaultBuilder = 
+            new ChainTemplateBuilder()
+                .AddTemplate<Event>(ChainName.Check)
+                    .AddHandler(SetBaseHandler)
+                .AddTemplate<Event>(ChainName.Do)
+                    .AddHandler(DisplaceHandler)
+                    .AddHandler(UpdateHistoryHandler)
+                .End();
+
         public static ConfiglessBehaviorFactory<Moving> Preset =>
             new ConfiglessBehaviorFactory<Moving>(DefaultBuilder);
-
-        static Moving()
-        {
-            Check = new ChainPaths<Moving, Event>(ChainName.Check);
-            Do = new ChainPaths<Moving, Event>(ChainName.Do);
-
-            DefaultBuilder = new ChainTemplateBuilder()
-
-                .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(SetBase, PriorityRank.High)
-
-                .AddTemplate<Event>(ChainName.Do)
-                .AddHandler(Displace)
-                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.move_do))
-
-                .End();
-        }
     }
 }

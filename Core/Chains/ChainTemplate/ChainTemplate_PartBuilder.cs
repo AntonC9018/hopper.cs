@@ -21,6 +21,12 @@ namespace Hopper.Core.Chains
             m_template = new ChainTemplate<Event>();
         }
 
+        public ChainTemplate_PartBuilder<Event> AddHandler(Handler<Event> handler)
+        {
+            m_template.AddHandler(handler);
+            return this;
+        }
+
         public ChainTemplate_PartBuilder<Event> AddHandler(Action<Event> handler)
         {
             m_template.AddHandler(handler);

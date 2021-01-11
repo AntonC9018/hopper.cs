@@ -89,3 +89,11 @@ I think for this solution it would make sense to make a separate class for each 
 3. `Registry`, as well. Currently sort of doing that already.
 4. Now this one, I'm realizing, is similar to patching in the current code. In fact, these extendents are, by definition, patches. Patches, though, affected the registry. These will affect the `Repository` instead. In fact, the registry usually shall not be touched by the game logic code.
 5. Do nothing, for now. In the future, either reuse the `Repository`, or define some other structure.
+
+
+
+## New stuff, 2021
+
+1. Stat definitions depend on sources having id's. We need to think of a good way of patching this content.
+
+2. I want to have static content without centralized loading procedure (I have no clue how to do this).
