@@ -1,0 +1,20 @@
+{
+    "properties":
+    {
+        "damage": 1,
+        "pierce": 1,
+        "power": 1,
+        "_damage": 
+        {
+            "type": "int",
+            "default": 1
+        }
+    },
+    "alias": "Attack",
+    
+    "_res": 1,
+    "_source": 
+    {
+
+    }
+}

@@ -1,0 +1,55 @@
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ assembly name="Newtonsoft.Json" #>
+<#@ import namespace="Newtonsoft.Json" #>
+<#@ import namespace="Newtonsoft.Json.Linq" #>
+<#@ output extension=".cs" #>
+<#
+    struct File { string name; string class_name; };
+    string[] stat_files = new string[] { "Attack" };
+#>
+using System;
+using System.Collections.Generic;
+
+namespace Test.Stats
+{
+<# 
+    foreach (var stat in stat_files) { 
+
+        string statPath = this.Host.ResolvePath($"{stat}.json");
+        string statJson = File.ReadAllText(statPath);
+        var datasource = JObject.Parse(statJson);
+        var properties = ((JObject)datasource["properties"]);
+        var class_name = stat;
+#>
+    public class <#= class_name #> : IStat
+    {
+        public static readonly Index<<#= class_name #>> Index = new Index<<#= class_name #>>();
+
+<# foreach (var property in properties) 
+{ 
+#>
+        public int <#= property.Key #> = <#= property.Value.Value<int>() #>;
+<# } #>
+        
+        public void AddToSelf(<#= class_name #> other)
+        {
+<# foreach (var property in properties) { #>
+            <#= property.Key #> += other.<#= property.Key #>;
+<# } #>
+        }
+
+        public void SubFromSelf(<#= class_name #> other)
+        {
+<# foreach (var property in properties) { #>
+            <#= property.Key #> -= other.<#= property.Key #>;
+<# } #>
+        }
+    }
+
+<# } #>
+}

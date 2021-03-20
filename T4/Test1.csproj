@@ -2,17 +2,21 @@
   
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net50</TargetFramework>
+    <TargetFramework>net45</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="dotnet-t4-project-tool" Version="2.0.5" />
-    <TextTemplate Include="Source\**\*.tt" />
+    <TextTemplate Include="Source\Templates\**\*.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <Target Name="TextTemplateTransform" BeforeTargets="BeforeBuild">
     <ItemGroup>
-      <Compile Remove="Autogen\*.*" />
+      <Compile Remove="Autogen\*.cs" />
     </ItemGroup>
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet t4 %(TextTemplate.Identity) -o Autogen\%(TextTemplate.FileName)" />
     <ItemGroup>
@@ -23,5 +27,5 @@
   <Target Name="TextTemplateClean" AfterTargets="Clean">
     <Delete Files="@(Generated)" />
   </Target>
-  
+
 </Project>
