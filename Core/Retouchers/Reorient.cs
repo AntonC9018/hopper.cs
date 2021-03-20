@@ -45,18 +45,23 @@ namespace Hopper.Core.Retouchers
 
         private static void ToPlayer(ActorEvent ev)
         {
-            if (ev.actor.TryGetClosestPlayer(out var player))
+            ToPlayer(ev.actor);
+        }
+
+        private static void ToPlayer(this Entity actor)
+        {
+            if (actor.TryGetClosestPlayer(out var player))
             {
-                var diff = player.Pos - ev.actor.Pos;
+                var diff = player.Pos - actor.Pos;
                 var sign = diff.Sign();
                 var abs = diff.Abs();
                 if (abs.x > abs.y)
                 {
-                    ev.actor.Orientation = new IntVector2(sign.x, 0);
+                    actor.Orientation = new IntVector2(sign.x, 0);
                 }
                 if (abs.y > abs.x)
                 {
-                    ev.actor.Orientation = new IntVector2(0, sign.y);
+                    actor.Orientation = new IntVector2(0, sign.y);
                 }
 
             }
