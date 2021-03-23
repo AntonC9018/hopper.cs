@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net4.8</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -15,9 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\Hopper_Core.csproj" />
     <ProjectReference Include="..\Test_Content\Hopper_Test_Content.csproj" />
-    <!-- <Reference Include="Newtonsoft.Json"> 
-        <HintPath>..\Newtonsoft.Json.dll</HintPath>
-    </Reference> -->
   </ItemGroup>
 
 </Project>

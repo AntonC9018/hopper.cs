@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace Hopper.Core.Behaviors.Basic
 {
     [DataContract]
-    public class Acting : Behavior, IInitable<Acting.Config>
+    public class Acting : Behavior, IBehavior, IInitable<Acting.Config>
     {
         public class Config
         {
@@ -53,6 +53,7 @@ namespace Hopper.Core.Behaviors.Basic
             public bool success = false;
         }
 
+        [Alias("Act")]
         public bool Activate()
         {
             var ev = new Event

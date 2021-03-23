@@ -4,13 +4,75 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.FindSymbols;
+using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Meta
 {
     class Program
     {
-        public static void Main(string[] args)
+        public static void Main()
+        {
+            string solutionPath = @"..\Core\Hopper_Core.csproj";
+            MSBuildWorkspace msWorkspace = null;
+            
+            try
+            {
+                msWorkspace = MSBuildWorkspace.Create();
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc);
+            }
+
+            var solution = msWorkspace.CurrentSolution;
+            solution.Workspace.WorkspaceFailed += (s, args) => Console.WriteLine(args.Diagnostic.Message);
+            solution.Workspace.WorkspaceChanged += (s, args) => Console.WriteLine(args.ProjectId);
+
+            var project = msWorkspace.OpenProjectAsync(solutionPath).Result;
+            Console.WriteLine(project.DocumentIds.Count());
+
+            var compilation = project.GetCompilationAsync().Result;
+
+            // Let's register mscorlib
+            compilation = compilation.AddReferences(
+                MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
+            
+            foreach (var f in Directory.EnumerateFiles(Path.GetDirectoryName(solutionPath), "*.dll"))
+                compilation = compilation.AddReferences(MetadataReference.CreateFromFile(f));
+
+            // var document = project.Documents.FirstOrDefault(d => d.Name == "SomeClass.cs");
+            // var syntaxTree = document.GetSyntaxTreeAsync();
+            // SemanticModel semanticModel = compilation.GetSemanticModel(syntaxTree);
+
+            foreach (var id in project.DocumentIds)
+            {
+                Console.WriteLine(project.GetDocument(id).FilePath);
+            }
+
+
+            var ibehavior = (INamedTypeSymbol)compilation
+                .GetSymbolsWithName("Hopper.Core.Behaviors.IBehavior", SymbolFilter.Type)
+                .Single();
+            var aliasAttribute = (INamedTypeSymbol)compilation
+                .GetSymbolsWithName("Hopper.Core.Behaviors.AliasAttribute", SymbolFilter.Type)
+                .Single();
+            var implementations = SymbolFinder.FindImplementationsAsync(ibehavior, solution).Result;
+
+            foreach (var behavior in implementations.OfType<ITypeSymbol>())
+            foreach (var method in behavior.GetMembers().OfType<IMethodSymbol>())
+            foreach (var attrib in method.GetAttributes())
+            {
+                if (SymbolEqualityComparer.Default.Equals(attrib.AttributeClass, aliasAttribute))
+                foreach (var arg in attrib.ConstructorArguments)
+                {
+                    Console.WriteLine(arg);
+                }
+            }
+        }
+
+        public static void Test()
         {
             Console.WriteLine("Started");
 
@@ -24,6 +86,8 @@ namespace Meta
                     .AddSyntaxTrees(tree);
                 
                 var model = compilation.GetSemanticModel(tree);
+
+                compilation.GetSymbolsWithName("Code", SymbolFilter.Type);
 
                 var codeNamespace = root.Members.Single(
                     m => (m as NamespaceDeclarationSyntax)?.Name.ToString() == "Code")
@@ -55,7 +119,7 @@ namespace Meta
                     {
                         var name = model.GetConstantValue(stringLiteral).Value?.ToString();
                         Console.WriteLine(name); // Test1 
-                                                 // Test2
+                                                // Test2
                     }
                 }
             }

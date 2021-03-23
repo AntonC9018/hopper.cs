@@ -2,14 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json"> 
-        <HintPath>..\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Hopper_Core.csproj" />
