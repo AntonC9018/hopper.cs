@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,7 +16,9 @@ namespace Meta
     {
         public static void Main()
         {
-            string solutionPath = @"..\Core\Hopper_Core.csproj";
+            Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", "C:/Program Files/dotnet/sdk/3.1.101/MSBuild.dll");
+
+            string solutionPath = @"../Core/Hopper_Core.csproj";
             MSBuildWorkspace msWorkspace = null;
             
             try
