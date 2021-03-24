@@ -9,6 +9,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
+using Hopper.Meta.Template;
+using System.Collections.Generic;
 
 namespace Meta
 {
@@ -17,7 +19,20 @@ namespace Meta
         public static Task Main()
         {
             MSBuildLocator.RegisterDefaults();
-            return Test3();
+
+            var t = new BehaviorTemplate();
+            t.Session = new Dictionary<string, object>();
+            t.Session["behavior"] = new BehaviorInfo
+            {
+                ClassName = "Acting",
+                Namespace = "Hopper.Core.Behaviors.Basic",
+                ActivationAlias = "Act",
+                Check = true
+            };
+            t.Initialize();
+            Console.WriteLine(t.TransformText());
+
+            return Task.CompletedTask;
         }
 
         public static async Task Test3()
@@ -55,7 +70,7 @@ namespace Meta
         public static void Test2()
         {
             string solutionPath = @"../Core/Hopper_Core.csproj";
-            MSBuildWorkspace msWorkspace = null;
+            MSBuildWorkspace msWorkspace;
             
             try
             {
@@ -64,6 +79,7 @@ namespace Meta
             catch (Exception exc)
             {
                 Console.WriteLine(exc);
+                return;
             }
 
             var solution = msWorkspace.CurrentSolution;
