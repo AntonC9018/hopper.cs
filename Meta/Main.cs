@@ -1,8 +1,8 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,10 +14,46 @@ namespace Meta
 {
     class Program
     {
-        public static void Main()
+        public static Task Main()
         {
-            Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", "C:/Program Files/dotnet/sdk/3.1.101/MSBuild.dll");
+            MSBuildLocator.RegisterDefaults();
+            return Test3();
+        }
 
+        public static async Task Test3()
+        {
+            var msWorkspace = MSBuildWorkspace.Create();
+
+            var solution = msWorkspace.CurrentSolution;
+            solution.Workspace.WorkspaceFailed += (s, args) => Console.WriteLine(args.Diagnostic.Message);
+            solution.Workspace.WorkspaceChanged += (s, args) => Console.WriteLine(args.ProjectId);
+
+            var project = await msWorkspace.OpenProjectAsync("Meta.csproj");
+            var compilation = await project.GetCompilationAsync();
+            var hello = (INamedTypeSymbol)compilation.GetSymbolsWithName("Hello").Single();
+            var world = (INamedTypeSymbol)compilation.GetSymbolsWithName("World").Single();
+
+            if (!SymbolEqualityComparer.Default.Equals(world.Interfaces.Single(), hello))
+            {
+                Console.WriteLine("Nope 1"); return;
+            }
+
+            var implementations = await SymbolFinder.FindImplementationsAsync(hello, solution);
+
+            foreach (var d in compilation.GetDiagnostics())
+            {
+                Console.WriteLine(d);
+            }
+
+            if (!SymbolEqualityComparer.Default.Equals(implementations.Single(), world))
+            {
+                Console.WriteLine("Nope 2"); return;
+            }
+        }
+
+
+        public static void Test2()
+        {
             string solutionPath = @"../Core/Hopper_Core.csproj";
             MSBuildWorkspace msWorkspace = null;
             
@@ -35,43 +71,44 @@ namespace Meta
             solution.Workspace.WorkspaceChanged += (s, args) => Console.WriteLine(args.ProjectId);
 
             var project = msWorkspace.OpenProjectAsync(solutionPath).Result;
-            Console.WriteLine(project.DocumentIds.Count());
 
             var compilation = project.GetCompilationAsync().Result;
 
             // Let's register mscorlib
-            compilation = compilation.AddReferences(
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
-            
-            foreach (var f in Directory.EnumerateFiles(Path.GetDirectoryName(solutionPath), "*.dll"))
-                compilation = compilation.AddReferences(MetadataReference.CreateFromFile(f));
+            // compilation = compilation.AddReferences(
+            //     MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
+
+            // foreach (var f in Directory.EnumerateFiles(Path.GetDirectoryName(solutionPath), "bin/*.dll", SearchOption.AllDirectories))
+            // {
+            //     compilation = compilation.AddReferences(MetadataReference.CreateFromFile(f));
+            // }
 
             // var document = project.Documents.FirstOrDefault(d => d.Name == "SomeClass.cs");
-            // var syntaxTree = document.GetSyntaxTreeAsync();
+            // var syntaxTree = document.GetSyntaxTreeAsync().Result;
             // SemanticModel semanticModel = compilation.GetSemanticModel(syntaxTree);
 
-            foreach (var id in project.DocumentIds)
-            {
-                Console.WriteLine(project.GetDocument(id).FilePath);
-            }
-
-
             var ibehavior = (INamedTypeSymbol)compilation
-                .GetSymbolsWithName("Hopper.Core.Behaviors.IBehavior", SymbolFilter.Type)
+                .GetSymbolsWithName("IBehavior", SymbolFilter.Type)
                 .Single();
             var aliasAttribute = (INamedTypeSymbol)compilation
-                .GetSymbolsWithName("Hopper.Core.Behaviors.AliasAttribute", SymbolFilter.Type)
+                .GetSymbolsWithName("AliasAttribute", SymbolFilter.Type)
                 .Single();
-            var implementations = SymbolFinder.FindImplementationsAsync(ibehavior, solution).Result;
+            
+            var implementations = SymbolFinder.FindReferencesAsync(ibehavior, solution).Result;
 
-            foreach (var behavior in implementations.OfType<ITypeSymbol>())
-            foreach (var method in behavior.GetMembers().OfType<IMethodSymbol>())
-            foreach (var attrib in method.GetAttributes())
+            Console.WriteLine(implementations.Count());
+
+            foreach (var behavior in implementations)
             {
-                if (SymbolEqualityComparer.Default.Equals(attrib.AttributeClass, aliasAttribute))
-                foreach (var arg in attrib.ConstructorArguments)
+                Console.WriteLine(behavior.Locations.Single());
+                foreach (var method in ((INamedTypeSymbol)behavior.Definition).GetMembers().OfType<IMethodSymbol>())
+                foreach (var attrib in method.GetAttributes())
                 {
-                    Console.WriteLine(arg);
+                    if (SymbolEqualityComparer.Default.Equals(attrib.AttributeClass, aliasAttribute))
+                    foreach (var arg in attrib.ConstructorArguments)
+                    {
+                        Console.WriteLine(arg);
+                    }
                 }
             }
         }
