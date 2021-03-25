@@ -1,5 +1,5 @@
 using Hopper.Utils.Chains;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core
@@ -15,8 +15,8 @@ namespace Hopper.Core
                 var acting = entity.Behaviors.TryGet<Acting>();
 
                 if (acting != null
-                    && acting.DidAction == false
-                    && acting.DoingAction == false)
+                    && acting.HasDoneAction() == false
+                    && acting.IsDoingAction() => == false)
                 {
                     acting.Activate();
                     success = true;

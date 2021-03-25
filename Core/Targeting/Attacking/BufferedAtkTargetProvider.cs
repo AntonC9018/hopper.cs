@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Utils.Chains;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Stats.Basic;
 using Hopper.Utils.Vector;
 using Hopper.Core.Predictions;

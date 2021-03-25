@@ -1,6 +1,6 @@
 using Hopper.Core.Chains;
 using Hopper.Core;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils.Chains;
 using Hopper.Core.Stats;
 

@@ -1,5 +1,5 @@
 using Hopper.Utils.Chains;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 
 namespace Hopper.Test_Content.Utils
 {

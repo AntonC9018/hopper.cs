@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hopper.Core;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Components;
 using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Chains

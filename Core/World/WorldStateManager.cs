@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Registries;
 using Hopper.Utils;
 
@@ -96,7 +96,7 @@ namespace Hopper.Core
         {
             if (entity.IsDead) return;
             var acting = entity.Behaviors.TryGet<Acting>();
-            if (acting != null && !acting.DidAction)
+            if (acting != null && !acting.HasDoneAction())
             {
                 acting.Activate();
             }

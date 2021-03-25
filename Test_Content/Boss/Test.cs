@@ -1,5 +1,5 @@
 using Hopper.Core;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Retouchers;
 using Hopper.Test_Content;
 using Hopper.Utils.Vector;

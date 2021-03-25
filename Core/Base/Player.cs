@@ -1,5 +1,5 @@
 using System.Runtime.Serialization;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Core.Retouchers;
 

@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Hopper.Core;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Test_Content.Projectiles;
 using Hopper.Core.Mods;
 using Hopper.Test_Content.SimpleMobs;

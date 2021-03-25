@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Components;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

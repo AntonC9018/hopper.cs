@@ -1,5 +1,5 @@
 using Hopper.Utils.Chains;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Components;
 using Newtonsoft.Json;
 using Hopper.Core.Chains;
 using Hopper.Core.Registries;

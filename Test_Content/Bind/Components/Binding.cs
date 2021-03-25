@@ -1,7 +1,7 @@
 ﻿using Hopper.Core.Chains;
 using Hopper.Core;
 using Hopper.Core.Stats;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Components;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content.Bind

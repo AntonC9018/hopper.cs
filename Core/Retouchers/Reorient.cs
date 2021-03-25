@@ -1,6 +1,6 @@
 using Hopper.Core.Registries;
 using Hopper.Utils.Chains;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Retouchers

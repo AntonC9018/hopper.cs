@@ -2,7 +2,7 @@ using Hopper.Core.Registries;
 using Hopper.Core.Stats;
 using Hopper.Core.Chains;
 using Hopper.Core.Stats.Basic;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 
 namespace Hopper.Core
 {

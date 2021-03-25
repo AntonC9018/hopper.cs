@@ -1,5 +1,5 @@
 using Hopper.Core;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.History;
 using Hopper.Core.Items;
 using Hopper.Core.Mods;

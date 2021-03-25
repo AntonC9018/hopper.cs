@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Hopper.Core;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Mods;
 using Hopper.Test_Content.Bind;
 using Hopper.Utils.Vector;
@@ -53,7 +53,7 @@ namespace Hopper.Tests.Test_Content
             Assert.AreEqual(2, zero_zero_cell.m_entities.Count);
             Assert.AreEqual(player, zero_zero_cell.m_entities[0]);
 
-            player.Behaviors.Get<Acting>().NextAction = move_action.ToDirectedParticular(IntVector2.Right);
+            player.Behaviors.Get<Acting>().nextAction = move_action.ToDirectedParticular(IntVector2.Right);
             world.Loop();
 
             Assert.That(Bind.StopMoveStatus.IsApplied(player));
@@ -83,7 +83,7 @@ namespace Hopper.Tests.Test_Content
 
             Assert.False(Bind.StopMoveStatus.IsApplied(player));
 
-            player.Behaviors.Get<Acting>().NextAction = move_action.ToDirectedParticular(IntVector2.Right);
+            player.Behaviors.Get<Acting>().nextAction = move_action.ToDirectedParticular(IntVector2.Right);
             world.Loop();
 
             Assert.AreEqual(new IntVector2(2, 0), player.Pos);

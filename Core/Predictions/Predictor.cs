@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Predictions
@@ -26,19 +26,19 @@ namespace Hopper.Core.Predictions
                     {
                         var acting = entity.Behaviors.Get<Acting>();
 
-                        if (acting.NextAction == null)
+                        if (acting.nextAction == null)
                         {
                             acting.CalculateNextAction();
                         }
-                        if (acting.NextAction == null)
+                        if (acting.nextAction == null)
                         {
                             continue;
                         }
 
                         // TODO: Add support for good/bad predicted positions (currenlty, all are processed as one thing)
-                        if (acting.NextAction is ParticularDirectedAction)
+                        if (acting.nextAction is ParticularDirectedAction)
                         {
-                            var action = (ParticularDirectedAction)acting.NextAction;
+                            var action = (ParticularDirectedAction)acting.nextAction;
                             foreach (var direction in acting.GetPossibleDirections())
                             {
                                 foreach (var pos in action.Predict(entity, direction))
@@ -49,7 +49,7 @@ namespace Hopper.Core.Predictions
                         }
                         else
                         {
-                            var action = (ParticularUndirectedAction)acting.NextAction;
+                            var action = (ParticularUndirectedAction)acting.nextAction;
                             foreach (var pos in action.Predict(entity))
                             {
                                 set.Add(pos);

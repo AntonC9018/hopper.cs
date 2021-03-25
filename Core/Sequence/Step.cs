@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core
@@ -47,7 +47,7 @@ namespace Hopper.Core
 
             if (acting != null)
             {
-                if (acting.DidActionSucceed)
+                if (acting.DidActionSucceed())
                 {
                     return relativeStepIndexSuccess;
                 }

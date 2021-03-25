@@ -1,5 +1,5 @@
 using Hopper.Utils.Chains;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Components;
 using Hopper.Core.Stats.Basic;
 
 namespace Hopper.Core.Targeting

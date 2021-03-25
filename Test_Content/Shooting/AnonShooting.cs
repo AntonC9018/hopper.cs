@@ -1,5 +1,5 @@
 using Hopper.Core;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Components;
 using Newtonsoft.Json;
 
 namespace Hopper.Core

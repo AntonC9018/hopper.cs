@@ -1,5 +1,5 @@
 using Hopper.Core;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Mods;
 using Hopper.Core.Stats.Basic;
 using Hopper.Test_Content.Floor;

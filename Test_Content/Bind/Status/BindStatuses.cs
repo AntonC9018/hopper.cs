@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Hopper.Core.Chains;
 using Hopper.Utils.Chains;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.History;
 using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;
