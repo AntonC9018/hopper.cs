@@ -113,7 +113,7 @@ if (behavior.ActivationAlias != null)
     /// </summary>
     public static bool TryUnconditional<#= behavior.ActivationAlias #>(this Entity entity<#= behavior.Params() #>)
     {
-        if TryGet<#= behavior.ClassName #>(entityout var behavior)
+        if TryGet<#= behavior.ClassName #>(entity, out var behavior)
         {
             return behavior.Do(entity<#= behavior.ParamNames() #>);
         }
@@ -148,7 +148,7 @@ if (behavior.ActivationAlias != null)
     /// </summary>
     public static bool Try<#= behavior.ActivationAlias #>(this Entity entity<#= behavior.Params() #>)
     {
-        if (TryGet<#= behavior.ClassName #>(entityout var behavior))
+        if (TryGet<#= behavior.ClassName #>(entity, out var behavior))
         {
             return behavior.Activate(entity<#= behavior.Params()#>);
         }

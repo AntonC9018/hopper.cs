@@ -20,17 +20,44 @@ namespace Meta
         {
             MSBuildLocator.RegisterDefaults();
 
-            var t = new BehaviorTemplate();
+        {
+            var t = new BehaviorEntityExtensions();
             t.Session = new Dictionary<string, object>();
             t.Session["behavior"] = new BehaviorInfo
             {
                 ClassName = "Acting",
-                Namespace = "Hopper.Core.Behaviors.Basic",
+                Namespace = "Hopper.Core.Components.Basic",
                 ActivationAlias = "Act",
                 Check = true
             };
             t.Initialize();
             Console.WriteLine(t.TransformText());
+        }
+        {
+            var t = new BehaviorPartial();
+            t.Session = new Dictionary<string, object>();
+            t.Session["behavior"] = new BehaviorInfo
+            {
+                ClassName = "Acting",
+                Namespace = "Hopper.Core.Components.Basic",
+                ActivationAlias = "Act",
+                Check = true
+            };
+            t.Session["chains"] = new ChainsInfo
+            {
+                ChainInfos = new ChainInfo[] {
+                    new ChainInfo { Name = "Check" },
+                    new ChainInfo { Name = "Do" }
+                }
+            };
+            t.Session["context"] = new ContextInfo();
+            t.Session["adapters"] = new HandlerAdapterInfo[] { 
+                new HandlerAdapterInfo { HandlerName = "Hello" }
+            };
+            t.Session["presets"] = new PresetInfo[] { new PresetInfo { Name = "World" }};
+            t.Initialize();
+            Console.WriteLine(t.TransformText());
+        }
 
             return Task.CompletedTask;
         }

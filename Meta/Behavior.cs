@@ -15,13 +15,35 @@ namespace Hopper.Meta.Template
 
     public class ContextInfo
     {
-        public string initializationParams
+        public string Params() => "";
+        public string ParamsNames() => "";
+        public string ParamInitialization() => "";
+    }
+
+    public class ChainInfo
+    {
+        public string Name; 
+        public bool ShouldGenerateParamsMethod(string chainName) => true;
+        public bool ShouldGenerateTraverseMethod(string chainName) => true;
     }
 
     public class ChainsInfo
     {
-        public BehaviorInfo behavior;
-        public string ctxInitializationParams;
-        public string ctxNames;
+        public ChainInfo[] ChainInfos;
+        public bool ShouldGenerateActivation() => true;
+    }
+
+    public class HandlerAdapterInfo
+    {
+        public string HandlerName;
+        public bool CallsMethodOnFirstParam() => true;
+        public string FirstParam() => "";
+        public string ParamNames() => ""; 
+    }
+
+    public class PresetInfo
+    {
+        public string Name;
+        public string Handlers() => "";
     }
 }

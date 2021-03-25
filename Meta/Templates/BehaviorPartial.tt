@@ -6,4 +6,87 @@
 <#@ import namespace="System.IO" #>
 <#@ output extension=".cs" #>
 <#@ parameter name="behavior" type="Hopper.Meta.Template.BehaviorInfo" #>
+<#@ parameter name="chains" type="Hopper.Meta.Template.ChainsInfo" #>
+<#@ parameter name="context" type="Hopper.Meta.Template.ContextInfo" #>
+<#@ parameter name="adapters" type="Hopper.Meta.Template.HandlerAdapterInfo[]" #>
+<#@ parameter name="presets" type="Hopper.Meta.Template.PresetInfo[]" #>
+<#@ include file="templates\\autogen_notice.txt" #>
 
+namespace <#= behavior.Namespace #>
+{
+    public partial class <#= behavior.ClassName #>
+    {
+        public static Index<<#= behavior.ClassName #>> Index;
+
+<# foreach(var chain in chains.ChainInfos) { #>
+        public Chain<Context> _<#= chain.Name #>Chain;
+
+        /// <summary>
+        /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity.
+        /// </summary>
+        public static Chain<Context> <#= chain.Name #>ChainPath(Entity entity) 
+            => entity.GetBehavior(Index)._<#= chain.Name #>Chain;
+
+        /// <summary>
+        /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity factory.
+        /// </summary>
+        public static Chain<Context> <#= chain.Name #>ChainPath(EntityFactory factory) 
+            => factory.GetBehavior(Index)._<#= chain.Name #>Chain;
+
+<# if (chain.ShouldGenerateParamsMethod(chain.Name)) { #>
+        public static bool <#= chain.Name #>(<#= context.Params() #>)
+        {
+            Context ctx = new Context
+            {
+                <#= context.ParamInitialization() #>
+            };
+            return Traverse<#= chain.Name #>(ctx);
+        }
+
+<# } // end if #>
+<# if (chain.ShouldGenerateTraverseMethod(chain.Name)) { #>
+        public static bool Traverse<#= chain.Name #>(Context ctx)
+        {
+            _<#= chain.Name #>Chain.Pass(ctx);
+            return ctx.success;
+        }
+
+<# } // end if #>
+<# } // end foreach#>
+<# if (chains.ShouldGenerateActivation()) { #>
+        public bool Activate(<#= context.Params() #>)
+        {
+            Context ctx = new Context
+            {
+                <#= context.ParamInitialization() #>
+            };
+            if (TraverseCheck(ctx)) 
+            {
+                TraverseDo(ctx);
+                return true;
+            }
+            return false;
+        }
+
+<# } // end if #>
+<# foreach (var adapter in adapters) { #>
+        public void <#= adapter.HandlerName #>HandlerAdapter(Context ctx)
+        {
+            // base case: pass the context along
+            return <#= adapter.HandlerName #>(ctx);
+            // TODO: retrieve a named field from ctx (use semantic analysis)
+            // TODO: retrieve a component from the actor field
+            // TODO: retrieve a stat from the actor field
+        }
+
+        public static Handler<Context> <#= adapter.HandlerName #>Handler
+        {
+            HandlerAdapter, <#= 5 /* some priority, retrieved from json */ #>
+        };
+    
+<# } // end foreach #>
+<# foreach (var preset in presets) { #>
+        /* TODO: presets */
+<# } // end foreach #>
+    }
+}
