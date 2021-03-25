@@ -9,7 +9,7 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content.Projectiles
 {
-    public class ProjectileBehavior : Behavior, IStandartActivateable, IInitable<Layer>
+    public class ProjectileBehavior : IBehavior, IStandartActivateable<Layer>
     {
         public Layer targetedLayer;
         private Cell m_cellBeingWatched;

@@ -167,7 +167,7 @@ namespace Hopper.Core
         }
 
         public static DirectedAction CreateBehavioral<T>()
-            where T : Behavior, IStandartActivateable
+            where T : IBehavior, IStandartActivateable
         {
             var action = new DirectedAction();
             action.function = ActivateBehavior<T>;
@@ -229,14 +229,14 @@ namespace Hopper.Core
         }
 
         private static bool ActivateBehavior<T>(Entity entity, IntVector2 direction)
-            where T : Behavior, IStandartActivateable
+            where T : IBehavior, IStandartActivateable
         {
             Assert.That(entity.Behaviors.Has<T>(), "Cannot execute action if the target behavior is missing");
             return entity.Behaviors.Get<T>().Activate(direction);
         }
 
         private static IEnumerable<IntVector2> PredictViaBehavior<T>(Entity entity, IntVector2 direction)
-            where T : Behavior, IStandartActivateable
+            where T : IBehavior, IStandartActivateable
         {
             Assert.That(entity.Behaviors.Has<T>(), "Cannot predict if the target behavior is missing");
             Assert.That(entity.Behaviors.Get<T>() is IBehaviorPredictable, "Cannot predict if the target behavior is not predictable");

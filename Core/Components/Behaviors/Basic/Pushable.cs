@@ -7,7 +7,7 @@ using Hopper.Core.Chains;
 namespace Hopper.Core.Components.Basic
 {
     [DataContract]
-    public class Pushable : Behavior
+    public class Pushable : IBehavior
     {
         public class Event : ActorEvent
         {

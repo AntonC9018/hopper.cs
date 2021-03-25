@@ -42,7 +42,7 @@ namespace Hopper.Test_Content
                 .AddBehavior(Attackable.DefaultPreset);
         }
 
-        private static void PickUp(Displaceable.Event ev)
+        private static void PickUp(Displaceable.Context ev)
         {
             var golds = ev.actor.GetCell().GetAllFromLayer(Layer.GOLD);
             foreach (var gold in golds)

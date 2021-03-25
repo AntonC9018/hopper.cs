@@ -60,7 +60,7 @@ namespace Hopper.Test_Content.Bind
             }
         }
 
-        private static void SkipDisplaceIfBinding(Displaceable.Event ev)
+        private static void SkipDisplaceIfBinding(Displaceable.Context ev)
         {
             var boundEntity = ((ISelfBinder)ev.actor).BoundEntity;
             if (boundEntity != null)

@@ -6,7 +6,7 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content.Floor
 {
-    public class Sliding : Behavior, IInitable<SlideStatus>
+    public class Sliding : IBehavior<SlideStatus>
     {
         public static Layer TargetedLayer = Layer.REAL;
 

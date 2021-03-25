@@ -2,91 +2,48 @@ using Hopper.Utils.Chains;
 using System.Collections.Generic;
 using Hopper.Core.Items;
 using Hopper.Core.Targeting;
-using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Chains;
 using Hopper.Utils.Vector;
+using Hopper.Core.Stats;
 
 namespace Hopper.Core.Components.Basic
 {
-    [DataContract]
-    public class Digging : Behavior, IStandartActivateable
+    [AutoActivation("Dig")]
+    public class Digging : IBehavior, IStandartActivateable
     {
-        public class Event : StandartEvent
+        public class Context : StandartEvent
         {
-            public Dig dig;
-            public List<Target> targets;
+            public Dig dig = null;
+            public List<Target> targets = null;
         }
 
-        public bool Activate(IntVector2 direction)
+        [Export] public static void SetDig(StatManager stats, ref Dig dig)
         {
-            var ev = new Event
-            {
-                actor = m_entity,
-                direction = direction
-            };
-            return CheckDoCycle<Event>(ev);
+            dig = stats.GetLazy(Dig.Path);
         }
 
-        public static Handler<Event> SetDigHandler = new Handler<Event>
+        [Export] public static void SetTargets(Context ctx)
         {
-            handler = (Event ev) =>
+            if (ctx.targets == null)
             {
-                ev.dig = ev.actor.Stats.GetLazy(Dig.Path);
-            },
-            // @Incomplete: hardcode a reasonable priority value 
-            priority = (int)PriorityRank.High
-        };
-
-        public static Handler<Event> SetTargetsHandler = new Handler<Event>
-        {
-            handler = (Event ev) =>
-            {
-                if (ev.targets == null)
+                ctx.targets = new List<Target>();
+                if (ctx.actor.TryGetInventory(out var inv) && inv.TryGetShovel(out var shovel))
                 {
-                    ev.targets = new List<Target>();
-                    if (ev.actor.Inventory != null)
-                    {
-                        if (ev.actor.Inventory.GetShovel(out var shovel))
-                        {
-                            ev.targets.AddRange(shovel.GetTargets(ev.actor, ev.direction));
-                        }
-                    }
+                    ctx.targets.AddRange(shovel.GetTargets(ctx.actor, ctx.direction));
                 }
-            },
-            // @Incomplete: hardcode a reasonable priority value 
-            priority = (int)PriorityRank.High
-        };
+            }
+        }
 
-        public static Handler<Event> AttackHandler = new Handler<Event>
+        [Export] public static void Attack(Context ctx)
         {
-            handler = (Event ev) =>
+            foreach (var target in ctx.targets)
             {
-                foreach (var target in ev.targets)
-                {
-                    Attacking.TryApplyAttack(target.entity, ev.direction, ev.dig.ToAttack(), ev.actor);
-                }
-            },
-            // @Incomplete: hardcode a reasonable priority value 
-            priority = (int)PriorityRank.Default
-        };
+                target.entity.TryBeAttacked(ctx.actor, ctx.dig.ToAttack(), ctx.direction);
+            }
+        }
 
-        public static readonly ChainPaths<Digging, Event> Check = new ChainPaths<Digging, Event>(ChainName.Check);
-        public static readonly ChainPaths<Digging, Event> Do = new ChainPaths<Digging, Event>(ChainName.Do);
-
-        public static readonly ChainTemplateBuilder DefaultBuilder = 
-            new ChainTemplateBuilder()
-                .AddTemplate<Event>(ChainName.Check)
-                    .AddHandler(SetDigHandler)
-                    .AddHandler(SetTargetsHandler)
-                .AddTemplate<Event>(ChainName.Do)
-                    .AddHandler(AttackHandler)
-                .End();
-
-        /// <summary>
-        /// The preset of attacking that uses the default handlers.
-        /// </summary>
-        public static ConfiglessBehaviorFactory<Digging> Preset =>
-            new ConfiglessBehaviorFactory<Digging>(DefaultBuilder);
+        // Check { SetDig, SetTargets }
+        // Do    { Attack }
     }
 }

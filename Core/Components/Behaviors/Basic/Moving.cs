@@ -7,7 +7,7 @@ using Hopper.Utils.Vector;
 namespace Hopper.Core.Components.Basic
 {
     [DataContract]
-    public class Moving : Behavior, IStandartActivateable
+    public class Moving : IBehavior, IStandartActivateable
     {
 
         public class Event : StandartEvent
@@ -55,9 +55,6 @@ namespace Hopper.Core.Components.Basic
             priority = (int)PriorityRank.Default
         };
 
-        public static readonly ChainPaths<Moving, Event> Check = new ChainPaths<Moving, Event>(ChainName.Check);
-        public static readonly ChainPaths<Moving, Event> Do = new ChainPaths<Moving, Event>(ChainName.Do);
-
         public static readonly ChainTemplateBuilder DefaultBuilder = 
             new ChainTemplateBuilder()
                 .AddTemplate<Event>(ChainName.Check)
@@ -66,8 +63,5 @@ namespace Hopper.Core.Components.Basic
                     .AddHandler(DisplaceHandler)
                     .AddHandler(UpdateHistoryHandler)
                 .End();
-
-        public static ConfiglessBehaviorFactory<Moving> Preset =>
-            new ConfiglessBehaviorFactory<Moving>(DefaultBuilder);
     }
 }

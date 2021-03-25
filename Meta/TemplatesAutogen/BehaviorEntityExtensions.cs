@@ -16,7 +16,7 @@ namespace Hopper.Meta.Template {
     using System;
     
     
-    public partial class BehaviorEntityExtensions : BehaviorEntityExtensionsBase {
+    public partial class BehaviorEntityExtensions : IBehaviorEntityExtensionsBase {
         
         private global::Microsoft.VisualStudio.TextTemplating.ITextTemplatingEngineHost hostValue;
         

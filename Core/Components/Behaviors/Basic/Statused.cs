@@ -9,7 +9,7 @@ using Hopper.Core.Stats;
 namespace Hopper.Core.Components.Basic
 {
     [DataContract]
-    public class Statused : Behavior, IInitable
+    public class Statused : IBehavior
     {
         public class Event : EventBase
         {

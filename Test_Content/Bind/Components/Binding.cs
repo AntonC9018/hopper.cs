@@ -22,7 +22,7 @@ namespace Hopper.Test_Content.Bind
             BindRetouchers.CreateBindRetoucher(Bind.StopMoveStatus);
     }
 
-    public class Binding : Behavior, IInitable<BindStatus>, IStandartActivateable
+    public class Binding : IBehavior<BindStatus>, IStandartActivateable
     {
         public class Event : StandartEvent
         {

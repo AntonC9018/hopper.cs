@@ -1,3 +1,5 @@
+using Hopper.Core.Components;
+
 namespace Hopper.Core.Targeting
 {
     public enum Attackness

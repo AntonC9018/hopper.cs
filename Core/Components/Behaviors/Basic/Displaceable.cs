@@ -7,9 +7,9 @@ using Hopper.Core.Chains;
 namespace Hopper.Core.Components.Basic
 {
     [DataContract]
-    public class Displaceable : Behavior, IInitable<Layer>
+    public class Displaceable : IBehavior
     {
-        public class Event : StandartEvent
+        public class Context : StandartEvent
         {
             public Entity entity;
             public Move move;
@@ -17,56 +17,50 @@ namespace Hopper.Core.Components.Basic
             public Layer blockLayer;
         }
 
-        public Layer blockLayer;
+        [Inject] public Layer blockLayer;
 
-        public void Init(Layer blockLayer)
+        // TODO: automatically assign blockLayer in the generated activation function
+        // through an attibute.
+        public bool Activate(Entity entity, IntVector2 dir, Move move)
         {
-            this.blockLayer = blockLayer;
-        }
-
-        public bool Activate(IntVector2 dir, Move move)
-        {
-            var ev = new Event
+            var ev = new Context
             {
-                actor = m_entity,
+                actor = entity,
                 direction = dir,
                 move = move,
                 blockLayer = blockLayer
             };
-            return CheckDoCycle<Event>(ev);
+            return CheckDoCycle<Context>(ev);
         }
 
-        public static Handler<Event> ConvertFromMoveHandler = new Handler<Event>
+        public static void ConvertFromMove(Context ctx)
         {
-            handler = (Event ev) =>
+            int i = 1;
+
+            var transform = ctx.actor.GetTransform();
+
+            do
             {
-                int i = 1;
+                if (ctransform.HasBlockRelative(ctx.direction * i, ctx.blockLayer))
+                    break;
+                i++;
+            } while (i < ctx.move.power);
+            i--;
 
-                do
-                {
-                    if (ev.actor.HasBlockRelative(ev.direction * i, ev.blockLayer))
-                        break;
-                    i++;
-                } while (i < ev.move.power);
-                i--;
+            ctx.newPos = transform.GetPosRelative(ctx.direction * i);
 
-                ev.newPos = ev.actor.GetPosRelative(ev.direction * i);
+            // @Incomplete in this case you should probably add the bump to the history and stop
+            // also this should be done in the do chain
+            // the thing is that 0 movement messes up some systmes of the game
+            // e.g. listeners on cell's enter and leave events. 
+            if (ctx.newPos == transform.position)
+            {
+            }
+        }
 
-                // @Incomplete in this case you should probably add the bump to the history and stop
-                // also this should be done in the do chain
-                // the thing is that 0 movement messes up some systmes of the game
-                // e.g. listeners on cell's enter and leave events. 
-                if (ev.newPos == ev.actor.Pos)
-                {
-                }
-            },
-            // @Incomplete hardcode a reasonable priority value 
-            priority = (int)PriorityRank.High
-        };
-
-        public static Handler<Event> DisplaceRemoveHandler = new Handler<Event>
+        public static void DisplaceRemove = new Handler<Context>
         {
-            handler = (Event ev) =>
+            handler = (Context ev) =>
             {
                 ev.actor.RemoveFromGrid();
                 ev.actor.Pos = ev.newPos;
@@ -75,9 +69,9 @@ namespace Hopper.Core.Components.Basic
             priority = (int)PriorityRank.Default
         };
 
-        public static Handler<Event> DisplaceAddBackHandler = new Handler<Event>
+        public static Handler<Context> DisplaceAddBackHandler = new Handler<Context>
         {
-            handler = (Event ev) =>
+            handler = (Context ev) =>
             {
                 ev.actor.ResetInGrid();
             },
@@ -85,31 +79,14 @@ namespace Hopper.Core.Components.Basic
             priority = (int)PriorityRank.Default
         };
 
-        public static Handler<Event> UpdateHistoryHandler = new Handler<Event>
+        public static Handler<Context> UpdateHistoryHandler = new Handler<Context>
         {
             handler = Utils.AddHistoryEvent(History.UpdateCode.displaced_do),
             // @Incomplete hardcode a reasonable priority value 
             priority = (int)PriorityRank.Default
         };
 
-        public static readonly ChainPaths<Displaceable, Event> Check = new ChainPaths<Displaceable, Event>(ChainName.Check);
-
-        public static readonly ChainPaths<Displaceable, Event> Do = new ChainPaths<Displaceable, Event>(ChainName.Do);
-
-        public static readonly ChainTemplateBuilder DefaultBuilder = 
-            new ChainTemplateBuilder()
-                .AddTemplate<Event>(ChainName.Check)
-                    .AddHandler(ConvertFromMoveHandler)
-                .AddTemplate<Event>(ChainName.Do)
-                    .AddHandler(DisplaceRemoveHandler)
-                    .AddHandler(UpdateHistoryHandler)
-                    .AddHandler(DisplaceAddBackHandler)
-                .End();
-
-        public static ConfigurableBehaviorFactory<Displaceable, Layer> DefaultPreset =>
-            new ConfigurableBehaviorFactory<Displaceable, Layer>(DefaultBuilder, ExtendedLayer.BLOCK);
-        public static ConfigurableBehaviorFactory<Displaceable, Layer> Preset(Layer layer) =>
-            new ConfigurableBehaviorFactory<Displaceable, Layer>(DefaultBuilder, layer);
-
+        // Check { ConvertFromMove }
+        // Do    { DisplaceRemove, UpdateHistory, DisplaceAddBack }
     }
 }

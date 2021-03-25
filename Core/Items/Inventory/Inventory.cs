@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using Hopper.Core.Components;
 using Hopper.Utils;
 
 
 namespace Hopper.Core.Items
 {
-    public class Inventory : IInventory
+    public class Inventory : IComponent, IInventory
     {
         private Dictionary<int, IItemContainer<IItem>> m_itemSlots;
         private Entity m_actor;

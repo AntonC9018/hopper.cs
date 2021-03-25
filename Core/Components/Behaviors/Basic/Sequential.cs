@@ -7,7 +7,7 @@ using Hopper.Utils;
 namespace Hopper.Core.Components.Basic
 {
     [DataContract]
-    public class Sequential : Behavior, IInitable<Sequential.Config>
+    public class Sequential : IBehavior
     {
         public class Config
         {

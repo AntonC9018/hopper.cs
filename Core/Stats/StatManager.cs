@@ -2,6 +2,7 @@ using Hopper.Utils.Chains;
 using Hopper.Utils.FS;
 using System.Collections.Generic;
 using Hopper.Core.Registries;
+using Hopper.Core.Components;
 
 namespace Hopper.Core.Stats
 {
@@ -42,7 +43,7 @@ namespace Hopper.Core.Stats
     {
     }
 
-    public class StatManager
+    public class StatManager : IComponent
     {
         // contains either directories or files
         private Dictionary<Modifier, int> m_modifierCounts

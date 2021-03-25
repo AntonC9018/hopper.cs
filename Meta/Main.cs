@@ -19,7 +19,11 @@ namespace Meta
         public static Task Main()
         {
             MSBuildLocator.RegisterDefaults();
+            return Test4();
+        }
 
+        public static Task Test4()
+        {
         {
             var t = new BehaviorEntityExtensions();
             t.Session = new Dictionary<string, object>();
@@ -72,6 +76,10 @@ namespace Meta
 
             var project = await msWorkspace.OpenProjectAsync("Meta.csproj");
             var compilation = await project.GetCompilationAsync();
+            var document = project.Documents.FirstOrDefault();
+            var syntaxTree = await document.GetSyntaxTreeAsync();
+            var semanticModel = compilation.GetSemanticModel(syntaxTree);
+
             var hello = (INamedTypeSymbol)compilation.GetSymbolsWithName("Hello").Single();
             var world = (INamedTypeSymbol)compilation.GetSymbolsWithName("World").Single();
 

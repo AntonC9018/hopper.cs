@@ -4,27 +4,24 @@ using Hopper.Core.Stats.Basic;
 namespace Hopper.Core.Components.Basic
 {
     [DataContract]
-    public class Damageable : Behavior, IInitable
+    public class Damageable : IComponent
     {
-        public Health m_health;
+        [Inject] public Health health;
 
-        public void Init()
+        [Alias("IsDead")] public bool IsHealthZero() 
         {
-            m_entity.InitEvent += () => m_health = m_entity.Stats.GetRawLazy(Health.Path);
+            return health.amount == 0;
         }
 
-        public bool Activate(int damage)
+        public bool Activate(Entity entity, int damage)
         {
-            m_health.amount -= damage;
-            if (m_health.amount <= 0)
+            health.amount -= damage;
+            if (health.amount <= 0)
             {
-                m_entity.Die();
+                // TODO: remove from grid
                 return true;
             }
             return false;
         }
-
-        public static InitableBehaviorFactory<Damageable> Preset
-            => new InitableBehaviorFactory<Damageable>(null);
     }
 }

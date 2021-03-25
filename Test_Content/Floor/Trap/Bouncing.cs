@@ -9,7 +9,7 @@ using Hopper.Utils.Vector;
 namespace Hopper.Test_Content.Floor
 {
     [DataContract]
-    public class Bouncing : Behavior, IInitable, IStandartActivateable
+    public class Bouncing : IBehavior, IStandartActivateable
     {
         private bool m_hasBounced;
         private bool m_isEnterListenerApplied;

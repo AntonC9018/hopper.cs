@@ -63,7 +63,7 @@ namespace Hopper.Test_Content.Bind
                 }
             }
 
-            private void DisplaceMe(Displaceable.Event ev)
+            private void DisplaceMe(Displaceable.Context ev)
             {
                 var statusData = status.m_tinker.GetStore(ev);
                 if (statusData.whoApplied != null)

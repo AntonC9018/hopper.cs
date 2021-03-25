@@ -39,8 +39,7 @@ namespace Hopper.Core.Components.Basic
         }
     }
 
-    [DataContract]
-    public class Controllable : Behavior, IInitable<Action>
+    public class Controllable : IBehavior
     {
         public class Event : ActorEvent
         {
@@ -61,12 +60,7 @@ namespace Hopper.Core.Components.Basic
             }
         }
 
-        public Action config_defaultAction;
-
-        public void Init(Action defaultAction)
-        {
-            config_defaultAction = defaultAction;
-        }
+        [Inject] public Action defaultAction;
 
         public ParticularAction ConvertInputToAction(InputMapping input)
         {

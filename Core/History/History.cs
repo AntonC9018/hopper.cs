@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using Hopper.Utils;
 using System.Linq;
+using Hopper.Core.Components;
 
 namespace Hopper.Core.History
 {
-    public class History<T>
+    public class History<T> : IComponent
     {
         private List<UpdateInfo<T>> m_updates;
         public IReadOnlyList<UpdateInfo<T>> Updates => m_updates.AsReadOnly();

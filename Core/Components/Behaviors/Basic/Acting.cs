@@ -7,7 +7,8 @@ using System.Runtime.Serialization;
 namespace Hopper.Core.Components.Basic
 {
     [Chains("Do", "Check", "Success", "Fail")]
-    public class Acting : Behavior, IBehavior
+    [ActivationAlias("Act")]
+    public partial class Acting : IBehavior
     {
         [Flags] public enum Flags 
         {
@@ -26,12 +27,11 @@ namespace Hopper.Core.Components.Basic
             public bool success = false;
         }
 
-        [Alias("Act")] 
-        public bool Activate()
+        public bool Activate(Entity entity)
         {
             var ctx = new Context
             {
-                actor = m_entity,
+                actor = entity,
                 action = nextAction
             };
 
@@ -64,11 +64,11 @@ namespace Hopper.Core.Components.Basic
             return ctx.success;
         }
 
-        public void CalculateNextAction()
+        public void CalculateNextAction(Entity entity)
         {
             if (nextAction == null && _CalculateAction != null)
             {
-                nextAction = _CalculateAction(m_entity);
+                nextAction = _CalculateAction(entity);
             }
         }
 

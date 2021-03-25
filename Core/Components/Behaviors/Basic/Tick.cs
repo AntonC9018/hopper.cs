@@ -4,7 +4,7 @@ using Hopper.Core.Chains;
 namespace Hopper.Core.Components.Basic
 {
     [DataContract]
-    public class Tick : Behavior
+    public class Tick : IBehavior
     {
         public class Event : ActorEvent
         {
