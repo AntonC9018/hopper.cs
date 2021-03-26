@@ -133,9 +133,8 @@ namespace Meta
             }
         }
 
-        public class ContextInfo
+        public class ContextWrapper
         {
-            // public List<IFieldSymbol> fields;
             public Dictionary<string, IFieldSymbol> fieldsHashed;
             public HashSet<string> withDefaultValue;
             public HashSet<string> entities;
@@ -176,18 +175,14 @@ namespace Meta
                     SymbolEqualityComparer.Default.Equals(type, t.Type);
             }
             public bool HasDefaultValue(string name) => withDefaultValue.Contains(name);
-
-            public string Params() => "";
-            public string ParamsNames() => "";
-            public string ParamInitialization() => "";
         }
 
         public class MethodSymbolWrapper
         {
             public IMethodSymbol symbol;
-            public string alias = null;
-            public ContextInfo ctx;
+            public ContextWrapper ctx;
             public INamedTypeSymbol exportingBehavior;
+            public string alias = null;
 
 
             public string AdapterBody()
@@ -279,6 +274,21 @@ namespace Meta
                 return sb_call.ToString();
             }
 
+
+            public bool ShouldCreateAlias()
+            {
+                return alias != null;
+            }
+
+            public string ParametersInSignature()
+            {
+                return string.Join(",", symbol.Parameters.Select(p => p.ToDisplayString()));
+            }
+
+            public string ParametersInInvocation()
+            {
+                return string.Join(",", symbol.Parameters.Select(p => p.Name));
+            }
         }
 
 
@@ -289,8 +299,8 @@ namespace Meta
             public HashSet<IFieldSymbol> flaggedFields;
             public HashSet<string> aliases;
 
-            public bool IsBehavior => symbol.Interfaces.Contains(context.relevantSymbols.ibehavior);
-            public bool IsTag => symbol.Interfaces.Contains(context.relevantSymbols.itag);
+            public bool IsBehavior => symbol.Interfaces.Contains(relevantSymbols.ibehavior);
+            public bool IsTag => symbol.Interfaces.Contains(relevantSymbols.itag);
         }
 
         public class BehaviorSymbolWrapper : ComponentSymbolWrapper

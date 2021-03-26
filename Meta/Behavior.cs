@@ -39,7 +39,6 @@ namespace Hopper.Meta.Template
     public class HandlerAdapterInfo
     {
         public string HandlerName;
-        public bool CallsMethodOnFirstParam() => true;
         public string FirstParam() => "";
         public string ParamNames() => ""; 
     }
