@@ -19,57 +19,13 @@ namespace Meta
     {
         public static async Task Main()
         {
-            await Test4();
-            // MSBuildLocator.RegisterDefaults();
-            // msWorkspace = await InitWorkspace();
-            // if (!failFlag)
-            // {
-            //     await Test2();
-            // }
-        }
-
-        public static Task Test4()
-        {
-        {
-            var t = new BehaviorEntityExtensions();
-            t.behavior = new BehaviorInfo
+            MSBuildLocator.RegisterDefaults();
+            msWorkspace = await InitWorkspace();
+            if (!failFlag)
             {
-                ClassName = "Acting",
-                Namespace = "Hopper.Core.Components.Basic",
-                ActivationAlias = "Act",
-                Check = true
-            };
-            t.Initialize();
-            Console.WriteLine(t.TransformText());
+                await Test2();
+            }
         }
-        {
-            var t = new BehaviorPartial();
-            t.behavior = new BehaviorInfo
-            {
-                ClassName = "Acting",
-                Namespace = "Hopper.Core.Components.Basic",
-                ActivationAlias = "Act",
-                Check = true
-            };
-            t.chains = new ChainsInfo
-            {
-                ChainInfos = new ChainInfo[] {
-                    new ChainInfo { Name = "Check" },
-                    new ChainInfo { Name = "Do" }
-                }
-            };
-            t.context = new ContextInfo();
-            t.adapters = new HandlerAdapterInfo[] { 
-                new HandlerAdapterInfo { HandlerName = "Hello" }
-            };
-            t.presets = new PresetInfo[] { new PresetInfo { Name = "World" }};
-            t.Initialize();
-            Console.WriteLine(t.TransformText());
-        }
-
-            return Task.CompletedTask;
-        }
-
 
         static bool failFlag = false;
         static MSBuildWorkspace msWorkspace;
@@ -109,33 +65,131 @@ namespace Meta
             return msWorkspace;
         }
 
+
+        public class RelevantSymbols
+        {
+            public INamedTypeSymbol icomponent;
+            public INamedTypeSymbol ibehavior;
+            public INamedTypeSymbol itag;
+            public INamedTypeSymbol aliasAttribute;
+            public INamedTypeSymbol autoActivationAttribute;
+            public INamedTypeSymbol chainsAttribute;
+            public INamedTypeSymbol injectAttribute;
+            public INamedTypeSymbol flagsAttribute;
+            public INamedTypeSymbol exportAttribute;
+            
+            public static INamedTypeSymbol GetComponentSymbol(Compilation compilation, string name)
+            {
+                return (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Components.{name}");
+            }
+
+            public void Init(Compilation compilation)
+            {
+                icomponent      = GetComponentSymbol(compilation, "IComponent");
+                ibehavior       = GetComponentSymbol(compilation, "IBehavior");
+                itag            = GetComponentSymbol(compilation, "IBehavior");
+                aliasAttribute  = GetComponentSymbol(compilation, "AliasAttribute");
+                chainsAttribute = GetComponentSymbol(compilation, "ChainsAttribute");
+                injectAttribute = GetComponentSymbol(compilation, "InjectAttribute");
+                flagsAttribute  = GetComponentSymbol(compilation, "FlagsAttribute");
+                exportAttribute = GetComponentSymbol(compilation, "ExportAttribute");
+                autoActivationAttribute = GetComponentSymbol(compilation, "AutoActivationAttribute");
+            }
+        }
+
+        public class ProjectContext
+        {
+            public Solution solution;
+            public Project project;
+
+            public HashSet<Project> projectSet;
+            public Compilation compilation;
+            public RelevantSymbols relevantSymbols;
+
+            public async void Init()
+            {
+                projectSet = new HashSet<Project>{project};
+                compilation = await project.GetCompilationAsync();
+            }
+
+            public Task<IEnumerable<INamedTypeSymbol>> FindAllComponents()
+            {
+                return SymbolFinder.FindImplementationsAsync(
+                    relevantSymbols.icomponent, solution, transitive: true, projectSet.ToImmutableHashSet()
+                );
+            }
+
+            public Task<IEnumerable<INamedTypeSymbol>> FindAllBehaviors()
+            {
+                return SymbolFinder.FindImplementationsAsync(
+                    relevantSymbols.ibehavior, solution, transitive: true, projectSet.ToImmutableHashSet()
+                );
+            }
+        }
+
+        public class MethodSymbolWrapper
+        {
+            public IMethodSymbol symbol;
+            public string alias = null;
+
+            public void Adapter(RelevantSymbols relevantSymbols)
+            {
+                if (!symbol.IsStatic)
+                {
+                    // do               ctx.actor.Get<Name>().<MethodName>(whatever)
+                    // otherwise, do    <Name>.<MethodName>(whatever)
+                }
+
+                foreach (var s in symbol.Parameters)
+                {
+                    if (/* ctx contains that name directly */true)
+                    {
+                        // if (s.RefKind == RefKind.Out)
+                        Console.WriteLine($"var {s.Name} = ctx.{s.Name}");
+                    }
+                    else if (s.ContainingType.Interfaces.Contains(relevantSymbols.icomponent))
+                    {
+                        // TODO: if the name contains the name of an entity type field
+                        //       of the context followed by an underscore, get the component
+                        //       from that entity and save it.
+                        // TODO: get the component from entity. For now, assume that
+                        //       the entity is assumed to always contain the given component.
+                        Console.WriteLine($"var {s.Name} = ctx.entity.Get{s.ContainingType.Name}();");
+                    }
+                    else
+                    {
+                        // TODO: report an error
+                    }
+                    Console.WriteLine($"{s.Name} of type {s.ContainingType.Name}");
+                }
+            }
+
+        }
+
+
+        public class ComponentSymbolWrapper
+        {   
+            public ProjectContext context;
+            public INamedTypeSymbol symbol;
+            public HashSet<IFieldSymbol> flaggedFields;
+            public HashSet<string> aliases;
+
+            public bool IsBehavior => symbol.Interfaces.Contains(context.relevantSymbols.ibehavior);
+            public bool IsTag => symbol.Interfaces.Contains(context.relevantSymbols.itag);
+        }
+
+        public class BehaviorSymbolWrapper : ComponentSymbolWrapper
+        {
+
+        }
+
         public static async Task Test2()
         {
-            var solution = msWorkspace.CurrentSolution;
-            var project = coreProject;
-            var compilation = await project.GetCompilationAsync();
-
-            var icomponent = (INamedTypeSymbol)compilation
-                .GetTypeByMetadataName("Hopper.Core.Components.IComponent");
-            var ibehavior = (INamedTypeSymbol)compilation
-                .GetTypeByMetadataName("Hopper.Core.Components.IBehvaior");
+            var ctx = new ProjectContext();
+            ctx.project = coreProject;
+            ctx.solution = msWorkspace.CurrentSolution;
             
-            var aliasAttribute = (INamedTypeSymbol)compilation
-                .GetTypeByMetadataName("Hopper.Core.Components.AliasAttribute");
-            var autoActivationAttribute = (INamedTypeSymbol)compilation
-                .GetTypeByMetadataName("Hopper.Core.Components.AutoActivationAttribute");
-            var chainsAttribute = (INamedTypeSymbol)compilation
-                .GetTypeByMetadataName("Hopper.Core.Components.ChainsAttribute");
-            var injectAttribute = (INamedTypeSymbol)compilation
-                .GetTypeByMetadataName("Hopper.Core.Components.InjectAttribute");
-            var flagsAttribute = (INamedTypeSymbol)compilation
-                .GetTypeByMetadataName("Hopper.Core.Components.FlagsAttribute");
-            var exportAttribute = (INamedTypeSymbol)compilation
-                .GetTypeByMetadataName("Hopper.Core.Components.ExportAttribute");
-            
-            var projectsToSearch = new HashSet<Project> {project};
-            var implementations = await SymbolFinder.FindImplementationsAsync(
-                icomponent, solution, transitive: false, projectsToSearch.ToImmutableHashSet());
+            var implementations = await ctx.FindAllComponents();
 
             Console.WriteLine(implementations.Count());
 
@@ -153,59 +207,6 @@ namespace Meta
                 }
             }
             return;
-        }
-
-        public static void Test()
-        {
-            Console.WriteLine("Started");
-
-            using (FileStream fs = File.OpenRead("Code.cs"))
-            {
-                SyntaxTree tree = CSharpSyntaxTree.ParseText(SourceText.From(fs), path: "Code.cs");
-                CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
-
-                var compilation = CSharpCompilation.Create("HelloWorld")
-                    .AddReferences(MetadataReference.CreateFromFile(typeof(string).Assembly.Location))
-                    .AddSyntaxTrees(tree);
-                
-                var model = compilation.GetSemanticModel(tree);
-
-                compilation.GetSymbolsWithName("Code", SymbolFilter.Type);
-
-                var codeNamespace = root.Members.Single(
-                    m => (m as NamespaceDeclarationSyntax)?.Name.ToString() == "Code")
-                    as NamespaceDeclarationSyntax;
-
-                var programClass = codeNamespace.Members.Single(
-                    m => (m as ClassDeclarationSyntax)?.Identifier.ValueText == "Program") 
-                    as ClassDeclarationSyntax;
-
-                var method = programClass.Members.First(
-                    mds => (mds as MethodDeclarationSyntax)?.Identifier.ValueText == "Thing")
-                    as MethodDeclarationSyntax;
-
-                var paramList = method.ParameterList.Parameters;
-                Console.WriteLine("The Thing method has {0} parameters, and they are:", paramList.Count());
-                
-                foreach (var arg in paramList)
-                {
-                    Console.WriteLine("{0}, which is a {1} parameter", arg.Identifier, arg.Type);
-                }
-
-                var attribs = method.AttributeLists;
-
-                foreach (var attrib in attribs.SelectMany(al => al.Attributes))
-                foreach (var attribChildren in attrib.ArgumentList.ChildNodes())
-                {
-                    var argNode = attribChildren as AttributeArgumentSyntax;
-                    foreach (var stringLiteral in argNode.ChildNodes().OfType<LiteralExpressionSyntax>())
-                    {
-                        var name = model.GetConstantValue(stringLiteral).Value?.ToString();
-                        Console.WriteLine(name); // Test1 
-                                                // Test2
-                    }
-                }
-            }
         }
     }
 }

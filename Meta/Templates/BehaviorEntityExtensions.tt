@@ -5,7 +5,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
 
-    <#@ include file="Templates/ComponentEntityExtensions.txt" #>
+    <#@ include file="Templates/Snippets/ComponentEntityExtension.txt" #>
 
 <# 
 if (behavior.ActivationAlias != null) 
