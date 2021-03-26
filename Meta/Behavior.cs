@@ -23,13 +23,6 @@ namespace Hopper.Meta.Template
         public bool Check;
     }
 
-    public class ContextInfo
-    {
-        public string Params() => "";
-        public string ParamsNames() => "";
-        public string ParamInitialization() => "";
-    }
-
     public class ChainInfo
     {
         public string Name; 

@@ -40,7 +40,7 @@ namespace Hopper.Core.Components.Basic
         /// It loads the attack and push from the stats manager.  
         /// </summary>
         [Export] public static void SetStats(
-            StatManager stats, ref Attack attack, ref Push push)
+            StatManager stats, out Attack attack, out Push push)
         {
             if (attack == null)
             {

@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.Text;
 using Hopper.Meta.Template;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Text;
 
 namespace Meta
 {
@@ -68,6 +69,7 @@ namespace Meta
 
         public class RelevantSymbols
         {
+            public INamedTypeSymbol entity;
             public INamedTypeSymbol icomponent;
             public INamedTypeSymbol ibehavior;
             public INamedTypeSymbol itag;
@@ -77,6 +79,7 @@ namespace Meta
             public INamedTypeSymbol injectAttribute;
             public INamedTypeSymbol flagsAttribute;
             public INamedTypeSymbol exportAttribute;
+            public INamedTypeSymbol omitAttribute;
             
             public static INamedTypeSymbol GetComponentSymbol(Compilation compilation, string name)
             {
@@ -85,6 +88,7 @@ namespace Meta
 
             public void Init(Compilation compilation)
             {
+                entity = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Entity");
                 icomponent      = GetComponentSymbol(compilation, "IComponent");
                 ibehavior       = GetComponentSymbol(compilation, "IBehavior");
                 itag            = GetComponentSymbol(compilation, "IBehavior");
@@ -93,9 +97,12 @@ namespace Meta
                 injectAttribute = GetComponentSymbol(compilation, "InjectAttribute");
                 flagsAttribute  = GetComponentSymbol(compilation, "FlagsAttribute");
                 exportAttribute = GetComponentSymbol(compilation, "ExportAttribute");
+                omitAttribute   = GetComponentSymbol(compilation, "OmitAttribute");
                 autoActivationAttribute = GetComponentSymbol(compilation, "AutoActivationAttribute");
             }
         }
+
+        public static RelevantSymbols relevantSymbols; 
 
         public class ProjectContext
         {
@@ -104,7 +111,6 @@ namespace Meta
 
             public HashSet<Project> projectSet;
             public Compilation compilation;
-            public RelevantSymbols relevantSymbols;
 
             public async void Init()
             {
@@ -127,41 +133,150 @@ namespace Meta
             }
         }
 
+        public class ContextInfo
+        {
+            // public List<IFieldSymbol> fields;
+            public Dictionary<string, IFieldSymbol> fieldsHashed;
+            public HashSet<string> withDefaultValue;
+            public HashSet<string> entities;
+            public INamedTypeSymbol symbol;
+
+            public void HashFields()
+            {
+                var ctx_fields = new List<IFieldSymbol>();
+
+                {
+                    var s = symbol;
+                    do 
+                    {
+                        ctx_fields.AddRange(s
+                            .GetMembers().OfType<IFieldSymbol>()
+                            .Where(field => !field.IsStatic && !field.IsConst));
+                        s = symbol.BaseType;
+                    }
+                    while (s != null);
+                }
+
+                fieldsHashed = ctx_fields.ToDictionary(field => field.Name);
+                entities = ctx_fields
+                    .Where(field => SymbolEqualityComparer.Default.Equals(field.ContainingType, relevantSymbols.entity))
+                    .Select(field => field.Name).ToHashSet();
+
+                // I cannot figure out how to check if the field was given a default value, so
+                // I'm going to do this with an attribute instead
+                withDefaultValue = ctx_fields.Where(field => field.GetAttributes()
+                    .Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, relevantSymbols.omitAttribute)))
+                    .Select(field => field.Name).ToHashSet();
+            }
+
+            public bool ContainsEntity(string name) => entities.Contains(name);
+            public bool ContainsFieldWithNameAndType(string name, ITypeSymbol type) 
+            {
+                return fieldsHashed.TryGetValue(name, out var t) && 
+                    SymbolEqualityComparer.Default.Equals(type, t.Type);
+            }
+            public bool HasDefaultValue(string name) => withDefaultValue.Contains(name);
+
+            public string Params() => "";
+            public string ParamsNames() => "";
+            public string ParamInitialization() => "";
+        }
+
         public class MethodSymbolWrapper
         {
             public IMethodSymbol symbol;
             public string alias = null;
+            public ContextInfo ctx;
+            public INamedTypeSymbol exportingBehavior;
 
-            public void Adapter(RelevantSymbols relevantSymbols)
+
+            public string AdapterBody()
             {
-                if (!symbol.IsStatic)
+                StringBuilder sb_params = new StringBuilder();
+                StringBuilder sb_call = new StringBuilder();
+
+                if (SymbolEqualityComparer.Default.Equals(ctx.symbol, symbol.ContainingType))
                 {
-                    // do               ctx.actor.Get<Name>().<MethodName>(whatever)
-                    // otherwise, do    <Name>.<MethodName>(whatever)
+                    sb_call.Append(symbol.IsStatic 
+                        ? $"return {exportingBehavior.Name}.Context.{symbol.Name}(" 
+                        : $"return ctx.{symbol.Name}(");
+                }
+                else if (SymbolEqualityComparer.Default.Equals(exportingBehavior, symbol.ContainingType))
+                {
+                    sb_call.Append(symbol.IsStatic 
+                        ? $"return {symbol.ContainingType.Name}.{symbol.Name}(" 
+                        : $"return ctx.actor.Get{symbol.ContainingType.Name}().{symbol.Name}(");
+                }
+                else
+                {
+                    throw new Exception("Could not have been defined here");
                 }
 
                 foreach (var s in symbol.Parameters)
                 {
-                    if (/* ctx contains that name directly */true)
+                    // If the parameter is of Context type
+                    if (SymbolEqualityComparer.Default.Equals(s.Type, ctx.symbol))
                     {
-                        // if (s.RefKind == RefKind.Out)
-                        Console.WriteLine($"var {s.Name} = ctx.{s.Name}");
+                        // The parameters need not be appended, since the handlers take ctx by default.
+                        sb_call.Append("ctx, ");
                     }
-                    else if (s.ContainingType.Interfaces.Contains(relevantSymbols.icomponent))
+                    // if ctx class has a field of that name and type, reference it directly
+                    else if (ctx.ContainsFieldWithNameAndType(s.Name, s.Type))
                     {
-                        // TODO: if the name contains the name of an entity type field
-                        //       of the context followed by an underscore, get the component
-                        //       from that entity and save it.
-                        // TODO: get the component from entity. For now, assume that
-                        //       the entity is assumed to always contain the given component.
-                        Console.WriteLine($"var {s.Name} = ctx.entity.Get{s.ContainingType.Name}();");
+                        if (s.RefKind == RefKind.Out)
+                        {
+                            sb_call.Append($"out ctx.{s.Name}");
+                        }
+                        else
+                        {
+                            sb_params.AppendLine($"var _{s.Name} = ctx.{s.Name};");
+                            sb_call.Append($"_{s.Name}, ");
+                        }
+                    }
+                    // if it is of a component type, retrieve it from the entity 
+                    else if (s.Type.AllInterfaces.Contains(relevantSymbols.icomponent))
+                    {
+                        // if the name contains the name of an entity type field
+                        // of the context followed by an underscore, get the component
+                        // from that entity and save it.
+                        int indexOf_ = s.Name.IndexOf('_');
+                        bool success = false;
+                        if (indexOf_ != -1)
+                        {
+                            string entity_name = s.Name.Substring(0, indexOf_);
+                            if (ctx.ContainsEntity(entity_name))
+                            {
+                                success = true;
+                                sb_params.AppendLine($"var _{s.Name} = ctx.{entity_name}.Get{s.Type.Name}();");
+                                sb_call.Append($"_{s.Name}, ");
+                            }
+                            else
+                            {
+                                // TODO: Report warning?
+                            }
+                        }
+                        if (!success)
+                        {
+                            // get the component from entity. For now, assume that
+                            // the entity is assumed to always contain the given component.
+                            sb_params.AppendLine($"var _{s.Name} = ctx.entity.Get{s.Type.Name}();");
+                            sb_call.Append($"_{s.Name}, ");
+                        }
                     }
                     else
                     {
-                        // TODO: report an error
+                        throw new Exception($"The name {s.Name} is invalid. It does not correspond directly to any of the Context fields and the type of the parameter was not a component type");
                     }
-                    Console.WriteLine($"{s.Name} of type {s.ContainingType.Name}");
                 }
+            
+                if (!symbol.Parameters.IsEmpty)
+                {
+                    sb_call.Remove(sb_call.Length - 2, 2);
+                    sb_call.Append(");");
+                }
+
+                sb_call.Append(sb_params.ToString());
+                return sb_call.ToString();
             }
 
         }
