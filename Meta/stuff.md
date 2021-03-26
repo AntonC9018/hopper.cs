@@ -16,14 +16,13 @@ For behaviors:
 4. Context type and field types and names. Any entity type should be treated differently;
 5. Extract correct arguments form the context:
     - based on types and names of the arguments 
-    - e.g. `Entity actor` must match by name and checked agains the `Context` type
-    - e.g. `SomeComponent component` must get the component from actor
-    - e.g. `SomeComponent other_component` must get the component from `other` entity from `Context`
-    - e.g. `Context ctx` must be passed along
-    - there is also `ref` and `out`. `out` sets the field on context.
+  + - e.g. `Entity actor` must match by name and checked agains the `Context` type
+  + - e.g. `SomeComponent component` must get the component from actor
+  + - e.g. `SomeComponent other_component` must get the component from `other` entity from `Context`
+  + - e.g. `Context ctx` must be passed along
+  + - there is also `ref` and `out`. `out` sets the field on context.
     ```c#
-        Method(Entity entity, var new_someValue);
-        ctx.someValue = new_someValue
+        Method(Entity entity, out ctx.someValue);
     ```
 6. Figure out json file format for the listed dependencies and chain presets.
 7. Convert json files into some intermediate representation????

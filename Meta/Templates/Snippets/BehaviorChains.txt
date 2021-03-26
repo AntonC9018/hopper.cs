@@ -1,30 +1,32 @@
-<# foreach(var chain in chains.ChainInfos) { #>
+<# foreach(var chain.Name in behavior.chains) { #>
         public Chain<Context> _<#= chain.Name #>Chain;
 
         /// <summary>
-        /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity.
+        /// Retrieves the <#= chain.Name #> chain.Name from the <#= behavior.ClassName #> behavior of the given entity.
         /// </summary>
         public static Chain<Context> <#= chain.Name #>ChainPath(Entity entity) 
             => entity.GetBehavior(Index)._<#= chain.Name #>Chain;
 
         /// <summary>
-        /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity factory.
+        /// Retrieves the <#= chain.Name #> chain.Name from the <#= behavior.ClassName #> behavior of the given entity factory.
         /// </summary>
         public static Chain<Context> <#= chain.Name #>ChainPath(EntityFactory factory) 
             => factory.GetBehavior(Index)._<#= chain.Name #>Chain;
 
-<# if (chain.ShouldGenerateParamsMethod(chain.Name)) { #>
+<# if (chain.ShouldGenerateParamsMethod) { #>
         public static bool <#= chain.Name #>(<#= context.Params() #>)
         {
             Context ctx = new Context
             {
-                <#= context.ParamInitialization() #>
+            <# foreach (name in behavior.context.ParamNames()) { #>
+                <#= name #> = <#= name #>,
+            <# } #>
             };
             return Traverse<#= chain.Name #>(ctx);
         }
 
 <# } // end if #>
-<# if (chain.ShouldGenerateTraverseMethod(chain.Name)) { #>
+<# if (chain.ShouldGenerateTraverseMethod) { #>
         public static bool Traverse<#= chain.Name #>(Context ctx)
         {
             _<#= chain.Name #>Chain.Pass(ctx);
@@ -33,12 +35,14 @@
 
 <# } // end if #>
 <# } // end foreach#>
-<# if (chains.ShouldGenerateActivation()) { #>
+<# if (chains.ShouldGenerateActivation) { #>
         public bool Activate(<#= context.Params() #>)
         {
             Context ctx = new Context
             {
-                <#= context.ParamInitialization() #>
+            <# foreach (name in behavior.context.ParamNames()) { #>
+                <#= name #> = <#= name #>,
+            <# } #>
             };
             if (TraverseCheck(ctx)) 
             {
