@@ -1,1 +1,1 @@
-public static Index<<#= behavior.ClassName #>> Index;
+public static Index<<#= component.ClassName #>> Index;

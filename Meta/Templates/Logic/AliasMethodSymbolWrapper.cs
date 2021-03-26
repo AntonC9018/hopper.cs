@@ -8,6 +8,9 @@ namespace Meta
         public IMethodSymbol _symbol;
         public string _alias;
 
+        public string Alias => _alias;
+        public string MethodName => _symbol.Name;
+
         public AliasMethodSymbolWrapper(IMethodSymbol symbol, string alias)
         {
             _symbol = symbol;
