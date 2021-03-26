@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 
 namespace Hopper.Core.Components.Basic
 {
-    [DataContract]
     public class Damageable : IComponent
     {
         [Inject] public Health health;
 
-        [Alias("IsDead")] public bool IsHealthZero() 
+        [Alias("IsDead")] 
+        public bool IsHealthZero() 
         {
             return health.amount == 0;
         }

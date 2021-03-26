@@ -1,12 +1,22 @@
 
 namespace Hopper.Meta.Template
 {
+    public class ComponentInfo
+    {
+        public string Namespace;
+        public string ClassName;
+        public virtual string TypeText => "component";
+    }
+
+    public class TagInfo : ComponentInfo
+    {
+        public override string TypeText => "tag";
+    }
     // A preliminary info class
     // I'll have to add semantical info here as well
-    public class BehaviorInfo
+    public class BehaviorInfo : ComponentInfo
     {
-        public string ClassName;
-        public string Namespace;
+        public override string TypeText => "behavior";
         public string ActivationAlias;
         public string Params() => "";
         public string ParamNames() => "";

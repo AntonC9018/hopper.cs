@@ -11,23 +11,28 @@ using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
 using Hopper.Meta.Template;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Meta
 {
     class Program
     {
-        public static Task Main()
+        public static async Task Main()
         {
-            MSBuildLocator.RegisterDefaults();
-            return Test4();
+            await Test4();
+            // MSBuildLocator.RegisterDefaults();
+            // msWorkspace = await InitWorkspace();
+            // if (!failFlag)
+            // {
+            //     await Test2();
+            // }
         }
 
         public static Task Test4()
         {
         {
             var t = new BehaviorEntityExtensions();
-            t.Session = new Dictionary<string, object>();
-            t.Session["behavior"] = new BehaviorInfo
+            t.behavior = new BehaviorInfo
             {
                 ClassName = "Acting",
                 Namespace = "Hopper.Core.Components.Basic",
@@ -39,26 +44,25 @@ namespace Meta
         }
         {
             var t = new BehaviorPartial();
-            t.Session = new Dictionary<string, object>();
-            t.Session["behavior"] = new BehaviorInfo
+            t.behavior = new BehaviorInfo
             {
                 ClassName = "Acting",
                 Namespace = "Hopper.Core.Components.Basic",
                 ActivationAlias = "Act",
                 Check = true
             };
-            t.Session["chains"] = new ChainsInfo
+            t.chains = new ChainsInfo
             {
                 ChainInfos = new ChainInfo[] {
                     new ChainInfo { Name = "Check" },
                     new ChainInfo { Name = "Do" }
                 }
             };
-            t.Session["context"] = new ContextInfo();
-            t.Session["adapters"] = new HandlerAdapterInfo[] { 
+            t.context = new ContextInfo();
+            t.adapters = new HandlerAdapterInfo[] { 
                 new HandlerAdapterInfo { HandlerName = "Hello" }
             };
-            t.Session["presets"] = new PresetInfo[] { new PresetInfo { Name = "World" }};
+            t.presets = new PresetInfo[] { new PresetInfo { Name = "World" }};
             t.Initialize();
             Console.WriteLine(t.TransformText());
         }
@@ -66,47 +70,14 @@ namespace Meta
             return Task.CompletedTask;
         }
 
-        public static async Task Test3()
+
+        static bool failFlag = false;
+        static MSBuildWorkspace msWorkspace;
+        const string coreProjectPath = @"../Core/Hopper_Core.csproj";
+        static Project coreProject;
+
+        public static async Task<MSBuildWorkspace> InitWorkspace(params string[] projectPaths)
         {
-            var msWorkspace = MSBuildWorkspace.Create();
-
-            var solution = msWorkspace.CurrentSolution;
-            solution.Workspace.WorkspaceFailed += (s, args) => Console.WriteLine(args.Diagnostic.Message);
-            solution.Workspace.WorkspaceChanged += (s, args) => Console.WriteLine(args.ProjectId);
-
-            var project = await msWorkspace.OpenProjectAsync("Meta.csproj");
-            var compilation = await project.GetCompilationAsync();
-            var document = project.Documents.FirstOrDefault();
-            var syntaxTree = await document.GetSyntaxTreeAsync();
-            var semanticModel = compilation.GetSemanticModel(syntaxTree);
-
-            var hello = (INamedTypeSymbol)compilation.GetSymbolsWithName("Hello").Single();
-            var world = (INamedTypeSymbol)compilation.GetSymbolsWithName("World").Single();
-
-            if (!SymbolEqualityComparer.Default.Equals(world.Interfaces.Single(), hello))
-            {
-                Console.WriteLine("Nope 1"); return;
-            }
-
-            var implementations = await SymbolFinder.FindImplementationsAsync(hello, solution);
-
-            foreach (var d in compilation.GetDiagnostics())
-            {
-                Console.WriteLine(d);
-            }
-
-            if (!SymbolEqualityComparer.Default.Equals(implementations.Single(), world))
-            {
-                Console.WriteLine("Nope 2"); return;
-            }
-        }
-
-
-        public static void Test2()
-        {
-            string solutionPath = @"../Core/Hopper_Core.csproj";
-            MSBuildWorkspace msWorkspace;
-            
             try
             {
                 msWorkspace = MSBuildWorkspace.Create();
@@ -114,54 +85,74 @@ namespace Meta
             catch (Exception exc)
             {
                 Console.WriteLine(exc);
-                return;
+                return null;
             }
 
-            var solution = msWorkspace.CurrentSolution;
-            solution.Workspace.WorkspaceFailed += (s, args) => Console.WriteLine(args.Diagnostic.Message);
-            solution.Workspace.WorkspaceChanged += (s, args) => Console.WriteLine(args.ProjectId);
+            msWorkspace.WorkspaceFailed += (s, args) => {
+                if (args.Diagnostic.Kind == WorkspaceDiagnosticKind.Failure)
+                {
+                    Console.WriteLine($"Unable to open the project.\n {args.Diagnostic.Message}");
+                    failFlag = true;
+                }
+                else
+                {
+                    Console.WriteLine($"Warning while opening a project:\n {args.Diagnostic.Message}");
+                }
+            };
 
-            var project = msWorkspace.OpenProjectAsync(solutionPath).Result;
-
-            var compilation = project.GetCompilationAsync().Result;
-
-            // Let's register mscorlib
-            // compilation = compilation.AddReferences(
-            //     MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
-
-            // foreach (var f in Directory.EnumerateFiles(Path.GetDirectoryName(solutionPath), "bin/*.dll", SearchOption.AllDirectories))
-            // {
-            //     compilation = compilation.AddReferences(MetadataReference.CreateFromFile(f));
-            // }
-
-            // var document = project.Documents.FirstOrDefault(d => d.Name == "SomeClass.cs");
-            // var syntaxTree = document.GetSyntaxTreeAsync().Result;
-            // SemanticModel semanticModel = compilation.GetSemanticModel(syntaxTree);
-
-            var ibehavior = (INamedTypeSymbol)compilation
-                .GetSymbolsWithName("IBehavior", SymbolFilter.Type)
-                .Single();
-            var aliasAttribute = (INamedTypeSymbol)compilation
-                .GetSymbolsWithName("AliasAttribute", SymbolFilter.Type)
-                .Single();
+            coreProject = await msWorkspace.OpenProjectAsync(coreProjectPath);
             
-            var implementations = SymbolFinder.FindReferencesAsync(ibehavior, solution).Result;
+            // Open the core project or the mod
+            foreach (var projectName in projectPaths)
+                await msWorkspace.OpenProjectAsync(projectName);
+
+            return msWorkspace;
+        }
+
+        public static async Task Test2()
+        {
+            var solution = msWorkspace.CurrentSolution;
+            var project = coreProject;
+            var compilation = await project.GetCompilationAsync();
+
+            var icomponent = (INamedTypeSymbol)compilation
+                .GetTypeByMetadataName("Hopper.Core.Components.IComponent");
+            var ibehavior = (INamedTypeSymbol)compilation
+                .GetTypeByMetadataName("Hopper.Core.Components.IBehvaior");
+            
+            var aliasAttribute = (INamedTypeSymbol)compilation
+                .GetTypeByMetadataName("Hopper.Core.Components.AliasAttribute");
+            var autoActivationAttribute = (INamedTypeSymbol)compilation
+                .GetTypeByMetadataName("Hopper.Core.Components.AutoActivationAttribute");
+            var chainsAttribute = (INamedTypeSymbol)compilation
+                .GetTypeByMetadataName("Hopper.Core.Components.ChainsAttribute");
+            var injectAttribute = (INamedTypeSymbol)compilation
+                .GetTypeByMetadataName("Hopper.Core.Components.InjectAttribute");
+            var flagsAttribute = (INamedTypeSymbol)compilation
+                .GetTypeByMetadataName("Hopper.Core.Components.FlagsAttribute");
+            var exportAttribute = (INamedTypeSymbol)compilation
+                .GetTypeByMetadataName("Hopper.Core.Components.ExportAttribute");
+            
+            var projectsToSearch = new HashSet<Project> {project};
+            var implementations = await SymbolFinder.FindImplementationsAsync(
+                icomponent, solution, transitive: false, projectsToSearch.ToImmutableHashSet());
 
             Console.WriteLine(implementations.Count());
 
             foreach (var behavior in implementations)
             {
-                Console.WriteLine(behavior.Locations.Single());
-                foreach (var method in ((INamedTypeSymbol)behavior.Definition).GetMembers().OfType<IMethodSymbol>())
+                foreach (var method in behavior.GetMembers().OfType<IMethodSymbol>())
                 foreach (var attrib in method.GetAttributes())
                 {
                     if (SymbolEqualityComparer.Default.Equals(attrib.AttributeClass, aliasAttribute))
                     foreach (var arg in attrib.ConstructorArguments)
                     {
-                        Console.WriteLine(arg);
+                        var t = (TypedConstant)arg;
+                        Console.WriteLine(t.Value);
                     }
                 }
             }
+            return;
         }
 
         public static void Test()
