@@ -1,6 +1,9 @@
 <#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="Meta" #>
 <#@ include file="Templates/Snippets/autogen_notice.txt" #>
+using Hopper.Utils.Chains;
+using Hopper.Core;
+
 namespace <#= behavior.Namespace #>
 {
     public partial class <#= behavior.ClassName #>
@@ -10,7 +13,7 @@ namespace <#= behavior.Namespace #>
 <#@ include file="Templates/Snippets/BehaviorChains.txt" #>
 
 <# foreach (var method in behavior.exportedMethods) { #>
-public void <#= method.Name #>HandlerAdapter(Context ctx)
+public static void <#= method.Name #>HandlerAdapter(Context ctx)
 {
 <#= method.AdapterBody() #>
 }

@@ -10,7 +10,7 @@ namespace Hopper.Core.Components.Basic
 {
     [ActivationAlias("ApplyStatus")]    
     [Chains("Resist")]
-    public class Statused : IBehavior
+    public partial class Statused : IBehavior
     {
         public class Context : ContextBase
         {
@@ -34,7 +34,7 @@ namespace Hopper.Core.Components.Basic
                 actor = actor,
                 statusParams = param
             };
-            Resist(ctx);
+            TraverseResist(ctx);
             AddStatuses(ctx.statusParams);
             // foreach (var statusParam in ev.statusParams)
             // {

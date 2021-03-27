@@ -5,16 +5,16 @@
         /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity.
         /// </summary>
         public static Chain<Context> <#= chain.Name #>ChainPath(Entity entity) 
-            => entity.GetBehavior(Index)._<#= chain.Name #>Chain;
+            => entity.GetComponent(Index)._<#= chain.Name #>Chain;
 
         /// <summary>
         /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity factory.
         /// </summary>
         public static Chain<Context> <#= chain.Name #>ChainPath(EntityFactory factory) 
-            => factory.GetBehavior(Index)._<#= chain.Name #>Chain;
+            => factory.GetComponent(Index)._<#= chain.Name #>Chain;
 
 <# if (chain.ShouldGenerateParamsMethod) { #>
-        public static bool <#= chain.Name #>(<#= behavior.context.Params() #>)
+        public bool <#= chain.Name #>(<#= behavior.context.Params() #>)
         {
             Context ctx = new Context
             {
@@ -27,10 +27,10 @@
 
 <# } // end if #>
 <# if (chain.ShouldGenerateTraverseMethod) { #>
-        public static bool Traverse<#= chain.Name #>(Context ctx)
+        public bool Traverse<#= chain.Name #>(Context ctx)
         {
             _<#= chain.Name #>Chain.Pass(ctx);
-            return ctx.success;
+            return ctx.propagate;
         }
 
 <# } // end if #>

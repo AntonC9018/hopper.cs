@@ -14,6 +14,9 @@ namespace Meta
     public class Generator
     {
         const string coreProjectPath = @"../Core/Hopper_Core.csproj";
+        const string autogenFolder = @"../Core/Autogen";
+        string behaviorAutogenFolder = $@"{autogenFolder}/Behaviors";
+
         public MSBuildWorkspace msWorkspace;
         public Project coreProject;
         public bool failFlag = false;
@@ -52,6 +55,21 @@ namespace Meta
                     Console.WriteLine($"Warning while opening a project:\n {args.Diagnostic.Message}");
                 }
             };
+
+            if (!Directory.Exists(autogenFolder))
+                Directory.CreateDirectory(autogenFolder);
+
+            if (!Directory.Exists(behaviorAutogenFolder))
+                Directory.CreateDirectory(behaviorAutogenFolder);
+
+            else 
+            {
+                // Clean up previously generated scripts
+                var dir = new DirectoryInfo(behaviorAutogenFolder);
+
+                foreach (var file in dir.GetFiles())
+                    file.Delete(); 
+            }
 
             coreProject = await msWorkspace.OpenProjectAsync(coreProjectPath);
             
@@ -94,7 +112,6 @@ namespace Meta
             }
 
             {
-                const string autogenFolder = @"../Autogen";
 
                 foreach (var behavior in behaviorWrappers)
                 {
@@ -105,7 +122,7 @@ namespace Meta
                     Console.WriteLine($"Generating code for {behavior.Calling}");
 
                     File.WriteAllText(
-                        $"{autogenFolder}/{behavior.ClassName}.cs",
+                        $"{behaviorAutogenFolder}/{behavior.ClassName}.cs",
                         behaviorPrinter.TransformText(),
                         Encoding.UTF8);
                 }

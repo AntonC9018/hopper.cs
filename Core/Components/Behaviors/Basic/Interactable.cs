@@ -26,25 +26,16 @@ namespace Hopper.Core.Components.Basic
         // }
 
         // for now, let the default response be `die` 
-        public static Handler<Event> DieHandler = new Handler<Event>
+        [Export] public static void Die(Damageable damageable)
         {
-            handler = (Event ev) => ev.actor.Die(),
-            // @Incomplete: hardcode a reasonable priority value 
-            priority = (int)PriorityRank.Medium
-        };
+            damageable.Die();
+        }
 
-        public static Handler<Event> ReleaseHandler = new Handler<Event>
+        [Export] public static void ReleaseContent(Context ctx)
         {
-            handler = (Event ev) => ev.content?.Release(ev.actor),
-            // @Incomplete: hardcode a reasonable priority value 
-            priority = (int)PriorityRank.Medium
-        };
+            ctx.content?.Release(ctx.actor);
+        }
 
-        public static readonly ChainTemplateBuilder DefaultBuilder = new ChainTemplateBuilder()
-                .AddTemplate<Event>(ChainName.Check)
-                .AddTemplate<Event>(ChainName.Do)
-                    .AddHandler(DieHandler)
-                    .AddHandler(ReleaseHandler)
-                .End();
+        // Check {} Do { these 2 }
     }
 }

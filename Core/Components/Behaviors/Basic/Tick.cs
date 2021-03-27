@@ -1,11 +1,8 @@
-using System.Runtime.Serialization;
-using Hopper.Core.Chains;
-
 namespace Hopper.Core.Components.Basic
 {
-    [Chains("Tick")]
+    [Chains("Do")]
     [ActivationAlias("Tick")]
-    public class Tick : IBehavior
+    public partial class Tick : IBehavior
     {
         public class Context : ActorContext
         {
@@ -16,7 +13,7 @@ namespace Hopper.Core.Components.Basic
         public void Activate(Entity actor)
         {
             var ev = new Context { actor = actor };
-            Tick(ctx);
+            Do(ctx);
         }
     }
 }

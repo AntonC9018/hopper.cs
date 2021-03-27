@@ -2,14 +2,18 @@ using Hopper.Core.Stats.Basic;
 
 namespace Hopper.Core.Components.Basic
 {
-    public class Damageable : IComponent
+    public partial class Damageable : IComponent
     {
         [Inject] public Health health;
 
-        [Alias("IsDead")] 
-        public bool IsHealthZero() 
+        [Alias("IsDead")] public bool IsHealthZero() 
         {
             return health.amount == 0;
+        }
+
+        [Alias("Die")] public void Die()
+        {
+            health.amount = 0;
         }
 
         public bool Activate(Entity entity, int damage)

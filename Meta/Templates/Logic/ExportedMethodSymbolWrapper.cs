@@ -58,6 +58,10 @@ namespace Meta
                     {
                         sb_call.Append($"out ctx.{s.Name}, ");
                     }
+                    else if (s.RefKind == RefKind.Ref)
+                    {
+                        sb_call.Append($"ref ctx.{s.Name}, ");
+                    }
                     else
                     {
                         sb_params.AppendLine($"var _{s.Name} = ctx.{s.Name};");
@@ -90,7 +94,7 @@ namespace Meta
                     {
                         // get the component from entity. For now, assume that
                         // the entity is assumed to always contain the given component.
-                        sb_params.AppendLine($"var _{s.Name} = ctx.entity.Get{s.Type.Name}();");
+                        sb_params.AppendLine($"var _{s.Name} = ctx.actor.Get{s.Type.Name}();");
                         sb_call.Append($"_{s.Name}, ");
                     }
                 }

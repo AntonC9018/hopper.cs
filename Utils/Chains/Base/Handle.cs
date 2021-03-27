@@ -5,10 +5,10 @@ namespace Hopper.Utils.Chains
 {
     public class Handle { }
 
-    public class Handle<Event> : Handle where Event : EventBase
+    public class Handle<Context> : Handle where Context : ContextBase
     {
-        public MyListNode<Handler<Event>> item;
-        public Handle(MyListNode<Handler<Event>> item)
+        public MyListNode<Handler<Context>> item;
+        public Handle(MyListNode<Handler<Context>> item)
         {
             this.item = item;
         }

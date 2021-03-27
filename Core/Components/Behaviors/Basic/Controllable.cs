@@ -39,7 +39,7 @@ namespace Hopper.Core.Components.Basic
         }
     }
 
-    public class Controllable : IComponent
+    public partial class Controllable : IComponent
     {
         public class Context : ActorContext
         {

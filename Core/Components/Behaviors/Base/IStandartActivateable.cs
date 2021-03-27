@@ -4,6 +4,6 @@ namespace Hopper.Core.Components
 {
     public interface IStandartActivateable
     {
-        bool Activate(IntVector2 direction);
+        bool Activate(Entity entity, IntVector2 direction);
     }
 }

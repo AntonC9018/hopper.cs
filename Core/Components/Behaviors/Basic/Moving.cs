@@ -1,13 +1,9 @@
-using System.Runtime.Serialization;
-using Hopper.Utils.Chains;
 using Hopper.Core.Stats.Basic;
-using Hopper.Core.Chains;
-using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Components.Basic
 {
     [AutoActivation("Move")]
-    public class Moving : IBehavior, IStandartActivateable
+    public partial class Moving : IBehavior, IStandartActivateable
     {
         public class Context : StandartContext
         {

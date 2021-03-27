@@ -22,7 +22,7 @@ namespace Hopper.Core.Components.Basic
             public Entity attacker;
             public Attack attack;
             public IntVector2 direction;
-            public Attack.Resistance resistance = null;
+            [Omit] public Attack.Resistance resistance;
         }
 
         /// <summary> 
@@ -95,14 +95,14 @@ namespace Hopper.Core.Components.Basic
         /// It activates the <c>Damageable</c> behavior if the attack's pierce is as high as the pierce resistance.
         /// </summary>
         [Export] public static void TakeHit(
-            Damageable damageable, 
+            Entity actor, 
             Attack attack, 
             Attack.Resistance resistance)
         {
             // if pierce is high enough, resist the taken damage altogether
             if (resistance.pierce <= attack.pierce)
             {
-                damageable.Activate(attack.damage);
+                actor.BeDamaged(attack.damage);
             }
             // priority = PriorityMapping.Low + 0x8000
         }

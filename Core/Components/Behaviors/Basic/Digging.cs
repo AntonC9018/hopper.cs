@@ -10,12 +10,12 @@ using Hopper.Core.Stats;
 namespace Hopper.Core.Components.Basic
 {
     [AutoActivation("Dig")]
-    public class Digging : IBehavior, IStandartActivateable
+    public partial class Digging : IBehavior, IStandartActivateable
     {
         public class Context : StandartContext
         {
-            public Dig dig = null;
-            public List<Target> targets = null;
+            [Omit] public Dig dig;
+            [Omit] public List<Target> targets;
         }
 
         [Export] public static void SetDig(StatManager stats, out Dig dig)

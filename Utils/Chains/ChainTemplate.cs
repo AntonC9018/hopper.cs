@@ -10,43 +10,43 @@ namespace Hopper.Utils.Chains
         IChainTemplate Clone();
     }
 
-    public struct Handler<Event>
+    public struct Handler<Context>
     {
-        public Action<Event> handler;
+        public Action<Context> handler;
         public int priority;
     }
 
-    public class ChainTemplate<Event> : IChainTemplate
-        where Event : EventBase
+    public class ChainTemplate<Context> : IChainTemplate
+        where Context : ContextBase
     {
-        private List<Handler<Event>> m_handlers;
+        private List<Handler<Context>> m_handlers;
         private bool m_areHandlersCached;
 
         public ChainTemplate()
         {
-            m_handlers = new List<Handler<Event>>(8);
+            m_handlers = new List<Handler<Context>>(8);
             m_areHandlersCached = false;
         }
 
-        private ChainTemplate(List<Handler<Event>> handlers)
+        private ChainTemplate(List<Handler<Context>> handlers)
         {
-            m_handlers = new List<Handler<Event>>(handlers);
+            m_handlers = new List<Handler<Context>>(handlers);
         }
 
-        public ChainTemplate<Event> AddHandler(System.Action<Event> handlerFunc,
+        public ChainTemplate<Context> AddHandler(System.Action<Context> handlerFunc,
             PriorityRank priority = PriorityRank.Default)
         {
             return AddHandler(handlerFunc, (int)priority);
         }
 
-        public ChainTemplate<Event> AddHandler(System.Action<Event> handlerFunc, int priority)
+        public ChainTemplate<Context> AddHandler(System.Action<Context> handlerFunc, int priority)
         {
             m_areHandlersCached = false;
-            m_handlers.Add(new Handler<Event> { handler = handlerFunc, priority = priority });
+            m_handlers.Add(new Handler<Context> { handler = handlerFunc, priority = priority });
             return this;
         }
 
-        public ChainTemplate<Event> AddHandler(Handler<Event> handler)
+        public ChainTemplate<Context> AddHandler(Handler<Context> handler)
         {
             m_areHandlersCached = false;
             m_handlers.Add(handler);
@@ -62,9 +62,9 @@ namespace Hopper.Utils.Chains
             return InitAndCache();
         }
 
-        private Chain<Event> InitAndCache()
+        private Chain<Context> InitAndCache()
         {
-            var chain = new Chain<Event>();
+            var chain = new Chain<Context>();
             for (int j = 0; j < m_handlers.Count; j++)
             {
                 chain.AddHandler(m_handlers[j]);
@@ -84,9 +84,9 @@ namespace Hopper.Utils.Chains
             return chain;
         }
 
-        private Chain<Event> InitFromCache()
+        private Chain<Context> InitFromCache()
         {
-            var chain = new Chain<Event>();
+            var chain = new Chain<Context>();
             foreach (var info in m_handlers)
             {
                 chain.m_handlers.AddFront(info);
@@ -96,7 +96,7 @@ namespace Hopper.Utils.Chains
 
         public IChainTemplate Clone()
         {
-            var newTemplate = new ChainTemplate<Event>(m_handlers);
+            var newTemplate = new ChainTemplate<Context>(m_handlers);
             newTemplate.m_areHandlersCached = m_areHandlersCached;
             return newTemplate;
         }

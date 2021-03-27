@@ -7,7 +7,7 @@ namespace Hopper.Utils.Chains
 {
     public class Chain { }
 
-    public class Chain<Event> : Chain where Event : EventBase
+    public class Chain<Context> : Chain where Context : ContextBase
     {
         public const int NUM_PRIORITY_RANKS = (int)PriorityRank.Highest + 1;
         public const int PRIORITY_STEP = 0x08;
@@ -19,35 +19,35 @@ namespace Hopper.Utils.Chains
             PriorityMapping.Highest,
         };
         internal bool m_dirty;
-        internal MyLinkedList<Handler<Event>> m_handlers;
-        internal List<MyListNode<Handler<Event>>> m_handlersToRemove;
+        internal MyLinkedList<Handler<Context>> m_handlers;
+        internal List<MyListNode<Handler<Context>>> m_handlersToRemove;
 
         public Chain()
         {
-            m_handlers = new MyLinkedList<Handler<Event>>();
-            m_handlersToRemove = new List<MyListNode<Handler<Event>>>();
+            m_handlers = new MyLinkedList<Handler<Context>>();
+            m_handlersToRemove = new List<MyListNode<Handler<Context>>>();
         }
 
-        public Handle<Event> AddHandler(Action<Event> handlerFunction,
+        public Handle<Context> AddHandler(Action<Context> handlerFunction,
             PriorityRank priority = PriorityRank.Default)
         {
             return AddHandler(handlerFunction, (int)priority);
         }
 
-        public Handle<Event> AddHandler(Action<Event> handlerFunction, int priority)
+        public Handle<Context> AddHandler(Action<Context> handlerFunction, int priority)
         {
-            return AddHandler(new Handler<Event> { handler = handlerFunction, priority = priority });
+            return AddHandler(new Handler<Context> { handler = handlerFunction, priority = priority });
         }
 
-        public Handle<Event> AddHandler(Handler<Event> handler)
+        public Handle<Context> AddHandler(Handler<Context> handler)
         {
             m_dirty = true;
             handler.priority = MapPriority(handler.priority);
             m_handlers.AddFront(handler);
-            return new Handle<Event>(m_handlers.head);
+            return new Handle<Context>(m_handlers.head);
         }
 
-        public void Pass(Event ev)
+        public void Pass(Context ev)
         {
             CleanUp();
             foreach (var handler in m_handlers)
@@ -58,7 +58,7 @@ namespace Hopper.Utils.Chains
             }
         }
 
-        public void Pass(Event ev, System.Func<Event, bool> stopFunc)
+        public void Pass(Context ev, System.Func<Context, bool> stopFunc)
         {
             CleanUp();
             foreach (var handler in m_handlers)
@@ -69,14 +69,14 @@ namespace Hopper.Utils.Chains
             }
         }
 
-        public void RemoveHandler(Handle<Event> handle)
+        public void RemoveHandler(Handle<Context> handle)
         {
             m_handlersToRemove.Add(handle.item);
         }
 
         public void RemoveHandler(Handle handle)
         {
-            m_handlersToRemove.Add(((Handle<Event>)handle).item);
+            m_handlersToRemove.Add(((Handle<Context>)handle).item);
         }
 
         internal int MapPriority(int rank)

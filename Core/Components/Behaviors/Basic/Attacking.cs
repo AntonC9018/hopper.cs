@@ -30,7 +30,7 @@ namespace Hopper.Core.Components.Basic
         {
             if (!to.IsDead())
             {
-                return to.TryBeAttacked(attacker, attack, direciton);
+                return to.TryBeAttacked(from, attack, direction);
             }
             return false;
         }
@@ -40,7 +40,7 @@ namespace Hopper.Core.Components.Basic
         /// It loads the attack and push from the stats manager.  
         /// </summary>
         [Export] public static void SetStats(
-            StatManager stats, out Attack attack, out Push push)
+            StatManager stats, ref Attack attack, ref Push push)
         {
             if (attack == null)
             {

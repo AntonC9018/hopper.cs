@@ -8,7 +8,7 @@ namespace Hopper.Core.Components.Basic
 {
     // Withe the PassToContext feature, this will work correclty with an autoactivation
     [AutoActivation("Displace")]
-    public class Displaceable : IBehavior
+    public partial class Displaceable : IBehavior
     {
         public class Context : StandartContext
         {
