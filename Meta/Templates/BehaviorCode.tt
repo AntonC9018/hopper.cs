@@ -1,31 +1,35 @@
 <#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="Meta" #>
 <#@ include file="Templates/Snippets/autogen_notice.txt" #>
-
 namespace <#= behavior.Namespace #>
 {
     public partial class <#= behavior.ClassName #>
     {
-        <#@ include file="Templates/Snippets/ComponentIndex.txt" #>
+<#@ include file="Templates/Snippets/ComponentIndex.txt" #>
 
-
-        <#@ include file="Templates/Snippets/BehaviorChains.txt" #>
+<#@ include file="Templates/Snippets/BehaviorChains.txt" #>
 
 <# foreach (var method in behavior.exportedMethods) { #>
-        public void <#= method.Name #>HandlerAdapter(Context ctx)
-        {
-            <#= method.AdapterBody() #>
-        }
+public void <#= method.Name #>HandlerAdapter(Context ctx)
+{
+<#= method.AdapterBody() #>
+}
 
-        public static Handler<Context> <#= method.Name #>Handler
+        public static Handler<Context> <#= method.Name #>Handler = new Handler<Context>
         {
             handler = <#= method.Name #>HandlerAdapter, 
             priority = <#= 5 /* some priority, retrieved from json */ #>
         };
-    
+
 <# } // end foreach #>
+
 <# /*foreach (var preset in presets) {*/ #>
         /* TODO: presets */
 <# /*}*/ // end foreach #>
+    }
+
+    public static partial class <#= behavior.ClassName #>EntityExtensions
+    {
+<#@ include file="Templates/Snippets/BehaviorEntityExtensions.txt" #>
     }
 }

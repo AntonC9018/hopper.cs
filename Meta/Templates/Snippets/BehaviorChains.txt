@@ -40,9 +40,9 @@
         {
             Context ctx = new Context
             {
-            <# foreach (var name in behavior.context.ParamNames()) { #>
+<# foreach (var name in behavior.context.ParamNames()) { #>
                 <#= name #> = <#= name #>,
-            <# } #>
+<# } #>
             };
             if (TraverseCheck(ctx)) 
             {

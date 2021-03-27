@@ -56,7 +56,7 @@ namespace Meta
                 {
                     if (s.RefKind == RefKind.Out)
                     {
-                        sb_call.Append($"out ctx.{s.Name}");
+                        sb_call.Append($"out ctx.{s.Name}, ");
                     }
                     else
                     {

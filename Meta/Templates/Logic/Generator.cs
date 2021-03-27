@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Hopper.Meta.Template;
 using Microsoft.CodeAnalysis;
@@ -69,37 +71,46 @@ namespace Meta
             var behaviors = await ctx.FindAllBehaviors();
 
             var globalAliases = new HashSet<string>();
+
+            var behaviorWrappers = new List<BehaviorSymbolWrapper>();
             
             foreach (var b in behaviors)
             {
                 try
                 {
                     var wrapped = new BehaviorSymbolWrapper(b, globalAliases);
-
-                    var printerPartial = new BehaviorPartial();
-                    printerPartial.behavior = wrapped;
-                    Console.WriteLine(printerPartial.TransformText());
-                    
-                    var printerExtensions = new BehaviorEntityExtensions();
-                    printerExtensions.behavior = wrapped;
-                    Console.WriteLine(printerExtensions.TransformText());
-
-                    // wrapped.context.
+                    behaviorWrappers.Add(wrapped);
                 }
                 catch (GeneratorException e)
                 {
+                    Console.WriteLine("An error occured while processing a behavior:");
                     Console.WriteLine(e.Message);
+                    Console.WriteLine("");
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
             }
-            
+
+            {
+                const string autogenFolder = @"../Autogen";
+
+                foreach (var behavior in behaviorWrappers)
+                {
+                    var behaviorPrinter = new BehaviorCode();
+                    behaviorPrinter.Initialize();
+                    behaviorPrinter.behavior = behavior;
+
+                    File.WriteAllText(
+                        $"{autogenFolder}/{behavior.ClassName}.cs",
+                        behaviorPrinter.TransformText(),
+                        Encoding.UTF8);
+                }
+            }
             
             // var components = await ctx.FindAllDirectComponents();
             // var tags = await ctx.FindAllTags();
-
         }
 
         public async Task Test2()
