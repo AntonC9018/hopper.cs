@@ -8,7 +8,6 @@ namespace Meta
     public class BehaviorSymbolWrapper : ComponentSymbolWrapper
     {
         public ContextSymbolWrapper context;
-        public AliasMethodSymbolWrapper[] aliasMethods;
         public ExportedMethodSymbolWrapper[] exportedMethods;
         public ISymbol[] usings;
         public bool ShouldGenerateActivation;
@@ -18,14 +17,14 @@ namespace Meta
         public bool HasCheck() => chains.Any(chain => chain.Name == "Check");
         public bool HasDo() => chains.Any(chain => chain.Name == "Do");
 
-        public override string TypeText() => "behavior";
+        public override string TypeText => "behavior";
 
         public BehaviorSymbolWrapper(INamedTypeSymbol symbol, HashSet<string> globalAliases) : base(symbol, globalAliases)
         {
-            Init();
+            Init(globalAliases);
         }
 
-        private void Init()
+        private void Init(HashSet<string> globalAliases)
         {
             // Initialize the context class symbol wrapper
             var ctx_symbol = symbol.GetMembers().FirstOrDefault(s => s.Name == "Context");
@@ -106,6 +105,11 @@ namespace Meta
                 {
                     throw new GeneratorException($"No suitable activation method found for the {symbol.Name} behavior. To resolve, provide an activation method that would take the following arguments: {context.JoinedParamTypeNames()}\nAlternatively, apply the AutoActivation attribute for such a method to be generated automatically.\nYou may also apply the Omit attribute to members of your Context class or give them default values, if the activation must not require them.");
                 }
+            }
+
+            if (globalAliases.Contains(ActivationAlias))
+            {
+                throw new GeneratorException($"Duplicate alias name {ActivationAlias} in behavior {symbol.Name}.");
             }
 
 

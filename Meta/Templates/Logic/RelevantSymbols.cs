@@ -22,6 +22,7 @@ namespace Meta
         public INamedTypeSymbol omitAttribute;
 
         public INamedTypeSymbol boolType;
+        public INamedTypeSymbol voidType;
 
         public static void TryInitializeSingleton(Compilation compilation)
         {
@@ -52,6 +53,7 @@ namespace Meta
             activationAliasAttribute  = GetComponentSymbol(compilation, "ActivationAliasAttribute");
             autoActivationAttribute = GetComponentSymbol(compilation, "AutoActivationAttribute");
             boolType = compilation.GetSpecialType(SpecialType.System_Boolean);
+            voidType = compilation.GetSpecialType(SpecialType.System_Void);
         }
     }
 }

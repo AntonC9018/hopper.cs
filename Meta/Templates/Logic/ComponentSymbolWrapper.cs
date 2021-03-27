@@ -4,11 +4,10 @@ using Microsoft.CodeAnalysis;
 
 namespace Meta
 {
-
-    public class ComponentSymbolWrapper : NamedTypeSymbolWrapper
+    public class ComponentSymbolWrapper : ComponentSymbolWrapperBase
     {   
         public HashSet<IFieldSymbol> flaggedFields;
-        private AliasMethodSymbolWrapper[] aliasMethods;
+        public AliasMethodSymbolWrapper[] aliasMethods;
 
         public ComponentSymbolWrapper(INamedTypeSymbol symbol, HashSet<string> globalAliases) : base(symbol)
         {
@@ -21,6 +20,6 @@ namespace Meta
             aliasMethods = GetAliasMethods(globalAliases);
         }
 
-        public override string TypeText() => "component";
+        public override string TypeText => "component";
     }
 }

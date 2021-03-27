@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -8,23 +9,22 @@ namespace Meta
         public IMethodSymbol _symbol;
         public string _alias;
 
-        public string Alias => _alias;
-        public string MethodName => _symbol.Name;
-
         public AliasMethodSymbolWrapper(IMethodSymbol symbol, string alias)
         {
             _symbol = symbol;
             _alias = alias;
         }
 
-        public string ParametersInSignature()
-        {
-            return string.Join(", ", _symbol.Parameters.Select(p => p.ToDisplayString()));
-        }
-
-        public string ParametersInInvocation()
-        {
-            return string.Join(", ", _symbol.Parameters.Select(p => p.Name));
-        }
+        /* Things mainly called in the template */
+        public string Alias => _alias;
+        public string Name => _symbol.Name;
+        public bool ReturnTypeIsVoid() => SymbolEqualityComparer.Default.Equals(_symbol.ReturnType, RelevantSymbols.Instance.voidType);  
+        public string ReturnType => ReturnTypeIsVoid() ? "void" : ((INamedTypeSymbol)_symbol.ReturnType).TypeToText();
+        public string ParamsWithActor() => _symbol.Parameters.ParamsWithActor();
+        public string Params() => _symbol.Parameters.Params();
+        public IEnumerable<string> ParamNames() => _symbol.Parameters.ParamNames();
+        public string JoinedParamNames() => _symbol.Parameters.JoinedParamNames();
+        public IEnumerable<string> ParamTypeNames() => _symbol.Parameters.ParamTypeNames();
+        public string JoinedParamTypeNames() => _symbol.Parameters.JoinedParamTypeNames();
     }
 }

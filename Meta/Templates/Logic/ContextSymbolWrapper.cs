@@ -24,45 +24,6 @@ namespace Meta
         public List<IFieldSymbol> notOmitted;
 
 
-        public string ParamsWithActor()
-        {
-            if (notOmitted.Count > 0)
-            {
-                if (SymbolEqualityComparer.Default.Equals(notOmitted[0].Type, RelevantSymbols.Instance.entity))
-                    return Params();
-                else
-                    return $"Entity actor, {Params()}";
-            }
-            return "Entity actor";
-        }
-
-        
-
-        public string Params()
-        {
-            return String.Join(", ", notOmitted.Select(p => $"{((INamedTypeSymbol)p.Type).TypeToText()} {p.Name}"));
-        }
-
-        public IEnumerable<string> ParamNames()
-        {
-            return notOmitted.Select(p => p.Name);
-        }
-
-        public string JoinedParamNames()
-        {
-            return String.Join(", ", notOmitted.Select(p => p.Name));
-        }
-
-        public IEnumerable<string> ParamTypeNames()
-        {
-            return notOmitted.Select(p => p.Type.Name);
-        }
-
-        public string JoinedParamTypeNames()
-        {
-            return String.Join(", ", ParamTypeNames());
-        }
-
         public void HashFields()
         {
             fieldsHashed = new Dictionary<string, IFieldSymbol>();
@@ -110,5 +71,14 @@ namespace Meta
                 SymbolEqualityComparer.Default.Equals(type, t.Type);
         }
         public bool ShouldBeOmitted(string name) => omitted.Contains(name);
+
+
+        /* Things mainly called in the template */
+        public string ParamsWithActor() => notOmitted.ParamsWithActor();
+        public string Params() => notOmitted.Params();
+        public IEnumerable<string> ParamNames() => notOmitted.ParamNames();
+        public string JoinedParamNames() => notOmitted.JoinedParamNames();
+        public IEnumerable<string> ParamTypeNames() => notOmitted.ParamTypeNames();
+        public string JoinedParamTypeNames() => notOmitted.JoinedParamTypeNames();
     }
 }
