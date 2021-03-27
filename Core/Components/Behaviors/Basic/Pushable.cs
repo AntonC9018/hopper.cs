@@ -1,87 +1,50 @@
-using System.Runtime.Serialization;
-using Hopper.Utils.Chains;
 using Hopper.Core.Stats.Basic;
 using Hopper.Utils.Vector;
-using Hopper.Core.Chains;
+using Hopper.Core.Stats;
 
 namespace Hopper.Core.Components.Basic
 {
-    [DataContract]
+    [AutoActivation("Push")]
     public class Pushable : IBehavior
     {
-        public class Context : ActorEvent
+        public class Context : ActorContext
         {
             public Push push;
-            public Push.Resistance resistance;
-            public IntVector2 dir;
+            public IntVector2 direction;
+            [Omit] public Push.Resistance resistance;
         }
 
-        public bool Activate(IntVector2 dir, Push push)
+        [Export] public static void SetResistance(StatManager stats, out Push.Resistance resistance)
         {
-            var ev = new Event
+            resistance = stats.GetLazy(Push.Resistance.Path);
+        }
+
+        [Export] public static void ResistSource(StatManager stats, Push push)
+        {
+            var sourceRes = stats.GetLazy(Push.Source.Resistance.Path);
+            if (sourceRes[push.sourceId] > push.power)
             {
-                actor = m_entity,
-                push = push,
-                dir = dir
-            };
-            return CheckDoCycle<Event>(ev);
-        }
-
-        static void SetResistance(Event ev)
-        {
-            ev.resistance = ev.actor.Stats.GetLazy(Push.Resistance.Path);
-        }
-
-        static void ResistSource(Event ev)
-        {
-            var sourceRes = ev.actor.Stats.GetLazy(Push.Source.Resistance.Path);
-            if (sourceRes[ev.push.sourceId] > ev.push.power)
-            {
-                ev.push.distance = 0;
+                push.distance = 0;
             }
         }
 
-        static void Armor(Event ev)
+        [Export] public static void Armor(Context ctx)
         {
-            if (ev.push.pierce <= ev.resistance.pierce)
+            if (ctx.push.pierce <= ctx.resistance.pierce)
             {
-                ev.propagate = false;
+                // ctx.propagate = false;
             }
         }
 
-        static void BePushed(Event ev)
+        [Export] public static void BePushed(Entity actor, IntVector2 direction, Push push)
         {
-            if (ev.push.distance > 0)
+            if (push.distance > 0)
             {
-                ev.actor.Behaviors.Get<Displaceable>()
-                    .Activate(ev.dir, ev.push.ConvertToMove());
+                actor.Displace(direction, push.ConvertToMove());
             }
         }
 
-        public static readonly ChainPaths<Pushable, Event> Check;
-        public static readonly ChainPaths<Pushable, Event> Do;
-
-        public static readonly ChainTemplateBuilder DefaultBuilder;
-        public static ConfiglessBehaviorFactory<Pushable> Preset =>
-            new ConfiglessBehaviorFactory<Pushable>(DefaultBuilder);
-
-        static Pushable()
-        {
-            Check = new ChainPaths<Pushable, Event>(ChainName.Check);
-            Do = new ChainPaths<Pushable, Event>(ChainName.Do);
-
-            DefaultBuilder = new ChainTemplateBuilder()
-
-                .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(SetResistance, PriorityRank.High)
-                .AddHandler(ResistSource, PriorityRank.High)
-                .AddHandler(Armor, PriorityRank.High)
-
-                .AddTemplate<Event>(ChainName.Do)
-                .AddHandler(BePushed)
-                .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.pushed_do))
-
-                .End();
-        }
+        // Check { SetResistance, ResistSource, Armor }
+        // Do    { BePushed, AddHistoryEvent }
     }
 }

@@ -6,62 +6,28 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Components.Basic
 {
-    [DataContract]
+    [AutoActivation("Move")]
     public class Moving : IBehavior, IStandartActivateable
     {
-
-        public class Context : StandartEvent
+        public class Context : StandartContext
         {
-            public Move move;
+            [Omit] public Move move;
         }
 
-        public bool Activate(IntVector2 direction)
+        [Export] public static void SetBase(Context ctx)
         {
-            var ev = new Event
+            if (ctx.move == null)
             {
-                actor = m_entity,
-                direction = direction
-            };
-            return CheckDoCycle<Event>(ev);
+                ctx.move = ctx.actor.GetStatManager().GetLazy(Move.Path);
+            }
         }
 
-        public static Handler<Event> SetBaseHandler = new Handler<Event>
+        [Export] public static void Displace(Context ctx)
         {
-            handler = (Event ev) =>
-            {
-                if (ev.move == null)
-                {
-                    ev.move = ev.actor.Stats.GetLazy(Move.Path);
-                }
-            },
-            // @Incomplete hardcode a reasonable priority value
-            priority = (int)PriorityRank.High
-        };
+            ctx.actor.Displace(ctx.direction, ctx.move);
+        }
 
-        public static Handler<Event> DisplaceHandler = new Handler<Event>
-        {
-            handler = (Event ev) =>
-            {
-                ev.actor.Behaviors.Get<Displaceable>().Activate(ev.direction, ev.move);
-            },
-            // @Incomplete hardcode a reasonable priority value
-            priority = (int)PriorityRank.Default
-        };
-
-        public static Handler<Event> UpdateHistoryHandler = new Handler<Event>
-        {
-            handler = Utils.AddHistoryEvent(History.UpdateCode.move_do),
-            // @Incomplete hardcode a reasonable priority value
-            priority = (int)PriorityRank.Default
-        };
-
-        public static readonly ChainTemplateBuilder DefaultBuilder = 
-            new ChainTemplateBuilder()
-                .AddTemplate<Event>(ChainName.Check)
-                    .AddHandler(SetBaseHandler)
-                .AddTemplate<Event>(ChainName.Do)
-                    .AddHandler(DisplaceHandler)
-                    .AddHandler(UpdateHistoryHandler)
-                .End();
+        // Check { SetBase }
+        // Do    { Displace }
     }
 }

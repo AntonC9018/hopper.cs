@@ -24,7 +24,7 @@ namespace Hopper.Test_Content.Bind
 
     public class Binding : IBehavior<BindStatus>, IStandartActivateable
     {
-        public class Context : StandartEvent
+        public class Context : StandartContext
         {
             public StatusFile statusStat;
             public BindStatus bindStatus;

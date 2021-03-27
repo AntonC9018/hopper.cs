@@ -6,34 +6,21 @@ using Hopper.Core.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
-    [DataContract]
+    // Withe the PassToContext feature, this will work correclty with an autoactivation
+    [AutoActivation("Displace")]
     public class Displaceable : IBehavior
     {
-        public class Context : StandartEvent
+        public class Context : StandartContext
         {
-            public Entity entity;
             public Move move;
-            public IntVector2 newPos;
-            public Layer blockLayer;
+            [Omit] public IntVector2 newPos;
+            [Omit] public Layer blockLayer;
         }
 
-        [Inject] public Layer blockLayer;
+        /* [PassToContext] */ [Inject] public Layer blockLayer;
 
-        // TODO: automatically assign blockLayer in the generated activation function
-        // through an attibute.
-        public bool Activate(Entity entity, IntVector2 dir, Move move)
-        {
-            var ev = new Context
-            {
-                actor = entity,
-                direction = dir,
-                move = move,
-                blockLayer = blockLayer
-            };
-            return CheckDoCycle<Context>(ev);
-        }
 
-        public static void ConvertFromMove(Context ctx)
+        [Export] public static void ConvertFromMove(Context ctx)
         {
             int i = 1;
 
@@ -41,7 +28,7 @@ namespace Hopper.Core.Components.Basic
 
             do
             {
-                if (ctransform.HasBlockRelative(ctx.direction * i, ctx.blockLayer))
+                if (transform.HasBlockRelative(ctx.direction * i, ctx.blockLayer))
                     break;
                 i++;
             } while (i < ctx.move.power);
@@ -58,33 +45,18 @@ namespace Hopper.Core.Components.Basic
             }
         }
 
-        public static void DisplaceRemove = new Handler<Context>
+        [Export] public static void DisplaceRemove(
+            TransformComponent transform, IntVector2 newPos)
         {
-            handler = (Context ev) =>
-            {
-                ev.actor.RemoveFromGrid();
-                ev.actor.Pos = ev.newPos;
-            },
-            // @Incomplete hardcode a reasonable priority value 
-            priority = (int)PriorityRank.Default
-        };
+            transform.RemoveFromGrid();
+            transform.position = newPos;
+        }
 
-        public static Handler<Context> DisplaceAddBackHandler = new Handler<Context>
+        [Export] public static void DisplaceAddBackHandler(
+            TransformComponent transform)
         {
-            handler = (Context ev) =>
-            {
-                ev.actor.ResetInGrid();
-            },
-            // @Incomplete hardcode a reasonable priority value 
-            priority = (int)PriorityRank.Default
-        };
-
-        public static Handler<Context> UpdateHistoryHandler = new Handler<Context>
-        {
-            handler = Utils.AddHistoryEvent(History.UpdateCode.displaced_do),
-            // @Incomplete hardcode a reasonable priority value 
-            priority = (int)PriorityRank.Default
-        };
+            transform.ResetInGrid();
+        }
 
         // Check { ConvertFromMove }
         // Do    { DisplaceRemove, UpdateHistory, DisplaceAddBack }

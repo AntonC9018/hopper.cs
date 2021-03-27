@@ -14,7 +14,7 @@ namespace Hopper.Core.Retouchers
             OnDisplace.RegisterSelf(registry);
         }
 
-        private static void PickUp(ActorEvent actorEvent)
+        private static void PickUp(ActorContext actorEvent)
         {
             var droppedItems = actorEvent.actor.GetCell().m_entities
                 .Where(i => i.Layer == Layer.DROPPED)

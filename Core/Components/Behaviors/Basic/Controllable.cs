@@ -39,11 +39,11 @@ namespace Hopper.Core.Components.Basic
         }
     }
 
-    public class Controllable : IBehavior
+    public class Controllable : IComponent
     {
-        public class Context : ActorEvent
+        public class Context : ActorContext
         {
-            public Action action;
+            public Action action = null;
             public IntVector2 direction;
 
             public ParticularAction ToParticular()
@@ -62,31 +62,27 @@ namespace Hopper.Core.Components.Basic
 
         [Inject] public Action defaultAction;
 
-        public ParticularAction ConvertInputToAction(InputMapping input)
+        public ParticularAction ConvertInputToAction(Entity entity, InputMapping input)
         {
-            var ev = new Event { actor = m_entity };
-            GetChain<Event>(input).Pass(ev);
+            var ev = new Context { actor = entity };
+            GetChain<Context>(input).Pass(ev);
             return ev.ToParticular();
         }
 
-        public ParticularAction ConvertVectorToAction(IntVector2 direction)
+        public ParticularAction ConvertVectorToAction(Entity entity, IntVector2 direction)
         {
-            var ev = new Event
+            var ev = new Context
             {
-                actor = m_entity,
-                action = config_defaultAction,
+                actor = entity,
+                action = defaultAction,
                 direction = direction
             };
-            GetChain<Event>(InputMapping.Vector).Pass(ev);
+            GetChain<Context>(InputMapping.Vector).Pass(ev);
             return ev.ToParticular();
         }
 
-        public static readonly Dictionary<InputMapping, ChainPaths<Controllable, Event>> Chains
-            = new Dictionary<InputMapping, ChainPaths<Controllable, Event>>();
-
-        public static readonly ChainTemplateBuilder DefaultBuilder;
-        public static ConfigurableBehaviorFactory<Controllable, Action> Preset(Action defaultAction)
-            => new ConfigurableBehaviorFactory<Controllable, Action>(DefaultBuilder, defaultAction);
+        public static readonly Dictionary<InputMapping, ChainPaths<Controllable, Context>> Chains
+            = new Dictionary<InputMapping, ChainPaths<Controllable, Context>>();
 
         static Controllable()
         {
@@ -96,8 +92,8 @@ namespace Hopper.Core.Components.Basic
             // set up all templates
             foreach (InputMapping name in InputMapping.Members)
             {
-                DefaultBuilder.AddTemplate<Event>(name);
-                Chains[name] = new ChainPaths<Controllable, Event>(name);
+                DefaultBuilder.AddTemplate<Context>(name);
+                Chains[name] = new ChainPaths<Controllable, Context>(name);
             }
         }
     }

@@ -3,11 +3,11 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
-    public class ActorEvent : EventBase
+    public class ActorContext : ContextBase
     {
         public Entity actor;
     }
-    public class StandartEvent : ActorEvent
+    public class StandartContext : ActorContext
     {
         public IntVector2 direction;
     }

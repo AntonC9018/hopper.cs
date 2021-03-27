@@ -82,7 +82,7 @@ namespace Hopper.Core
         public bool IsTinked(Entity entity) => entity.Tinkers.IsTinked(this);
         public T GetStore(Entity actor) => (T)actor.Tinkers.GetStore(this);
         public T GetStore(TinkerControl tinker) => (T)tinker.GetStore(this);
-        public T GetStore(ActorEvent ev) => (T)ev.actor.Tinkers.GetStore(this);
+        public T GetStore(ActorContext ev) => (T)ev.actor.Tinkers.GetStore(this);
 
         // beacuse I'm sick of boilerplate for simple stuff
         public static Tinker<T> SingleHandlered<Event>(

@@ -25,7 +25,7 @@ namespace Hopper.Core
         public System.Action<Entity> enterFunction = null;
         public System.Action<Entity> exitFunction = null;
         public MovsFunc movs = null;
-        public System.Action<Acting.Event> algo = null;
+        public System.Action<Acting.Context> algo = null;
 
         public int CheckSuccessAndGetRelativeIndex(Entity e)
         {
@@ -43,7 +43,7 @@ namespace Hopper.Core
                 return relativeStepIndexFail;
             }
 
-            var acting = e.Behaviors.Get<Acting>();
+            var acting = e.Behaviors.GetComponent(Acting.Index);
 
             if (acting != null)
             {

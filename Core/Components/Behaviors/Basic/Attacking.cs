@@ -15,7 +15,7 @@ namespace Hopper.Core.Components.Basic
     [AutoActivation("Attack")]
     public partial class Attacking : IBehavior, IStandartActivateable, IBehaviorPredictable
     {
-        public class Context : StandartEvent
+        public class Context : StandartContext
         {
             public List<Target> targets;
             public Attack attack;

@@ -42,7 +42,7 @@ namespace Hopper.Test_Content.Floor
                     .End();
             }
 
-            private void PreventActionAndDecreaseAmount(ActorEvent ev)
+            private void PreventActionAndDecreaseAmount(ActorContext ev)
             {
                 if (status.IsApplied(ev.actor))
                 {

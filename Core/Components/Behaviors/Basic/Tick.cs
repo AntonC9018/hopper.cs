@@ -3,31 +3,20 @@ using Hopper.Core.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
-    [DataContract]
+    [Chains("Tick")]
+    [ActivationAlias("Tick")]
     public class Tick : IBehavior
     {
-        public class Context : ActorEvent
+        public class Context : ActorContext
         {
         }
 
-        public void Activate()
+        // TODO: void return types of activation should be autointerpreted as true?
+        //       or allow void return types.
+        public void Activate(Entity actor)
         {
-            var ev = new Event { actor = m_entity };
-            System.Console.WriteLine(m_entity);
-            GetChain<Event>(ChainName.Default).Pass(ev);
-        }
-
-        public static readonly ChainPaths<Tick, Event> Chain;
-
-        public static readonly ChainTemplateBuilder DefaultBuilder;
-        public static ConfiglessBehaviorFactory<Tick> Preset =>
-            new ConfiglessBehaviorFactory<Tick>(DefaultBuilder);
-
-        static Tick()
-        {
-            Chain = new ChainPaths<Tick, Event>(ChainName.Default);
-            DefaultBuilder = new ChainTemplateBuilder()
-                .AddTemplate<Event>(ChainName.Default).End();
+            var ev = new Context { actor = actor };
+            Tick(ctx);
         }
     }
 }

@@ -102,6 +102,8 @@ namespace Meta
                     behaviorPrinter.Initialize();
                     behaviorPrinter.behavior = behavior;
 
+                    Console.WriteLine($"Generating code for {behavior.Calling}");
+
                     File.WriteAllText(
                         $"{autogenFolder}/{behavior.ClassName}.cs",
                         behaviorPrinter.TransformText(),

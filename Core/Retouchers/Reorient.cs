@@ -27,7 +27,7 @@ namespace Hopper.Core.Retouchers
             OnActionSuccessToClosestPlayer.RegisterSelf(registry);
         }
 
-        private static void AnyReorient(StandartEvent ev)
+        private static void AnyReorient(StandartContext ev)
         {
             if (ev.direction != IntVector2.Zero)
             {
@@ -43,7 +43,7 @@ namespace Hopper.Core.Retouchers
             }
         }
 
-        private static void ToPlayer(ActorEvent ev)
+        private static void ToPlayer(ActorContext ev)
         {
             ToPlayer(ev.actor);
         }

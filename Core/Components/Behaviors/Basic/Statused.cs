@@ -8,63 +8,49 @@ using Hopper.Core.Stats;
 
 namespace Hopper.Core.Components.Basic
 {
-    [DataContract]
+    [ActivationAlias("ApplyStatus")]    
+    [Chains("Resist")]
     public class Statused : IBehavior
     {
-        public class Context : EventBase
+        public class Context : ContextBase
         {
             public Entity actor;
-            public Attack attack;
-            public DictFile resistance;
             public StatusParam[] statusParams;
+            [Omit] public DictFile resistance;
         }
 
-        public class Params
-        {
-            public StatusParam[] statusParams;
-            public Params(StatusParam param)
-            {
-                statusParams = new StatusParam[] { param };
-            }
-        }
+        public HashSet<IStatus> _appliedStatuses = new HashSet<IStatus>();
 
-        [DataMember]
-        private HashSet<IStatus> m_appliedStatuses = new HashSet<IStatus>();
-
-        public void Init()
-        {
-            // this should be refactored into a retoucher
-            Tick.Chain.ChainPath(m_entity.Behaviors).AddHandler(
-                e => UpdateStatuses()
-            );
-        }
+        // Tick.Chain.ChainPath(m_entity.Behaviors).AddHandler(
+        //     e => UpdateStatuses()
+        // );
 
         // Returns a list of the statuses that were applied
         // public IEnumerable<IStatus> Activate(Params pars)
-        public bool Activate(Params pars)
+        public bool Activate(Entity actor, StatusParam[] param)
         {
-            var ev = new Event
+            var ctx = new Context
             {
-                actor = m_entity,
-                statusParams = pars.statusParams
+                actor = actor,
+                statusParams = param
             };
-            GetChain<Event>(ChainName.Check).Pass(ev);
-            AddStatuses(ev.statusParams);
+            Resist(ctx);
+            AddStatuses(ctx.statusParams);
             // foreach (var statusParam in ev.statusParams)
             // {
             //     yield return statusParam.status;
             // }
-            return ev.statusParams.Length > 0;
+            return ctx.statusParams.Length > 0;
         }
 
-        private void UpdateStatuses()
+        /* [Tick] */ private void UpdateStatuses(Entity actor)
         {
-            foreach (var status in m_appliedStatuses.ToList())
+            foreach (var status in _appliedStatuses.ToList())
             {
-                status.Update(m_entity);
-                if (!status.IsApplied(m_entity))
+                status.Update(actor);
+                if (!status.IsApplied(actor))
                 {
-                    m_appliedStatuses.Remove(status);
+                    _appliedStatuses.Remove(status);
                 }
             }
         }
@@ -73,42 +59,31 @@ namespace Hopper.Core.Components.Basic
         {
             foreach (var par in statusParams)
             {
-                m_appliedStatuses.Add(par.status);
+                _appliedStatuses.Add(par.status);
             }
         }
 
-        static void SetResistance(Event ev)
+        [Export] public static void SetResistance(Context ctx)
         {
-            ev.resistance = ev.actor.Stats.GetLazy(Status.Source.Resistance.Path);
+            ctx.resistance = ctx.actor.GetStatManager().GetLazy(Status.Source.Resistance.Path);
         }
 
-        static void ResistSomeStatuses(Event ev)
+        [Export] public static void ResistSomeStatuses(Context ctx)
         {
-            ev.statusParams = ev.statusParams
-                .Where(p => ev.resistance[p.status.SourceId] <= p.statusStat.power)
+            ctx.statusParams = ctx.statusParams
+                .Where(p => ctx.resistance[p.status.SourceId] <= p.statusStat.power)
                 .Where(p => p.statusStat.amount > 0)
                 .ToArray();
         }
 
-        public static readonly ChainPaths<Statused, Event> Check;
+            // DefaultBuilder = new ChainTemplateBuilder()
 
-        public static readonly ChainTemplateBuilder DefaultBuilder;
-        public static InitableBehaviorFactory<Statused> Preset =>
-            new InitableBehaviorFactory<Statused>(DefaultBuilder);
+            //     .AddTemplate<Event>(ChainName.Check)
+            //     .AddHandler(SetResistance, PriorityRank.High)
+            //     .AddHandler(ResistSomeStatuses, PriorityRank.Low)
 
-        static Statused()
-        {
-            Check = new ChainPaths<Statused, Event>(ChainName.Check);
-
-            DefaultBuilder = new ChainTemplateBuilder()
-
-                .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(SetResistance, PriorityRank.High)
-                .AddHandler(ResistSomeStatuses, PriorityRank.Low)
-
-                // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
-                .End();
-        }
+            //     // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
+            //     .End();
 
     }
 }

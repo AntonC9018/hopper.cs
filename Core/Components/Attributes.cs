@@ -114,4 +114,9 @@ namespace Hopper.Core.Components
     public class ExportAttribute : Attribute
     {
     }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public class OmitAttribute : Attribute
+    {
+    }
 }

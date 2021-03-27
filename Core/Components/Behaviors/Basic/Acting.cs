@@ -21,10 +21,10 @@ namespace Hopper.Core.Components.Basic
         [Inject] public System.Action<Context> _DoAction;
         public ParticularAction nextAction;
 
-        public class Context : ActorEvent
+        public class Context : ActorContext
         {
-            public ParticularAction action;
-            public bool success = false;
+            [Omit] public ParticularAction action;
+            [Omit] public bool success = false;
         }
 
         public bool Activate(Entity entity)

@@ -44,6 +44,13 @@
                 <#= name #> = <#= name #>,
 <# } #>
             };
+            return _CheckDo(ctx);
+        }
+
+<# } // end if #>
+<# if (behavior.ShouldGenerateCheckDo) { #>
+        private bool _CheckDo(Context ctx)
+        {
             if (TraverseCheck(ctx)) 
             {
                 TraverseDo(ctx);
@@ -51,5 +58,4 @@
             }
             return false;
         }
-
-<# } // end if #>
+<# } #>

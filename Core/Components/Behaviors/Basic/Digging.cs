@@ -12,7 +12,7 @@ namespace Hopper.Core.Components.Basic
     [AutoActivation("Dig")]
     public class Digging : IBehavior, IStandartActivateable
     {
-        public class Context : StandartEvent
+        public class Context : StandartContext
         {
             public Dig dig = null;
             public List<Target> targets = null;

@@ -22,44 +22,52 @@ namespace Meta
         }
 
         // TODO: This function is pretty jank. Learn the right way to do this.
-        public static string TypeToText(this INamedTypeSymbol symbol)
+        public static string TypeToText(this ITypeSymbol symbol)
         {
             var sb_type = new StringBuilder();
-
-            // For now, fully qualify the types, since I have to idea how to find document
-            // in which the behaviorr symbols were defined.
-            if (symbol.ContainingType != null)
-            {
-                sb_type.Append(TypeToText(symbol.ContainingType));
-                sb_type.Append('.');
-            }
-            else if (symbol.ContainingNamespace != null)
-            {
-                sb_type.Append(symbol.ContainingNamespace.FullName());
-                sb_type.Append('.');
-            }
-
-            if (symbol.IsGenericType)
-            {
-                sb_type.Append(symbol.ContainingType);
-                sb_type.Append(symbol.Name);
-                sb_type.Append("<");
-
-                foreach (var t in symbol.TypeArguments)
-                {
-                    sb_type.Append(TypeToText((INamedTypeSymbol)t));
-                    sb_type.Append(", ");
-                }
-
-                sb_type.Remove(sb_type.Length - 2, 2);
-                sb_type.Append(">");
-            }
-            else
-            {
-                sb_type.Append(symbol.Name);
-            }
-
+            TypeToTextUncertainBit(symbol, sb_type);
             return sb_type.ToString();
+        }
+
+        private static void TypeToTextUncertainBit(ITypeSymbol symbol, StringBuilder sb_type)
+        {
+            if (symbol is INamedTypeSymbol named_symbol)
+            {
+                // For now, fully qualify the types, since I have to idea how to find document
+                // in which the behaviorr symbols were defined.
+                if (symbol.ContainingType != null)
+                {
+                    sb_type.Append(TypeToText(symbol.ContainingType));
+                    sb_type.Append('.');
+                }
+                else if (symbol.ContainingNamespace != null)
+                {
+                    sb_type.Append(symbol.ContainingNamespace.FullName());
+                    sb_type.Append('.');
+                }
+                
+                sb_type.Append(symbol.Name);
+
+                if (named_symbol.IsGenericType)
+                {
+                    sb_type.Append("<");
+
+                    foreach (var t in named_symbol.TypeArguments)
+                    {
+                        sb_type.Append(TypeToText((INamedTypeSymbol)t));
+                        sb_type.Append(", ");
+                    }
+
+                    sb_type.Remove(sb_type.Length - 2, 2);
+                    sb_type.Append(">");
+                }
+            }
+            else if (symbol is IArrayTypeSymbol array_symbol)
+            {
+                var type = array_symbol.ElementType;
+                TypeToTextUncertainBit(type, sb_type);
+                sb_type.Append("[]");
+            }
         }
 
         public static string ParamsWithActor(this IEnumerable<IFieldSymbol> fields)
@@ -91,13 +99,13 @@ namespace Meta
 
         public static string Params(this IEnumerable<IFieldSymbol> fields)
         {
-            return String.Join(", ", fields.Select(p => $"{((INamedTypeSymbol)p.Type).TypeToText()} {p.Name}"));
+            return String.Join(", ", fields.Select(p => $"{((ITypeSymbol)p.Type).TypeToText()} {p.Name}"));
         }
         
 
         public static string Params(this IEnumerable<IParameterSymbol> parameters)
         {
-            return String.Join(", ", parameters.Select(p => $"{((INamedTypeSymbol)p.Type).TypeToText()} {p.Name}"));
+            return String.Join(", ", parameters.Select(p => $"{((ITypeSymbol)p.Type).TypeToText()} {p.Name}"));
         }
 
         public static IEnumerable<string> ParamNames(this IEnumerable<IFieldSymbol> fields)

@@ -17,7 +17,7 @@ namespace Hopper.Core.Components.Basic
     [AutoActivation("BeAttacked")]
     public partial class Attackable : IBehavior
     {
-        public class Context : ActorEvent
+        public class Context : ActorContext
         {
             public Entity attacker;
             public Attack attack;

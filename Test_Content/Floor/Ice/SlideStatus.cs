@@ -55,7 +55,7 @@ namespace Hopper.Test_Content.Floor
         {
             public SlideStatus status;
 
-            private void SlideInstead(ActorEvent ev)
+            private void SlideInstead(ActorContext ev)
             {
                 // make all other entities that we're sliding into 
                 // potentially slide out of the way first
@@ -71,7 +71,7 @@ namespace Hopper.Test_Content.Floor
                 }
             }
 
-            private void MakeEntitiesOnTheWaySlide(ActorEvent ev)
+            private void MakeEntitiesOnTheWaySlide(ActorContext ev)
             {
                 var store = status.m_tinker.GetStore(ev.actor);
 
@@ -114,7 +114,7 @@ namespace Hopper.Test_Content.Floor
                 ev.propagate = false;
             }
 
-            private void ResetDidSlide(ActorEvent ev)
+            private void ResetDidSlide(ActorContext ev)
             {
                 if (status.m_tinker.IsTinked(ev.actor))
                 {

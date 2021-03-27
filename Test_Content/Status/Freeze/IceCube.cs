@@ -32,7 +32,7 @@ namespace Hopper.Test_Content.Status.Freezing
                 .AddDieListener(ReleaseOnDeath);
         }
 
-        private static void DisplaceCaptured(ActorEvent ev)
+        private static void DisplaceCaptured(ActorContext ev)
         {
             var icapture = (ICapture)ev.actor;
             icapture.Captured.Pos = ev.actor.Pos;
