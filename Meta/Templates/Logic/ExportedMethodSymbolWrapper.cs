@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using Microsoft.CodeAnalysis;
-using System.Collections.Immutable;
 using System.Text;
 
 namespace Meta
@@ -10,6 +8,8 @@ namespace Meta
     {
         public BehaviorSymbolWrapper component;
         public IMethodSymbol symbol;
+
+        public string Name => symbol.Name;
 
         public ExportedMethodSymbolWrapper(BehaviorSymbolWrapper component, IMethodSymbol symbol)
         {
@@ -25,14 +25,14 @@ namespace Meta
             if (SymbolEqualityComparer.Default.Equals(component.context.symbol, symbol.ContainingType))
             {
                 sb_call.Append(symbol.IsStatic 
-                    ? $"return {component.symbol.Name}.Context.{symbol.Name}(" 
-                    : $"return ctx.{symbol.Name}(");
+                    ? $"{component.symbol.Name}.Context.{Name}(" 
+                    : $"ctx.{Name}(");
             }
             else if (SymbolEqualityComparer.Default.Equals(component.symbol, symbol.ContainingType))
             {
                 sb_call.Append(symbol.IsStatic 
-                    ? $"return {symbol.ContainingType.Name}.{symbol.Name}(" 
-                    : $"return ctx.actor.Get{symbol.ContainingType.Name}().{symbol.Name}(");
+                    ? $"{symbol.ContainingType.Name}.{Name}(" 
+                    : $"ctx.actor.Get{symbol.ContainingType.Name}().{Name}(");
             }
             else
             {

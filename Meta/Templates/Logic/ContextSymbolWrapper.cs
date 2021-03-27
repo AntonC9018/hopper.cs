@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Meta
 {
@@ -18,50 +17,70 @@ namespace Meta
 
         public Dictionary<string, IFieldSymbol> fieldsHashed;
         public HashSet<string> omitted;
-        public HashSet<string> entities;
+        public List<IFieldSymbol> notOmitted;
 
-        public IEnumerable<KeyValuePair<string, IFieldSymbol>> NotOmitted() 
-            => fieldsHashed.Where(kvp => !ShouldBeOmitted(kvp.Key));
+
+        public string ParamsWithActor()
+        {
+            if (notOmitted.Count > 0 && SymbolEqualityComparer.Default.Equals(
+                notOmitted[0].Type, RelevantSymbols.Instance.entity))
+            {
+                return Params();
+            }
+            return $"Entity actor, {Params()}";
+        }
 
         public string Params()
         {
-            return String.Join(", ", NotOmitted().Select(kvp => kvp.Value.ToDisplayString()));
+            return String.Join(", ", notOmitted.Select(p => p.ToDisplayString()));
         }
 
         public IEnumerable<string> ParamNames()
         {
-            return NotOmitted().Select(kvp => kvp.Key);
+            return notOmitted.Select(p => p.Name);
+        }
+
+        public IEnumerable<string> ParamTypeNames()
+        {
+            return notOmitted.Select(p => p.Type.Name);
+        }
+
+        public string JoinedParamTypeNames()
+        {
+            return String.Join(", ", ParamTypeNames());
         }
 
         public void HashFields()
         {
-            var ctx_fields = new List<IFieldSymbol>();
+            fieldsHashed = new Dictionary<string, IFieldSymbol>();
 
             {
                 var s = symbol;
                 do 
                 {
-                    ctx_fields.AddRange(s
+                    foreach (var field in s
                         .GetMembers().OfType<IFieldSymbol>()
-                        .Where(field => !field.IsStatic && !field.IsConst));
+                        .Where(f => !f.IsStatic && !f.IsConst))
+                    {
+                        fieldsHashed.Add(field.Name, field);
+
+                        if (field.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.omitAttribute)) || !field.HasConstantValue)
+                        {
+                            omitted.Add(field.Name);
+                        }
+                        else
+                        {
+                            notOmitted.Add(field);
+                        }
+                    }
                     s = symbol.BaseType;
                 }
                 while (s != null);
             }
-
-            fieldsHashed = ctx_fields.ToDictionary(field => field.Name);
-            entities = ctx_fields
-                .Where(field => SymbolEqualityComparer.Default.Equals(field.ContainingType, RelevantSymbols.Instance.entity))
-                .Select(field => field.Name).ToHashSet();
-
-            // I cannot figure out how to check if the field was given a default value, so
-            // I'm going to do this with an attribute instead
-            omitted = ctx_fields.Where(field => field.GetAttributes()
-                .Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.omitAttribute)))
-                .Select(field => field.Name).ToHashSet();
         }
 
-        public bool ContainsEntity(string name) => entities.Contains(name);
+        public bool ContainsEntity(string name) => fieldsHashed.TryGetValue(name, out var t) 
+            && SymbolEqualityComparer.Default.Equals(t, RelevantSymbols.Instance.entity);
         public bool ContainsFieldWithNameAndType(string name, ITypeSymbol type) 
         {
             return fieldsHashed.TryGetValue(name, out var t) && 

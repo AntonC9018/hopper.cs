@@ -9,17 +9,13 @@ namespace <#= behavior.Namespace #>
         <#@ include file="Templates/Snippets/ComponentIndex.txt" #>
         <#@ include file="Templates/Snippets/BehaviorChains.txt" #>
 
-<# foreach (var adapter in adapters) { #>
-        public void <#= adapter.HandlerName #>HandlerAdapter(Context ctx)
+<# foreach (var method in behavior.exportedMethods) { #>
+        public void <#= method.Name #>HandlerAdapter(Context ctx)
         {
-            // base case: pass the context along
-            return <#= adapter.HandlerName #>(ctx);
-            // TODO: retrieve a named field from ctx (use semantic analysis)
-            // TODO: retrieve a component from the actor field
-            // TODO: retrieve a stat from the actor field
+            <#= method.AdapterBody() #>
         }
 
-        public static Handler<Context> <#= adapter.HandlerName #>Handler
+        public static Handler<Context> <#= method.Name #>Handler
         {
             HandlerAdapter, <#= 5 /* some priority, retrieved from json */ #>
         };

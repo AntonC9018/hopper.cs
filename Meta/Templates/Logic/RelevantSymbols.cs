@@ -13,6 +13,7 @@ namespace Meta
         public INamedTypeSymbol ibehavior;
         public INamedTypeSymbol itag;
         public INamedTypeSymbol aliasAttribute;
+        public INamedTypeSymbol activationAliasAttribute;
         public INamedTypeSymbol autoActivationAttribute;
         public INamedTypeSymbol chainsAttribute;
         public INamedTypeSymbol injectAttribute;
@@ -46,6 +47,7 @@ namespace Meta
             flagsAttribute  = GetComponentSymbol(compilation, "FlagsAttribute");
             exportAttribute = GetComponentSymbol(compilation, "ExportAttribute");
             omitAttribute   = GetComponentSymbol(compilation, "OmitAttribute");
+            activationAliasAttribute  = GetComponentSymbol(compilation, "ActivationAliasAttribute");
             autoActivationAttribute = GetComponentSymbol(compilation, "AutoActivationAttribute");
         }
     }
