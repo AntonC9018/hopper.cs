@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Hopper.Core
 {
-    public class Entity : IHaveId
+    public sealed class Entity : IHaveId
     {
         public int Id => id;
         public int id;

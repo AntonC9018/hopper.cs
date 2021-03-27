@@ -6,7 +6,7 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Components.Basic
 {
-    public class Sequential : IComponent
+    public partial class Sequential : IComponent
     {
         [Inject] public Sequence sequence;
         public ParticularAction CurrentAction => sequence.CurrentAction;

@@ -63,9 +63,9 @@ namespace Hopper.Core.Components.Basic
         {
             if (ctx.targets == null)
             {
-                if (ctx.actor.Inventory != null)
+                if (ctx.actor.GetInventory(var inventory))
                 {
-                    if (ctx.actor.Inventory.GetWeapon(out var weapon))
+                    if (inventory.GetWeapon(out var weapon))
                     {
                         // Get targets from weapon, using its target provider
                         // @Incomplete: Save these initial targets at history or something

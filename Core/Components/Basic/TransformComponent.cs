@@ -4,7 +4,7 @@ using Hopper.Core.Components;
 
 namespace Hopper.Core
 {
-    public class TransformComponent : IComponent
+    public partial class TransformComponent : IComponent
     {
         public IntVector2 position;
         public IntVector2 orientation;

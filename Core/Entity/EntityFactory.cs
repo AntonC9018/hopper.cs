@@ -6,20 +6,21 @@ using Hopper.Core.Stats;
 
 namespace Hopper.Core
 {
-    public class EntityFactory : Entity
+    public class EntityFactory
     {
+        public Entity subject;
         public event System.Action<Entity> InitEvent;
         public event System.Action<PatchArea> PostPatchEvent;
         public DefaultStats DefaultStats;
 
         public EntityFactory()
         {
-            components = new Dictionary<Identifier, IComponent>();
+            subject.components = new Dictionary<Identifier, IComponent>();
         }
 
         public Entity Instantiate()
         {
-            Entity entity = new Entity();
+            Entity entity = new Entity(); // subject.Clone()?
             entity.components = new Dictionary<Identifier, IComponent>(components);
 
             // Instantiate and save behaviors

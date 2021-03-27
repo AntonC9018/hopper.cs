@@ -5,7 +5,7 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Items
 {
-    public class Inventory : IComponent, IInventory
+    public partial class Inventory : IComponent, IInventory
     {
         private Dictionary<int, IItemContainer<IItem>> m_itemSlots;
         private Entity m_actor;

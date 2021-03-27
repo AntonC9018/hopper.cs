@@ -16,7 +16,7 @@ namespace Hopper.Core.Components.Basic
             health.amount = 0;
         }
 
-        public bool Activate(Entity entity, int damage)
+        [Alias("BeDamaged")] public bool Activate(Entity actor, int damage)
         {
             health.amount -= damage;
             if (health.amount <= 0)

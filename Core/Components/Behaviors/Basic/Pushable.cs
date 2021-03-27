@@ -4,7 +4,7 @@ using Hopper.Core.Stats;
 
 namespace Hopper.Core.Components.Basic
 {
-    [AutoActivation("Push")]
+    [AutoActivation("BePushed")]
     public partial class Pushable : IBehavior
     {
         public class Context : ActorContext

@@ -53,8 +53,8 @@
         /// </summary>
         public static <#= method.ReturnType #> <#= method.Alias #>(this <#= method.ParamsWithActor() #>)
         {
-            var behavior = Get<#= component.ClassName #>(actor);
-            return component.<#= method.Name #>(<#= method.JoinedParamNames() #>);
+            var component = Get<#= component.ClassName #>(actor);
+            <# if (!method.ReturnTypeIsVoid()) { Write("return "); } #>component.<#= method.Name #>(<#= method.JoinedParamNames() #>);
         }
 
 <# if (method.ReturnTypeIsVoid()) { #>
@@ -73,6 +73,7 @@
                 component.<#= method.Name #>(<#= method.JoinedParamNames()#>);
                 return true;
             }
+            component = default(<#= component.ClassName #>);
             return false;
         }
 
@@ -93,6 +94,7 @@
                 value = component.<#= method.Name #>(<#= method.JoinedParamNames()#>);
                 return true;
             }
+            value = default(<#= method.ReturnType #>);
             return false;
         }
 

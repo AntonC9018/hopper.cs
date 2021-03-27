@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Hopper.Meta.Template;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
 
 namespace Meta
@@ -15,7 +14,8 @@ namespace Meta
     {
         const string coreProjectPath = @"../Core/Hopper_Core.csproj";
         const string autogenFolder = @"../Core/Autogen";
-        string behaviorAutogenFolder = $@"{autogenFolder}/Behaviors";
+        static readonly string behaviorAutogenFolder = $@"{autogenFolder}/Behaviors";
+        static readonly string componentAutogenFolder = $@"{autogenFolder}/Components";
 
         public MSBuildWorkspace msWorkspace;
         public Project coreProject;
@@ -61,15 +61,15 @@ namespace Meta
 
             if (!Directory.Exists(behaviorAutogenFolder))
                 Directory.CreateDirectory(behaviorAutogenFolder);
+            else
+            foreach (var file in new DirectoryInfo(behaviorAutogenFolder).GetFiles())
+                file.Delete(); 
 
+            if (!Directory.Exists(componentAutogenFolder))
+                Directory.CreateDirectory(componentAutogenFolder);
             else 
-            {
-                // Clean up previously generated scripts
-                var dir = new DirectoryInfo(behaviorAutogenFolder);
-
-                foreach (var file in dir.GetFiles())
-                    file.Delete(); 
-            }
+            foreach (var file in new DirectoryInfo(componentAutogenFolder).GetFiles())
+                file.Delete(); 
 
             coreProject = await msWorkspace.OpenProjectAsync(coreProjectPath);
             
@@ -85,34 +85,31 @@ namespace Meta
             var ctx = new ProjectContext(msWorkspace.CurrentSolution);
             await ctx.Reset(coreProject);
 
-            // TODO: parallelize
-            var behaviors = await ctx.FindAllBehaviors();
-
             var globalAliases = new HashSet<string>();
 
-            var behaviorWrappers = new List<BehaviorSymbolWrapper>();
-            
-            foreach (var b in behaviors)
+            // TODO: parallelize
             {
-                try
+                var behaviors = await ctx.FindAllBehaviors();
+                var behaviorWrappers = new List<BehaviorSymbolWrapper>();
+                
+                foreach (var b in behaviors)
                 {
-                    var wrapped = new BehaviorSymbolWrapper(b, globalAliases);
-                    behaviorWrappers.Add(wrapped);
+                    try
+                    {
+                        var wrapped = new BehaviorSymbolWrapper(b, globalAliases);
+                        behaviorWrappers.Add(wrapped);
+                    }
+                    catch (GeneratorException e)
+                    {
+                        Console.WriteLine("An error occured while processing a behavior:");
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine("");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
-                catch (GeneratorException e)
-                {
-                    Console.WriteLine("An error occured while processing a behavior:");
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine("");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
-
-            {
-
                 foreach (var behavior in behaviorWrappers)
                 {
                     var behaviorPrinter = new BehaviorCode();
@@ -124,6 +121,42 @@ namespace Meta
                     File.WriteAllText(
                         $"{behaviorAutogenFolder}/{behavior.ClassName}.cs",
                         behaviorPrinter.TransformText(),
+                        Encoding.UTF8);
+                }
+            }
+            {
+                var components = await ctx.FindAllDirectComponents();
+                var componentWrappers = new List<ComponentSymbolWrapper>();
+                
+                foreach (var b in components)
+                {
+                    try
+                    {
+                        var wrapped = new ComponentSymbolWrapper(b, globalAliases);
+                        componentWrappers.Add(wrapped);
+                    }
+                    catch (GeneratorException e)
+                    {
+                        Console.WriteLine("An error occured while processing a component:");
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine("");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+                foreach (var component in componentWrappers)
+                {
+                    var componentPrinter = new ComponentCode();
+                    componentPrinter.Initialize();
+                    componentPrinter.component = component;
+
+                    Console.WriteLine($"Generating code for {component.Calling}");
+
+                    File.WriteAllText(
+                        $"{componentAutogenFolder}/{component.ClassName}.cs",
+                        componentPrinter.TransformText(),
                         Encoding.UTF8);
                 }
             }

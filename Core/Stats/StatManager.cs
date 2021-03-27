@@ -38,12 +38,16 @@ namespace Hopper.Core.Stats
         This will be defined by mods themselves. The indices for these groups will be stored on patch area.
         
         The method of storing stats doesn't affect how difficult this last task is.
+
+        UPDATE:
+        Now, that I've setup code generation, creating classes for each of the stats is going to
+        be made trivially easy. 
     */
     public class StatFS : FS<File>
     {
     }
 
-    public class StatManager : IComponent
+    public partial class StatManager : IComponent
     {
         // contains either directories or files
         private Dictionary<Modifier, int> m_modifierCounts

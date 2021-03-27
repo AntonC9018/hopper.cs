@@ -5,9 +5,9 @@ using Hopper.Core.Components;
 
 namespace Hopper.Core.History
 {
-    public class History<T> : IComponent
+    public partial class History : IComponent
     {
-        private List<UpdateInfo<T>> m_updates;
+        private List<UpdateInfo> m_updates;
         public IReadOnlyList<UpdateInfo<T>> Updates => m_updates.AsReadOnly();
 
         public History()
