@@ -1,26 +1,26 @@
-<# foreach(var chain.Name in behavior.chains) { #>
+<# foreach(var chain in behavior.chains) { #>
         public Chain<Context> _<#= chain.Name #>Chain;
 
         /// <summary>
-        /// Retrieves the <#= chain.Name #> chain.Name from the <#= behavior.ClassName #> behavior of the given entity.
+        /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity.
         /// </summary>
         public static Chain<Context> <#= chain.Name #>ChainPath(Entity entity) 
             => entity.GetBehavior(Index)._<#= chain.Name #>Chain;
 
         /// <summary>
-        /// Retrieves the <#= chain.Name #> chain.Name from the <#= behavior.ClassName #> behavior of the given entity factory.
+        /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity factory.
         /// </summary>
         public static Chain<Context> <#= chain.Name #>ChainPath(EntityFactory factory) 
             => factory.GetBehavior(Index)._<#= chain.Name #>Chain;
 
 <# if (chain.ShouldGenerateParamsMethod) { #>
-        public static bool <#= chain.Name #>(<#= context.Params() #>)
+        public static bool <#= chain.Name #>(<#= behavior.context.Params() #>)
         {
             Context ctx = new Context
             {
-            <# foreach (name in behavior.context.ParamNames()) { #>
+<# foreach (var name in behavior.context.ParamNames()) { #>
                 <#= name #> = <#= name #>,
-            <# } #>
+<# } #>
             };
             return Traverse<#= chain.Name #>(ctx);
         }
@@ -35,12 +35,12 @@
 
 <# } // end if #>
 <# } // end foreach#>
-<# if (chains.ShouldGenerateActivation) { #>
-        public bool Activate(<#= context.Params() #>)
+<# if (behavior.ShouldGenerateActivation) { #>
+        public bool Activate(<#= behavior.context.Params() #>)
         {
             Context ctx = new Context
             {
-            <# foreach (name in behavior.context.ParamNames()) { #>
+            <# foreach (var name in behavior.context.ParamNames()) { #>
                 <#= name #> = <#= name #>,
             <# } #>
             };

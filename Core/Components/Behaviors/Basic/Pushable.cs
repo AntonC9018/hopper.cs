@@ -9,7 +9,7 @@ namespace Hopper.Core.Components.Basic
     [DataContract]
     public class Pushable : IBehavior
     {
-        public class Event : ActorEvent
+        public class Context : ActorEvent
         {
             public Push push;
             public Push.Resistance resistance;

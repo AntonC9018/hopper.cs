@@ -1,6 +1,6 @@
 namespace Hopper.Utils.Chains
 {
-    public class EventBase
+    public class ContextBase
     {
         public bool propagate = true;
     }

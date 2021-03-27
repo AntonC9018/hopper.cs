@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hopper.Meta.Template;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -20,7 +21,7 @@ namespace Meta
             await InitWorkspace(projectPaths);
             if (!failFlag)
             {
-
+                await Generate();
             }
             return failFlag;
         } 
@@ -71,14 +72,33 @@ namespace Meta
             
             foreach (var b in behaviors)
             {
-                var wrapped = new BehaviorSymbolWrapper(b, globalAliases);
+                try
+                {
+                    var wrapped = new BehaviorSymbolWrapper(b, globalAliases);
+
+                    var printerPartial = new BehaviorPartial();
+                    printerPartial.behavior = wrapped;
+                    Console.WriteLine(printerPartial.TransformText());
+                    
+                    var printerExtensions = new BehaviorEntityExtensions();
+                    printerExtensions.behavior = wrapped;
+                    Console.WriteLine(printerExtensions.TransformText());
+
+                    // wrapped.context.
+                }
+                catch (GeneratorException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
             
             
-            var components = await ctx.FindAllDirectComponents();
-            
-            var tags = await ctx.FindAllTags();
-
+            // var components = await ctx.FindAllDirectComponents();
+            // var tags = await ctx.FindAllTags();
 
         }
 

@@ -11,7 +11,7 @@ namespace Hopper.Core.Components.Basic
     [DataContract]
     public class Statused : IBehavior
     {
-        public class Event : EventBase
+        public class Context : EventBase
         {
             public Entity actor;
             public Attack attack;

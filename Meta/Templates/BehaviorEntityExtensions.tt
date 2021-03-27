@@ -22,7 +22,7 @@
     public static bool Check<#= behavior.ActivationAlias #>(this <#= behavior.context.ParamsWithActor() #>)
     {
         var behavior = Get<#= behavior.ClassName #>(actor);
-        return behavior.Check(<#= behavior.ParamNames() #>);
+        return behavior.Check(<#= behavior.context.JoinedParamNames() #>);
     }
 
     /// <summary>
@@ -37,7 +37,7 @@
     public static bool TryCheck<#= behavior.ActivationAlias #>(this <#= behavior.context.ParamsWithActor() #>)
     {
         var behavior = Get<#= behavior.ClassName #>(actor);
-        return behavior.Check(<#= behavior.ParamNames() #>);
+        return behavior.Check(<#= behavior.context.JoinedParamNames() #>);
     }
 <# 
     }
@@ -55,7 +55,7 @@
     public static void Unconditional<#= behavior.ActivationAlias #>(this <#= behavior.context.ParamsWithActor() #>)
     {
         var behavior = Get<#= behavior.ClassName #>(actor);
-        behavior.Do(<#= behavior.ParamNames() #>);
+        behavior.Do(<#= behavior.context.JoinedParamNames() #>);
     }
 
     /// <summary>
@@ -72,7 +72,7 @@
     {
         if TryGet<#= behavior.ClassName #>(actor, out var behavior)
         {
-            return behavior.Do(<#= behavior.ParamNames() #>);
+            return behavior.Do(<#= behavior.context.JoinedParamNames() #>);
         }
         return false;
     }
@@ -85,13 +85,12 @@
     /// This is a shortcut method.
     /// Queries the <#= behavior.ClassName #> behavior on the entity and activates it.
     /// This method should be used if you are sure the entity has the <#= behavior.ClassName #> behavior.
-    /// If you're not sure whether it has the <#= behavior.ClassName #> behavior, 
-    /// use Try<#= method.alias #>() method instead.
+    /// If you're not sure whether it has the <#= behavior.ClassName #> behavior, use Try<#= behavior.ActivationAlias #>() method instead.
     /// </summary>
     public static bool <#= behavior.ActivationAlias #>(this <#= behavior.context.ParamsWithActor() #>)
     {
         var behavior = Get<#= behavior.ClassName #>(actor);
-        return behavior.Activate(<#= behavior.ParamNames() #>);
+        return behavior.Activate(<#= behavior.context.JoinedParamNames() #>);
     }
 
     /// <summary>
@@ -107,7 +106,7 @@
     {
         if (TryGet<#= behavior.ClassName #>(actor, out var behavior))
         {
-            return behavior.Activate(<#= behavior.Params()#>);
+            return behavior.Activate(<#= behavior.context.JoinedParamNames()#>);
         }
         return false;
     }

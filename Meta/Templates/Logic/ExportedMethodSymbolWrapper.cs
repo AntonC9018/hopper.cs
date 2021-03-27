@@ -1,9 +1,9 @@
-using System;
 using Microsoft.CodeAnalysis;
 using System.Text;
 
 namespace Meta
 {
+
     public sealed class ExportedMethodSymbolWrapper
     {
         public BehaviorSymbolWrapper component;
@@ -22,6 +22,10 @@ namespace Meta
             StringBuilder sb_params = new StringBuilder();
             StringBuilder sb_call = new StringBuilder();
 
+            if (SymbolEqualityComparer.Default.Equals(symbol.ReturnType, RelevantSymbols.Instance.boolType))
+            {
+                sb_call.Append("ctx.propagate = ");
+            }
             if (SymbolEqualityComparer.Default.Equals(component.context.symbol, symbol.ContainingType))
             {
                 sb_call.Append(symbol.IsStatic 
@@ -36,7 +40,7 @@ namespace Meta
             }
             else
             {
-                throw new Exception("Could not have been defined here");
+                throw new GeneratorException("Could not have been defined here");
             }
 
             foreach (var s in symbol.Parameters)
@@ -92,7 +96,7 @@ namespace Meta
                 }
                 else
                 {
-                    throw new Exception($"The name {s.Name} is invalid. It does not correspond directly to any of the Context fields and the type of the parameter was not a component type");
+                    throw new GeneratorException($"The name {s.Name} is invalid. It does not correspond directly to any of the Context fields and the type of the parameter was not a component type");
                 }
             }
         
@@ -103,8 +107,8 @@ namespace Meta
                 sb_call.Append(");");
             }
 
-            sb_call.Append(sb_params.ToString());
-            return sb_call.ToString();
+            sb_params.Append(sb_call.ToString());
+            return sb_params.ToString();
         }
     }
 }

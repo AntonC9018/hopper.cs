@@ -41,5 +41,5 @@
     public static bool TryGet<#= component.ClassName #>(this Entity entity, out <#= component.ClassName #> <#= component.TypeText() #>)
     {
         <#= component.TypeText() #> = entity.TryGetComponent(<#= component.ClassName #>.Index);
-        return <#= component.TypeText() #> == null;
+        return <#= component.TypeText() #> != null;
     }

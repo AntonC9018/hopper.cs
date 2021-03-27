@@ -41,7 +41,7 @@ namespace Hopper.Core.Components.Basic
 
     public class Controllable : IBehavior
     {
-        public class Event : ActorEvent
+        public class Context : ActorEvent
         {
             public Action action;
             public IntVector2 direction;

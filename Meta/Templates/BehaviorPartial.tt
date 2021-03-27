@@ -7,6 +7,8 @@ namespace <#= behavior.Namespace #>
     public partial class <#= behavior.ClassName #>
     {
         <#@ include file="Templates/Snippets/ComponentIndex.txt" #>
+
+
         <#@ include file="Templates/Snippets/BehaviorChains.txt" #>
 
 <# foreach (var method in behavior.exportedMethods) { #>
@@ -17,12 +19,13 @@ namespace <#= behavior.Namespace #>
 
         public static Handler<Context> <#= method.Name #>Handler
         {
-            HandlerAdapter, <#= 5 /* some priority, retrieved from json */ #>
+            handler = <#= method.Name #>HandlerAdapter, 
+            priority = <#= 5 /* some priority, retrieved from json */ #>
         };
     
 <# } // end foreach #>
-<# foreach (var preset in presets) { #>
+<# /*foreach (var preset in presets) {*/ #>
         /* TODO: presets */
-<# } // end foreach #>
+<# /*}*/ // end foreach #>
     }
 }

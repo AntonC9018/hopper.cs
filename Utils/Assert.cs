@@ -18,7 +18,7 @@ namespace Hopper.Utils
         {
             if (expression == false)
             {
-                throw new Exception(message);
+                throw new GeneratorException(message);
             }
         }
 
@@ -28,7 +28,7 @@ namespace Hopper.Utils
         {
             if (!EqualityComparer<T>.Default.Equals(expected, actual))
             {
-                throw new Exception($"{message}\nExpected {expected}, got {actual}.");
+                throw new GeneratorException($"{message}\nExpected {expected}, got {actual}.");
             }
         }
 
@@ -38,7 +38,7 @@ namespace Hopper.Utils
         {
             if (EqualityComparer<T>.Default.Equals(expected, actual))
             {
-                throw new Exception($"{message}\nExpected {expected}, got {actual}.");
+                throw new GeneratorException($"{message}\nExpected {expected}, got {actual}.");
             }
         }
     }

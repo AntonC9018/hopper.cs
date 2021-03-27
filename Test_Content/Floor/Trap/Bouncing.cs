@@ -29,7 +29,7 @@ namespace Hopper.Test_Content.Floor
         {
             if (m_entity.Orientation == IntVector2.Zero)
             {
-                throw new Exception("The one pushing should have a direction to have any effect");
+                throw new GeneratorException("The one pushing should have a direction to have any effect");
             }
 
             // if anybody has been standing on top since the previous loop, don't bounce

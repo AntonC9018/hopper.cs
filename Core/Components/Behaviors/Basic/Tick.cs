@@ -6,7 +6,7 @@ namespace Hopper.Core.Components.Basic
     [DataContract]
     public class Tick : IBehavior
     {
-        public class Event : ActorEvent
+        public class Context : ActorEvent
         {
         }
 

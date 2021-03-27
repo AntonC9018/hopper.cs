@@ -10,7 +10,7 @@ namespace Hopper.Core.Components.Basic
     [AutoActivation("BeInteractedWith")]
     public partial class Interactable : IBehavior
     {
-        public class Event : ActorEvent
+        public class Context : ActorEvent
         {
             public IContent content;
         }

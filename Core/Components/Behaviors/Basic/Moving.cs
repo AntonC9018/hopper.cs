@@ -10,7 +10,7 @@ namespace Hopper.Core.Components.Basic
     public class Moving : IBehavior, IStandartActivateable
     {
 
-        public class Event : StandartEvent
+        public class Context : StandartEvent
         {
             public Move move;
         }
