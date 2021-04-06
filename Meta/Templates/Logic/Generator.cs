@@ -116,6 +116,8 @@ namespace Meta
                     behaviorPrinter.Initialize();
                     behaviorPrinter.behavior = behavior;
 
+                    // ctx._solution.GetDocument(behavior.symbol.Locations.First().SourceTree);
+
                     Console.WriteLine($"Generating code for {behavior.Calling}");
 
                     File.WriteAllText(
