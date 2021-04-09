@@ -72,6 +72,10 @@ namespace Meta
         }
         public bool ShouldBeOmitted(string name) => omitted.Contains(name);
 
+        public string ParentClassName => symbol.ContainingType.Name;
+        public string Name => symbol.Name;
+        public string NameWithParentClass => $"{ParentClassName}.{Name}";
+
 
         /* Things mainly called in the template */
         public string ParamsWithActor() => notOmitted.ParamsWithActor();

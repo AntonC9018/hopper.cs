@@ -9,4 +9,12 @@ namespace Hopper.Core.Components
     {
         public Identifier componentId;
     }
+
+    public interface IPath{}
+
+    public struct Path<T> : IPath
+    {
+        public System.Func<Entity, T> Chain;
+        public System.Func<EntityFactory, T> FactoryChain;
+    }
 }

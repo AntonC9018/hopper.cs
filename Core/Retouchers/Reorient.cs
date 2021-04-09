@@ -18,15 +18,6 @@ namespace Hopper.Core.Retouchers
         public static readonly Retoucher OnActionSuccessToClosestPlayer = Retoucher
             .SingleHandlered(Acting.Success, ToPlayer, PriorityRank.High);
 
-        public static void RegisterAll(ModRegistry registry)
-        {
-            OnMove.RegisterSelf(registry);
-            OnDisplace.RegisterSelf(registry);
-            OnActionSuccess.RegisterSelf(registry);
-            OnAttack.RegisterSelf(registry);
-            OnActionSuccessToClosestPlayer.RegisterSelf(registry);
-        }
-
         private static void AnyReorient(StandartContext ev)
         {
             if (ev.direction != IntVector2.Zero)

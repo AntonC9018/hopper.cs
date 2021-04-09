@@ -15,7 +15,6 @@ using Hopper.Core.Generation;
 using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.History;
-using Hopper.Core.Chains;
 using Hopper.Utils.Chains;
 
 namespace Hopper

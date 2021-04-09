@@ -1,7 +1,6 @@
 using Hopper.Utils.Chains;
 using Hopper.Core.Components;
 using Newtonsoft.Json;
-using Hopper.Core.Chains;
 using Hopper.Core.Registries;
 
 namespace Hopper.Core

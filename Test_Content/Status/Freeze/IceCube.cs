@@ -1,6 +1,5 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
-using Hopper.Core.Chains;
 
 namespace Hopper.Test_Content.Status.Freezing
 {

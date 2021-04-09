@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using Hopper.Utils.Vector;
 using Hopper.Core.Targeting;
-using Hopper.Core.Chains;
 using Hopper.Core.Stats;
 
 namespace Hopper.Core.Components.Basic

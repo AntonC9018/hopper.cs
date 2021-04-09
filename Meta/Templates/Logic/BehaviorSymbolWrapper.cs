@@ -117,7 +117,7 @@ namespace Meta
             exportedMethods = symbol.GetMembers().OfType<IMethodSymbol>()
                 .Where(m => m.GetAttributes().Any(a =>
                         SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.exportAttribute)))
-                .Select(m => new ExportedMethodSymbolWrapper(this, m))
+                .Select(m => new ExportedMethodSymbolWrapper(context, m))
                 .ToArray();
         }
     }

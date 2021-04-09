@@ -1,6 +1,5 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
-using Hopper.Core.Chains;
 using Hopper.Core.Items;
 
 namespace Hopper.Test_Content.Explosion

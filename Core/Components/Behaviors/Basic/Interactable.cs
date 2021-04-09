@@ -1,7 +1,6 @@
 using System.Runtime.Serialization;
 using Hopper.Utils.Chains;
 using Hopper.Core.Items;
-using Hopper.Core.Chains;
 
 namespace Hopper.Core.Components.Basic
 {

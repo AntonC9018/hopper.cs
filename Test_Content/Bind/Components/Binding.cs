@@ -1,5 +1,4 @@
-﻿using Hopper.Core.Chains;
-using Hopper.Core;
+﻿using Hopper.Core;
 using Hopper.Core.Stats;
 using Hopper.Core.Components;
 using Hopper.Utils.Vector;

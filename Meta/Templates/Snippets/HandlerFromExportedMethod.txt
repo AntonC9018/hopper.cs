@@ -1,0 +1,18 @@
+public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
+{
+<#= method.AdapterBody() #>
+}
+
+        public static Handler<<#= method.ContextName #>> <#= method.Name #>Handler = new Handler<<#= method.ContextName #>>
+        {
+            handler = <#= method.Name #>HandlerAdapter
+        };
+
+<# if (method.IsDynamic) { #>
+        public static HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper = new HandlerWrapper<<#= method.ContextName #>>
+        {
+            handler = <#= method.Name #>Handler,
+            chainPath = <#= method.ChainPath #>
+        };
+<# } #>
+

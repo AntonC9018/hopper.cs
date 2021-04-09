@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Hopper.Core.Items;
 using Hopper.Core.Targeting;
 using Hopper.Core.Stats.Basic;
-using Hopper.Core.Chains;
 using Hopper.Utils.Vector;
 using Hopper.Core.Stats;
 

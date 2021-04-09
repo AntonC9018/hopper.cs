@@ -2,16 +2,13 @@
         public Chain<Context> _<#= chain.Name #>Chain;
 
         /// <summary>
-        /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity.
+        /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity / entity factory.
         /// </summary>
-        public static Chain<Context> <#= chain.Name #>ChainPath(Entity entity) 
-            => entity.GetComponent(Index)._<#= chain.Name #>Chain;
-
-        /// <summary>
-        /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity factory.
-        /// </summary>
-        public static Chain<Context> <#= chain.Name #>ChainPath(EntityFactory factory) 
-            => factory.GetComponent(Index)._<#= chain.Name #>Chain;
+        public static readonly Path<Chain<Context>> <#= chain.Name #>Path = new Path<Chain<Context>>
+        { 
+            Chain = (Entity entity) => entity.GetComponent(Index)._<#= chain.Name #>Chain,
+            FactoryChain = (EntityFactory factory) => factory.GetComponent(Index)._<#= chain.Name #>Chain
+        };
 
 <# if (chain.ShouldGenerateParamsMethod) { #>
         public bool <#= chain.Name #>(<#= behavior.context.Params() #>)

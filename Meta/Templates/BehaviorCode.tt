@@ -13,17 +13,7 @@ namespace <#= behavior.Namespace #>
 <#@ include file="Templates/Snippets/BehaviorChains.txt" #>
 
 <# foreach (var method in behavior.exportedMethods) { #>
-public static void <#= method.Name #>HandlerAdapter(Context ctx)
-{
-<#= method.AdapterBody() #>
-}
-
-        public static Handler<Context> <#= method.Name #>Handler = new Handler<Context>
-        {
-            handler = <#= method.Name #>HandlerAdapter, 
-            priority = <#= 5 /* some priority, retrieved from json */ #>
-        };
-
+<#@ include file="Templates/Snippets/HandlerFromExportedMethod.txt" #>
 <# } // end foreach #>
 
 <# /*foreach (var preset in presets) {*/ #>

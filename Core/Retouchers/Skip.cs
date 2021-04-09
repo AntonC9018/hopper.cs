@@ -6,33 +6,36 @@ using Hopper.Core.Components;
 
 namespace Hopper.Core.Retouchers
 {
-    public static class Skip
+    public static partial class Skip
     {
-        [Export]
-        private static bool IsAttackEmpty(Attacking.Context ctx)
+        [Export(Chain = "Attacking.Check", Priority = PriorityRank.Low, Dynamic = true)]
+        private static bool SkipEmptyAttack(Attacking.Context ctx)
         {
             return ctx.targets.Count > 0;
         }
 
-        private static bool IsDigEmpty(Digging.Context ctx)
+        [Export(Chain = "Digging.Check", Priority = PriorityRank.Low, Dynamic = true)]
+        private static bool SkipEmptyDig(Digging.Context ctx)
         {
             return ctx.targets.Count > 0;
         }
 
-        private static void SkipBlocked(Moving.Context ctx)
+        [Export(Chain = "Moving.Check", Priority = PriorityRank.Low, Dynamic = true)]
+        private static bool SkipBlocked(Moving.Context ctx)
         {
-            ctx.propagate = ctx.actor.HasBlockRelative(ctx.direction) == false;
+            return !ctx.actor.HasBlockRelative(ctx.direction);
         }
 
-        private static void SkipNoPlayer(Attacking.Context ctx)
+        [Export(Chain = "Attacking.Check", Priority = PriorityRank.Low, Dynamic = true)]
+        private static bool SkipNoPlayer(Attacking.Context ctx)
         {
-            ctx.propagate = ctx.targets.Any(t => t.entity.IsPlayer());
+            return ctx.targets.Any(t => t.entity.IsPlayer());
         }
 
-        private static void SkipSelf(Attacking.Context ctx)
+        [Export(Chain = "Attacking.Check", Priority = PriorityRank.Low, Dynamic = true)]
+        private static bool SkipSelf(Attacking.Context ctx)
         {
-            ctx.propagate = ctx.targets
-                .Any(t => t.entity == ctx.actor);
+            return ctx.targets.Any(t => t.entity == ctx.actor);
         }
     }
 }

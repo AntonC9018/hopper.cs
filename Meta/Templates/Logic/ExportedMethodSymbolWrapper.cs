@@ -6,15 +6,22 @@ namespace Meta
 
     public sealed class ExportedMethodSymbolWrapper
     {
-        public BehaviorSymbolWrapper component;
+        public ContextSymbolWrapper context;
         public IMethodSymbol symbol;
+        public 
 
         public string Name => symbol.Name;
+        public string ContextName => context.NameWithParentClass;
 
-        public ExportedMethodSymbolWrapper(BehaviorSymbolWrapper component, IMethodSymbol symbol)
+        public ExportedMethodSymbolWrapper(ContextSymbolWrapper context, IMethodSymbol symbol)
         {
-            this.component = component;
+            this.context = context;
             this.symbol = symbol;
+        }
+
+        public void Init()
+        {
+
         }
 
         public string AdapterBody()
@@ -26,33 +33,35 @@ namespace Meta
             {
                 sb_call.Append("ctx.propagate = ");
             }
-            if (SymbolEqualityComparer.Default.Equals(component.context.symbol, symbol.ContainingType))
+            if (SymbolEqualityComparer.Default.Equals(context.symbol, symbol.ContainingType))
             {
                 sb_call.Append(symbol.IsStatic 
-                    ? $"{component.symbol.Name}.Context.{Name}(" 
+                    // NOTE: This allows for at most 1 level depth.
+                    ? $"{ContextName}.{Name}(" 
                     : $"ctx.{Name}(");
             }
-            else if (SymbolEqualityComparer.Default.Equals(component.symbol, symbol.ContainingType))
+            else// if (SymbolEqualityComparer.Default.Equals(component.symbol, symbol.ContainingType))
             {
                 sb_call.Append(symbol.IsStatic 
-                    ? $"{symbol.ContainingType.Name}.{Name}(" 
+                    ? $"{symbol.ContainingType.Name}.{Name}("
+                    // TODO: this is wrong for exported methods not in component classes
                     : $"ctx.actor.Get{symbol.ContainingType.Name}().{Name}(");
             }
-            else
-            {
-                throw new GeneratorException("Could not have been defined here");
-            }
+            // else
+            // {
+            //     throw new GeneratorException("Could not have been defined here");
+            // }
 
             foreach (var s in symbol.Parameters)
             {
                 // If the parameter is of Context type
-                if (SymbolEqualityComparer.Default.Equals(s.Type, component.context.symbol))
+                if (SymbolEqualityComparer.Default.Equals(s.Type, context.symbol))
                 {
                     // The parameters need not be appended, since the handlers take ctx by default.
                     sb_call.Append("ctx, ");
                 }
                 // if ctx class has a field of that name and type, reference it directly
-                else if (component.context.ContainsFieldWithNameAndType(s.Name, s.Type))
+                else if (context.ContainsFieldWithNameAndType(s.Name, s.Type))
                 {
                     if (s.RefKind == RefKind.Out)
                     {
@@ -79,7 +88,7 @@ namespace Meta
                     if (indexOf_ != -1)
                     {
                         string entity_name = s.Name.Substring(0, indexOf_);
-                        if (component.context.ContainsEntity(entity_name))
+                        if (context.ContainsEntity(entity_name))
                         {
                             success = true;
                             sb_params.AppendLine($"var _{s.Name} = ctx.{entity_name}.Get{s.Type.Name}();");
@@ -103,7 +112,6 @@ namespace Meta
                     throw new GeneratorException($"The name {s.Name} is invalid. It does not correspond directly to any of the Context fields and the type of the parameter was not a component type");
                 }
             }
-        
 
             if (!symbol.Parameters.IsEmpty)
             {
