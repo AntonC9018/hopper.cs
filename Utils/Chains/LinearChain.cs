@@ -2,21 +2,21 @@ using System.Collections.Generic;
 
 namespace Hopper.Utils.Chains
 {
-    public class LinearChain<Event> : Chain
+    public class LinearChain<Context>
     {
-        public readonly List<System.Action<Event>> m_handlers;
+        public readonly List<System.Action<Context>> m_handlers;
 
         public LinearChain()
         {
-            m_handlers = new List<System.Action<Event>>();
+            m_handlers = new List<System.Action<Context>>();
         }
 
-        public void AddHandler(System.Action<Event> handler)
+        public void Add(System.Action<Context> handler)
         {
             m_handlers.Add(handler);
         }
 
-        public void PassWithoutStop(Event ev)
+        public void PassWithoutStop(Context ev)
         {
             foreach (var handler in m_handlers)
             {
@@ -24,7 +24,7 @@ namespace Hopper.Utils.Chains
             }
         }
 
-        public void Pass(Event ev, System.Func<Event, bool> stopFunc)
+        public void Pass(Context ev, System.Func<Context, bool> stopFunc)
         {
             foreach (var handler in m_handlers)
             {

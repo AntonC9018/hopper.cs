@@ -224,9 +224,9 @@ namespace Hopper
             player.Init(new IntVector2(1, 1), world);
             var slot = new SizedSlot<CircularItemContainer, Hopper.Core.Items.IItem>("stuff", 5);
             var item = new TinkerItem(
-                new ItemMetadata("Test_Item_1"), new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
+                new ItemMetadata("Test_Item_1"), new Tinker<TinkerData>(new ChainDef<ContextBase>[] { }), slot);
             var item2 = new TinkerItem(
-                new ItemMetadata("Test_Item_2"), new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
+                new ItemMetadata("Test_Item_2"), new Tinker<TinkerData>(new ChainDef<ContextBase>[] { }), slot);
             var packed = Registry.Default.Items.PackModMap();
             ((Inventory)player.Inventory).AddContainer(slot, new CircularItemContainer(5));
             player.Inventory.Equip(item);

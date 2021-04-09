@@ -9,7 +9,7 @@ namespace Hopper.Core.Chains
     {
         IChainTemplate Template { get; }
     }
-    public class ChainTemplate_PartBuilder<Event> : I_ChainTemplate_PartBuilder where Event : EventBase
+    public class ChainTemplate_PartBuilder<Event> : I_ChainTemplate_PartBuilder where Event : ContextBase
     {
         private ChainTemplate<Event> m_template;
         public IChainTemplate Template { get => m_template.Clone(); }
@@ -52,7 +52,7 @@ namespace Hopper.Core.Chains
         }
 
         public ChainTemplate_PartBuilder<T> AddTemplate<T>(ChainName name)
-            where T : EventBase
+            where T : ContextBase
         {
             return builder.AddTemplate<T>(name);
         }

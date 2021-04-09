@@ -8,7 +8,7 @@ namespace Hopper.Test_Content
     {
         public static ChainDefBuilder AddHandler_InsteadOf_Attack_Dig_Move(
             this ChainDefBuilder builder,
-            System.Action<EventBase> handler,
+            System.Action<ContextBase> handler,
             PriorityRank priority = PriorityRank.Default)
         {
             return builder

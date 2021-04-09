@@ -4,7 +4,7 @@ using Hopper.Utils.Chains;
 namespace Hopper.Core.Chains
 {
     public delegate Chain<T> BehaviorPath<T>(IWithWithChain factoryProvider)
-        where T : EventBase;
+        where T : ContextBase;
 
     public interface IChainDef
     {
@@ -12,7 +12,7 @@ namespace Hopper.Core.Chains
         void RemoveHandlers(Handle[] handles, IWithWithChain entity);
     }
 
-    public class ChainDef<Event> : IChainDef where Event : EventBase
+    public class ChainDef<Event> : IChainDef where Event : ContextBase
     {
         public BehaviorPath<Event> path;
         public Handler<Event>[] infos;

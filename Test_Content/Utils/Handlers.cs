@@ -5,7 +5,7 @@ namespace Hopper.Test_Content.Utils
 {
     public static class Handlers
     {
-        public static void StopPropagate(EventBase ev)
+        public static void StopPropagate(ContextBase ev)
         {
             ev.propagate = false;
         }

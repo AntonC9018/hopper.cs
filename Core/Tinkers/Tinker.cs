@@ -89,7 +89,7 @@ namespace Hopper.Core
             IChainPaths<Event> path,
             System.Action<Event> handler,
             PriorityRank priority = PriorityRank.Default)
-            where Event : EventBase
+            where Event : ContextBase
         {
             return new Tinker<T>(
                 new IChainDef[]

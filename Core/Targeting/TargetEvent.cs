@@ -4,7 +4,7 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Targeting
 {
-    public class TargetEvent<T> : EventBase
+    public class TargetEvent<T> : ContextBase
     {
         public List<T> targets;
         public IntVector2 direction;

@@ -4,13 +4,13 @@ using Hopper.Utils.Chains;
 namespace Hopper.Core.Chains
 {
     public delegate ChainTemplate<T> BehaviorFactoryPath<T>(IProvideBehaviorFactory factoryProvider)
-        where T : EventBase;
+        where T : ContextBase;
     public interface ITemplateChainDef
     {
         void AddHandlersTo(IProvideBehaviorFactory entity);
     }
 
-    public class TemplateChainDef<Event> : ITemplateChainDef where Event : EventBase
+    public class TemplateChainDef<Event> : ITemplateChainDef where Event : ContextBase
     {
         public BehaviorFactoryPath<Event> path;
         public Handler<Event>[] handlers;

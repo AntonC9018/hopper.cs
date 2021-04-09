@@ -13,7 +13,7 @@ namespace Hopper.Tests
             this.recorder = recorder;
         }
 
-        public void Function(EventBase ev)
+        public void Function(ContextBase ev)
         {
             recorder.Record(message);
         }

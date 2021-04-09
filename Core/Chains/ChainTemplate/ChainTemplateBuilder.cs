@@ -19,14 +19,14 @@ namespace Hopper.Core.Chains
             return templates;
         }
 
-        public ChainTemplate_PartBuilder<T> AddTemplate<T>(ChainName name) where T : EventBase
+        public ChainTemplate_PartBuilder<T> AddTemplate<T>(ChainName name) where T : ContextBase
         {
             var builder = new ChainTemplate_PartBuilder<T>(this);
             m_templateBuilders.Add(name, builder);
             return builder;
         }
 
-        public ChainTemplate_PartBuilder<T> GetTemplate<T>(ChainName name) where T : EventBase
+        public ChainTemplate_PartBuilder<T> GetTemplate<T>(ChainName name) where T : ContextBase
         {
             return (ChainTemplate_PartBuilder<T>)m_templateBuilders[name];
         }

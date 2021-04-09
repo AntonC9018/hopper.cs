@@ -19,7 +19,7 @@ namespace Hopper.Core
             IChainPaths<T> path,
             System.Action<T> handler,
             PriorityRank priority = PriorityRank.Default)
-            where T : EventBase
+            where T : ContextBase
         {
             return new Retoucher(
                 new ITemplateChainDef[]

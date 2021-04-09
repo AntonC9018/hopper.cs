@@ -9,7 +9,7 @@ namespace Hopper.Core.Chains
         IChainDef ToStatic();
     }
 
-    public class ChainDef_PartBuilder<Event> : I_ChainDef_PartBuilder where Event : EventBase
+    public class ChainDef_PartBuilder<Event> : I_ChainDef_PartBuilder where Event : ContextBase
     {
         public BehaviorPath<Event> path;
         private ChainDefBuilder builder;
@@ -49,7 +49,7 @@ namespace Hopper.Core.Chains
         }
 
         public ChainDef_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
-            where T : EventBase
+            where T : ContextBase
         {
             return builder.AddDef<T>(path);
         }

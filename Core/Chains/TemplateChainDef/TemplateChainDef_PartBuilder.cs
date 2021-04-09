@@ -9,7 +9,7 @@ namespace Hopper.Core.Chains
         ITemplateChainDef ToStatic();
     }
 
-    public class TemplateChainDef_PartBuilder<Event> : I_TemplateChainDef_PartBuilder where Event : EventBase
+    public class TemplateChainDef_PartBuilder<Event> : I_TemplateChainDef_PartBuilder where Event : ContextBase
     {
         public BehaviorFactoryPath<Event> path;
         public List<Handler<Event>> infos;
@@ -44,7 +44,7 @@ namespace Hopper.Core.Chains
         }
 
         public TemplateChainDef_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
-            where T : EventBase
+            where T : ContextBase
         {
             return builder.AddDef<T>(path);
         }

@@ -1,56 +1,35 @@
-using System;
 using System.Collections.Generic;
-using Hopper.Utils;
-using Hopper.Utils.MyLinkedList;
+using System.Linq;
 
 namespace Hopper.Utils.Chains
 {
-    public class Chain { }
-
-    public class Chain<Context> : Chain where Context : ContextBase
+    public class Chain<Context> where Context : ContextBase
     {
-        public const int NUM_PRIORITY_RANKS = (int)PriorityRank.Highest + 1;
-        public const int PRIORITY_STEP = 0x08;
-        internal int[] m_priorityRanksMap = {
-            PriorityMapping.Lowest,
-            PriorityMapping.Low,
-            PriorityMapping.Medium,
-            PriorityMapping.High,
-            PriorityMapping.Highest,
-        };
         internal bool m_dirty;
-        internal MyLinkedList<Handler<Context>> m_handlers;
-        internal List<MyListNode<Handler<Context>>> m_handlersToRemove;
+        internal SortedSet<Handler<Context>> m_handlers;
 
         public Chain()
         {
-            m_handlers = new MyLinkedList<Handler<Context>>();
-            m_handlersToRemove = new List<MyListNode<Handler<Context>>>();
+            m_handlers = new SortedSet<Handler<Context>>();
         }
 
-        public Handle<Context> AddHandler(Action<Context> handlerFunction,
-            PriorityRank priority = PriorityRank.Default)
-        {
-            return AddHandler(handlerFunction, (int)priority);
-        }
-
-        public Handle<Context> AddHandler(Action<Context> handlerFunction, int priority)
-        {
-            return AddHandler(new Handler<Context> { handler = handlerFunction, priority = priority });
-        }
-
-        public Handle<Context> AddHandler(Handler<Context> handler)
+        public bool Add(Handler<Context> handler)
         {
             m_dirty = true;
-            handler.priority = MapPriority(handler.priority);
-            m_handlers.AddFront(handler);
-            return new Handle<Context>(m_handlers.head);
+            return m_handlers.Add(handler);
+        }
+
+        public void PassNoCondition(Context ev)
+        {
+            foreach (var handler in m_handlers.ToArray())
+            {
+                handler.handler(ev);
+            }
         }
 
         public void Pass(Context ev)
         {
-            CleanUp();
-            foreach (var handler in m_handlers)
+            foreach (var handler in m_handlers.ToArray())
             {
                 if (!ev.propagate)
                     return;
@@ -60,8 +39,7 @@ namespace Hopper.Utils.Chains
 
         public void Pass(Context ev, System.Func<Context, bool> stopFunc)
         {
-            CleanUp();
-            foreach (var handler in m_handlers)
+            foreach (var handler in m_handlers.ToArray())
             {
                 if (stopFunc(ev))
                     return;
@@ -69,47 +47,14 @@ namespace Hopper.Utils.Chains
             }
         }
 
-        public void RemoveHandler(Handle<Context> handle)
+        public bool Remove(Handler<Context> handler)
         {
-            m_handlersToRemove.Add(handle.item);
+            return m_handlers.Remove(handler);
         }
 
-        public void RemoveHandler(Handle handle)
+        public bool Has(Handler<Context> handler)
         {
-            m_handlersToRemove.Add(((Handle<Context>)handle).item);
-        }
-
-        internal int MapPriority(int rank)
-        {
-            // given a rank
-            if (rank < NUM_PRIORITY_RANKS)
-            {
-                m_priorityRanksMap[rank] -= PRIORITY_STEP;
-
-                return m_priorityRanksMap[rank];
-            }
-
-            // otherwise we are given a priority score
-            return rank;
-        }
-
-        protected void CleanUp()
-        {
-            foreach (var node in m_handlersToRemove)
-            {
-                m_handlers.RemoveNode(node);
-            }
-            if (m_dirty)
-            {
-                SortHandlers();
-            }
-            m_handlersToRemove.Clear();
-        }
-
-        internal void SortHandlers()
-        {
-            m_handlers.Sort((a, b) => a.priority - b.priority);
-            m_dirty = false;
+            return m_handlers.Contains(handler);
         }
     }
 }

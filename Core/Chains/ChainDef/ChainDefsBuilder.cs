@@ -10,7 +10,7 @@ namespace Hopper.Core.Chains
     {
         List<I_ChainDef_PartBuilder> defs = new List<I_ChainDef_PartBuilder>();
         public ChainDef_PartBuilder<T> AddDef<T>(IChainPaths<T> path)
-            where T : EventBase
+            where T : ContextBase
         {
             var def = new ChainDef_PartBuilder<T>(path.ChainPath, this);
             defs.Add(def);

@@ -8,8 +8,8 @@ namespace Hopper.Tests
         private Recorder recorder;
         private ControlledHandler handler_Hello;
         private ControlledHandler handler_World;
-        private Chain<EventBase> chain;
-        private EventBase ev;
+        private Chain<ContextBase> chain;
+        private ContextBase ev;
 
         public Chains()
         {
@@ -22,8 +22,8 @@ namespace Hopper.Tests
         public void Setup()
         {
             recorder.recordedSequence = "";
-            chain = new Chain<EventBase>();
-            ev = new EventBase();
+            chain = new Chain<ContextBase>();
+            ev = new ContextBase();
         }
 
         [Test]
@@ -35,14 +35,13 @@ namespace Hopper.Tests
         [Test]
         public void EmptyChain_AddingHandlerDefault_ReturnsHandle()
         {
-            var handle = chain.AddHandler(handler_Hello.Function);
-            Assert.IsNotNull(handle);
+            Assert.True(chain.Add(handler_Hello));
         }
 
         [Test]
         public void IsAddedHandlerCalled()
         {
-            var handle = chain.AddHandler(handler_Hello.Function);
+            var handle = chain.Add(handler_Hello.Function);
             // the handler will be called
             chain.Pass(ev);
             // assert it were called
