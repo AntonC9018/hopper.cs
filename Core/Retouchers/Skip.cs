@@ -2,55 +2,37 @@ using Hopper.Core.Registries;
 using System.Linq;
 using Hopper.Core.Components.Basic;
 using Hopper.Utils.Chains;
+using Hopper.Core.Components;
 
 namespace Hopper.Core.Retouchers
 {
     public static class Skip
     {
-        public static readonly Retoucher EmptyAttack = Retoucher
-            .SingleHandlered<Attacking.Event>(Attacking.Check, SkipEmptyAttack, PriorityRank.Low);
-        public static readonly Retoucher EmptyDig = Retoucher
-            .SingleHandlered<Digging.Event>(Digging.Check, SkipEmptyDig, PriorityRank.Low);
-        public static readonly Retoucher BlockedMove = Retoucher
-            .SingleHandlered<Moving.Event>(Moving.Check, SkipBlocked, PriorityRank.Low);
-        public static readonly Retoucher NoPlayer = Retoucher
-            .SingleHandlered<Attacking.Event>(Attacking.Check, SkipNoPlayer, PriorityRank.Low);
-        public static readonly Retoucher Self = Retoucher
-            .SingleHandlered<Attacking.Event>(Attacking.Check, SkipSelf, PriorityRank.Low);
-
-        public static void RegisterAll(ModRegistry registry)
+        [Export]
+        private static bool IsAttackEmpty(Attacking.Context ctx)
         {
-            EmptyAttack.RegisterSelf(registry);
-            EmptyDig.RegisterSelf(registry);
-            BlockedMove.RegisterSelf(registry);
-            NoPlayer.RegisterSelf(registry);
-            Self.RegisterSelf(registry);
+            return ctx.targets.Count > 0;
         }
 
-        private static void SkipEmptyAttack(Attacking.Event ev)
+        private static bool IsDigEmpty(Digging.Context ctx)
         {
-            ev.propagate = ev.targets.Count > 0;
+            return ctx.targets.Count > 0;
         }
 
-        private static void SkipEmptyDig(Digging.Event ev)
+        private static void SkipBlocked(Moving.Context ctx)
         {
-            ev.propagate = ev.targets.Count > 0;
+            ctx.propagate = ctx.actor.HasBlockRelative(ctx.direction) == false;
         }
 
-        private static void SkipBlocked(Moving.Event ev)
+        private static void SkipNoPlayer(Attacking.Context ctx)
         {
-            ev.propagate = ev.actor.HasBlockRelative(ev.direction) == false;
+            ctx.propagate = ctx.targets.Any(t => t.entity.IsPlayer());
         }
 
-        private static void SkipNoPlayer(Attacking.Event ev)
+        private static void SkipSelf(Attacking.Context ctx)
         {
-            ev.propagate = ev.targets.Any(t => t.entity.IsPlayer);
-        }
-
-        private static void SkipSelf(Attacking.Event ev)
-        {
-            ev.propagate = ev.targets
-                .Any(t => t.entity == ev.actor);
+            ctx.propagate = ctx.targets
+                .Any(t => t.entity == ctx.actor);
         }
     }
 }

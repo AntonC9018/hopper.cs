@@ -84,7 +84,7 @@ namespace Hopper.Test_Content.Floor
 
                 pushable.Activate(
                     m_entity.Orientation,
-                    m_entity.Stats.GetLazy(Push.Path));
+                    m_entity.GetStats().GetLazy(Push.Path));
             }
         }
 

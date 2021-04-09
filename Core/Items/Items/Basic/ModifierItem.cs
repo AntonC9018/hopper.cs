@@ -18,12 +18,12 @@ namespace Hopper.Core.Items
 
         public override void BeDestroyed(Entity entity)
         {
-            modifier.RemoveSelf(entity.Stats);
+            modifier.RemoveSelf(entity.GetStats());
         }
 
         public override void BeEquipped(Entity entity)
         {
-            modifier.AddSelf(entity.Stats);
+            modifier.AddSelf(entity.GetStats());
         }
     }
 }

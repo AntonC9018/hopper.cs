@@ -33,7 +33,7 @@ namespace Hopper.Core.Items
         public Inventory(Entity entity)
         {
             var patchArea = entity.World.m_currentRepository;
-            var patchRegistry = patchArea.GetPatchSubRegistry<ISlot<IItemContainer<IItem>>>();
+            var patchRegistry = patchArea.GetPatchSubRegistry<ISlot>();
             m_itemSlots = new Dictionary<int, IItemContainer<IItem>>(patchRegistry.patches.Count);
             foreach (var slot in patchRegistry.patches.Values)
             {
@@ -98,10 +98,10 @@ namespace Hopper.Core.Items
             return m_itemSlots.ContainsKey(item.Slot.Id);
         }
 
-        public T GetContainer<T>(ISlot<T> slot) where T : IItemContainer<IItem>
-        {
-            return (T)m_itemSlots[slot.Id];
-        }
+        // public T GetContainer<T>(ISlot<T> slot) where T : IItemContainer<IItem>
+        // {
+        //     return (T)m_itemSlots[slot.Id];
+        // }
 
         public bool IsEquipped(IItem item) =>
             m_itemSlots[item.Slot.Id].Contains(item.Decompose().item);

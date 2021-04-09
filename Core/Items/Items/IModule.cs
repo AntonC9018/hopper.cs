@@ -50,17 +50,17 @@ namespace Hopper.Core.Items
 
         public void BeDestroyed(Entity entity)
         {
-            m_modifier.RemoveSelf(entity.Stats);
+            m_modifier.RemoveSelf(entity.GetStats());
         }
 
         public void BeEquipped(Entity entity)
         {
-            m_modifier.AddSelf(entity.Stats);
+            m_modifier.AddSelf(entity.GetStats());
         }
 
         public void BeUnequipped(Entity entity)
         {
-            m_modifier.RemoveSelf(entity.Stats);
+            m_modifier.RemoveSelf(entity.GetStats());
         }
 
         public virtual void Init(IItem item)

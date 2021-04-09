@@ -24,7 +24,7 @@ namespace Hopper.Core.Components.Basic
         {
             int i = 1;
 
-            var transform = ctx.actor.GetTransform();
+            var transform = ctx.actor.GetTransformComponent();
 
             do
             {

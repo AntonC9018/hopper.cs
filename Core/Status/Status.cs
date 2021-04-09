@@ -114,7 +114,7 @@ namespace Hopper.Core
 
         public StatusFile GetStat(Entity entity)
         {
-            return m_statPath.Path(entity.Stats);
+            return m_statPath.Path(entity.GetStats());
         }
 
         protected virtual void Apply(Entity target, T statusData)

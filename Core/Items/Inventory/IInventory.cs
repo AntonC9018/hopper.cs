@@ -10,7 +10,6 @@ namespace Hopper.Core.Items
         bool CanEquipItem(IItem item);
         void Destroy(IItem item);
 
-        T GetContainer<T>(ISlot<T> slot) where T : IItemContainer<IItem>;
         bool IsEquipped(IItem item);
         IEnumerable<IItem> AllItems { get; }
     }

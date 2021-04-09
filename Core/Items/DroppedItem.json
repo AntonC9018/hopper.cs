@@ -1,0 +1,7 @@
+{
+    "Layer": "DROPPED",
+    "Components": [ 
+        "ItemComponent",
+        "Transform"
+    ]
+}

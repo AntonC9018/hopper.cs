@@ -1,3 +1,4 @@
+using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;
 
 namespace Hopper.Core.Components.Basic

@@ -62,7 +62,7 @@ namespace Hopper.Test_Content.Projectiles
                 if (!m_entity.IsDead)
                 {
                     // Move in the direction specified by action.
-                    var move = m_entity.Stats.GetLazy(Move.Path);
+                    var move = m_entity.GetStats().GetLazy(Move.Path);
                     m_entity.Behaviors.Get<Displaceable>().Activate(direction, move);
                 }
             }
@@ -97,7 +97,7 @@ namespace Hopper.Test_Content.Projectiles
             Attacking.TryApplyAttack(
                 attacked: entity,
                 direction: entity.Orientation,
-                attack: m_entity.Stats.GetLazy(Attack.Path),
+                attack: m_entity.GetStats().GetLazy(Attack.Path),
                 attacker: m_entity
             );
             m_entity.Die(); // For now, just die. Add a do chain later.
