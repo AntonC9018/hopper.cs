@@ -47,7 +47,7 @@ namespace Hopper.Core.Stats
     {
     }
 
-    public partial class StatManager : IComponent
+    public partial class Stats : IComponent
     {
         // contains either directories or files
         private Dictionary<Modifier, int> m_modifierCounts
@@ -57,7 +57,7 @@ namespace Hopper.Core.Stats
         private StatFS m_fs = new StatFS();
         public PatchArea m_patchArea;
 
-        public StatManager(PatchArea patchArea = null)
+        public Stats(PatchArea patchArea = null)
         {
             m_chainModifierHandles = new Dictionary<Modifier, Handle>();
             m_modifierCounts = new Dictionary<Modifier, int>();
@@ -65,7 +65,7 @@ namespace Hopper.Core.Stats
             m_patchArea = patchArea;
         }
 
-        public StatManager(DefaultStats defaultStats)
+        public Stats(DefaultStats defaultStats)
         {
             m_chainModifierHandles = new Dictionary<Modifier, Handle>();
             m_modifierCounts = new Dictionary<Modifier, int>();

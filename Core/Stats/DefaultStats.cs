@@ -5,13 +5,13 @@ namespace Hopper.Core.Stats
 {
     public class DefaultStats : IPatchable
     {
-        public StatManager statManager;
+        public Stats statManager;
         public PatchArea PatchArea { get; private set; }
 
         public DefaultStats(PatchArea patchArea)
         {
             this.PatchArea = patchArea;
-            this.statManager = new StatManager();
+            this.statManager = new Stats();
         }
 
         public DefaultStats Set<T>(IStatPath<T> statPath, T value)

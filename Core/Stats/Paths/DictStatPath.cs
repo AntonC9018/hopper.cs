@@ -12,7 +12,7 @@ namespace Hopper.Core.Stats
             this.String = path;
         }
 
-        public DictFile Path(StatManager sm)
+        public DictFile Path(Stats sm)
         {
             return sm.GetLazy<DictFile>(this);
         }

@@ -5,10 +5,10 @@ namespace Hopper.Core.Items
         public IItem Item { get; set; }
         public override Layer Layer => Layer.DROPPED;
 
-        public static EntityFactory<DroppedItem> Factory = CreateFactory();
-        public static EntityFactory<DroppedItem> CreateFactory()
+        public static EntityFactory Factory = CreateFactory();
+        public static EntityFactory CreateFactory()
         {
-            return new EntityFactory<DroppedItem>();
+            return new EntityFactory();
         }
 
         public DroppedItem() : base()

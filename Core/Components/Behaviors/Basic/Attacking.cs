@@ -1,12 +1,9 @@
 using System.Collections.Generic;
-using Hopper.Utils.Chains;
 using Hopper.Core.Items;
 using Hopper.Core.Targeting;
-using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using System.Linq;
 using Hopper.Utils.Vector;
-using Hopper.Core.Chains;
 using Hopper.Core.Predictions;
 using Hopper.Core.Stats;
 
@@ -25,12 +22,12 @@ namespace Hopper.Core.Components.Basic
         /// <summary>
         /// A helper method. Tries to apply the given attack to the given entity, without checking the attackness. 
         /// </summary>
-        [Alias("TryApplyAttack")] 
-        public static bool TryApplyAttack(Entity from, Entity to, Attack attack, IntVector2 direction)
+        // [Alias("TryApplyAttack")] 
+        public static bool TryApplyAttack(Entity actor, Entity to, Attack attack, IntVector2 direction)
         {
             if (!to.IsDead())
             {
-                return to.TryBeAttacked(from, attack, direction);
+                return to.TryBeAttacked(actor, attack, direction);
             }
             return false;
         }
@@ -40,7 +37,7 @@ namespace Hopper.Core.Components.Basic
         /// It loads the attack and push from the stats manager.  
         /// </summary>
         [Export] public static void SetStats(
-            StatManager stats, ref Attack attack, ref Push push)
+            Stats.Stats stats, ref Attack attack, ref Push push)
         {
             if (attack == null)
             {
@@ -63,7 +60,7 @@ namespace Hopper.Core.Components.Basic
         {
             if (ctx.targets == null)
             {
-                if (ctx.actor.GetInventory(var inventory))
+                if (ctx.actor.GetInventory(out var inventory))
                 {
                     if (inventory.GetWeapon(out var weapon))
                     {

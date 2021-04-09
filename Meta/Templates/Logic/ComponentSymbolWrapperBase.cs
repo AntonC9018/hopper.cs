@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Meta
 {
@@ -17,6 +18,13 @@ namespace Meta
         {
             return symbol.GetMembers().OfType<IFieldSymbol>()
                 .Where(field => !field.GetAttributes().IsEmpty).ToHashSet();
+        }
+
+        public IEnumerable<UsingDirectiveSyntax> GetUsingSyntax(Solution solution)
+        {
+            var doc = solution.GetDocument(symbol.Locations.First().SourceTree);
+            var tree = doc.GetSyntaxTreeAsync().Result;
+            return tree.GetRoot().ChildNodes().OfType<UsingDirectiveSyntax>();
         }
 
         public AliasMethodSymbolWrapper[] GetAliasMethods(HashSet<string> globalAliases)

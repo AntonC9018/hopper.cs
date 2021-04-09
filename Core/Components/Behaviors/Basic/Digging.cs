@@ -18,7 +18,7 @@ namespace Hopper.Core.Components.Basic
             [Omit] public List<Target> targets;
         }
 
-        [Export] public static void SetDig(StatManager stats, out Dig dig)
+        [Export] public static void SetDig(Stats.Stats stats, out Dig dig)
         {
             dig = stats.GetLazy(Dig.Path);
         }

@@ -53,7 +53,7 @@ namespace Hopper.Core.Components.Basic
         /// Sets the initial resistance stat from stats manager.
         /// </summary>
         [Export] public static void SetResistance(
-            StatManager stats, out Attack.Resistance resistance)
+            Stats.Stats stats, out Attack.Resistance resistance)
         {
             resistance = stats.GetLazy(Attack.Resistance.Path);
             // priority = PriorityMapping.Medium + 0x8000
@@ -64,7 +64,7 @@ namespace Hopper.Core.Components.Basic
         /// It queries attack source resistance stat, and sets the attack damage to 0 
         /// if the resistance to the source specified by the attack is greater than the attack power.
         /// </summary>
-        [Export] public static void ResistSource(StatManager stats, Attack attack)
+        [Export] public static void ResistSource(Stats.Stats stats, Attack attack)
         {
             if (stats.GetLazy(Attack.Source.Resistance.Path)[attack.sourceId] > attack.power)
             {

@@ -14,7 +14,7 @@ namespace Hopper.Core.Components.Basic
         {
             if (ctx.move == null)
             {
-                ctx.move = ctx.actor.GetStatManager().GetLazy(Move.Path);
+                ctx.move = ctx.actor.GetStats().GetLazy(Move.Path);
             }
         }
 

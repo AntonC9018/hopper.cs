@@ -85,8 +85,6 @@ namespace Meta
             var ctx = new ProjectContext(msWorkspace.CurrentSolution);
             await ctx.Reset(coreProject);
 
-            var globalAliases = new HashSet<string>();
-
             // TODO: parallelize
             {
                 var behaviors = await ctx.FindAllBehaviors();
@@ -96,7 +94,7 @@ namespace Meta
                 {
                     try
                     {
-                        var wrapped = new BehaviorSymbolWrapper(b, globalAliases);
+                        var wrapped = new BehaviorSymbolWrapper(b, ctx);
                         behaviorWrappers.Add(wrapped);
                     }
                     catch (GeneratorException e)
@@ -116,7 +114,7 @@ namespace Meta
                     behaviorPrinter.Initialize();
                     behaviorPrinter.behavior = behavior;
 
-                    // ctx._solution.GetDocument(behavior.symbol.Locations.First().SourceTree);
+                    var behaviorDocument = ctx._solution.GetDocument(behavior.symbol.Locations.First().SourceTree);
 
                     Console.WriteLine($"Generating code for {behavior.Calling}");
 
@@ -134,7 +132,7 @@ namespace Meta
                 {
                     try
                     {
-                        var wrapped = new ComponentSymbolWrapper(b, globalAliases);
+                        var wrapped = new ComponentSymbolWrapper(b, ctx);
                         componentWrappers.Add(wrapped);
                     }
                     catch (GeneratorException e)

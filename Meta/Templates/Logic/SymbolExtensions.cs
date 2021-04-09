@@ -33,19 +33,6 @@ namespace Meta
         {
             if (symbol is INamedTypeSymbol named_symbol)
             {
-                // For now, fully qualify the types, since I have to idea how to find document
-                // in which the behaviorr symbols were defined.
-                if (symbol.ContainingType != null)
-                {
-                    sb_type.Append(TypeToText(symbol.ContainingType));
-                    sb_type.Append('.');
-                }
-                else if (symbol.ContainingNamespace != null)
-                {
-                    sb_type.Append(symbol.ContainingNamespace.FullName());
-                    sb_type.Append('.');
-                }
-                
                 sb_type.Append(symbol.Name);
 
                 if (named_symbol.IsGenericType)

@@ -3,7 +3,7 @@ using Hopper.Utils.FS;
 
 namespace Hopper.Core.Stats
 {
-    public class StatEvent<T> : EventBase where T : File
+    public class StatContext<T> : ContextBase where T : File
     {
         public T file;
     }

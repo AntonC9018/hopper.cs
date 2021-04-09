@@ -6,12 +6,12 @@ namespace Hopper.Core.Stats
 {
     public class StatFileContainer<T> : File where T : File
     {
-        public Chain<StatEvent<T>> chain;
+        public Chain<StatContext<T>> chain;
         public T file;
 
         public StatFileContainer(T file)
         {
-            this.chain = new Chain<StatEvent<T>>();
+            this.chain = new Chain<StatContext<T>>();
             this.file = (T)file.Copy();
         }
 
@@ -22,7 +22,7 @@ namespace Hopper.Core.Stats
 
         public T Retrieve()
         {
-            var ev = new StatEvent<T> { file = (T)file.Copy() };
+            var ev = new StatContext<T> { file = (T)file.Copy() };
             chain.Pass(ev);
             return ev.file;
         }

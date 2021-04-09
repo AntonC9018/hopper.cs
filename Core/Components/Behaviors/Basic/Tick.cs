@@ -2,7 +2,7 @@ namespace Hopper.Core.Components.Basic
 {
     [Chains("Do")]
     [ActivationAlias("Tick")]
-    public partial class Tick : IBehavior
+    public partial class TickBehavior : IBehavior
     {
         public class Context : ActorContext
         {
@@ -10,10 +10,11 @@ namespace Hopper.Core.Components.Basic
 
         // TODO: void return types of activation should be autointerpreted as true?
         //       or allow void return types.
-        public void Activate(Entity actor)
+        public bool Activate(Entity actor)
         {
-            var ev = new Context { actor = actor };
-            Do(ctx);
+            var ctx = new Context { actor = actor };
+            TraverseDo(ctx);
+            return true;
         }
     }
 }

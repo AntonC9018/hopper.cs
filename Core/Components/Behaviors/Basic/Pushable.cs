@@ -14,12 +14,12 @@ namespace Hopper.Core.Components.Basic
             [Omit] public Push.Resistance resistance;
         }
 
-        [Export] public static void SetResistance(StatManager stats, out Push.Resistance resistance)
+        [Export] public static void SetResistance(Stats.Stats stats, out Push.Resistance resistance)
         {
             resistance = stats.GetLazy(Push.Resistance.Path);
         }
 
-        [Export] public static void ResistSource(StatManager stats, Push push)
+        [Export] public static void ResistSource(Stats.Stats stats, Push push)
         {
             var sourceRes = stats.GetLazy(Push.Source.Resistance.Path);
             if (sourceRes[push.sourceId] > push.power)

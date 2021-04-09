@@ -9,7 +9,6 @@ namespace Meta
     {
         public ContextSymbolWrapper context;
         public ExportedMethodSymbolWrapper[] exportedMethods;
-        public ISymbol[] usings;
         public bool ShouldGenerateActivation;
         public bool ShouldGenerateCheckDo;
         public string ActivationAlias;
@@ -20,9 +19,9 @@ namespace Meta
 
         public override string TypeText => "behavior";
 
-        public BehaviorSymbolWrapper(INamedTypeSymbol symbol, HashSet<string> globalAliases) : base(symbol, globalAliases)
+        public BehaviorSymbolWrapper(INamedTypeSymbol symbol, ProjectContext projectContext) : base(symbol, projectContext)
         {
-            Init(globalAliases);
+            Init(projectContext.globalAliases);
         }
 
         private void Init(HashSet<string> globalAliases)

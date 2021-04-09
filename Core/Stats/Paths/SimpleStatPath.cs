@@ -21,7 +21,7 @@ namespace Hopper.Core.Stats
             this.defaultFile = defaultFile;
         }
 
-        public T Path(StatManager sm)
+        public T Path(Stats sm)
         {
             return sm.GetLazy<T>(this);
         }

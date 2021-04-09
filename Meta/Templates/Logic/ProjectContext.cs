@@ -13,12 +13,15 @@ namespace Meta
         public ProjectContext(Solution solution)
         {
             _solution = solution;
+            globalAliases = new HashSet<string>();
         }
 
         public Project _project;
 
         public HashSet<Project> projectSet;
         public Compilation compilation;
+
+        public HashSet<string> globalAliases;
 
         public async Task Reset(Project project)
         {

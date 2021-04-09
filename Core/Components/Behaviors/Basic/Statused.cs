@@ -65,7 +65,7 @@ namespace Hopper.Core.Components.Basic
 
         [Export] public static void SetResistance(Context ctx)
         {
-            ctx.resistance = ctx.actor.GetStatManager().GetLazy(Status.Source.Resistance.Path);
+            ctx.resistance = ctx.actor.GetStats().GetLazy(Status.Source.Resistance.Path);
         }
 
         [Export] public static void ResistSomeStatuses(Context ctx)

@@ -18,10 +18,21 @@ namespace Hopper.Core
             subject.components = new Dictionary<Identifier, IComponent>();
         }
 
+        public EntityFactory AddComponent<T>(Index<T> index, T component) where T : IComponent
+        {
+            subject.AddComponent(index, component);
+            return this;
+        }
+
+        public T GetComponent<T>(Index<T> index) where T : IComponent
+        {
+            return subject.GetComponent(index);
+        }
+
         public Entity Instantiate()
         {
             Entity entity = new Entity(); // subject.Clone()?
-            entity.components = new Dictionary<Identifier, IComponent>(components);
+            entity.components = new Dictionary<Identifier, IComponent>(subject.components);
 
             // Instantiate and save behaviors
             foreach (var kvp in entity.components)
