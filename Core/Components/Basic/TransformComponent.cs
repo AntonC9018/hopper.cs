@@ -30,5 +30,20 @@ namespace Hopper.Core
             cell.m_entities.Add(entity);
             cell.FireEnterEvent(entity);
         }
+
+        public bool HasBlockRelative(IntVector2 direction, Layer layer)
+        {
+
+        }
+        
+        public IntVector2 GetPosRelative(IntVector2 offset)
+        {
+
+        }
+
+        public Cell GetCell()
+        {
+            return null;
+        }
     }
 }

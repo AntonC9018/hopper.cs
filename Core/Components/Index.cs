@@ -15,6 +15,6 @@ namespace Hopper.Core.Components
     public struct Path<T> : IPath
     {
         public System.Func<Entity, T> Chain;
-        public System.Func<EntityFactory, T> FactoryChain;
+        public T FactoryChain(EntityFactory factory) => Chain(factory.subject);
     }
 }

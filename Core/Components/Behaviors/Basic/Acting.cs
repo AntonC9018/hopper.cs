@@ -15,6 +15,8 @@ namespace Hopper.Core.Components.Basic
             ActionSucceeded = 0b_100
         };
 
+        [Flags] public Flags _flags;
+
         [Inject] public System.Func<Entity, ParticularAction> _CalculateAction;
         [Inject] public System.Action<Context> _DoAction;
         public ParticularAction nextAction;
@@ -40,7 +42,7 @@ namespace Hopper.Core.Components.Basic
                 return true;
             }
 
-            SetDoingAction();
+            _flags |= Flags.DoingAction;
 
             if (TraverseCheck(ctx))
             {
@@ -49,15 +51,17 @@ namespace Hopper.Core.Components.Basic
             }
 
             ctx.propagate = true;
-            SetActionSucceed(ctx.success);
+
+            if (ctx.success) _flags |=  Flags.ActionSucceeded;
+            else             _flags &= ~Flags.ActionSucceeded;
 
             if (ctx.success)
                 TraverseSuccess(ctx);
             else
                 TraverseFail(ctx);
 
-            SetDoneAction();
-            SetDoingAction(false);
+            _flags |=  Flags.DidAction;
+            _flags &= ~Flags.DoingAction;
 
             return ctx.success;
         }

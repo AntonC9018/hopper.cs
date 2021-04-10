@@ -1,41 +1,26 @@
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
-using Hopper.Core.Registries;
-using Hopper.Utils;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Retouchers
 {
     public static class Equip
     {
-        public static readonly Retoucher OnDisplace = Retoucher.SingleHandlered(Displaceable.Do, PickUp);
-
-        public static void RegisterAll(ModRegistry registry)
+        [Export(Chain = "Displaceable.Do")]
+        private static void OnDisplace(Inventory inventory, TransformComponent transform)
         {
-            OnDisplace.RegisterSelf(registry);
-        }
-
-        private static void PickUp(ActorContext actorEvent)
-        {
-            var droppedItems = actorEvent.actor.GetCell().m_entities
-                .Where(i => i.Layer == Layer.DROPPED)
-                .ConvertAll<DroppedItem>(i => (DroppedItem)i);
-
-            var inv = actorEvent.actor.Inventory;
-            if (inv != null)
+            foreach (var droppedItem in transform.GetCell().m_entities)
             {
-                foreach (var droppedItem in droppedItems)
+                var item = droppedItem.GetItemComponent();
+                if (inventory.CanEquipItem(item))
                 {
-                    if (inv.CanEquipItem(droppedItem.Item))
-                    {
-                        // eventually, kill through an abstraction
-                        droppedItem.Die();
-                        inv.Equip(droppedItem.Item);
-                    }
+                    // eventually, kill through an abstraction
+                    droppedItem.Die();
+                    inventory.Equip(item);
                 }
-
-                inv.DropExcess();
             }
-        }
 
+            inventory.DropExcess();
+        }
     }
 }

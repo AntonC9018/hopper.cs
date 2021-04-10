@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Hopper.Core
 {
+    // TODO: make this a struct!
     public sealed class Entity : IHaveId
     {
         public int Id => id;

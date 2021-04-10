@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stats;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core
 {
@@ -51,8 +52,9 @@ namespace Hopper.Core
             PostPatchEvent = null;
         }
 
-        public EntityFactory Retouch(Retoucher retoucher)
+        public EntityFactory Retouch<T>(HandlerWrapper<T> retoucher) where T : ContextBase
         {
+            retoucher.AddTo(subject);
             return this;
         }
 

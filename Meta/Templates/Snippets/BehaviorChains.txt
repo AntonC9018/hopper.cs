@@ -6,8 +6,7 @@
         /// </summary>
         public static readonly Path<Chain<Context>> <#= chain.Name #>Path = new Path<Chain<Context>>
         { 
-            Chain = (Entity entity) => entity.GetComponent(Index)._<#= chain.Name #>Chain,
-            FactoryChain = (EntityFactory factory) => factory.GetComponent(Index)._<#= chain.Name #>Chain
+            Chain = (Entity entity) => entity.GetComponent(Index)._<#= chain.Name #>Chain
         };
 
 <# if (chain.ShouldGenerateParamsMethod) { #>

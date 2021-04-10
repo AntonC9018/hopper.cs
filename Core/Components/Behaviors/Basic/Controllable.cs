@@ -3,15 +3,12 @@ using System.Reflection;
 using Hopper.Utils.Vector;
 using System.Runtime.Serialization;
 using Hopper.Shared.Attributes;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
-    public class InputMapping : ChainName
+    public class InputMapping
     {
-        // public readonly static InputMapping Up = new InputMapping("Up");
-        // public readonly static InputMapping Down = new InputMapping("Down");
-        // public readonly static InputMapping Left = new InputMapping("Left");
-        // public readonly static InputMapping Right = new InputMapping("Right");
         public readonly static InputMapping Vector = new InputMapping("Vector");
         public readonly static InputMapping Action_0 = new InputMapping("Action_0");
         public readonly static InputMapping Action_1 = new InputMapping("Action_1");
@@ -22,8 +19,10 @@ namespace Hopper.Core.Components.Basic
         public readonly static InputMapping Weapon_0 = new InputMapping("Weapon_0");
         public readonly static InputMapping Weapon_1 = new InputMapping("Weapon_1");
 
-        public InputMapping(string name) : base(name)
+        string name;
+        public InputMapping(string name)
         {
+            this.name = name;
         }
 
         public static IEnumerable<InputMapping> Members
@@ -61,11 +60,13 @@ namespace Hopper.Core.Components.Basic
         }
 
         [Inject] public Action defaultAction;
+        [Inject] public Dictionary<InputMapping, Chain<Context>> _chains;
+
 
         public ParticularAction ConvertInputToAction(Entity entity, InputMapping input)
         {
             var ev = new Context { actor = entity };
-            GetChain<Context>(input).Pass(ev);
+            _chains[input].Pass(ev);
             return ev.ToParticular();
         }
 
@@ -77,23 +78,21 @@ namespace Hopper.Core.Components.Basic
                 action = defaultAction,
                 direction = direction
             };
-            GetChain<Context>(InputMapping.Vector).Pass(ev);
+            _chains[InputMapping.Vector].Pass(ev);
             return ev.ToParticular();
         }
 
-        public static readonly Dictionary<InputMapping, ChainPaths<Controllable, Context>> Chains
-            = new Dictionary<InputMapping, ChainPaths<Controllable, Context>>();
-
+        public static Dictionary<InputMapping, Path<Chain<Context>>> Paths;
         static Controllable()
         {
-            DefaultBuilder = new ChainTemplateBuilder();
-
             // set up all chain paths for the input mappings
             // set up all templates
             foreach (InputMapping name in InputMapping.Members)
             {
-                DefaultBuilder.AddTemplate<Context>(name);
-                Chains[name] = new ChainPaths<Controllable, Context>(name);
+                Paths[name] = new Path<Chain<Context>>
+                {
+                    Chain = (Entity entity) => entity.GetComponent(Index)._chains[name] 
+                };
             }
         }
     }

@@ -16,8 +16,13 @@ namespace Hopper.Core.Components.Basic
         public class Context : StandartContext
         {
             public List<Target> targets;
-            public Attack attack;
-            public Push push;
+            [Omit] public Attack attack;
+            [Omit] public Push push;
+        }
+
+        public bool Activate(Entity entity, IntVector2 direction)
+        {
+            return Activate(entity, direction, null);
         }
 
         /// <summary>
@@ -61,7 +66,7 @@ namespace Hopper.Core.Components.Basic
         {
             if (ctx.targets == null)
             {
-                if (ctx.actor.GetInventory(out var inventory))
+                if (ctx.actor.TryGetInventory(out var inventory))
                 {
                     if (inventory.GetWeapon(out var weapon))
                     {
