@@ -2,8 +2,6 @@ using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 using Hopper.Core.Components;
 using Hopper.Core; 
-using System; 
+using System;
 
-<# foreach (var u in component.Usings()) { #>
-<#= u #>
-<# } #>
+<#@ include file="Templates/Snippets/GenericUsings.txt" #>

@@ -13,17 +13,16 @@ public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ct
 <# if (method.IsDynamic) { #>
         public static HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper = new HandlerWrapper<<#= method.ContextName #>>
         {
-            chainPath = <#= method.Chain #>ChainPath
+            chainPath = <#= method.Chain #>Path
         };
 <# } #>
-
 <# } #>
 
         public static void InitHandlers()
         {
             // for demo, set priority directly
 <# foreach (var method in ExportedMethods) { #>
-            <#= method.Name #>Handler.priority = (int)PriorityRanks.<#= method.Priority #>;
+            <#= method.Name #>Handler.priority = (int)PriorityRank.<#= method.Priority #>;
 <# if (method.IsDynamic) { #>
             <#= method.Name #>HandlerWrapper.handler = <#= method.Name #>Handler;
 <# } #>

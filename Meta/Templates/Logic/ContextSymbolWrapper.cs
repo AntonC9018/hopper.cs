@@ -16,6 +16,10 @@ namespace Meta
         public ContextSymbolWrapper(INamedTypeSymbol symbol)
         {
             this.symbol = symbol;
+        }
+
+        public void Init()
+        {
             HashFields();
         }
 

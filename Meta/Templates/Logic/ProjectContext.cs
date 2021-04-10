@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Meta
 {
@@ -57,29 +58,35 @@ namespace Meta
                 RelevantSymbols.Instance.ibehavior, _solution, transitive: false, projectSet.ToImmutableHashSet()
             );
         }
+        public IEnumerable<INamedTypeSymbol> GetNotNestedTypes() =>
+            GetNotNestedTypes(compilation.GlobalNamespace);
 
-        public async Task<List<StaticClassSymbolWrapper>> GetStaticClassesWithExportedMethods()
+        public IEnumerable<INamedTypeSymbol> GetNotNestedTypes(INamespaceSymbol @namespace)
         {
-            var exported = await SymbolFinder.FindReferencesAsync(
-                RelevantSymbols.Instance.exportAttribute, _solution);
-            var classes = new HashSet<INamedTypeSymbol>();
-            var result = new List<StaticClassSymbolWrapper>();
+            foreach (var type in @namespace.GetTypeMembers())
+                yield return type;
 
-            foreach (var s in exported)
+            foreach (var nestedNamespace in @namespace.GetNamespaceMembers())
+            foreach (var type in GetNotNestedTypes(nestedNamespace))
+                yield return type;
+        }
+
+        public IEnumerable<StaticClassSymbolWrapper> GetStaticClassesWithExportedMethods()
+        {
+            var typeSymbols = GetNotNestedTypes();
+
+            foreach (var typeSymbol in typeSymbols)
             {
-                if (s.Definition is IMethodSymbol method 
-                    && method.ContainingType.IsStatic
-                    && !classes.Contains(method.ContainingType))
+                if (typeSymbol.IsStatic)
                 {
-                    var classWrapper = new StaticClassSymbolWrapper(method.ContainingType);
+                    var classWrapper = new StaticClassSymbolWrapper(typeSymbol);
                     classWrapper.Init(this);
-                    result.Add(classWrapper);
-
-                    classes.Add(method.ContainingType);
+                    if (classWrapper.ShouldGenerate())
+                    {
+                        yield return classWrapper;
+                    }
                 }
             }
-
-            return result;
         }
     }
 }

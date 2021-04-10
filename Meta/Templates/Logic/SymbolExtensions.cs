@@ -140,10 +140,11 @@ namespace Meta
         public static T MapToType<T>(this AttributeData attributeData) where T : Attribute
         {
             T attribute;
-            if (attributeData.AttributeConstructor != null)
+            if (attributeData.AttributeConstructor != null && attributeData.ConstructorArguments.Length > 0)
             {
+                System.Console.WriteLine("Here-------------------------------------------");
                 attribute = (T)Activator.CreateInstance(typeof(T), BindingFlags.Public, null,
-                    attributeData.ConstructorArguments.Select(a => a.Value));
+                    attributeData.ConstructorArguments.Select(a => a.Value).ToArray());
             }
             else
             {
@@ -170,6 +171,10 @@ namespace Meta
             attribute = attributeData.MapToType<ExportAttribute>();
             return true;
         }
-
+        
+        public static IEnumerable<IMethodSymbol> GetMethods(this ITypeSymbol symbol)
+        {
+            return symbol.GetMembers().OfType<IMethodSymbol>();
+        }
     }
 }

@@ -10,9 +10,21 @@ namespace Meta
     abstract public class ClassSymbolWrapperBase
     {
         public INamedTypeSymbol symbol;
+        public IEnumerable<UsingDirectiveSyntax> usings;
+
         public ClassSymbolWrapperBase(INamedTypeSymbol symbol)
         {
             this.symbol = symbol;
+        }
+
+        protected void Init(ProjectContext projectContext)
+        {
+            usings = GetUsingSyntax(projectContext._solution);
+        }
+
+        public IEnumerable<string> Usings()
+        {
+            return usings.Select(n => n.ToString());
         }
 
         public HashSet<IFieldSymbol> GetFlaggedFields()
@@ -53,30 +65,6 @@ namespace Meta
             return aliasMethods;
         }
 
-        public IEnumerable<IMethodSymbol> GetMethods()
-        {
-            return symbol.GetMembers().OfType<IMethodSymbol>();
-        }
-
-        public IEnumerable<ExportedMethodSymbolWrapper> GetNativeExportedMethods(ContextSymbolWrapper context)
-        {
-            foreach (var method in GetMethods())
-            {
-                if (method.TryGetExportAttribute(out var attribute))
-                {
-                    // If the chain string is null, it means that the methods reference the behavior
-                    // class they are defined in. 
-                    // TODO: This actually does have to specify the chain, just without the behavior class part.
-                    // Either specify these two separately, as in Chain = "Do", Behavior = "Attackable"
-                    // Or split by dot at this point.
-                    if (attribute.Chain == null)
-                    {
-                        yield return new ExportedMethodSymbolWrapper(context, method, attribute);
-                    }
-                }
-            }
-        }
-
         public IEnumerable<ExportedMethodSymbolWrapper> GetNonNativeExportedMethods(ProjectContext context)
         {
             foreach (var method in GetMethods())
@@ -98,6 +86,11 @@ namespace Meta
                     }
                 }
             }
+        }
+
+        public IEnumerable<IMethodSymbol> GetMethods()
+        {
+            return symbol.GetMethods();
         }
 
         public abstract string TypeText { get; }

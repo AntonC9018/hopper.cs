@@ -1,6 +1,8 @@
 <#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="Meta" #>
 <#@ include file="Templates/Snippets/autogen_notice.txt" #>
+<#@ include file="Templates/Snippets/GenericUsings.txt" #>
+using Hopper.Utils.Chains;
 
 namespace <#= staticClass.Namespace #>
 {

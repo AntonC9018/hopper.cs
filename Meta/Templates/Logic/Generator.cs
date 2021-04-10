@@ -99,7 +99,8 @@ namespace Meta
                 {
                     try
                     {
-                        var wrapped = new BehaviorSymbolWrapper(behavior, ctx);
+                        var wrapped = new BehaviorSymbolWrapper(behavior);
+                        wrapped.Init(ctx);
                         behaviorWrappers.Add(wrapped);
                     }
                     catch (GeneratorException e)
@@ -137,7 +138,8 @@ namespace Meta
                 {
                     try
                     {
-                        var wrapped = new ComponentSymbolWrapper(b, ctx);
+                        var wrapped = new ComponentSymbolWrapper(b);
+                        wrapped.Init(ctx);
                         componentWrappers.Add(wrapped);
                     }
                     catch (GeneratorException e)
@@ -167,7 +169,7 @@ namespace Meta
             }
 
             {
-                var staticClassesWithExportedMethods = await ctx.GetStaticClassesWithExportedMethods();
+                var staticClassesWithExportedMethods = ctx.GetStaticClassesWithExportedMethods();
                 foreach (var staticClass in staticClassesWithExportedMethods)
                 {
                     var handlersPrinter = new ChainHandlersCode();

@@ -38,20 +38,25 @@ namespace Meta
             return (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Components.{name}");
         }
 
+        public static INamedTypeSymbol GetAttributeSymbol(Compilation compilation, string name)
+        {
+            return (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Shared.Attributes.{name}");
+        }
+
         public void Init(Compilation compilation)
         {
             entity = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Entity");
             icomponent      = GetComponentSymbol(compilation, "IComponent");
             ibehavior       = GetComponentSymbol(compilation, "IBehavior");
             itag            = GetComponentSymbol(compilation, "IBehavior");
-            aliasAttribute  = GetComponentSymbol(compilation, "AliasAttribute");
-            chainsAttribute = GetComponentSymbol(compilation, "ChainsAttribute");
-            injectAttribute = GetComponentSymbol(compilation, "InjectAttribute");
-            flagsAttribute  = GetComponentSymbol(compilation, "FlagsAttribute");
-            exportAttribute = GetComponentSymbol(compilation, "ExportAttribute");
-            omitAttribute   = GetComponentSymbol(compilation, "OmitAttribute");
-            activationAliasAttribute  = GetComponentSymbol(compilation, "ActivationAliasAttribute");
-            autoActivationAttribute = GetComponentSymbol(compilation, "AutoActivationAttribute");
+            aliasAttribute  = GetAttributeSymbol(compilation, "AliasAttribute");
+            chainsAttribute = GetAttributeSymbol(compilation, "ChainsAttribute");
+            injectAttribute = GetAttributeSymbol(compilation, "InjectAttribute");
+            flagsAttribute  = GetAttributeSymbol(compilation, "FlagsAttribute");
+            exportAttribute = GetAttributeSymbol(compilation, "ExportAttribute");
+            omitAttribute   = GetAttributeSymbol(compilation, "OmitAttribute");
+            activationAliasAttribute = GetAttributeSymbol(compilation, "ActivationAliasAttribute");
+            autoActivationAttribute = GetAttributeSymbol(compilation, "AutoActivationAttribute");
             boolType = compilation.GetSpecialType(SpecialType.System_Boolean);
             voidType = compilation.GetSpecialType(SpecialType.System_Void);
         }

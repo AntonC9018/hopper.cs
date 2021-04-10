@@ -3,7 +3,6 @@
 <#@ include file="Templates/Snippets/autogen_notice.txt" #>
 <#@ include file="Templates/Snippets/ComponentUsings.txt" #>
 
-
 namespace <#= behavior.Namespace #>
 {
     public partial class <#= behavior.ClassName #>

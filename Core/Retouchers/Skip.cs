@@ -1,8 +1,6 @@
-using Hopper.Core.Registries;
 using System.Linq;
 using Hopper.Core.Components.Basic;
-using Hopper.Utils.Chains;
-using Hopper.Core.Components;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Retouchers
 {

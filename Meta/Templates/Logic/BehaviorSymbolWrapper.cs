@@ -19,13 +19,14 @@ namespace Meta
 
         public override string TypeText => "behavior";
 
-        public BehaviorSymbolWrapper(INamedTypeSymbol symbol, ProjectContext projectContext) : base(symbol, projectContext)
+        public BehaviorSymbolWrapper(INamedTypeSymbol symbol) : base(symbol)
         {
-            Init(projectContext);
         }
 
-        private void Init(ProjectContext projectContext)
+        new public void Init(ProjectContext projectContext)
         {
+            base.Init(projectContext);
+
             if (projectContext.globalComponents.ContainsKey(symbol.Name))
             {
                 throw new GeneratorException($"The behavior {symbol.Name} has been defined twice, which is not allowed.");
@@ -44,6 +45,7 @@ namespace Meta
                 throw new GeneratorException($"The Context defined inside {symbol.Name} must be a class");
             }
             context = new ContextSymbolWrapper((INamedTypeSymbol)ctx_symbol);
+            context.Init();
 
             // See if we have the AutoActivation attribute
             var autoActivation = symbol.GetAttributes().SingleOrDefault(a => 
@@ -120,6 +122,24 @@ namespace Meta
             }
 
             exportedMethods = GetNativeExportedMethods(context).ToArray();
+        }
+        private IEnumerable<ExportedMethodSymbolWrapper> GetNativeExportedMethods(ContextSymbolWrapper context)
+        {
+            foreach (var method in symbol.GetMethods())
+            {
+                if (method.TryGetExportAttribute(out var attribute))
+                {
+                    // If the chain string is null, it means that the methods reference the behavior
+                    // class they are defined in. 
+                    // TODO: This actually does have to specify the chain, just without the behavior class part.
+                    // Either specify these two separately, as in Chain = "Do", Behavior = "Attackable"
+                    // Or split by dot at this point.
+                    if (attribute.Chain == null)
+                    {
+                        yield return new ExportedMethodSymbolWrapper(context, method, attribute);
+                    }
+                }
+            }
         }
     }
 

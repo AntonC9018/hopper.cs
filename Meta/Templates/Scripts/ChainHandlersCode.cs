@@ -7,5 +7,6 @@ namespace Hopper.Meta.Template
     {
         public StaticClassSymbolWrapper staticClass;
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => staticClass.exportedMethods;
+        public IEnumerable<string> Usings() => staticClass.Usings();
     }
 }
