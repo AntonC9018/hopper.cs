@@ -5,6 +5,7 @@ using Hopper.Core.Stats.Basic;
 using Hopper.Utils.Vector;
 using Hopper.Core.Targeting;
 using Hopper.Core.Stats;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic
 {

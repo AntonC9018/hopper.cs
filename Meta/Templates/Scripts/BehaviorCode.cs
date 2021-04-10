@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Meta;
 
 namespace Hopper.Meta.Template
@@ -6,5 +7,6 @@ namespace Hopper.Meta.Template
     {
         public BehaviorSymbolWrapper behavior;
         public BehaviorSymbolWrapper component => behavior;
+        public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => behavior.exportedMethods;
     }
 }

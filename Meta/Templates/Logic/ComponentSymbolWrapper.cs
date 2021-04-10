@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Meta
 {
-    public class ComponentSymbolWrapper : ComponentSymbolWrapperBase
+    public class ComponentSymbolWrapper : ClassSymbolWrapperBase
     {   
         public HashSet<IFieldSymbol> flaggedFields;
         public AliasMethodSymbolWrapper[] aliasMethods;

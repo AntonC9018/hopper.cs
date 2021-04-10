@@ -2,6 +2,7 @@ using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic
 {

@@ -1,0 +1,11 @@
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="Meta" #>
+<#@ include file="Templates/Snippets/autogen_notice.txt" #>
+
+namespace <#= staticClass.Namespace #>
+{
+    public static partial class <#= staticClass.ClassName #>
+    {
+<#@ include file="Templates/Snippets/HandlerFromExportedMethod.txt" #>
+    }
+}

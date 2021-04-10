@@ -1,6 +1,6 @@
 using System;
 
-namespace Hopper.Core.Components
+namespace Hopper.Shared.Attributes
 {
     /// <summary>
     /// Enables autogeneration of various shortcuts for acessing methods of the

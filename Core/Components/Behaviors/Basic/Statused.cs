@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic
 {

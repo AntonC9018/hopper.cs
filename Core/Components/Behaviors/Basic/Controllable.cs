@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Hopper.Utils.Vector;
 using System.Runtime.Serialization;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic
 {

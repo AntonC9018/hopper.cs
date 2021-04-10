@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using Hopper.Shared.Attributes;
 using Microsoft.CodeAnalysis;
 
 namespace Meta
@@ -133,6 +135,40 @@ namespace Meta
         public static string JoinedParamTypeNames(this IEnumerable<IParameterSymbol> parameters)
         {
             return String.Join(", ", ParamTypeNames(parameters));
+        }
+
+        public static T MapToType<T>(this AttributeData attributeData) where T : Attribute
+        {
+            T attribute;
+            if (attributeData.AttributeConstructor != null)
+            {
+                attribute = (T)Activator.CreateInstance(typeof(T), BindingFlags.Public, null,
+                    attributeData.ConstructorArguments.Select(a => a.Value));
+            }
+            else
+            {
+                attribute = (T)Activator.CreateInstance(typeof(T));
+            }
+            foreach (var p in attributeData.NamedArguments)
+            {
+                typeof(T).GetField(p.Key).SetValue(attribute, p.Value.Value);
+            }
+            return attribute;
+        }
+
+        public static bool TryGetExportAttribute(this IMethodSymbol method, out ExportAttribute attribute)
+        {
+            AttributeData attributeData = method.GetAttributes().FirstOrDefault(a =>
+                SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.exportAttribute));
+
+            if (attributeData == null)
+            {
+                attribute = null;
+                return false;
+            }
+
+            attribute = attributeData.MapToType<ExportAttribute>();
+            return true;
         }
 
     }

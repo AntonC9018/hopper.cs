@@ -13,9 +13,11 @@ namespace Meta
     public class Generator
     {
         const string coreProjectPath = @"../Core/Hopper_Core.csproj";
+        const string sharedProjectPath = @"../Shared/Hopper_Shared.csproj";
         const string autogenFolder = @"../Core/Autogen";
         static readonly string behaviorAutogenFolder = $@"{autogenFolder}/Behaviors";
         static readonly string componentAutogenFolder = $@"{autogenFolder}/Components";
+        static readonly string handlersAutogenFolder = $@"{autogenFolder}/Handlers";
 
         public MSBuildWorkspace msWorkspace;
         public Project coreProject;
@@ -59,25 +61,28 @@ namespace Meta
             if (!Directory.Exists(autogenFolder))
                 Directory.CreateDirectory(autogenFolder);
 
-            if (!Directory.Exists(behaviorAutogenFolder))
-                Directory.CreateDirectory(behaviorAutogenFolder);
-            else
-            foreach (var file in new DirectoryInfo(behaviorAutogenFolder).GetFiles())
-                file.Delete(); 
+            CreateOrEmptyDirectory(behaviorAutogenFolder);
+            CreateOrEmptyDirectory(componentAutogenFolder);
+            CreateOrEmptyDirectory(handlersAutogenFolder);
 
-            if (!Directory.Exists(componentAutogenFolder))
-                Directory.CreateDirectory(componentAutogenFolder);
-            else 
-            foreach (var file in new DirectoryInfo(componentAutogenFolder).GetFiles())
-                file.Delete(); 
+            await msWorkspace.OpenProjectAsync(sharedProjectPath);
 
             coreProject = await msWorkspace.OpenProjectAsync(coreProjectPath);
             
-            // Open the core project or the mod
+            // Open the mod projects
             foreach (var projectName in projectPaths)
                 await msWorkspace.OpenProjectAsync(projectName);
 
             return msWorkspace;
+        }
+
+        public static void CreateOrEmptyDirectory(string directory)
+        {
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+            else
+            foreach (var file in new DirectoryInfo(directory).GetFiles())
+                file.Delete(); 
         }
 
         public async Task Generate()
@@ -90,11 +95,11 @@ namespace Meta
                 var behaviors = await ctx.FindAllBehaviors();
                 var behaviorWrappers = new List<BehaviorSymbolWrapper>();
                 
-                foreach (var b in behaviors)
+                foreach (var behavior in behaviors)
                 {
                     try
                     {
-                        var wrapped = new BehaviorSymbolWrapper(b, ctx);
+                        var wrapped = new BehaviorSymbolWrapper(behavior, ctx);
                         behaviorWrappers.Add(wrapped);
                     }
                     catch (GeneratorException e)
@@ -160,7 +165,22 @@ namespace Meta
                         Encoding.UTF8);
                 }
             }
-            
+
+            {
+                var staticClassesWithExportedMethods = await ctx.GetStaticClassesWithExportedMethods();
+                foreach (var staticClass in staticClassesWithExportedMethods)
+                {
+                    var handlersPrinter = new ChainHandlersCode();
+                    handlersPrinter.staticClass = staticClass;
+
+                    Console.WriteLine($"Generating code for {staticClass.Calling}");
+
+                    File.WriteAllText(
+                        $"{handlersAutogenFolder}/{staticClass.ClassName}.cs",
+                        handlersPrinter.TransformText(),
+                        Encoding.UTF8);
+                }
+            }
             // var components = await ctx.FindAllDirectComponents();
             // var tags = await ctx.FindAllTags();
         }

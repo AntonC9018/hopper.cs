@@ -1,27 +1,79 @@
 using Microsoft.CodeAnalysis;
+using Hopper.Shared.Attributes;
+using System;
+using System.Linq;
 using System.Text;
 
 namespace Meta
 {
-
     public sealed class ExportedMethodSymbolWrapper
     {
         public ContextSymbolWrapper context;
         public IMethodSymbol symbol;
-        public 
+        public ExportAttribute exportAttribute;
 
         public string Name => symbol.Name;
         public string ContextName => context.NameWithParentClass;
+        public bool IsDynamic => exportAttribute.Dynamic;
+        public string Priority => exportAttribute.Priority.ToString();
+        public string Chain => exportAttribute.Chain;
 
-        public ExportedMethodSymbolWrapper(ContextSymbolWrapper context, IMethodSymbol symbol)
+
+        public ExportedMethodSymbolWrapper(ContextSymbolWrapper context, IMethodSymbol symbol, ExportAttribute exportAttribute)
         {
-            this.context = context;
             this.symbol = symbol;
+            this.exportAttribute = exportAttribute;
+            Init(context);
         }
 
-        public void Init()
+        public ExportedMethodSymbolWrapper(ProjectContext projectContext, IMethodSymbol symbol, ExportAttribute exportAttribute)
         {
+            this.symbol = symbol;
+            this.exportAttribute = exportAttribute;
+            Init(projectContext);
+        }
 
+        public void Init(ContextSymbolWrapper context)
+        {
+            this.context = context;
+        }
+
+        public void Init(ProjectContext projectContext)
+        {
+            var chain = exportAttribute.Chain;
+
+            // The chain must be of form "ComponentName.ChainName"
+            var indexOfDot = chain.IndexOf('.');
+            if (indexOfDot == -1)
+            {
+                throw new GeneratorException($"The chain name specified in the export attribute of {Name} method is not valid ({chain}). Expected form \"ComponentName.ChainName\"");
+            }
+
+            var componentName = chain.Substring(0, indexOfDot);
+            var chainName = chain.Substring(indexOfDot + 1, chain.Length - indexOfDot - 1);
+
+            if (!projectContext.globalComponents.ContainsKey(componentName))
+            {
+                throw new GeneratorException($"The behavior with the name {componentName} specified in the export attribute of {Name} method is did not exist.");
+            }
+
+            var component = projectContext.globalComponents[componentName];
+
+            if (component is BehaviorSymbolWrapper behavior)
+            {
+                if (behavior.chains.Any(ch => ch.Name == chainName))
+                {
+                    this.context = behavior.context;
+                }
+                else
+                {
+                    throw new GeneratorException($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not define the referenced {chainName} chain.");
+                }
+            }
+            else
+            {
+                throw new GeneratorException($"The component with the name {componentName} specified in the export attribute of {Name} method is not a behavior.");
+            }
         }
 
         public string AdapterBody()

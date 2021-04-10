@@ -21,11 +21,18 @@ namespace Meta
 
         public BehaviorSymbolWrapper(INamedTypeSymbol symbol, ProjectContext projectContext) : base(symbol, projectContext)
         {
-            Init(projectContext.globalAliases);
+            Init(projectContext);
         }
 
-        private void Init(HashSet<string> globalAliases)
+        private void Init(ProjectContext projectContext)
         {
+            if (projectContext.globalComponents.ContainsKey(symbol.Name))
+            {
+                throw new GeneratorException($"The behavior {symbol.Name} has been defined twice, which is not allowed.");
+            }
+
+            projectContext.globalComponents.Add(symbol.Name, this);
+
             // Initialize the context class symbol wrapper
             var ctx_symbol = symbol.GetMembers().FirstOrDefault(s => s.Name == "Context");
             if (ctx_symbol == null)
@@ -107,18 +114,12 @@ namespace Meta
                 }
             }
 
-            if (globalAliases.Contains(ActivationAlias))
+            if (projectContext.globalAliases.Contains(ActivationAlias))
             {
                 throw new GeneratorException($"Duplicate alias name {ActivationAlias} in behavior {symbol.Name}.");
             }
 
-
-            // Export methods
-            exportedMethods = symbol.GetMembers().OfType<IMethodSymbol>()
-                .Where(m => m.GetAttributes().Any(a =>
-                        SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.exportAttribute)))
-                .Select(m => new ExportedMethodSymbolWrapper(context, m))
-                .ToArray();
+            exportedMethods = GetNativeExportedMethods(context).ToArray();
         }
     }
 

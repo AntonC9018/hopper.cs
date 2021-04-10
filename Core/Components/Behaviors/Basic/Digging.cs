@@ -1,3 +1,4 @@
+using Hopper.Shared.Attributes;
 using Hopper.Utils.Chains;
 using System.Collections.Generic;
 using Hopper.Core.Items;

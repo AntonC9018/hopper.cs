@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Hopper.Utils.Vector;
 using Hopper.Utils;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic
 {

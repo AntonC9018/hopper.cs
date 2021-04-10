@@ -1,3 +1,5 @@
+using Hopper.Shared.Attributes;
+
 namespace Hopper.Core.Components.Basic
 {
     [Chains("Do")]

@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Meta
 {
-    public class TagSymbolWrapper : ComponentSymbolWrapperBase
+    public class TagSymbolWrapper : ClassSymbolWrapperBase
     {
         public TagSymbolWrapper(INamedTypeSymbol symbol) : base(symbol)
         {

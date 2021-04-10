@@ -6,6 +6,7 @@ using System.Linq;
 using Hopper.Utils.Vector;
 using Hopper.Core.Predictions;
 using Hopper.Core.Stats;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic
 {
