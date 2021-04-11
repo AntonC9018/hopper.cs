@@ -176,5 +176,11 @@ namespace Meta
         {
             return symbol.GetMembers().OfType<IMethodSymbol>();
         }
+
+        public static bool ParameterTypesEqual(this IMethodSymbol method, IEnumerable<IFieldSymbol> fields)
+        {
+            return method.Parameters.Select(m1 => m1.Type).SequenceEqual(
+                fields.Select(field => field.Type), SymbolEqualityComparer.Default);
+        }
     }
 }

@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Meta
 {
-
     abstract public class ClassSymbolWrapperBase
     {
         public INamedTypeSymbol symbol;
@@ -65,7 +64,7 @@ namespace Meta
             return aliasMethods;
         }
 
-        public IEnumerable<ExportedMethodSymbolWrapper> GetNonNativeExportedMethods(ProjectContext context)
+        public IEnumerable<ExportedMethodSymbolWrapper> GetNonNativeExportedMethods(ProjectContext projectContext)
         {
             foreach (var method in GetMethods())
             {
@@ -73,7 +72,7 @@ namespace Meta
                 {
                     if (attribute.Chain != null)
                     {
-                        yield return new ExportedMethodSymbolWrapper(context, method, attribute);
+                        yield return new ExportedMethodSymbolWrapper(projectContext, method, attribute);
                     }
                     else
                     {
@@ -87,7 +86,7 @@ namespace Meta
                 }
             }
         }
-
+        
         public IEnumerable<IMethodSymbol> GetMethods()
         {
             return symbol.GetMethods();

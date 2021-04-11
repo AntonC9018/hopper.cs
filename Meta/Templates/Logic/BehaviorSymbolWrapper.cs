@@ -8,7 +8,6 @@ namespace Meta
     public class BehaviorSymbolWrapper : ComponentSymbolWrapper
     {
         public ContextSymbolWrapper context;
-        public ExportedMethodSymbolWrapper[] exportedMethods;
         public bool ShouldGenerateActivation;
         public bool ShouldGenerateCheckDo;
         public string ActivationAlias;
@@ -107,8 +106,7 @@ namespace Meta
                 var activationMethods = symbol.GetMembers()
                     .OfType<IMethodSymbol>()
                     .Where(m => m.Name == "Activate")
-                    .Where(m => m.Parameters.Select(m1 => m1.Type).SequenceEqual(
-                        context.notOmitted.Select(field => field.Type), SymbolEqualityComparer.Default));
+                    .Where(m => m.ParameterTypesEqual(context.notOmitted));
 
                 if (activationMethods.Count() == 0)
                 {
@@ -124,14 +122,14 @@ namespace Meta
 
         // This must be called after all the behaviors have been added to the dictionary
         // Since this could query them for context and chains.
-        public void AfterInit(ProjectContext projectContext)
+        new public void AfterInit(ProjectContext projectContext)
         {
             exportedMethods = GetAllExportedMethods(projectContext).ToArray();
         }
 
         private IEnumerable<ExportedMethodSymbolWrapper> GetAllExportedMethods(ProjectContext projectContext)
         {
-            foreach (var method in symbol.GetMethods())
+            foreach (var method in GetMethods())
             {
                 if (method.TryGetExportAttribute(out var attribute))
                 {
@@ -151,6 +149,7 @@ namespace Meta
                 }
             }
         }
+        
     }
 
     public static class IEnumerableExtensions

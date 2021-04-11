@@ -1,0 +1,43 @@
+        
+        /// <summary>
+        /// The default do-nothing constructor.
+        /// Will be used for serialization purposes
+        /// </summary>
+        // private <#= component.ClassName #>() {}
+
+<# if (component.ShouldGenerateInjectConstructor) { #>
+        /// <summary>
+        /// The constructor with injected fields.
+        /// </summary>
+        public <#= component.ClassName #>(<#= component.InjectedParams #>)
+        {
+<# foreach (var paramName in component.InjectedParamNames) { #>
+            this.<#= paramName #> = <#= paramName #>;
+<# } #>
+        }
+
+        /// <summary>
+        /// This method adds a <#= component.Calling #> onto the given entity.
+        /// </summary>
+        public static <#= component.ClassName #> AddTo(Entity entity<#= component.GetInjectedParamsWithLeadingComma() #>)
+        {
+            var _component = new <#= component.ClassName #>(<#= component.InjectedParamJoinedNames #>);
+            entity.AddComponent(Index, _component);
+            return _component;
+        }
+<# } #>
+
+<# if (component.ShouldGenerateCopyConstructor) { #>
+        /// <summary>
+        /// The copy constructor.
+        /// </summary>
+        public <#= component.ClassName #>(<#= component.ClassName #> other)
+        {
+            
+        }
+<# } #>
+
+        public <#= component.ClassName #> Copy()
+        {
+            return new <#= component.ClassName #>(this);
+        }

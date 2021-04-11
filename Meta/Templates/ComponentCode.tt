@@ -8,6 +8,10 @@ namespace <#= component.Namespace #>
     public partial class <#= component.ClassName #>
     {
 <#@ include file="Templates/Snippets/ComponentIndex.txt" #>
+
+<#@ include file="Templates/Snippets/ComponentConstructors.txt" #>
+
+<#@ include file="Templates/Snippets/HandlerFromExportedMethod.txt" #>
     }
 
     public static class <#= component.ClassName #>EntityExtensions

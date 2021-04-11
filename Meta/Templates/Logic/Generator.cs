@@ -173,6 +173,23 @@ namespace Meta
                 }
                 foreach (var component in componentWrappers)
                 {
+                    try
+                    {
+                        component.AfterInit(ctx);   
+                    }
+                    catch (GeneratorException e)
+                    {
+                        Console.WriteLine("An error occured while processing a component:");
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine("");
+                    } 
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }               
+                }
+                foreach (var component in componentWrappers)
+                {
                     var componentPrinter = new ComponentCode();
                     componentPrinter.Initialize();
                     componentPrinter.component = component;

@@ -9,7 +9,6 @@ public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ct
         {
             handler = <#= method.Name #>HandlerAdapter
         };
-
 <# if (method.IsDynamic) { #>
         public static HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper = new HandlerWrapper<<#= method.ContextName #>>
         {
@@ -17,7 +16,6 @@ public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ct
         };
 <# } #>
 <# } #>
-
         public static void InitHandlers()
         {
             // for demo, set priority directly
@@ -26,6 +24,5 @@ public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ct
 <# if (method.IsDynamic) { #>
             <#= method.Name #>HandlerWrapper.handler = <#= method.Name #>Handler;
 <# } #>
-
 <# } #>
         }
