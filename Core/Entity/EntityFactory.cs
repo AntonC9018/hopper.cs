@@ -12,7 +12,6 @@ namespace Hopper.Core
         public Entity subject;
         public event System.Action<Entity> InitEvent;
         public event System.Action<PatchArea> PostPatchEvent;
-        public DefaultStats DefaultStats;
 
         public EntityFactory()
         {
@@ -29,6 +28,10 @@ namespace Hopper.Core
         {
             return subject.GetComponent(index);
         }
+
+        // public void SetPreset<T>(Index<T> index, System.Action<EntityFactory, T> preset) where T : IComponent
+        // {
+        // }
 
         public Entity Instantiate()
         {
@@ -63,5 +66,7 @@ namespace Hopper.Core
             InitEvent += listener;
             return this;
         }
+
+        public static implicit operator Entity(EntityFactory factory) => factory.subject;
     }
 }

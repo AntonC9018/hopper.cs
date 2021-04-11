@@ -66,12 +66,24 @@ namespace Hopper.Core.Components.Basic
             return ctx.success;
         }
 
+        [Export(Chain = "TickBehavior.Do")] 
+        public void ResetAction()
+        {
+            _flags = 0;
+            nextAction = null;
+        }
+
         public void CalculateNextAction(Entity entity)
         {
             if (nextAction == null && _CalculateAction != null)
             {
                 nextAction = _CalculateAction(entity);
             }
+        }
+
+        public void DefaultPreset(EntityFactory factory)
+        {
+            factory.GetComponent(TickBehavior.Index)._DoChain.Add(ResetActionHandler);
         }
 
         public IEnumerable<IntVector2> GetPossibleDirections()

@@ -168,8 +168,8 @@ namespace Meta
             if (!symbol.Parameters.IsEmpty)
             {
                 sb_call.Remove(sb_call.Length - 2, 2);
-                sb_call.Append(");");
             }
+            sb_call.Append(");");
 
             sb_params.Append(sb_call.ToString());
             return sb_params.ToString();

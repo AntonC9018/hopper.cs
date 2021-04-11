@@ -110,6 +110,11 @@ namespace Hopper.Core.Components.Basic
         // TODO:
         // Check { SetResistance, ResistSource, Armor }
         // Do    { TakeHit, UpdateHistory }
+        public void DefaultPreset(EntityFactory factory)
+        {
+            _CheckChain.Add(SetResistanceHandler, ResistSourceHandler, ArmorHandler);
+            _DoChain   .Add(TakeHitHandler);
+        }
 
         /// <summary>
         /// The preset of attackable that uses the default handlers.

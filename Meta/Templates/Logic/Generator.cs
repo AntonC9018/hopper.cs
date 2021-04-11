@@ -114,6 +114,24 @@ namespace Meta
                         Console.WriteLine(e);
                     }
                 }
+                // After init must be called after all of the behaviors have been added to the dictionary
+                foreach (var behavior in behaviorWrappers)
+                {
+                    try
+                    {
+                        behavior.AfterInit(ctx);   
+                    }
+                    catch (GeneratorException e)
+                    {
+                        Console.WriteLine("An error occured while processing a behavior:");
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine("");
+                    } 
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }               
+                }
                 foreach (var behavior in behaviorWrappers)
                 {
                     var behaviorPrinter = new BehaviorCode();

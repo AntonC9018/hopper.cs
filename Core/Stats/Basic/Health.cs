@@ -1,10 +1,12 @@
 namespace Hopper.Core.Stats.Basic
 {
-    public class Health : StatFile
+    public class Health
     {
         public int amount;
 
-        public static readonly SimpleStatPath<Health> Path =
-            new SimpleStatPath<Health>("health", new Health { amount = 1 });
+        public Health(int amount)
+        {
+            this.amount = amount;
+        }
     }
 }

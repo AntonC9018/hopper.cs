@@ -4,7 +4,7 @@ using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Retouchers
 {
-    public static class Equip
+    public static partial class Equip
     {
         [Export(Chain = "Displaceable.Do")]
         private static void OnDisplace(Inventory inventory, TransformComponent transform)

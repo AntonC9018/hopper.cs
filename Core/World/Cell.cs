@@ -5,9 +5,6 @@ using System.Linq;
 
 namespace Hopper.Core
 {
-
-    
-
     public class Cell
     {
         public IntVector2 m_pos;

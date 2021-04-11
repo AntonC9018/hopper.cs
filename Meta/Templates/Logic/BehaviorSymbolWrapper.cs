@@ -120,10 +120,16 @@ namespace Meta
             {
                 throw new GeneratorException($"Duplicate alias name {ActivationAlias} in behavior {symbol.Name}.");
             }
-
-            exportedMethods = GetNativeExportedMethods(context).ToArray();
         }
-        private IEnumerable<ExportedMethodSymbolWrapper> GetNativeExportedMethods(ContextSymbolWrapper context)
+
+        // This must be called after all the behaviors have been added to the dictionary
+        // Since this could query them for context and chains.
+        public void AfterInit(ProjectContext projectContext)
+        {
+            exportedMethods = GetAllExportedMethods(projectContext).ToArray();
+        }
+
+        private IEnumerable<ExportedMethodSymbolWrapper> GetAllExportedMethods(ProjectContext projectContext)
         {
             foreach (var method in symbol.GetMethods())
             {
@@ -137,6 +143,10 @@ namespace Meta
                     if (attribute.Chain == null)
                     {
                         yield return new ExportedMethodSymbolWrapper(context, method, attribute);
+                    }
+                    else
+                    {
+                        yield return new ExportedMethodSymbolWrapper(projectContext, method, attribute);
                     }
                 }
             }

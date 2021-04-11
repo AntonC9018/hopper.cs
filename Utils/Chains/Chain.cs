@@ -5,7 +5,6 @@ namespace Hopper.Utils.Chains
 {
     public class Chain<Context> where Context : ContextBase
     {
-        internal bool m_dirty;
         internal SortedSet<Handler<Context>> m_handlers;
 
         public Chain()
@@ -15,8 +14,13 @@ namespace Hopper.Utils.Chains
 
         public bool Add(Handler<Context> handler)
         {
-            m_dirty = true;
             return m_handlers.Add(handler);
+        }
+
+        public void Add(params Handler<Context>[] handlers)
+        {
+            foreach (var handler in handlers)
+                m_handlers.Add(handler);
         }
 
         public void PassNoCondition(Context ev)
