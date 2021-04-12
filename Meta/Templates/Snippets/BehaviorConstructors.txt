@@ -1,0 +1,23 @@
+<# if (behavior.ShouldGenerateInjectConstructor) { #>
+        /// <summary>
+        /// The constructor with injected fields.
+        /// </summary>
+        public <#= behavior.ClassName #>(<#= behavior.InjectedParams #>)
+        {
+<# foreach (var paramName in behavior.InjectedParamNames) { #>
+            this.<#= paramName #> = <#= paramName #>;
+<# } #>
+<# foreach (var chain in behavior.chains) { #>
+            this._<#= chain.Name #>Chain = new Chain<Context>();
+<# } #>
+        }
+<# } #>
+<# if (behavior.ShouldGenerateCopyConstructor) { #>
+        /// <summary>
+        /// The copy constructor.
+        /// </summary>
+        public <#= behavior.ClassName #>(<#= behavior.ClassName #> other)
+        {
+            
+        }
+<# } #>

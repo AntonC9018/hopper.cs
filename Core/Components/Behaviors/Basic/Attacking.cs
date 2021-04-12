@@ -7,6 +7,7 @@ using Hopper.Utils.Vector;
 using Hopper.Core.Predictions;
 using Hopper.Core.Stats;
 using Hopper.Shared.Attributes;
+using System;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -139,5 +140,10 @@ namespace Hopper.Core.Components.Basic
 
         // Check { SetTargets, SetStats }
         // Do    { ApplyAttack, ApplyPush, UpdateHistory }
+        public void DefaultPreset()
+        {
+            _CheckChain.Add(SetTargetsHandler, SetStatsHandler);
+            _DoChain.Add(ApplyAttacksHandler, ApplyPushesHandler);            
+        }
     }
 }

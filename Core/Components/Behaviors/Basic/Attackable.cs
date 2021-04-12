@@ -107,10 +107,7 @@ namespace Hopper.Core.Components.Basic
             // priority = PriorityMapping.Low + 0x8000
         }
 
-        // TODO:
-        // Check { SetResistance, ResistSource, Armor }
-        // Do    { TakeHit, UpdateHistory }
-        public void DefaultPreset(EntityFactory factory)
+        public void DefaultPreset()
         {
             _CheckChain.Add(SetResistanceHandler, ResistSourceHandler, ArmorHandler);
             _DoChain   .Add(TakeHitHandler);

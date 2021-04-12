@@ -1,10 +1,11 @@
+using System;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic
 {
     [Chains("Do")]
     [ActivationAlias("Tick")]
-    public partial class TickBehavior : IBehavior
+    public partial class Ticking : IBehavior
     {
         public class Context : ActorContext
         {
@@ -17,6 +18,10 @@ namespace Hopper.Core.Components.Basic
             var ctx = new Context { actor = actor };
             TraverseDo(ctx);
             return true;
+        }
+
+        public void DefaultPreset()
+        {
         }
     }
 }

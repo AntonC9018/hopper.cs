@@ -25,6 +25,12 @@ namespace Hopper.Core.Components.Basic
             ctx.actor.Displace(ctx.direction, ctx.move);
         }
 
+        public void DefaultPreset()
+        {
+            _CheckChain.Add(SetBaseHandler);
+            _DoChain   .Add(DisplaceHandler);
+        }
+
         // Check { SetBase }
         // Do    { Displace }
     }

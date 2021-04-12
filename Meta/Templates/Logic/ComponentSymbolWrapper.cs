@@ -56,8 +56,12 @@ namespace Meta
         } 
 
         public bool ShouldGenerateInjectConstructor => !symbol.Constructors.Any(
-            ctor => ctor.ParameterTypesEqual(injectedFields));
+            ctor => !ctor.IsImplicitlyDeclared 
+                && !ctor.IsStatic
+                && ctor.ParameterTypesEqual(injectedFields));
         public bool ShouldGenerateCopyConstructor => !symbol.Constructors.Any(
-            ctor => ctor.Arity == 1 && SymbolEqualityComparer.Default.Equals(ctor.Parameters.Single(), symbol));
+            ctor => !ctor.IsStatic
+                && ctor.Arity == 1 
+                && SymbolEqualityComparer.Default.Equals(ctor.Parameters.Single(), symbol));
     }
 }

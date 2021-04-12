@@ -54,7 +54,7 @@ namespace Meta
 
             if (!projectContext.globalComponents.ContainsKey(componentName))
             {
-                throw new GeneratorException($"The behavior with the name {componentName} specified in the export attribute of {Name} method is did not exist.");
+                throw new GeneratorException($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not exist.");
             }
 
             var component = projectContext.globalComponents[componentName];

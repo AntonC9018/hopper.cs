@@ -9,7 +9,9 @@ namespace <#= behavior.Namespace #>
     {
 <#@ include file="Templates/Snippets/ComponentIndex.txt" #>
 
-<#@ include file="Templates/Snippets/ComponentConstructors.txt" #>
+<#@ include file="Templates/Snippets/BehaviorConstructors.txt" #>
+
+<#@ include file="Templates/Snippets/ComponentAddingCopying.txt" #>
 
 <#@ include file="Templates/Snippets/BehaviorChains.txt" #>
 

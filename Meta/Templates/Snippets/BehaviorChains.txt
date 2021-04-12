@@ -1,4 +1,4 @@
-<# foreach(var chain in behavior.chains) { #>
+<# foreach (var chain in behavior.chains) { #>
         public Chain<Context> _<#= chain.Name #>Chain;
 
         /// <summary>

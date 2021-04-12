@@ -4,6 +4,8 @@ using Hopper.Core.Items;
 using Hopper.Core.Retouchers;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.Targeting;
+using Hopper.Core.History;
+using Hopper.Core.Stats;
 
 namespace Hopper.Core
 {
@@ -27,9 +29,7 @@ namespace Hopper.Core
             }
         */
 
-        public override Faction Faction => Faction.Player;
-
-        public static void CreateFactory(Entity subject)
+        public static void AddComponents(Entity subject)
         {
             // Apply these one after the other.
             // This will only initialize the inject variables of the behavior / component.
@@ -39,38 +39,55 @@ namespace Hopper.Core
             // central (optionally), these can actually reference a global storage for them.
             
             // So this just adds the behavior
-            Acting.Apply(subject, null, null);
-            
-            // Then you could also check if something has already been applied:
-            if (subject.HasActing())
-            {}
+            Acting  .AddTo(subject, null, null);
+            Moving  .AddTo(subject);
+            Digging .AddTo(subject);
+            Pushable.AddTo(subject);
+            Statused.AddTo(subject);
+            Attacking   .AddTo(subject);
+            Attackable  .AddTo(subject, Attackness.ALWAYS);
+            Damageable  .AddTo(subject, new Health(5));
+            Displaceable.AddTo(subject, ExtendedLayer.BLOCK);
+            Ticking.AddTo(subject);
 
-            // Next, it needs to be initialized. This has to be done after 
-            // We've added all the other ones.
-            Moving      .Apply(subject);
-            Displaceable.Apply(subject);
-            Attackable  .Apply(subject, Attackness.ALWAYS);
-            Damageable  .Apply(subject, new Health(5));
-            Attacking   .Apply(subject);
-            Digging     .Apply(subject);
-            Pushable    .Apply(subject);
+            FactionComponent.AddTo(subject, Faction.Player);
+            TransformComponent.AddTo(subject);
+            Inventory.AddTo(subject);
 
-            
-            return new EntityFactory<Player>()
-                .AddBehavior(Acting.Preset(new Acting.Config(Algos.SimpleAlgo, null)))
-                .AddBehavior(Moving.Preset)
-                .AddBehavior(Displaceable.DefaultPreset)
-                // .AddBehavior(Controllable.Preset) // needs to be reconfigured
-                .AddBehavior(Attackable.DefaultPreset)
-                .AddBehavior(Damageable.Preset)
-                .AddBehavior(Attacking.Preset)
-                .AddBehavior(Digging.Preset)
-                .AddBehavior(Pushable.Preset)
-                .Retouch(Skip.EmptyAttack)
-                .Retouch(Skip.EmptyDig)
-                .Retouch(Equip.OnDisplace)
-                .Retouch(Reorient.OnActionSuccess)
-                .AddInitListener(e => e.Inventory = new Inventory(e));
+            // TODO: pass this an action
+            Controllable.AddTo(subject, null);
+
+            // TODO: rename the namespaces
+            Stats.Stats.AddTo(subject);
+            History.History.AddTo(subject);
+        }
+
+        public static void InitComponents(Entity subject)
+        {
+            subject.TryGetActing()? .DefaultPreset(subject);
+            subject.TryGetMoving()? .DefaultPreset();
+            subject.TryGetDigging()?.DefaultPreset();
+            subject.TryGetTicking()?.DefaultPreset();
+            subject.TryGetPushable()?  .DefaultPreset();
+            subject.TryGetStatused()?  .DefaultPreset();
+            subject.TryGetAttacking()? .DefaultPreset();
+            subject.TryGetAttackable()?.DefaultPreset();
+            subject.TryGetDamageable()?.DefaultPreset();
+            subject.TryGetDisplaceable()?.DefaultPreset();
+            // subject.TryGetFactionComponent()?.
+            // subject.TryGetTransformComponent()?.
+            // subject.TryGetInventory()?.
+            // subject.TryGetControllable()?.
+            // subject.TryGetStats()?.
+            // subject.TryGetHistory()?.
+        }
+
+        public static void Retouch(Entity subject)
+        {
+            Skip.SkipEmptyAttackHandlerWrapper.AddTo(subject);
+            Skip.SkipEmptyAttackHandlerWrapper.AddTo(subject);
+            Equip.OnDisplaceHandlerWrapper.AddTo(subject);
+            Reorient.OnActionSuccessHandlerWrapper.AddTo(subject);
         }
     }
 }

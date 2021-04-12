@@ -11,6 +11,8 @@ namespace <#= component.Namespace #>
 
 <#@ include file="Templates/Snippets/ComponentConstructors.txt" #>
 
+<#@ include file="Templates/Snippets/ComponentAddingCopying.txt" #>
+
 <#@ include file="Templates/Snippets/HandlerFromExportedMethod.txt" #>
     }
 

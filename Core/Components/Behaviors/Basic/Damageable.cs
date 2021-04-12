@@ -1,3 +1,4 @@
+using System;
 using Hopper.Core.Stats.Basic;
 using Hopper.Shared.Attributes;
 
@@ -26,6 +27,10 @@ namespace Hopper.Core.Components.Basic
                 return true;
             }
             return false;
+        }
+
+        public void DefaultPreset()
+        {
         }
     }
 }

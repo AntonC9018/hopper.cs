@@ -6,7 +6,7 @@ namespace Hopper.Core.Retouchers
 {
     public static partial class Equip
     {
-        [Export(Chain = "Displaceable.Do")]
+        [Export(Chain = "Displaceable.Do", Dynamic = true)]
         private static void OnDisplace(Inventory inventory, TransformComponent transform)
         {
             foreach (var droppedItem in transform.GetCell().m_entities)

@@ -15,9 +15,19 @@ namespace Hopper.Core
         // but I think that's a little too much for C#.
         public Dictionary<Identifier, IComponent> components;
 
+        public bool TryAddComponent<T>(Index<T> index, T component) where T : IComponent
+        {
+            if (!components.ContainsKey(index.componentId))
+            {
+                components[index.componentId] = component;
+                return true;
+            }
+            return false;
+        }
+
         public void AddComponent<T>(Index<T> index, T component) where T : IComponent
         {
-            components[index.componentId] = component;
+            components.Add(index.componentId, component);
         }
 
         public T GetComponent<T>(Index<T> index) where T : IComponent

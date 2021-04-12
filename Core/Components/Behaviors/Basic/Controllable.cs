@@ -60,7 +60,7 @@ namespace Hopper.Core.Components.Basic
         }
 
         [Inject] public Action defaultAction;
-        [Inject] public Dictionary<InputMapping, Chain<Context>> _chains;
+        public Dictionary<InputMapping, Chain<Context>> _chains;
 
 
         public ParticularAction ConvertInputToAction(Entity entity, InputMapping input)

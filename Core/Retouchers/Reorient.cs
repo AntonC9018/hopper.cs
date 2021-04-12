@@ -7,21 +7,21 @@ namespace Hopper.Core.Retouchers
     public static partial class Reorient
     {
 
-        [Export(Chain = "Displaceable.Do")]
+        [Export(Chain = "Displaceable.Do", Dynamic = true)]
         private static void OnDisplace(IntVector2 direction, TransformComponent transform)
         {
             if (direction != IntVector2.Zero) 
                 transform.orientation = direction;
         }
 
-        [Export(Chain = "Acting.Success")]
+        [Export(Chain = "Acting.Success", Dynamic = true)]
         private static void OnActionSuccess(ParticularAction action, TransformComponent transform)
         {
             if (action is ParticularDirectedAction directedAction)
                 transform.orientation = directedAction.direction;
         }
 
-        [Export(Chain = "Acting.Success")]
+        [Export(Chain = "Acting.Success", Dynamic = true)]
         private static void ToPlayerOnActionSuccess(TransformComponent transform)
         {
             if (transform.TryGetClosestPlayer(out var player))

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats;
 using Hopper.Shared.Attributes;
+using System;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -43,7 +44,7 @@ namespace Hopper.Core.Components.Basic
             return ctx.statusParams.Length > 0;
         }
 
-        /* [Tick] */ private void UpdateStatuses(Entity actor)
+        [Export(Chain = "Ticking.Do")] private void UpdateStatuses(Entity actor)
         {
             foreach (var status in _appliedStatuses.ToList())
             {
@@ -76,14 +77,9 @@ namespace Hopper.Core.Components.Basic
                 .ToArray();
         }
 
-            // DefaultBuilder = new ChainTemplateBuilder()
-
-            //     .AddTemplate<Event>(ChainName.Check)
-            //     .AddHandler(SetResistance, PriorityRank.High)
-            //     .AddHandler(ResistSomeStatuses, PriorityRank.Low)
-
-            //     // .AddHandler(Utils.AddHistoryEvent(History.UpdateCode.))
-            //     .End();
-
+        public void DefaultPreset()
+        {
+            _ResistChain.Add(SetResistanceHandler, ResistSomeStatusesHandler);
+        }
     }
 }

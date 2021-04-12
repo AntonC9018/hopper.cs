@@ -2,6 +2,7 @@ using Hopper.Core.Stats.Basic;
 using Hopper.Utils.Vector;
 using Hopper.Core.Stats;
 using Hopper.Shared.Attributes;
+using System;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -43,6 +44,12 @@ namespace Hopper.Core.Components.Basic
             {
                 actor.Displace(direction, push.ConvertToMove());
             }
+        }
+
+        public void DefaultPreset()
+        {
+            _CheckChain.Add(SetResistanceHandler, ResistSourceHandler, ArmorHandler);
+            _DoChain.Add(BePushedHandler);
         }
 
         // Check { SetResistance, ResistSource, Armor }

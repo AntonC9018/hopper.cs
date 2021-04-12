@@ -3,6 +3,7 @@ using Hopper.Utils.Vector;
 using System.Runtime.Serialization;
 using Hopper.Core.Stats.Basic;
 using Hopper.Shared.Attributes;
+using System;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -45,17 +46,21 @@ namespace Hopper.Core.Components.Basic
             }
         }
 
-        [Export] public static void DisplaceRemove(
-            TransformComponent transform, IntVector2 newPos)
+        [Export] public static void DisplaceRemove(TransformComponent transform, IntVector2 newPos)
         {
             transform.RemoveFromGrid();
             transform.position = newPos;
         }
 
-        [Export] public static void DisplaceAddBackHandler(
-            TransformComponent transform)
+        [Export] public static void DisplaceAddBack(TransformComponent transform)
         {
             transform.ResetInGrid();
+        }
+
+        public void DefaultPreset()
+        {
+            _CheckChain.Add(ConvertFromMoveHandler);
+            _DoChain.Add(DisplaceRemoveHandler, DisplaceAddBackHandler);
         }
 
         // Check { ConvertFromMove }
