@@ -85,7 +85,7 @@ namespace Hopper.Shared.Attributes
     /// May also be used in combination with 
     /// </summary>
     [AttributeUsage(AttributeTargets.Enum | AttributeTargets.Field)]
-    public class FlagsAttribute : Attribute {}
+    public class FlagsAttribute : System.FlagsAttribute {}
 
 
     /// <summary>

@@ -10,8 +10,6 @@ namespace Hopper.Core
     public class EntityFactory
     {
         public Entity subject;
-        public event System.Action<Entity> InitEvent;
-        public event System.Action<PatchArea> PostPatchEvent;
 
         public EntityFactory()
         {
@@ -29,44 +27,21 @@ namespace Hopper.Core
             return subject.GetComponent(index);
         }
 
-        // public void SetPreset<T>(Index<T> index, System.Action<EntityFactory, T> preset) where T : IComponent
-        // {
-        // }
-
         public Entity Instantiate()
         {
             Entity entity = new Entity(); // subject.Clone()?
-            entity.components = new Dictionary<Identifier, IComponent>(subject.components);
+            entity.components = new Dictionary<Identifier, IComponent>();
 
             // Instantiate and save behaviors
-            foreach (var kvp in entity.components)
+            foreach (var kvp in subject.components)
             {
                 // Create copies of chains etc.
-                kvp.Value.CopyObjects();
+                entity.components.Add(kvp.Key, (IComponent) kvp.Value.Copy());
             }
 
-            InitEvent?.Invoke(entity);
             return entity;
         }
-
-        public void PostPatch(PatchArea patchArea)
-        {
-            PostPatchEvent?.Invoke(patchArea);
-            PostPatchEvent = null;
-        }
-
-        public EntityFactory Retouch<T>(HandlerWrapper<T> retoucher) where T : ContextBase
-        {
-            retoucher.AddTo(subject);
-            return this;
-        }
-
-        public EntityFactory AddSetupListener(System.Action<Entity> listener)
-        {
-            InitEvent += listener;
-            return this;
-        }
-
+        
         public static implicit operator Entity(EntityFactory factory) => factory.subject;
     }
 }
