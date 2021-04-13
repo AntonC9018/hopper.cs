@@ -3,11 +3,6 @@ using System.Linq;
 
 namespace Hopper.Utils.Chains
 {
-    public interface ICopyable
-    {
-        ICopyable Copy();
-    }
-
     public sealed class Chain<Context> : ICopyable where Context : ContextBase
     {
         internal SortedSet<Handler<Context>> m_handlers;

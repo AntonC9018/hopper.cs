@@ -191,4 +191,11 @@ Copying via reflection could also be beneficial and I kind of want to be using t
 
 Ok, the thing I need to understand now is what is actually going to be copied each time:
 1. Values of injected fields will definitely be copied. It is not yet clear whether they will be mutable or not, but I feel like making them immutable would be a good idea.
-2. Chains are always copied (I will implement this first).
+2. Chains are always copied (I will implement this first). This one is easy. Since no instance closures are allowed for handlers, this literally means copying the chains datastructure. It may also be enhanced in the future to an immutable sorted set, so that it is only copied when a change to the handlers of the new object is made, but that is in the realm of speculation as of now.
+
+I've looked through the code and I feel like I will do the following:
+1. If the component has defined a copy constructor, do nothing.
+2. If it didn't, generate a copy constructor. In that costructor:
+    - Copy all values of the injected fields, leaving non-injected fields at default.
+    - If the value implements ICopyable, copy it by using the copy method. Otherwise, copy it by assignment.
+    - Copy all of the chains by the Copy method.

@@ -69,6 +69,7 @@ namespace Hopper.Shared.Attributes
     public class InjectAttribute : Attribute {}
 
     /// <summary>
+    /// !!! This feature has not been implemented !!!
     /// Enables autogeneration of helper methods for the given enum.
     /// If the scope is a namespace or a class, the generated code would
     /// contain just extension methods for the enum type, in a static class.
