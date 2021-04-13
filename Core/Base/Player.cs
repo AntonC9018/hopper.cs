@@ -64,16 +64,16 @@ namespace Hopper.Core
 
         public static void InitComponents(Entity subject)
         {
-            subject.TryGetActing()? .DefaultPreset(subject);
-            subject.TryGetMoving()? .DefaultPreset();
-            subject.TryGetDigging()?.DefaultPreset();
-            subject.TryGetTicking()?.DefaultPreset();
-            subject.TryGetPushable()?  .DefaultPreset();
-            subject.TryGetStatused()?  .DefaultPreset();
-            subject.TryGetAttacking()? .DefaultPreset();
-            subject.TryGetAttackable()?.DefaultPreset();
-            subject.TryGetDamageable()?.DefaultPreset();
-            subject.TryGetDisplaceable()?.DefaultPreset();
+            subject.GetActing() .DefaultPreset(subject);
+            subject.GetMoving() .DefaultPreset();
+            subject.GetDigging().DefaultPreset();
+            subject.GetTicking().DefaultPreset();
+            subject.GetPushable()  .DefaultPreset();
+            subject.GetStatused()  .DefaultPreset();
+            subject.GetAttacking() .DefaultPreset();
+            subject.GetAttackable().DefaultPreset();
+            subject.GetDamageable().DefaultPreset();
+            subject.GetDisplaceable().DefaultPreset();
             // subject.TryGetFactionComponent()?.
             // subject.TryGetTransformComponent()?.
             // subject.TryGetInventory()?.
