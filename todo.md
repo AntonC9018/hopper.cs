@@ -199,3 +199,5 @@ I've looked through the code and I feel like I will do the following:
     - Copy all values of the injected fields, leaving non-injected fields at default.
     - If the value implements ICopyable, copy it by using the copy method. Otherwise, copy it by assignment.
     - Copy all of the chains by the Copy method.
+
+The terminology "copy constructor" is actually slightly wrong. The point is not to exactly copy the component, but to copy the chain handlers and the injected fields, that is, those parts of the component that are related to the type of the entity, while disregarding the values that would change at runtime such as the position.
