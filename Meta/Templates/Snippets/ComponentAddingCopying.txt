@@ -9,7 +9,6 @@
             return _component;
         }
 
-        public <#= component.ClassName #> Copy()
-        {
-            return new <#= component.ClassName #>(this);
-        }
+        public <#= component.ClassName #> Copy() => new <#= component.ClassName #>(this);
+        ICopyable ICopyable.Copy() => new <#= component.ClassName #>(this);
+        

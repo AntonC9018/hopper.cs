@@ -5,7 +5,7 @@
 
 namespace <#= behavior.Namespace #>
 {
-    public partial class <#= behavior.ClassName #>
+    public partial class <#= behavior.ClassName #> : ICopyable
     {
 <#@ include file="Templates/Snippets/ComponentIndex.txt" #>
 
