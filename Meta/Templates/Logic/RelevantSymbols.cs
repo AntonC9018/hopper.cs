@@ -9,6 +9,7 @@ namespace Meta
         public static RelevantSymbols Instance; 
 
         public INamedTypeSymbol entity;
+        public INamedTypeSymbol icopyable;
         public INamedTypeSymbol icomponent;
         public INamedTypeSymbol ibehavior;
         public INamedTypeSymbol itag;
@@ -46,6 +47,7 @@ namespace Meta
         public void Init(Compilation compilation)
         {
             entity = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Entity");
+            icopyable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Utils.ICopyable");
             icomponent      = GetComponentSymbol(compilation, "IComponent");
             ibehavior       = GetComponentSymbol(compilation, "IBehavior");
             itag            = GetComponentSymbol(compilation, "IBehavior");

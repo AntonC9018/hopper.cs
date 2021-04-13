@@ -182,5 +182,11 @@ namespace Meta
             return method.Parameters.Select(m1 => m1.Type).SequenceEqual(
                 fields.Select(field => field.Type), SymbolEqualityComparer.Default);
         }
+
+        public static bool ParameterTypesEqual(this IMethodSymbol method, IEnumerable<InjectedFieldSymbolWrapper> fields)
+        {
+            return method.Parameters.Select(m1 => m1.Type).SequenceEqual(
+                fields.Select(field => field.symbol.Type), SymbolEqualityComparer.Default);
+        }
     }
 }

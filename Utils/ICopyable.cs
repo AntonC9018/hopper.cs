@@ -1,4 +1,4 @@
-namespace Hopper.Utils.Chains
+namespace Hopper.Utils
 {
     public interface ICopyable
     {

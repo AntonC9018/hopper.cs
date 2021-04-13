@@ -11,7 +11,7 @@ namespace Meta
         public ExportedMethodSymbolWrapper[] exportedMethods;
         public HashSet<IFieldSymbol> flaggedFields;
         public AliasMethodSymbolWrapper[] aliasMethods;
-        public IFieldSymbol[] injectedFields;
+        public InjectedFieldSymbolWrapper[] injectedFields;
 
         public ComponentSymbolWrapper(INamedTypeSymbol symbol) : base(symbol)
         {
@@ -31,18 +31,19 @@ namespace Meta
                 exportedMethods = GetNonNativeExportedMethods(projectContext).ToArray();
         }
 
-        public IEnumerable<IFieldSymbol> GetInjectedFields()
+        public IEnumerable<InjectedFieldSymbolWrapper> GetInjectedFields()
         {
             return symbol.GetMembers()
                 .OfType<IFieldSymbol>()
                 .Where(f => f.GetAttributes().Any(a => 
-                    SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.injectAttribute)));
+                    SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.injectAttribute)))
+                .Select(f => new InjectedFieldSymbolWrapper(f));
         }
 
         public override string TypeText => "component";
 
         public IEnumerable<string> InjectedParamNames => injectedFields.Select(f => f.Name);
-        public IEnumerable<string> InjectedParamsWithTypes => injectedFields.Select(f => $"{f.Type.TypeToText()} {f.Name}");
+        public IEnumerable<string> InjectedParamsWithTypes => injectedFields.Select(f => $"{f.TypeName} {f.Name}");
         public string InjectedParams => String.Join(", ", InjectedParamsWithTypes);
         public string InjectedParamJoinedNames => String.Join(", ", InjectedParamNames);
         public string GetInjectedParamsWithLeadingComma() 
