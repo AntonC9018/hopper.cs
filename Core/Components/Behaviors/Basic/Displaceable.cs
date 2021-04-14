@@ -25,7 +25,7 @@ namespace Hopper.Core.Components.Basic
         {
             int i = 1;
 
-            var transform = ctx.actor.GetTransformComponent();
+            var transform = ctx.actor.GetTransform();
 
             do
             {
@@ -46,13 +46,13 @@ namespace Hopper.Core.Components.Basic
             }
         }
 
-        [Export] public static void DisplaceRemove(TransformComponent transform, IntVector2 newPos)
+        [Export] public static void DisplaceRemove(Transform transform, IntVector2 newPos)
         {
             transform.RemoveFromGrid();
             transform.position = newPos;
         }
 
-        [Export] public static void DisplaceAddBack(TransformComponent transform)
+        [Export] public static void DisplaceAddBack(Transform transform)
         {
             transform.ResetInGrid();
         }

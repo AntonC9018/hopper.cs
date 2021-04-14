@@ -45,7 +45,7 @@ namespace Hopper.Tests
 
         public Entity GetFirstEntity()
         {
-            return world.Grid.GetCellAt(IntVector2.Zero).GetFirstEntity();
+            return world.grid.GetCellAt(IntVector2.Zero).GetFirstEntity();
         }
 
         public void ActivateInteractableWith(IContentSpec spec)

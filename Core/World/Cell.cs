@@ -5,155 +5,66 @@ using System.Linq;
 
 namespace Hopper.Core
 {
-    public class Cell
+    public struct Cell
     {
-        public IntVector2 m_pos;
+        public List<Transform> m_transforms;
+        public event System.Action<Transform> EnterEvent;
+        public event System.Action<Transform> LeaveEvent;
 
-        // the grid is needed for one thing.
-        private GridManager m_grid;
+        public void Init() { m_transforms = new List<Transform>(); }
 
-        public List<Entity> m_entities = new List<Entity>();
-        public event System.Action<Entity> EnterEvent;
-        public event System.Action<Entity> LeaveEvent;
-
-        public Cell(IntVector2 pos, GridManager grid)
+        public Transform GetFirstTransform()
         {
-            m_pos = pos;
-            m_grid = grid;
+            return m_transforms[0];
         }
 
-        public Entity GetFirstEntity()
+        public Transform GetAnyTransformFromLayer(Layer layer)
         {
-            return m_entities[0];
+            return m_transforms.FindLast(t => t.layer.HasFlag(layer));
         }
 
-        public Entity GetAnyEntityFromLayer(Layer layer)
+        public List<Transform> GetAllFromLayer(Layer layer)
         {
-            return m_entities.FindLast(e => e.IsOfLayer(layer));
+            return m_transforms.Where(t => t.layer.HasFlag(layer));
         }
 
-        public List<Entity> GetAllFromLayer(Layer layer)
+        public IEnumerable<Transform> GetAllDirectedFromLayer(IntVector2 direction, Layer layer)
         {
-            return m_entities.Where(e => e.IsOfLayer(layer));
+            for (int i = m_transforms.Count - 1; i >= 0; i--)
+            {
+                var t = m_transforms[i];
+                if (t.entity.IsDirected() && t.layer.HasFlag(layer) && t.orientation == direction)
+                {
+                    yield return t;
+                }
+            }
         }
 
-        /*
-                            ______________
-            We are given   |              |
-            the pos of     |   Entity2    |
-            this final     |              |
-            cell     --->  | --Barrier2-- |
-                           |______________|
-                           | --Barrier1-- |
-                           |     ^        |
-                    Cell   |     |        |
-                    Outline|   Entity1    |
-                           |______________|
-            
-            So imagine entity1 calls this method. It queries coordinates of the cell
-            at the top and provides the direction. We must first go back to the cell
-            this entity is at, checking if there are any barriers (directed entities).
-            Second we check the barriers of the second block, which are on the opposite
-            direction of the cell to the one given (the entity1 looks up, but we check
-            to see if the block is down). Next we get the contents of the queried cell
-            itself.
-
-        */
-        public Entity GetEntityFromLayer(IntVector2 direction, Layer layer)
+        public Transform GetUndirectedTransformFromLayer(Layer layer)
         {
-            return GetAllFromLayer(direction, layer).FirstOrDefault();
+            return m_transforms
+                .FindLast(t => t.layer.HasFlag(layer) && t.entity.IsDirected() == false);
         }
 
         // this one looks for the fitting barriers
-        public Entity GetDirectedEntityFromLayer(IntVector2 direction, Layer layer)
+        public Transform GetDirectedTransformFromLayer(IntVector2 direction, Layer layer)
         {
             return GetAllDirectedFromLayer(direction, layer).FirstOrDefault();
-        }
-
-        public Entity GetUndirectedEntityFromLayer(Layer layer)
-        {
-            return m_entities.FindLast(e => e.IsOfLayer(layer) && e.IsDirected == false);
-        }
-
-        public IEnumerable<Entity> GetAllFromLayer(IntVector2 direction, Layer layer)
-        {
-            var prevCell = m_grid.GetCellAt(-direction + m_pos);
-            if (prevCell != null)
-            {
-                foreach (var entity in prevCell.GetAllDirectedFromLayer(direction, layer))
-                {
-                    yield return entity;
-                }
-            }
-
-            for (int i = m_entities.Count - 1; i >= 0; i--)
-            {
-                if (m_entities[i].IsOfLayer(layer))
-                {
-                    if (m_entities[i].IsDirected && m_entities[i].Orientation != -direction)
-                    {
-                        continue;
-                    }
-                    yield return m_entities[i];
-                }
-            }
-        }
-
-        public IEnumerable<Entity> GetAllDirectedFromLayer(IntVector2 direction, Layer layer)
-        {
-            for (int i = m_entities.Count - 1; i >= 0; i--)
-            {
-                if (m_entities[i].IsDirected
-                    && m_entities[i].IsOfLayer(layer)
-                    && m_entities[i].Orientation == direction)
-                {
-                    yield return m_entities[i];
-                }
-            }
-        }
-
-        /*
-            this one is similar to the behavior described above, except in a situation like this:
-
-            a diagonal direction
-              \  |
-               \ | <-- barrier 2           
-            ____\|   
-              ^
-              |            
-            barrier 1
-
-            it would return `true`.
-        */
-        public bool HasBlock(IntVector2 direction, Layer layer)
-        {
-            var prevCell = m_grid.GetCellAt(-direction + m_pos);
-            // Has directional block prev
-            if (prevCell != null && prevCell.HasDirectionalBlock(direction, layer))
-            {
-                return true;
-            }
-            // Has directional block current
-            if (HasDirectionalBlock(-direction, layer))
-            {
-                return true;
-            }
-            return GetUndirectedEntityFromLayer(layer) != null;
         }
 
         public bool HasDirectionalBlock(IntVector2 direction, Layer layer)
         {
             var dir = direction;
-            foreach (var entity in m_entities)
+            foreach (var t in m_transforms)
             {
-                if (entity.IsDirected && entity.IsOfLayer(layer))
+                if (t.IsDirected() && t.layer.HasFlag(layer))
                 {
                     // block diagonal movement if corner barriers are present
-                    if (entity.Orientation.x == dir.x)
+                    if (t.orientation.x == dir.x)
                     {
                         dir.x = 0;
                     }
-                    if (entity.Orientation.y == dir.y)
+                    if (t.orientation.y == dir.y)
                     {
                         dir.y = 0;
                     }
@@ -166,12 +77,12 @@ namespace Hopper.Core
             return false;
         }
 
-        public void FireEnterEvent(Entity entity)
+        public void FireEnterEvent(Transform entity)
         {
             EnterEvent?.Invoke(entity);
         }
 
-        public void FireLeaveEvent(Entity entity)
+        public void FireLeaveEvent(Transform entity)
         {
             LeaveEvent?.Invoke(entity);
         }

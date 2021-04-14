@@ -54,7 +54,7 @@ namespace Hopper.Core
             Ticking.AddTo(subject);
 
             FactionComponent.AddTo(subject, Faction.Player);
-            TransformComponent.AddTo(subject);
+            Transform.AddTo(subject, Layer.REAL);
             Inventory.AddTo(subject);
 
             // TODO: pass this an action
@@ -78,7 +78,7 @@ namespace Hopper.Core
             subject.GetDamageable().DefaultPreset();
             subject.GetDisplaceable().DefaultPreset();
             // subject.TryGetFactionComponent()?.
-            // subject.TryGetTransformComponent()?.
+            // subject.TryGetTransform()?.
             // subject.TryGetInventory()?.
             // subject.TryGetControllable()?.
             // subject.TryGetStats()?.

@@ -7,14 +7,10 @@ namespace Hopper.Core
 {
     public class WorldStateManager
     {
-        private List<Entity>[] m_entities
-            = new List<Entity>[World.NumLayers];
+        public List<Entity>[] entities = new List<Entity>[World.NumLayers];
 
         // note that players never get into the lists from above
-        private List<Entity> m_players = new List<Entity>();
-
-        public IReadOnlyList<Entity> Players => m_players.AsReadOnly();
-        public IReadOnlyList<List<Entity>> Entities => System.Array.AsReadOnly(m_entities);
+        public List<Entity> players = new List<Entity>();
 
         public event System.Action StartOfLoopEvent;
         public event System.Action EndOfLoopEvent;
@@ -22,16 +18,12 @@ namespace Hopper.Core
         public event System.Action<Phase> StartOfPhaseEvent;
         public event System.Action<Phase> EndOfPhaseEvent;
 
-        public InstanceSubRegistry<Entity, FactoryLink> m_instanceSubregistry;
+        public Phase currentPhase = Phase.PLAYER;
 
-        private Phase m_currentPhase = Phase.PLAYER;
-        public Phase CurrentPhase => m_currentPhase;
-
-        private int m_iterCount = 0;
-        public int InterationCount => m_iterCount;
+        public int InterationCount = 0;
 
         private int m_currentTimeFrame = 0;
-        public int GetNextTimeFrame() => m_currentTimeFrame++;
+        public int NextTimeFrame() => m_currentTimeFrame++;
 
         private int[] m_updateCountPhaseLimits = new int[World.NumPhases];
         public IReadOnlyList<int> UpdateCountPhaseLimit
@@ -39,22 +31,21 @@ namespace Hopper.Core
 
         public WorldStateManager()
         {
-            for (int i = 0; i < m_entities.Length; i++)
+            for (int i = 0; i < entities.Length; i++)
             {
-                m_entities[i] = new List<Entity>();
+                entities[i] = new List<Entity>();
             }
-            m_instanceSubregistry = new InstanceSubRegistry<Entity, FactoryLink>();
         }
 
         public void AddEntity(Entity entity)
         {
-            m_entities[entity.Layer.ToIndex()].Add(entity);
+            entities[entity.Layer.ToIndex()].Add(entity);
         }
 
         public int AddPlayer(Entity player)
         {
-            m_players.Add(player);
-            return m_players.Count - 1;
+            players.Add(player);
+            return players.Count - 1;
         }
 
         public void Loop()
@@ -76,13 +67,13 @@ namespace Hopper.Core
 
         private void ClearHistory()
         {
-            foreach (var player in m_players)
+            foreach (var player in players)
             {
                 player.History.Clear();
             }
-            for (int i = 0; i < m_entities.Length; i++)
+            for (int i = 0; i < entities.Length; i++)
             {
-                foreach (var e in m_entities[i])
+                foreach (var e in entities[i])
                     e.History.Clear();
             }
         }
@@ -104,7 +95,7 @@ namespace Hopper.Core
 
         private void ActivatePlayers()
         {
-            foreach (var player in m_players)
+            foreach (var player in players)
             {
                 Activate(player);
             }
@@ -113,19 +104,19 @@ namespace Hopper.Core
 
         private void CalculateActionOnEntities()
         {
-            for (int i = 0; i < m_entities.Length; i++)
+            for (int i = 0; i < entities.Length; i++)
             {
-                foreach (var e in m_entities[i])
+                foreach (var e in entities[i])
                     CalculateNextAction(e);
             }
         }
 
         private void ActivateEntities()
         {
-            for (int i = 0; i < m_entities.Length; i++)
+            for (int i = 0; i < entities.Length; i++)
             {
-                for (int j = m_entities[i].Count - 1; j >= 0; j--)
-                    Activate(m_entities[i][j]);
+                for (int j = entities[i].Count - 1; j >= 0; j--)
+                    Activate(entities[i][j]);
                 AdvancePhase();
             }
         }
@@ -133,12 +124,12 @@ namespace Hopper.Core
         private void TickAll()
         {
             // SetPhase(Phase.TICK_PLAYER);
-            foreach (var player in m_players)
+            foreach (var player in players)
             {
                 player.Behaviors.Get<Tick>().Activate();
             }
             SetPhase(Phase.TICK_REAL);
-            foreach (var es in m_entities)
+            foreach (var es in entities)
             {
                 foreach (var e in es)
                     e.Behaviors.Get<Tick>().Activate();
@@ -148,10 +139,10 @@ namespace Hopper.Core
         private void FilterDead()
         {
             BeforeFilterEvent?.Invoke();
-            for (int i = 0; i < m_entities.Length; i++)
+            for (int i = 0; i < entities.Length; i++)
             {
                 var newEntities = new List<Entity>();
-                foreach (var entity in m_entities[i])
+                foreach (var entity in entities[i])
                 {
                     if (entity.IsDead)
                     {
@@ -162,7 +153,7 @@ namespace Hopper.Core
                         newEntities.Add(entity);
                     }
                 }
-                m_entities[i] = newEntities;
+                entities[i] = newEntities;
             }
         }
 
@@ -216,15 +207,6 @@ namespace Hopper.Core
                 }
             };
             EndOfPhaseEvent += handler;
-        }
-
-        public void RegisterEntity(Entity entity, IFactory<Entity> EntityFactory)
-        {
-            Assert.AreEqual(0, entity.Id, "The entity must not have a valid id when being assigned one");
-
-            var meta = new FactoryLink { factoryId = EntityFactory.Id };
-            int id = m_instanceSubregistry.Add(entity, meta);
-            entity._SetId(id);
         }
     }
 }

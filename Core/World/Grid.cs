@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core
@@ -5,8 +7,9 @@ namespace Hopper.Core
     public class GridManager
     {
         private Cell[,] m_grid;
-        private readonly int m_width;
-        private readonly int m_height;
+
+        public int Width => m_grid.GetLength(0);
+        public int Height => m_grid.GetLength(1);
 
         public GridManager(int width, int height)
         {
@@ -15,29 +18,112 @@ namespace Hopper.Core
             {
                 for (int j = 0; j < height; j++)
                 {
-                    m_grid[j, i] = new Cell(new IntVector2(i, j), this);
+                    m_grid[j, i].Init();
                 }
             }
-            m_width = width;
-            m_height = height;
         }
 
         public GridManager(Cell[,] grid)
         {
             m_grid = grid;
-            m_width = grid.GetLength(0);
-            m_height = grid.GetLength(1);
         }
 
         public bool IsOutOfBounds(IntVector2 pos)
         {
-            return pos.y < 0 || pos.x < 0 || pos.y >= m_height || pos.x >= m_width;
+            return pos.y < 0 || pos.x < 0 || pos.y >= Height || pos.x >= Width;
         }
 
         public Cell GetCellAt(IntVector2 pos)
         {
-            if (IsOutOfBounds(pos)) return null;
+            if (IsOutOfBounds(pos)) return new Cell();
             return m_grid[pos.y, pos.x];
+        }
+
+        /*
+                            ______________
+            We are given   |              |
+            the pos of     |   Entity2    |
+            this final     |              |
+            cell     --->  | --Barrier2-- |
+                           |______________|
+                           | --Barrier1-- |
+                           |     ^        |
+                    Cell   |     |        |
+                    Outline|   Entity1    |
+                           |______________|
+            
+            So imagine entity1 calls this method. It queries coordinates of the cell
+            at the top and provides the direction. We must first go back to the cell
+            this entity is at, checking if there are any barriers (directed entities).
+            Second we check the barriers of the second block, which are on the opposite
+            direction of the cell to the one given (the entity1 looks up, but we check
+            to see if the block is down). Next we get the contents of the queried cell
+            itself.
+
+        */
+        public Transform GetTransformFromLayer(
+            IntVector2 position, IntVector2 direction, Layer layer)
+        {
+            return GetAllFromLayer(position, direction, layer).FirstOrDefault();
+        }
+
+        public IEnumerable<Transform> GetAllFromLayer(
+            IntVector2 position, IntVector2 direction, Layer layer)
+        {
+            if (!IsOutOfBounds(-direction + position))
+            {
+                var prevCell = GetCellAt(-direction + position);
+                foreach (var entity in prevCell.GetAllDirectedFromLayer(direction, layer))
+                {
+                    yield return entity;
+                }
+            }
+            
+            var cell = GetCellAt(-direction + position);
+
+            for (int i = cell.m_transforms.Count - 1; i >= 0; i--)
+            {
+                var t = cell.m_transforms[i];
+                if (t.layer.HasFlag(layer))
+                {
+                    if (t.entity.IsDirected() && t.orientation != -direction)
+                    {
+                        continue;
+                    }
+                    yield return t;
+                }
+            }
+        }
+
+        
+
+        /*
+            this one is similar to the behavior described above, except in a situation like this:
+
+            a diagonal direction
+              \  |
+               \ | <-- barrier 2           
+            ____\|   
+              ^
+              |            
+            barrier 1
+
+            it would return `true`.
+        */
+        public bool HasBlockAt(IntVector2 position, IntVector2 direction, Layer layer)
+        {
+            // Has directional block prev
+            if (!IsOutOfBounds(position))
+            {
+                return GetCellAt(-direction + position).HasDirectionalBlock(direction, layer);
+            }
+            // Has directional block current
+            var cell = GetCellAt(position);
+            if (cell.HasDirectionalBlock(-direction, layer))
+            {
+                return true;
+            }
+            return cell.GetUndirectedTransformFromLayer(layer) != null;
         }
     }
 }

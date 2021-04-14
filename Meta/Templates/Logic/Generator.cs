@@ -17,24 +17,22 @@ namespace Meta
         const string autogenFolder = @"../Core/Autogen";
         static readonly string behaviorAutogenFolder = $@"{autogenFolder}/Behaviors";
         static readonly string componentAutogenFolder = $@"{autogenFolder}/Components";
+        static readonly string tagsAutogenFolder = $@"{autogenFolder}/Tags";
         static readonly string handlersAutogenFolder = $@"{autogenFolder}/Handlers";
         static readonly string mainAutogenFile = $@"{autogenFolder}/Main.cs";
 
         public MSBuildWorkspace msWorkspace;
         public Project coreProject;
-        public bool failFlag = false;
 
-        public async Task<bool> Start(params string[] projectPaths)
+        public async Task Start(params string[] projectPaths)
         {
-            await InitWorkspace(projectPaths);
-            if (!failFlag)
+            if (await InitWorkspace(projectPaths))
             {
                 await Generate();
             }
-            return failFlag;
         } 
 
-        public async Task<MSBuildWorkspace> InitWorkspace(string[] projectPaths)
+        public async Task<bool> InitWorkspace(string[] projectPaths)
         {
             try
             {
@@ -43,15 +41,17 @@ namespace Meta
             catch (Exception exc)
             {
                 Console.WriteLine(exc);
-                return null;
+                return false;
             }
+
+            bool success = true;
 
             msWorkspace.WorkspaceFailed += (s, args) => 
             {
                 if (args.Diagnostic.Kind == WorkspaceDiagnosticKind.Failure)
                 {
                     Console.WriteLine($"Unable to open the project.\n {args.Diagnostic.Message}");
-                    failFlag = true;
+                    success = false;
                 }
                 else
                 {
@@ -65,6 +65,7 @@ namespace Meta
             CreateOrEmptyDirectory(behaviorAutogenFolder);
             CreateOrEmptyDirectory(componentAutogenFolder);
             CreateOrEmptyDirectory(handlersAutogenFolder);
+            CreateOrEmptyDirectory(tagsAutogenFolder);
 
             await msWorkspace.OpenProjectAsync(sharedProjectPath);
 
@@ -74,7 +75,7 @@ namespace Meta
             foreach (var projectName in projectPaths)
                 await msWorkspace.OpenProjectAsync(projectName);
 
-            return msWorkspace;
+            return success;
         }
 
         public static void CreateOrEmptyDirectory(string directory)
@@ -94,44 +95,16 @@ namespace Meta
             // TODO: parallelize
             var behaviorWrappers = new List<BehaviorSymbolWrapper>();
             {
-                var behaviors = await ctx.FindAllBehaviors();
-                
-                foreach (var behavior in behaviors)
+                foreach (var behavior in await ctx.FindAllBehaviors())
                 {
-                    try
-                    {
-                        var wrapped = new BehaviorSymbolWrapper(behavior);
-                        wrapped.Init(ctx);
+                    var wrapped = new BehaviorSymbolWrapper(behavior);
+                    if (wrapped.InitWithErrorHandling(ctx))
                         behaviorWrappers.Add(wrapped);
-                    }
-                    catch (GeneratorException e)
-                    {
-                        Console.WriteLine("An error occured while processing a behavior:");
-                        Console.WriteLine(e.Message);
-                        Console.WriteLine("");
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
                 }
                 // After init must be called after all of the behaviors have been added to the dictionary
                 foreach (var behavior in behaviorWrappers)
                 {
-                    try
-                    {
-                        behavior.AfterInit(ctx);   
-                    }
-                    catch (GeneratorException e)
-                    {
-                        Console.WriteLine("An error occured while processing a behavior:");
-                        Console.WriteLine(e.Message);
-                        Console.WriteLine("");
-                    } 
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }               
+                    behavior.AfterInitWithErrorHandling(ctx);              
                 }
                 foreach (var behavior in behaviorWrappers)
                 {
@@ -156,39 +129,13 @@ namespace Meta
                 
                 foreach (var b in components)
                 {
-                    try
-                    {
-                        var wrapped = new ComponentSymbolWrapper(b);
-                        wrapped.Init(ctx);
+                    var wrapped = new ComponentSymbolWrapper(b);
+                    if (wrapped.InitWithErrorHandling(ctx))
                         componentWrappers.Add(wrapped);
-                    }
-                    catch (GeneratorException e)
-                    {
-                        Console.WriteLine("An error occured while processing a component:");
-                        Console.WriteLine(e.Message);
-                        Console.WriteLine("");
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
                 }
                 foreach (var component in componentWrappers)
                 {
-                    try
-                    {
-                        component.AfterInit(ctx);   
-                    }
-                    catch (GeneratorException e)
-                    {
-                        Console.WriteLine("An error occured while processing a component:");
-                        Console.WriteLine(e.Message);
-                        Console.WriteLine("");
-                    } 
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }               
+                    component.AfterInitWithErrorHandling(ctx);               
                 }
                 foreach (var component in componentWrappers)
                 {
@@ -200,6 +147,35 @@ namespace Meta
 
                     File.WriteAllText(
                         $"{componentAutogenFolder}/{component.ClassName}.cs",
+                        componentPrinter.TransformText(),
+                        Encoding.UTF8);
+                }
+            }
+
+            var tagWrappers = new List<ComponentSymbolWrapper>();
+            {
+                var tags = await ctx.FindAllTags();
+                
+                foreach (var b in tags)
+                {
+                    var wrapped = new TagSymbolWrapper(b);
+                    if (wrapped.InitWithErrorHandling(ctx))
+                        tagWrappers.Add(wrapped);
+                }
+                foreach (var component in tagWrappers)
+                {
+                    component.AfterInitWithErrorHandling(ctx);               
+                }
+                foreach (var component in tagWrappers)
+                {
+                    var componentPrinter = new ComponentCode();
+                    componentPrinter.Initialize();
+                    componentPrinter.component = component;
+
+                    Console.WriteLine($"Generating code for {component.Calling}");
+
+                    File.WriteAllText(
+                        $"{tagsAutogenFolder}/{component.ClassName}.cs",
                         componentPrinter.TransformText(),
                         Encoding.UTF8);
                 }
@@ -264,7 +240,7 @@ namespace Meta
             var ctx = new ProjectContext(msWorkspace.CurrentSolution);
             await ctx.Reset(coreProject);
             
-            var implementations = await ctx.FindAllDirectComponents();
+            var implementations = await ctx.FindAllTags();
 
             Console.WriteLine(implementations.Count());
 

@@ -14,7 +14,7 @@
         /// This is a shortcut method.
         /// Check if the entity has the <#= component.Calling #>.
         /// </summary>
-        public static bool Has<#= component.ClassName #>(this Entity entity)
+        public static bool <#= component.HasAlias #><#= component.ClassName #>(this Entity entity)
         {
             return entity.HasComponent(<#= component.ClassName #>.Index);
         }

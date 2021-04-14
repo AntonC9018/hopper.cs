@@ -47,7 +47,7 @@ namespace Hopper.Test_Content.Projectiles
 
                 // First, attack entities, that are looking at us, standing at the same cell as us.
                 // Ignore any directed entities.
-                var target = m_entity.GetCell().m_entities.Find(
+                var target = m_entity.GetCell().m_transforms.Find(
                     e => e.IsOfLayer(targetedLayer)
                         && !e.IsDirected
                         && e.Orientation == -direction

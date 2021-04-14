@@ -73,7 +73,7 @@ namespace Hopper.Test_Content.Explosion
             foreach (var vec in Spiral(-radius, -radius, radius, radius))
             {
                 IntVector2 current_pos = pos + vec;
-                if (world.Grid.IsOutOfBounds(current_pos) == false)
+                if (world.grid.IsOutOfBounds(current_pos) == false)
                 {
                     IntVector2 knockback_dir = vec.Sign();
                     ExplodeCell(current_pos, knockback_dir, world);

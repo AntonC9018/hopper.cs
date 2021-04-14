@@ -8,25 +8,25 @@ namespace Hopper.Core.Retouchers
     {
 
         [Export(Chain = "Displaceable.Do", Dynamic = true)]
-        private static void OnDisplace(IntVector2 direction, TransformComponent transform)
+        private static void OnDisplace(IntVector2 direction, Transform transform)
         {
             if (direction != IntVector2.Zero) 
                 transform.orientation = direction;
         }
 
         [Export(Chain = "Acting.Success", Dynamic = true)]
-        private static void OnActionSuccess(ParticularAction action, TransformComponent transform)
+        private static void OnActionSuccess(ParticularAction action, Transform transform)
         {
             if (action is ParticularDirectedAction directedAction)
                 transform.orientation = directedAction.direction;
         }
 
         [Export(Chain = "Acting.Success", Dynamic = true)]
-        private static void ToPlayerOnActionSuccess(TransformComponent transform)
+        private static void ToPlayerOnActionSuccess(Transform transform)
         {
             if (transform.TryGetClosestPlayer(out Entity player))
             {
-                var diff = player.GetTransformComponent().position - transform.position;
+                var diff = player.GetTransform().position - transform.position;
                 var sign = diff.Sign();
                 var abs = diff.Abs();
                 if (abs.x > abs.y)

@@ -34,7 +34,7 @@ namespace Hopper.Core.Components.Basic
         /// Returns true if the owner of the queried attackable behavior can be attacked by the given attacker
         /// </returns>
         [Export] public bool IsAttackable(
-            TransformComponent transform, TransformComponent attacker_Transform)
+            Transform transform, Transform attacker_Transform)
         {
             // if can be attacked only if next to
             if (m_attackness.Is(Attackness.CAN_BE_ATTACKED_IF_NEXT_TO))

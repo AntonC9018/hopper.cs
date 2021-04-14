@@ -34,7 +34,7 @@ namespace Hopper.Test_Content.Floor
 
         private bool DoesNotHaveIceUnder(Entity entity)
         {
-            foreach (var potentiallyIce in entity.GetCell().m_entities)
+            foreach (var potentiallyIce in entity.GetCell().m_transforms)
             {
                 if (potentiallyIce.Behaviors.Has<Sliding>())
                 {

@@ -53,7 +53,7 @@ namespace Hopper.Tests.Test_Content
 
             world.Loop();
 
-            Assert.AreEqual(1, trap1.GetCell().m_entities.Count);
+            Assert.AreEqual(1, trap1.GetCell().m_transforms.Count);
             Assert.AreEqual(new IntVector2(2, 1), entity.Pos);
 
             var trap2 = world.SpawnEntity(BounceTrap.Factory, new IntVector2(2, 1), new IntVector2(1, 0));
@@ -64,8 +64,8 @@ namespace Hopper.Tests.Test_Content
             world.Loop();
 
             Assert.AreEqual(new IntVector2(3, 1), entity.Pos);
-            Assert.AreEqual(1, trap1.GetCell().m_entities.Count);
-            Assert.AreEqual(1, trap2.GetCell().m_entities.Count);
+            Assert.AreEqual(1, trap1.GetCell().m_transforms.Count);
+            Assert.AreEqual(1, trap2.GetCell().m_transforms.Count);
         }
     }
 }

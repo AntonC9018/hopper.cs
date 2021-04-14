@@ -22,7 +22,7 @@ namespace Meta
         {
         }
 
-        new public void Init(ProjectContext projectContext)
+        public override void Init(ProjectContext projectContext)
         {
             base.Init(projectContext);
 

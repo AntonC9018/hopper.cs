@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hopper.Shared.Attributes;
@@ -16,10 +17,54 @@ namespace Meta
             this.symbol = symbol;
         }
 
-        protected void Init(ProjectContext projectContext)
+        public virtual void Init(ProjectContext projectContext)
         {
             usings = GetUsingSyntax(projectContext._solution);
         }
+
+        public bool InitWithErrorHandling(ProjectContext ctx)
+        {
+            try
+            {
+                Init(ctx);
+            }
+            catch (GeneratorException e)
+            {
+                Console.WriteLine($"An error occured while processing {Calling}:");
+                Console.WriteLine(e.Message);
+                Console.WriteLine("");
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+            return true;
+        }
+
+        public bool AfterInitWithErrorHandling(ProjectContext ctx)
+        {
+            try
+            {
+                AfterInit(ctx);
+            }
+            catch (GeneratorException e)
+            {
+                Console.WriteLine($"An error occured while processing {Calling}:");
+                Console.WriteLine(e.Message);
+                Console.WriteLine("");
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+            return true;
+        }
+
+        public virtual void AfterInit(ProjectContext ctx){}
 
         public IEnumerable<string> Usings()
         {
@@ -93,6 +138,9 @@ namespace Meta
         }
 
         public abstract string TypeText { get; }
+        // The start of the name of the method that checks whether the given component is on the entity
+        // Has are the values for behaviors and components, Is is the value for tags.
+        public virtual string HasAlias => "Has";
         public string ClassName => symbol.Name;
         public string Namespace => symbol.ContainingNamespace.FullName();
         public string FullyQualifiedClassName => $"{Namespace}.{ClassName}";

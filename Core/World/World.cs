@@ -1,46 +1,26 @@
 using System.Collections.Generic;
 using Hopper.Core.Items;
-using Hopper.Core.Registries;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
     public delegate void BringIntoGrid();
 
-    public class World : IHaveId
+    public class World
     {
-        public GridManager Grid { get; private set; }
-        public WorldStateManager State { get; private set; }
-        public Pools m_pools;
-        public Dictionary<int, IWorldEvent> m_events;
-        public PatchArea m_currentRepository;
+        public GridManager grid;
+        public WorldStateManager State;
 
         public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
         public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
-
-        public int Id => m_id;
-        private int m_id;
 
         // For now, do this for the sake of tests and debugging
         // The world currently does not really need an id
         public World(int width, int height)
         {
             PhaseLayerExtensions.ThrowIfPhasesAreWrong();
-            Grid = new GridManager(width, height);
+            grid = new GridManager(width, height);
             State = new WorldStateManager();
-            m_events = new Dictionary<int, IWorldEvent>();
-        }
-
-        public World(int width, int height, PatchArea patchArea)
-        {
-            PhaseLayerExtensions.ThrowIfPhasesAreWrong();
-            Grid = new GridManager(width, height);
-            State = new WorldStateManager();
-            m_events = new Dictionary<int, IWorldEvent>();
-            m_id = 1;
-            m_currentRepository = patchArea;
-            // add possibility of cipying this from another world
-            m_pools = patchArea.DefaultPools?.Copy();
         }
 
         public void Loop()
@@ -50,7 +30,7 @@ namespace Hopper.Core
 
         public int GetNextTimeFrame()
         {
-            return State.GetNextTimeFrame();
+            return State.NextTimeFrame();
         }
 
         public event System.Action<Entity> SpawnEntityEvent;
@@ -73,22 +53,20 @@ namespace Hopper.Core
         //
         // public event System.Action<int> SpawnParticleEvent;
 
-        private T SpawnEntityNoEvent<T>(
-            IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+        private Entity SpawnEntityNoEvent(EntityFactory factory, IntVector2 pos, IntVector2 orientation)
         {
-            var entity = EntityFactory.Instantiate();
-            State.RegisterEntity(entity, EntityFactory);
-            entity.Init(pos, orientation, this);
-            entity.ResetInGrid();
+            var entity = factory.Instantiate();
+            entity.id = Registry.Global.RegisterRuntimeEntity(entity);
+            var transform = entity.InitTransform(pos, orientation);
+            grid.GetCellAt(pos).m_transforms.Add(transform);
             return entity;
         }
 
-        public T SpawnHangingEntity<T>(
-            IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+        public Entity SpawnHangingEntity(EntityFactory factory, IntVector2 pos, IntVector2 orientation)
         {
-            var entity = EntityFactory.Instantiate();
-            State.RegisterEntity(entity, EntityFactory);
-            entity.Init(pos, orientation, this);
+            var entity = factory.Instantiate();
+            entity.id = Registry.Global.RegisterRuntimeEntity(entity);
+            entity.InitTransform(pos, orientation);
             State.AddEntity(entity);
             SpawnEntityEvent?.Invoke(entity);
             return entity;

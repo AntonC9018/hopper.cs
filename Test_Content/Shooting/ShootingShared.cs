@@ -88,7 +88,7 @@ namespace Hopper.Test_Content
             IntVector2 currentPos = spot.Pos + direction;
             while (true)
             {
-                var cell = spot.World.Grid.GetCellAt(currentPos);
+                var cell = spot.World.grid.GetCellAt(currentPos);
 
                 // off the world or a block is in the way
                 if (cell == null || cell.HasBlock(direction, m_targetLayers.skip))

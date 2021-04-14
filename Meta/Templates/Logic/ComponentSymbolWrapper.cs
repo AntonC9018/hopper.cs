@@ -17,7 +17,7 @@ namespace Meta
         {
         }
 
-        new public void Init(ProjectContext projectContext)
+        public override void Init(ProjectContext projectContext)
         {
             base.Init(projectContext);
             flaggedFields = GetFlaggedFields();
@@ -25,7 +25,7 @@ namespace Meta
             injectedFields = GetInjectedFields().ToArray();
         }
 
-        public void AfterInit(ProjectContext projectContext)
+        public override void AfterInit(ProjectContext projectContext)
         {
             if (exportedMethods == null)
                 exportedMethods = GetNonNativeExportedMethods(projectContext).ToArray();

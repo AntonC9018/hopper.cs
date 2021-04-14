@@ -12,7 +12,7 @@ namespace Hopper.Core
     {
         public static Cell GetCellRelative(this IWorldSpot spot, IntVector2 dir)
         {
-            return spot.World.Grid.GetCellAt(spot.Pos + dir);
+            return spot.World.grid.GetCellAt(spot.Pos + dir);
         }
 
         public static IntVector2 GetPosRelative(this IWorldSpot spot, IntVector2 offset)
@@ -32,6 +32,6 @@ namespace Hopper.Core
             return cell.HasBlock(offset.Sign(), layer);
         }
 
-        public static Cell GetCell(this IWorldSpot spot) => spot.World.Grid.GetCellAt(spot.Pos);
+        public static Cell GetCell(this IWorldSpot spot) => spot.World.grid.GetCellAt(spot.Pos);
     }
 }

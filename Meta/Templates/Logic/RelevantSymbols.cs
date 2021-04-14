@@ -1,4 +1,4 @@
-using System;
+using Hopper.Shared.Attributes;
 using Microsoft.CodeAnalysis;
 
 namespace Meta
@@ -39,9 +39,9 @@ namespace Meta
             return (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Components.{name}");
         }
 
-        public static INamedTypeSymbol GetAttributeSymbol(Compilation compilation, string name)
+        public static INamedTypeSymbol GetKnownSymbol(Compilation compilation, System.Type t)
         {
-            return (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Shared.Attributes.{name}");
+            return (INamedTypeSymbol)compilation.GetTypeByMetadataName(t.FullName);
         }
 
         public void Init(Compilation compilation)
@@ -50,15 +50,15 @@ namespace Meta
             icopyable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Utils.ICopyable");
             icomponent      = GetComponentSymbol(compilation, "IComponent");
             ibehavior       = GetComponentSymbol(compilation, "IBehavior");
-            itag            = GetComponentSymbol(compilation, "IBehavior");
-            aliasAttribute  = GetAttributeSymbol(compilation, "AliasAttribute");
-            chainsAttribute = GetAttributeSymbol(compilation, "ChainsAttribute");
-            injectAttribute = GetAttributeSymbol(compilation, "InjectAttribute");
-            flagsAttribute  = GetAttributeSymbol(compilation, "FlagsAttribute");
-            exportAttribute = GetAttributeSymbol(compilation, "ExportAttribute");
-            omitAttribute   = GetAttributeSymbol(compilation, "OmitAttribute");
-            activationAliasAttribute = GetAttributeSymbol(compilation, "ActivationAliasAttribute");
-            autoActivationAttribute = GetAttributeSymbol(compilation, "AutoActivationAttribute");
+            itag            = GetComponentSymbol(compilation, "ITag");
+            aliasAttribute  = GetKnownSymbol(compilation, typeof(AliasAttribute));
+            chainsAttribute = GetKnownSymbol(compilation, typeof(ChainsAttribute));
+            injectAttribute = GetKnownSymbol(compilation, typeof(InjectAttribute));
+            flagsAttribute  = GetKnownSymbol(compilation, typeof(FlagsAttribute));
+            exportAttribute = GetKnownSymbol(compilation, typeof(ExportAttribute));
+            omitAttribute   = GetKnownSymbol(compilation, typeof(OmitAttribute));
+            activationAliasAttribute = GetKnownSymbol(compilation, typeof(ActivationAliasAttribute));
+            autoActivationAttribute = GetKnownSymbol(compilation, typeof(AutoActivationAttribute));
             boolType = compilation.GetSpecialType(SpecialType.System_Boolean);
             voidType = compilation.GetSpecialType(SpecialType.System_Void);
         }

@@ -1,30 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Hopper.Utils.Vector
 {
-    [DataContract]
     public struct IntVector2 : IEquatable<IntVector2>
     {
-        [DataMember] public int x;
-        [DataMember] public int y;
+        public int x;
+        public int y;
 
-        public static IntVector2 Zero = new IntVector2(0, 0);
-        public static IntVector2 Right = new IntVector2(1, 0);
-        public static IntVector2 Left = new IntVector2(-1, 0);
-        public static IntVector2 Up = new IntVector2(0, -1);
-        public static IntVector2 Down = new IntVector2(0, 1);
+        public static readonly IntVector2 Zero = new IntVector2(0, 0);
+        public static readonly IntVector2 Right = new IntVector2(1, 0);
+        public static readonly IntVector2 Left = new IntVector2(-1, 0);
+        public static readonly IntVector2 Up = new IntVector2(0, -1);
+        public static readonly IntVector2 Down = new IntVector2(0, 1);
 
-        public static IntVector2 UnitX
-        {
-            get => new IntVector2(1, 0);
-        }
-
-        public static IntVector2 UnitY
-        {
-            get => new IntVector2(0, 1);
-        }
+        public static readonly IntVector2 UnitX = new IntVector2(1, 0);
+        public static readonly IntVector2 UnitY = new IntVector2(0, 1);
 
         public IEnumerable<IntVector2> CircleAround
         {

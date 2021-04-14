@@ -2,5 +2,5 @@ using Hopper.Core.Components;
 
 namespace Hopper.Core
 {
-    public class DirectedTag : ITag {}
+    public partial class Directed : ITag {}
 }

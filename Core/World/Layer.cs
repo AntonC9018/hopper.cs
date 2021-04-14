@@ -22,16 +22,6 @@ namespace Hopper.Core
 
     public static class LayerExtensions
     {
-        public static bool IsOfLayer(this Entity entity, Layer layer)
-        {
-            return (entity.Layer & layer) != 0;
-        }
-
-        public static bool IsOfLayer(this Layer layer1, Layer layer2)
-        {
-            return (layer1 & layer2) != 0;
-        }
-
         public static string GetName(this Layer layer)
         {
             return System.Enum.GetName(typeof(Layer), layer);
