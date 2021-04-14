@@ -24,7 +24,7 @@ namespace Hopper.Core.Retouchers
         [Export(Chain = "Acting.Success", Dynamic = true)]
         private static void ToPlayerOnActionSuccess(TransformComponent transform)
         {
-            if (transform.TryGetClosestPlayer(out var player))
+            if (transform.TryGetClosestPlayer(out Entity player))
             {
                 var diff = player.GetTransformComponent().position - transform.position;
                 var sign = diff.Sign();

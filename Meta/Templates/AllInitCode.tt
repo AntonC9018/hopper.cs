@@ -8,6 +8,7 @@ namespace <#= Namespace #>
     {
         public static void Init()
         {
+            int modId = Registry.Global.NextMod();            
 <# foreach(var component in components) { #>
             <#= component.FullyQualifiedClassName #>.InitIndex();
             <#= component.FullyQualifiedClassName #>.InitHandlers();

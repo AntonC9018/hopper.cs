@@ -5,10 +5,9 @@ using System.Collections.Generic;
 namespace Hopper.Core
 {
     // TODO: make this a struct!
-    public sealed class Entity : IHaveId
+    public sealed class Entity
     {
-        public int Id => id;
-        public int id;
+        public RuntimeIdentifier id;
 
         // Do it the easy way, with classes, for now.
         // In the future, maybe switch to value types and store them in central place, 

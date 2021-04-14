@@ -144,4 +144,10 @@ namespace Hopper.Shared.Attributes
     public class OmitAttribute : Attribute
     {
     }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public class EntityTypeAttribute : Attribute 
+    {
+        bool IsGenerated = false;
+    }
 }

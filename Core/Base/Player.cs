@@ -6,13 +6,14 @@ using Hopper.Core.Stats.Basic;
 using Hopper.Core.Targeting;
 using Hopper.Core.History;
 using Hopper.Core.Stats;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core
 {
-    [DataContract]
+    [EntityType]
     public static class Player
     {
-        /*
+        /* TODO: generate such code from json
             {
                 name: "Player",
                 components: [
@@ -28,6 +29,8 @@ namespace Hopper.Core
                 ]
             }
         */
+
+        public static EntityFactory Factory;
 
         public static void AddComponents(Entity subject)
         {

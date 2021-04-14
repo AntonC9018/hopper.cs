@@ -1,39 +1,7 @@
-using System;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.Core
 {
-    public struct IdentifierAssigner
-    {
-        public int offset;
-
-        public int Next()
-        {
-            return offset++;
-        }
-    }
-
-    public struct PriorityAssigner
-    {
-        public static readonly int numRanks = Enum.GetValues(typeof(PriorityRank)).Length;
-        public int[] rankNumbers;
-
-        public void Init()
-        {
-            rankNumbers = new int[numRanks];
-            var share = int.MaxValue / numRanks;
-            for (int i = 1; i < numRanks; i++)
-            {
-                rankNumbers[i] = rankNumbers[i - 1] + share;
-            }
-        }
-
-        public int Next(PriorityRank rank)
-        {
-            return rankNumbers[(int)rank]++;
-        }
-    }
-
     public struct Registry
     {
         public static Registry Global;
@@ -47,10 +15,12 @@ namespace Hopper.Core
         public int _currentMod;
         public IdentifierAssigner _component;
         public PriorityAssigner _priority;
+        public RuntimeRegistry<Entity> _entities;
 
         public void Init()
         {
             _priority.Init();
+            _entities.Init();
         }
 
         public int NextMod()
@@ -61,6 +31,16 @@ namespace Hopper.Core
         public Identifier NextComponentId()
         {
             return new Identifier(_currentMod, _component.Next());
+        }
+
+        public RuntimeIdentifier RegisterRuntimeEntity(Entity entity)
+        {
+            return _entities.Add(entity);
+        }
+
+        public void UnregisterRuntimeEntity(Entity entity)
+        {
+            _entities.Remove(entity.id);
         }
 
         public int NextPriority(PriorityRank rank)
