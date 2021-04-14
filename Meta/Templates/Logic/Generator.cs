@@ -18,6 +18,7 @@ namespace Meta
         static readonly string behaviorAutogenFolder = $@"{autogenFolder}/Behaviors";
         static readonly string componentAutogenFolder = $@"{autogenFolder}/Components";
         static readonly string handlersAutogenFolder = $@"{autogenFolder}/Handlers";
+        static readonly string mainAutogenFile = $@"{autogenFolder}/Main.cs";
 
         public MSBuildWorkspace msWorkspace;
         public Project coreProject;
@@ -91,9 +92,9 @@ namespace Meta
             await ctx.Reset(coreProject);
 
             // TODO: parallelize
+            var behaviorWrappers = new List<BehaviorSymbolWrapper>();
             {
                 var behaviors = await ctx.FindAllBehaviors();
-                var behaviorWrappers = new List<BehaviorSymbolWrapper>();
                 
                 foreach (var behavior in behaviors)
                 {
@@ -148,9 +149,10 @@ namespace Meta
                         Encoding.UTF8);
                 }
             }
+
+            var componentWrappers = new List<ComponentSymbolWrapper>();
             {
                 var components = await ctx.FindAllDirectComponents();
-                var componentWrappers = new List<ComponentSymbolWrapper>();
                 
                 foreach (var b in components)
                 {
@@ -203,8 +205,8 @@ namespace Meta
                 }
             }
 
+            var staticClassesWithExportedMethods = ctx.GetStaticClassesWithExportedMethods();
             {
-                var staticClassesWithExportedMethods = ctx.GetStaticClassesWithExportedMethods();
                 foreach (var staticClass in staticClassesWithExportedMethods)
                 {
                     var handlersPrinter = new ChainHandlersCode();
@@ -217,6 +219,41 @@ namespace Meta
                         handlersPrinter.TransformText(),
                         Encoding.UTF8);
                 }
+            }
+
+            {
+                string reference = behaviorWrappers[0].Namespace;
+                int commonPartEndIndex = reference.Length;
+
+                foreach (var p in componentWrappers)
+                {
+                    int index = p.Namespace.IndexOfFirstDifference(reference);
+                    if (index != -1 && index < commonPartEndIndex)
+                    {
+                        commonPartEndIndex = index;
+                    }
+                }
+
+                // They must live in at least the base namespace hopper
+                if (commonPartEndIndex >= "Hopper".Length)
+                {
+                    var mainPrinter = new AllInitCode()
+                    {
+                        components = componentWrappers,
+                        behaviors = behaviorWrappers,
+                        staticClasses = staticClassesWithExportedMethods,
+                        Namespace = reference.Substring(0, commonPartEndIndex)
+                    };
+
+                    Console.WriteLine("Generating code for the main init function");
+
+                    File.WriteAllText(mainAutogenFile, mainPrinter.TransformText(), Encoding.UTF8);
+                }
+                else
+                {
+                    Console.WriteLine($"The common namespace between components must at least contain 'Hopper' (got '{reference.Substring(0, commonPartEndIndex)})'");
+                }
+
             }
             // var components = await ctx.FindAllDirectComponents();
             // var tags = await ctx.FindAllTags();

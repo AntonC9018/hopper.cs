@@ -43,11 +43,11 @@ namespace Hopper.Core
                 return relativeStepIndexFail;
             }
 
-            var acting = e.Behaviors.GetComponent(Acting.Index);
+            var acting = e.GetComponent(Acting.Index);
 
             if (acting != null)
             {
-                if (acting.DidActionSucceed())
+                if (acting._flags.HasFlag(Acting.Flags.ActionSucceeded))
                 {
                     return relativeStepIndexSuccess;
                 }

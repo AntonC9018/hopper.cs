@@ -188,5 +188,25 @@ namespace Meta
             return method.Parameters.Select(m1 => m1.Type).SequenceEqual(
                 fields.Select(field => field.symbol.Type), SymbolEqualityComparer.Default);
         }
+
+        // TODO: THIS IS NOT A SYMBOL!!
+        public static int IndexOfFirstDifference(this string x, string y)
+        {
+            int count = x.Length;
+            if (count > y.Length)
+            {
+                return IndexOfFirstDifference(y, x);
+            }
+            if (ReferenceEquals(x, y))
+            {
+                return -1;
+            }
+            for (int index = 0; index != count; ++index)
+            {
+                if (x[index] != y[index])
+                    return index;
+            }
+            return count == y.Length ? -1 : count;
+        }
     }
 }

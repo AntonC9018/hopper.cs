@@ -17,9 +17,9 @@ namespace Hopper.Core
 
         public bool TryAddComponent<T>(Index<T> index, T component) where T : IComponent
         {
-            if (!components.ContainsKey(index.componentId))
+            if (!components.ContainsKey(index.Id))
             {
-                components[index.componentId] = component;
+                components[index.Id] = component;
                 return true;
             }
             return false;
@@ -27,17 +27,17 @@ namespace Hopper.Core
 
         public void AddComponent<T>(Index<T> index, T component) where T : IComponent
         {
-            components.Add(index.componentId, component);
+            components.Add(index.Id, component);
         }
 
         public T GetComponent<T>(Index<T> index) where T : IComponent
         {
-            return (T)components[index.componentId];
+            return (T)components[index.Id];
         }
 
         public T TryGetComponent<T>(Index<T> index) where T : IComponent
         {
-            if (components.TryGetValue(index.componentId, out var component))
+            if (components.TryGetValue(index.Id, out var component))
             {
                 return (T)component;
             }
@@ -46,14 +46,14 @@ namespace Hopper.Core
 
         public bool TryGetComponent<T>(Index<T> index, out T component) where T : IComponent
         {
-            bool result = components.TryGetValue(index.componentId, out IComponent comp);
+            bool result = components.TryGetValue(index.Id, out IComponent comp);
             component = (T)comp;
             return result;
         }
 
         public bool HasComponent<T>(Index<T> index) where T : IComponent
         {
-            return components.ContainsKey(index.componentId);
+            return components.ContainsKey(index.Id);
         }
 
         public override bool Equals(object obj)

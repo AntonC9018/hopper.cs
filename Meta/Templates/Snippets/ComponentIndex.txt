@@ -1,1 +1,6 @@
         public static Index<<#= component.ClassName #>> Index;
+
+        public static void InitIndex()
+        {
+            Index.Id = Registry.Global.NextComponentId();
+        }

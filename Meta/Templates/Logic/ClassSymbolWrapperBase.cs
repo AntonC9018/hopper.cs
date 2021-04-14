@@ -95,6 +95,7 @@ namespace Meta
         public abstract string TypeText { get; }
         public string ClassName => symbol.Name;
         public string Namespace => symbol.ContainingNamespace.FullName();
+        public string FullyQualifiedClassName => $"{Namespace}.{ClassName}";
         public string Calling => $"{ClassName} {TypeText}";
     }
 }

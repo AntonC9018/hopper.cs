@@ -3,8 +3,7 @@ using Hopper.Utils;
 
 namespace Hopper.Core
 {
-    [DataContract]
-    public class Sequence
+    public struct Sequence
     {
         private Step[] m_steps;
 
@@ -12,10 +11,12 @@ namespace Hopper.Core
         {
             Assert.AreNotEqual(0, steps.Length, "The step data must include at least one step");
             this.m_steps = steps;
+            this.currentStepIndex = 0;
+            this.currentRepeatCount = 0;
         }
 
-        [DataMember] private int currentStepIndex = 0;
-        [DataMember] private int currentRepeatCount = 0;
+        private int currentStepIndex;
+        private int currentRepeatCount;
 
         public ParticularAction CurrentAction
         {

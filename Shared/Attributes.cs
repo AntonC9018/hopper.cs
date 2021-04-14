@@ -140,11 +140,6 @@ namespace Hopper.Shared.Attributes
         public bool Dynamic = false;
     }
 
-    public enum PriorityRank
-    {
-        Low, Lowest, High, Highest, Medium, Default = Medium
-    }
-
     [AttributeUsage(AttributeTargets.Field)]
     public class OmitAttribute : Attribute
     {

@@ -1,0 +1,22 @@
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="Meta" #>
+<#@ include file="Templates/Snippets/autogen_notice.txt" #>
+
+namespace <#= Namespace #>
+{
+    public static class Main
+    {
+        public static void Init()
+        {
+<# foreach(var component in components) { #>
+            <#= component.FullyQualifiedClassName #>.InitIndex();
+            <#= component.FullyQualifiedClassName #>.InitHandlers();
+<# } foreach (var behavior in behaviors) { #>
+            <#= behavior.FullyQualifiedClassName #>.InitIndex();
+            <#= behavior.FullyQualifiedClassName #>.InitHandlers();
+<# } foreach (var staticClass in staticClasses) { #>
+            <#= staticClass.FullyQualifiedClassName #>.InitHandlers();
+<# } #>
+        }
+    }
+}
