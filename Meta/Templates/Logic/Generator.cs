@@ -197,6 +197,7 @@ namespace Meta
                 }
             }
 
+            var entityTypes = ctx.GetEntityTypes();
             {
                 string reference = behaviorWrappers[0].Namespace;
                 int commonPartEndIndex = reference.Length;
@@ -218,6 +219,7 @@ namespace Meta
                         components = componentWrappers,
                         behaviors = behaviorWrappers,
                         staticClasses = staticClassesWithExportedMethods,
+                        entityTypes = entityTypes,
                         Namespace = reference.Substring(0, commonPartEndIndex)
                     };
 

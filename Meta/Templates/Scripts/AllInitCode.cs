@@ -9,5 +9,6 @@ namespace Hopper.Meta.Template
         public IEnumerable<ComponentSymbolWrapper> components;
         public IEnumerable<BehaviorSymbolWrapper> behaviors;
         public IEnumerable<StaticClassSymbolWrapper> staticClasses;
+        public IEnumerable<EntityTypeWrapper> entityTypes;
     }
 }

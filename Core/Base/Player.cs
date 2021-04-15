@@ -42,7 +42,7 @@ namespace Hopper.Core
             // central (optionally), these can actually reference a global storage for them.
             
             // So this just adds the behavior
-            Acting  .AddTo(subject, null, null);
+            Acting  .AddTo(subject, null, null, Order.Player);
             Moving  .AddTo(subject);
             Digging .AddTo(subject);
             Pushable.AddTo(subject);
@@ -53,7 +53,7 @@ namespace Hopper.Core
             Displaceable.AddTo(subject, ExtendedLayer.BLOCK);
             Ticking.AddTo(subject);
 
-            FactionComponent.AddTo(subject, Faction.Player);
+            Faction.AddTo(subject, Faction.Flags.Player);
             Transform.AddTo(subject, Layer.REAL);
             Inventory.AddTo(subject);
 

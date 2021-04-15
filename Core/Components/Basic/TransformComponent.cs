@@ -59,6 +59,11 @@ namespace Hopper.Core
         {
 
         }
+
+        public bool HasBlockRelative(IntVector2 direction)
+        {
+
+        }
         
         public IntVector2 GetPosRelative(IntVector2 offset)
         {

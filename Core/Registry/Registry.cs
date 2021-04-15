@@ -16,11 +16,13 @@ namespace Hopper.Core
         public IdentifierAssigner _component;
         public PriorityAssigner _priority;
         public RuntimeRegistry<Entity> _entities;
+        public StaticRegistry<EntityFactory> _entityFactory;
 
         public void Init()
         {
             _priority.Init();
             _entities.Init();
+            _entityFactory.Init();
         }
 
         public int NextMod()
@@ -41,6 +43,16 @@ namespace Hopper.Core
         public void UnregisterRuntimeEntity(Entity entity)
         {
             _entities.Remove(entity.id);
+        }
+
+        public Identifier RegisterEntityFactory(EntityFactory factory)
+        {
+            return _entityFactory.Add(_currentMod, factory);
+        }
+
+        public void UnregisterEntityFactory(EntityFactory factory)
+        {
+            _entityFactory.Remove(factory.id);
         }
 
         public int NextPriority(PriorityRank rank)

@@ -3,7 +3,7 @@ using Hopper.Core.Components;
 
 namespace Hopper.Core
 {
-    public class EntityFactory
+    public sealed class EntityFactory
     {
         public Identifier id;
         public Entity subject;

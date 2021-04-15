@@ -88,5 +88,21 @@ namespace Meta
                 }
             }
         }
+
+        public IEnumerable<EntityTypeWrapper> GetEntityTypes()
+        {
+            var typeSymbols = GetNotNestedTypes();
+
+            foreach (var typeSymbol in typeSymbols)
+            {
+                if (typeSymbol.IsStatic && typeSymbol.GetAttributes().Any(
+                    a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.entityTypeAttribute)))
+                {
+                    var wrapper = new EntityTypeWrapper(typeSymbol);
+                    wrapper.InitWithErrorHandling(this);
+                    yield return wrapper;
+                }
+            }
+        }
     }
 }

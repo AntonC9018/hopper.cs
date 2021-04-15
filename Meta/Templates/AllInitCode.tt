@@ -1,6 +1,7 @@
 <#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="Meta" #>
 <#@ include file="Templates/Snippets/autogen_notice.txt" #>
+using Hopper.Core;
 
 namespace <#= Namespace #>
 {
@@ -17,6 +18,15 @@ namespace <#= Namespace #>
             <#= behavior.FullyQualifiedClassName #>.InitHandlers();
 <# } foreach (var staticClass in staticClasses) { #>
             <#= staticClass.FullyQualifiedClassName #>.InitHandlers();
+<# } foreach (var entityType in entityTypes) { /* TODO: Link the metadata (the name or whatever) */#>
+            {
+                var factory = new EntityFactory();
+                <#= entityType.FullyQualifiedClassName #>.AddComponents(factory);
+                <#= entityType.FullyQualifiedClassName #>.InitComponents(factory);
+                <#= entityType.FullyQualifiedClassName #>.Retouch(factory);
+                factory.id = Registry.Global.RegisterEntityFactory(factory);
+                <#= entityType.FullyQualifiedClassName #>.Factory = factory;
+            }
 <# } #>
         }
     }

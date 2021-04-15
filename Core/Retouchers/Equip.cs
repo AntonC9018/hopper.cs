@@ -11,11 +11,11 @@ namespace Hopper.Core.Retouchers
         {
             foreach (var droppedItem in transform.GetCell().m_transforms)
             {
-                var item = droppedItem.GetItemComponent();
-                if (inventory.CanEquipItem(item))
+                if (droppedItem.entity.TryGetItemComponent(out var item) 
+                    && inventory.CanEquipItem(item))
                 {
                     // eventually, kill through an abstraction
-                    droppedItem.Die();
+                    droppedItem.entity.Die();
                     inventory.Equip(item);
                 }
             }
