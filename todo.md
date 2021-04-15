@@ -234,3 +234,10 @@ Let's indentify the things that I'm sure are going to be needing id's:
 2. Entity Factories need id's (in order to identify entity types in other code, mapping not required??).
 3. Component indices (mapping not required).
 
+
+### World
+
+World back to global again! At least this is what I think I'm going to go for. For now, it makes things easier. Later, if we wanted to add subworlds, we'll figure something out. 
+
+
+### Entity type — registry interaction

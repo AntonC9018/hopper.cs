@@ -5,15 +5,15 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
-    public delegate void BringIntoGrid();
-
     public class World
     {
+        public static World Global;
+
         public GridManager grid;
         public WorldStateManager state;
 
-        public static readonly int NumPhases = System.Enum.GetNames(typeof(Order)).Length;
-        public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
+        public static readonly int NumPhases = System.Enum.GetValues(typeof(Order)).Length;
+        public static readonly int NumLayers = System.Enum.GetValues(typeof(Layer)).Length;
 
         // For now, do this for the sake of tests and debugging
         // The world currently does not really need an id

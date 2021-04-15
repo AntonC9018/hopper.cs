@@ -57,7 +57,7 @@ namespace Hopper.Core
             var dir = direction;
             foreach (var t in m_transforms)
             {
-                if (t.IsDirected() && t.layer.HasFlag(layer))
+                if (t.entity.IsDirected() && t.layer.HasFlag(layer))
                 {
                     // block diagonal movement if corner barriers are present
                     if (t.orientation.x == dir.x)
