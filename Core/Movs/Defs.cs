@@ -3,5 +3,5 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
-    public delegate List<IntVector2> MovsFunc(Entity entity);
+    public delegate IEnumerable<IntVector2> MovsFunc(Transform transform);
 }

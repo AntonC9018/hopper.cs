@@ -132,7 +132,7 @@ namespace Hopper.Shared.Attributes
         public PriorityRank Priority = PriorityRank.Default;
 
         /// <summary>
-        /// If this is set to true, a wrapper with apply and remove methods will be generated for this chain.
+        /// If this is set to true, a wrapper with apply and remove methods will be generated for this handler.
         /// Note that if you plan to use handlers in a group (aka former retoucher/tinker),
         /// set this to false and create the HandlerGroup yourself.
         /// The value of this field does not affect whether or not the method will be exposed to json.

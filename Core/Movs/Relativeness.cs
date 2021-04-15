@@ -6,14 +6,14 @@ namespace Hopper.Core
         {
             public bool gx, gy, lx, ly;
         }
-        public static Relativeness CalculateRelativeness(Entity actor, Entity player)
+        public static Relativeness CalculateRelativeness(Transform actor, Transform player)
         {
             return new Relativeness
             {
-                gx = player.Pos.x > actor.Pos.x,
-                gy = player.Pos.y > actor.Pos.y,
-                lx = actor.Pos.x > player.Pos.x,
-                ly = actor.Pos.y > player.Pos.y
+                gx = player.position.x > actor.position.x,
+                gy = player.position.y > actor.position.y,
+                lx = actor.position.x > player.position.x,
+                ly = actor.position.y > player.position.y
             };
         }
     }

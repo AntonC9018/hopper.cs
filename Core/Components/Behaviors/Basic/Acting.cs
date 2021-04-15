@@ -20,11 +20,19 @@ namespace Hopper.Core.Components.Basic
         [Inject] public System.Func<Entity, ParticularAction> _CalculateAction;
         [Inject] public System.Action<Context> _DoAction;
         public ParticularAction nextAction;
+        public Entity actor;
 
         public class Context : ActorContext
         {
             [Omit] public ParticularAction action;
             [Omit] public bool success = false;
+        }
+
+        [Alias("InitActivation")]
+        public Acting Init(Entity actor)
+        {
+            this.actor = actor;
+            return this;
         }
 
         public bool Activate(Entity entity)
@@ -92,12 +100,12 @@ namespace Hopper.Core.Components.Basic
             // that depend on something else than the movs function.
             if (nextAction != null)
             {
-                if (m_entity.Behaviors.Has<Sequential>())
+                if (actor.TryGetSequential(out var sequential))
                 {
-                    var currentStep = m_entity.Behaviors.Get<Sequential>().Sequence.CurrentStep;
+                    var currentStep = sequential.sequence.CurrentStep;
                     if (currentStep.movs != null)
                     {
-                        foreach (var dir in currentStep.movs(m_entity))
+                        foreach (var dir in currentStep.movs(actor))
                         {
                             yield return dir;
                         }

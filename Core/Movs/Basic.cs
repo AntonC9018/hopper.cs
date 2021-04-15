@@ -5,103 +5,79 @@ namespace Hopper.Core
 {
     public static partial class Movs
     {
-        public static List<IntVector2> Basic(Entity e)
+        public static IEnumerable<IntVector2> Basic(Transform transform)
         {
-            Entity player = e.GetClosestPlayer();
-            var list = new List<IntVector2>();
-            if (player == null)
+            if (transform.TryGetClosestPlayerTransform(out var playerTransform))
             {
-                return list;
-            }
+                var orientation = transform.orientation;
+                var diff = playerTransform.position - transform.position;
+                var diff_ones = diff.Sign();
+                var diff_x = new IntVector2(diff_ones.x, 0);
+                var diff_y = new IntVector2(0, diff_ones.y);
 
-            var orientation = e.Orientation;
-            var diff = player.Pos - e.Pos;
-            var diff_ones = diff.Sign();
-            var diff_x = new IntVector2(diff_ones.x, 0);
-            var diff_y = new IntVector2(0, diff_ones.y);
-
-            if (diff_ones.x * orientation.x > 0)
-            {
-                list.Add(diff_x);
-                if (diff_ones.y != 0) { list.Add(diff_y); }
+                if (diff_ones.x * orientation.x > 0)
+                {
+                    yield return diff_x;
+                    if (diff_ones.y != 0) { yield return diff_y; }
+                }
+                else if (diff_ones.y * orientation.y > 0)
+                {
+                    yield return diff_y;
+                    if (diff_ones.x != 0) { yield return diff_x; }
+                }
+                else
+                {
+                    if (diff_ones.x != 0) { yield return diff_x; }
+                    if (diff_ones.y != 0) { yield return diff_y; }
+                }
             }
-            else if (diff_ones.y * orientation.y > 0)
-            {
-                list.Add(diff_y);
-                if (diff_ones.x != 0) { list.Add(diff_x); }
-            }
-            else
-            {
-                if (diff_ones.x != 0) { list.Add(diff_x); }
-                if (diff_ones.y != 0) { list.Add(diff_y); }
-            }
-
-            return list;
         }
 
-        public static List<IntVector2> Adjacent(Entity e)
+        public static IEnumerable<IntVector2> Adjacent(Transform transform)
         {
-            Entity player = e.GetClosestPlayer();
-            var list = new List<IntVector2>();
-            if (player == null)
+            if (transform.TryGetClosestPlayerTransform(out var playerTransform))
             {
-                return list;
-            }
-            void Add(int x, int y) => list.Add(new IntVector2(x, y));
-            var rel = CalculateRelativeness(e, player);
+                var difference = playerTransform.position - transform.position;
+                var direction  = difference.Sign();
 
-            if (rel.gx)
-            {
-                if (rel.gy) { Add(1, 1); Add(0, 1); }
-                if (rel.ly) { Add(1, -1); Add(0, -1); }
-                Add(1, 0);
+                if (direction.x != 0 && direction.y != 0)
+                    yield return direction;
+                if (direction.x != 0)
+                    yield return new IntVector2(direction.x, 0);
+                if (direction.y != 0)
+                    yield return new IntVector2(0, direction.y);
             }
-            else if (rel.lx)
-            {
-                if (rel.gy) { Add(-1, 1); Add(0, 1); }
-                if (rel.ly) { Add(-1, -1); Add(0, -1); }
-                Add(-1, 0);
-            }
-            else
-            {
-                Add(0, rel.gy ? 1 : -1);
-            }
-
-            return list;
         }
 
-        public static List<IntVector2> Straight(Entity e)
+        public static IEnumerable<IntVector2> Straight(Transform transform)
         {
-            return new List<IntVector2> { e.Orientation };
+            yield return transform.orientation == IntVector2.Zero 
+                ? IntVector2.Right
+                : transform.orientation;
         }
 
-        public static List<IntVector2> Diagonal(Entity e)
+        public static IEnumerable<IntVector2> Diagonal(Transform transform)
         {
-            Entity player = e.GetClosestPlayer();
-            var list = new List<IntVector2>();
-            if (player == null)
+            if (transform.TryGetClosestPlayerTransform(out var playerTransform))
             {
-                return list;
-            }
-            void Add(int x, int y) => list.Add(new IntVector2(x, y));
-            var diff = (player.Pos - e.Pos).Sign();
-            var orientation = e.Orientation == IntVector2.Zero ? diff : e.Orientation;
+                var diff = (playerTransform.position - transform.position).Sign();
+                var orientation = transform.orientation == IntVector2.Zero ? diff : transform.orientation;
 
-            if (diff.x == 0)
-            {
-                Add(orientation.x, diff.y);
-                Add(-orientation.x, diff.y);
+                if (diff.x == 0)
+                {
+                    yield return new IntVector2(orientation.x, diff.y);
+                    yield return new IntVector2(-orientation.x, diff.y);
+                }
+                else if (diff.y == 0)
+                {
+                    yield return new IntVector2(diff.x, orientation.y);
+                    yield return new IntVector2(diff.x, -orientation.y);
+                }
+                else
+                {
+                    yield return diff;
+                }
             }
-            else if (diff.y == 0)
-            {
-                Add(diff.x, orientation.y);
-                Add(diff.x, -orientation.y);
-            }
-            else
-            {
-                list.Add(diff);
-            }
-            return list;
         }
     }
 
