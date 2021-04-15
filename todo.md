@@ -307,3 +307,27 @@ So let's understand the terminology a bit better:
 1. The static class that has the three methods that describe the entity type is called the **entity type**.
 2. The baked object that creates entity instances of that type and that is stored in the registry is the **entity factory**.
 3. The intermediate representation is called the **entity type wrapper**.
+
+### Stats
+
+Speaking of stats, there are at least two important perpendicular decisions for them:
+1. The way they are actually stored in memory (I'm currently using nested dictionaries, which I do not like);
+2. How they are accessed in code and how easy it is to create new ones.
+
+Now the second point was partially good in the previous code. I was pretty happy with the interface that they provided for accessing stats. Pretty, but not totally. E.g., to get the Attack stat lazily, one would do:
+```C#
+player.Stats.GetRawLazy(Push.Source.Resistance.Path)
+```
+
+With the power of alias methods, this can be shortened to:
+```C#
+player.GetStat(Push.Source.Resistance.Path)
+```
+
+The thing is that:
+1. It takes a ridiculous amount of boilerplate to write out these stats;
+2. Stats use reflection internally to eliminate some of the boilerplate.
+
+Actually, it is not that ridiculous of an amount. 
+Really, the only way to lower it is to generate all the code from json files.
+I think I'd like to tackle stats next.
