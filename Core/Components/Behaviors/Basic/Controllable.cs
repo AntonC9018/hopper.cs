@@ -82,14 +82,14 @@ namespace Hopper.Core.Components.Basic
             return ev.ToParticular();
         }
 
-        public static Dictionary<InputMapping, Path<Chain<Context>>> Paths;
+        public static Dictionary<InputMapping, ChainPath<Chain<Context>>> Paths;
         static Controllable()
         {
             // set up all chain paths for the input mappings
             // set up all templates
             foreach (InputMapping name in InputMapping.Members)
             {
-                Paths[name] = new Path<Chain<Context>>
+                Paths[name] = new ChainPath<Chain<Context>>
                 {
                     Chain = (Entity entity) => entity.GetComponent(Index)._chains[name] 
                 };

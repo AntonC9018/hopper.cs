@@ -6,7 +6,7 @@ namespace Hopper.Core
     public struct HandlerWrapper<Context> where Context : ContextBase
     {
         public Handler<Context> handler;
-        public Path<Chain<Context>> chainPath;
+        public ChainPath<Chain<Context>> chainPath;
 
         public void AddTo(Entity entity)
         {
@@ -30,9 +30,9 @@ namespace Hopper.Core
     public struct HandlerGroup<Context> where Context : ContextBase
     {
         public Handler<Context>[] handlers;
-        public Path<Chain<Context>> chainPath;
+        public ChainPath<Chain<Context>> chainPath;
 
-        public HandlerGroup(Path<Chain<Context>> chainPath, params Handler<Context>[] handlers)
+        public HandlerGroup(ChainPath<Chain<Context>> chainPath, params Handler<Context>[] handlers)
         {
             this.chainPath = chainPath;
             this.handlers = handlers;
