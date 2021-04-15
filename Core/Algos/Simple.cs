@@ -4,9 +4,9 @@ namespace Hopper.Core
 {
     static partial class Algos
     {
-        public static void SimpleAlgo(Acting.Event ev)
+        public static void SimpleAlgo(Acting.Context ctx)
         {
-            ev.success = ev.action.Do(ev.actor);
+            ctx.success = ctx.action.Do(ctx.actor);
         }
 
     }

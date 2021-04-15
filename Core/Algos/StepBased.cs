@@ -4,9 +4,9 @@ namespace Hopper.Core
 {
     static partial class Algos
     {
-        public static void StepBased(Acting.Event ev)
+        public static void StepBased(Acting.Context ctx)
         {
-            ev.actor.Behaviors.Get<Sequential>().ApplyCurrentAlgo(ev);
+            ctx.actor.GetSequential().ApplyCurrentAlgo(ctx);
         }
     }
 }

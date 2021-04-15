@@ -8,15 +8,13 @@ namespace Hopper.Core
     {
         static bool AskMove(Entity actor, IntVector2 direction)
         {
-            var e = actor.GetCell().GetAllFromLayer(direction, Layer.REAL);
+            var transform = actor.GetTransform();
+            var targetTransforms = World.Global.grid.GetAllFromLayer(transform.position, direction, Layer.REAL);
             bool success = false;
-            foreach (var entity in e)
+            foreach (var targetTransform in targetTransforms)
             {
-                var acting = entity.Behaviors.TryGet<Acting>();
-
-                if (acting != null
-                    && acting.HasDoneAction() == false
-                    && acting.IsDoingAction() => == false)
+                if (targetTransform.entity.TryGetActing(out var acting)
+                    && !acting._flags.HasFlag(Acting.Flags.DidAction|Acting.Flags.DoingAction))
                 {
                     acting.Activate();
                     success = true;
@@ -42,36 +40,36 @@ namespace Hopper.Core
             return success;
         }
 
-        public static void EnemyAlgo(Acting.Event ev)
+        public static void EnemyAlgo(Acting.Context ctx)
         {
-            if (ev.action is ParticularUndirectedAction)
+            if (ctx.action is ParticularUndirectedAction)
             {
-                ev.action.Do(ev.actor);
+                ctx.action.Do(ctx.actor);
                 return;
             }
 
-            var action = (ParticularDirectedAction)ev.action;
+            var action = (ParticularDirectedAction)ctx.action;
 
-            var dirs = ev.actor.Behaviors.Get<Sequential>().GetMovs();
+            var dirs = ctx.actor.GetSequential().GetMovs(ctx.actor);
 
             // if movs if null, consider the action succeeding all the time
             if (dirs == null)
             {
-                ev.success = true;
+                ctx.success = true;
                 return;
             }
 
             foreach (var dir in dirs)
             {
                 action.direction = dir;
-                if (Iterate(ev.actor, action))
+                if (Iterate(ctx.actor, action))
                 {
-                    ev.success = true;
+                    ctx.success = true;
                     return;
                 }
             }
 
-            ev.success = false;
+            ctx.success = false;
         }
 
     }

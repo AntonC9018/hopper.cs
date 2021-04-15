@@ -18,7 +18,7 @@ namespace Hopper.Core.Predictions
         public IEnumerable<IntVector2> GetBadPositions()
         {
             var set = new HashSet<IntVector2>();
-            foreach (var entities in world.State.Entities)
+            foreach (var entities in world.state.Entities)
             {
                 foreach (var entity in entities)
                 {

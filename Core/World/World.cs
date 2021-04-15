@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Utils.Vector;
 
@@ -9,28 +10,27 @@ namespace Hopper.Core
     public class World
     {
         public GridManager grid;
-        public WorldStateManager State;
+        public WorldStateManager state;
 
-        public static readonly int NumPhases = System.Enum.GetNames(typeof(Phase)).Length;
+        public static readonly int NumPhases = System.Enum.GetNames(typeof(Order)).Length;
         public static readonly int NumLayers = System.Enum.GetNames(typeof(Layer)).Length;
 
         // For now, do this for the sake of tests and debugging
         // The world currently does not really need an id
         public World(int width, int height)
         {
-            PhaseLayerExtensions.ThrowIfPhasesAreWrong();
             grid = new GridManager(width, height);
-            State = new WorldStateManager();
+            state = new WorldStateManager();
         }
 
         public void Loop()
         {
-            State.Loop();
+            state.Loop();
         }
 
         public int GetNextTimeFrame()
         {
-            return State.NextTimeFrame();
+            return state.NextTimeFrame();
         }
 
         public event System.Action<Entity> SpawnEntityEvent;
@@ -57,74 +57,30 @@ namespace Hopper.Core
         {
             var entity = factory.Instantiate();
             entity.id = Registry.Global.RegisterRuntimeEntity(entity);
-            var transform = entity.InitTransform(pos, orientation);
-            grid.GetCellAt(pos).m_transforms.Add(transform);
+            grid.AddTransform(entity.InitTransform(pos, orientation));
+            state.AddActor(entity.InitActing());
+
             return entity;
         }
 
         public Entity SpawnHangingEntity(EntityFactory factory, IntVector2 pos, IntVector2 orientation)
         {
-            var entity = factory.Instantiate();
-            entity.id = Registry.Global.RegisterRuntimeEntity(entity);
-            entity.InitTransform(pos, orientation);
-            State.AddEntity(entity);
+            var entity = SpawnEntityNoEvent(factory, pos, orientation);
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }
 
-        public T SpawnEntity<T>(
-            IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
+        public Entity SpawnEntity(EntityFactory factory, IntVector2 pos, IntVector2 orientation)
         {
-            System.Console.WriteLine($"Creating entity of factory id : {EntityFactory.Id}");
-            var entity = SpawnEntityNoEvent(EntityFactory, pos, orientation);
-            State.AddEntity(entity);
+            System.Console.WriteLine($"Creating entity of factory id : {factory.id}");
+            var entity = SpawnEntityNoEvent(factory, pos, orientation);
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }
 
-        public T SpawnEntity<T>(
-            IFactory<T> EntityFactory, IntVector2 pos) where T : Entity
+        public Entity SpawnEntity(EntityFactory factory, IntVector2 pos)
         {
-            return SpawnEntity(EntityFactory, pos, IntVector2.Zero);
-        }
-
-
-        public T SpawnPlayer<T>(
-            IFactory<T> EntityFactory, IntVector2 pos, IntVector2 orientation) where T : Entity
-        {
-            var entity = SpawnEntityNoEvent(EntityFactory, pos, orientation);
-            State.AddPlayer(entity);
-            SpawnEntityEvent?.Invoke(entity);
-            return entity;
-        }
-
-        public T SpawnPlayer<T>(
-            IFactory<T> EntityFactory, IntVector2 pos) where T : Entity
-        {
-            return SpawnPlayer(EntityFactory, pos, IntVector2.Zero);
-        }
-
-
-        public DroppedItem SpawnDroppedItem(
-            IItem item, IntVector2 pos, IntVector2 orientation)
-        {
-            var entity = SpawnEntityNoEvent(DroppedItem.Factory, pos, orientation);
-            entity.Item = item;
-            SpawnEntityEvent?.Invoke(entity);
-            return entity;
-        }
-
-        public DroppedItem SpawnDroppedItem(IItem item, IntVector2 pos)
-        {
-            return SpawnDroppedItem(item, pos, IntVector2.Zero);
-        }
-
-        public void InitializeWorldEvents()
-        {
-            foreach (var worldEvent in m_currentRepository.GetPatchSubRegistry<IWorldEvent>().patches.Values)
-            {
-                m_events.Add(worldEvent.Id, worldEvent.GetCopy());
-            };
+            return SpawnEntity(factory, pos, IntVector2.Zero);
         }
     }
 }

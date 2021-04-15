@@ -30,7 +30,7 @@ namespace Hopper.Controller
         public void WatchWorld(World world, params IWatcher[] customWatchers)
         {
             world.SpawnEntityEvent += AddScentForLogent;
-            world.State.EndOfLoopEvent += Update;
+            world.state.EndOfLoopEvent += Update;
             foreach (var customWatcher in customWatchers)
             {
                 // TODO: These events should prefferably be directly associated with the world

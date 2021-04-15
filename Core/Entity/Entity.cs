@@ -1,4 +1,3 @@
-using Hopper.Core.Registries;
 using Hopper.Core.Components;
 using System.Collections.Generic;
 
@@ -34,6 +33,11 @@ namespace Hopper.Core
             return (T)components[index.Id];
         }
 
+        public IComponent GetSomeComponent(Identifier componentId)
+        {
+            return components[componentId];
+        }
+
         public T TryGetComponent<T>(Index<T> index) where T : IComponent
         {
             if (components.TryGetValue(index.Id, out var component))
@@ -55,11 +59,16 @@ namespace Hopper.Core
             return components.ContainsKey(index.Id);
         }
 
+        public bool HasSomeComponent(Identifier id)
+        {
+            return components.ContainsKey(id);
+        }
+
         public override bool Equals(object obj)
         {
             return id == (obj as Entity)?.id;
         }
 
-        public override int GetHashCode() => id;
+        public override int GetHashCode() => id.GetHashCode();
     }
 }

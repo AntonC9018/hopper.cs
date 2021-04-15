@@ -5,6 +5,12 @@ using Hopper.Shared.Attributes;
 
 namespace Hopper.Core
 {
+    public struct TransformSnapshot 
+    {
+        public IntVector2 position;
+        public IntVector2 orientation;
+    }
+
     public partial class Transform : IComponent
     {
         public Entity entity;
@@ -20,6 +26,11 @@ namespace Hopper.Core
             this.position = position;
             this.orientation = orientation;
             return this;
+        }
+
+        public TransformSnapshot GetSnapshot()
+        {
+            return new TransformSnapshot { position = position, orientation = orientation };
         }
 
         public void ResetPosInGrid(Entity entity, IntVector2 newPos)

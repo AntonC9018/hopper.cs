@@ -1,7 +1,6 @@
 using Hopper.Utils.Chains;
 using Hopper.Utils.FS;
 using System.Collections.Generic;
-using Hopper.Core.Registries;
 using Hopper.Core.Components;
 
 namespace Hopper.Core.Stats
@@ -55,7 +54,6 @@ namespace Hopper.Core.Stats
         private Dictionary<Modifier, Handle> m_chainModifierHandles
             = new Dictionary<Modifier, Handle>();
         private StatFS m_fs = new StatFS();
-        public PatchArea m_patchArea;
 
         public Stats(PatchArea patchArea = null)
         {

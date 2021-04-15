@@ -16,5 +16,15 @@ namespace Hopper.Core
         }
 
         public override int GetHashCode() => number;
+
+        public static bool operator ==(RuntimeIdentifier id1, RuntimeIdentifier id2)
+        {
+            return id1.number == id2.number;
+        }
+
+        public static bool operator !=(RuntimeIdentifier id1, RuntimeIdentifier id2)
+        {
+            return id1.number != id2.number;
+        }
     }
 }

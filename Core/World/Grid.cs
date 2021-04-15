@@ -35,8 +35,28 @@ namespace Hopper.Core
 
         public Cell GetCellAt(IntVector2 pos)
         {
-            if (IsOutOfBounds(pos)) return new Cell();
             return m_grid[pos.y, pos.x];
+        }
+
+        public bool TryGetCell(IntVector2 pos, out Cell cell)
+        {
+            if (IsOutOfBounds(pos)) 
+            {
+                cell = new Cell();
+                return false;
+            }
+            cell = GetCellAt(pos);
+            return true;
+        }
+
+        public bool AddTransform(Transform transform)
+        {
+            if (!IsOutOfBounds(transform.position))
+            {
+                GetCellAt(transform.position).m_transforms.Add(transform);
+                return true;
+            }
+            return false;
         }
 
         /*

@@ -1,5 +1,6 @@
 <#@ include file="Templates/Snippets/ComponentEntityExtension.txt" #>
 
+<# if (behavior.ShouldGenerateActivationShortcuts) { #>
 <# 
     if (behavior.HasCheck())
     {
@@ -103,3 +104,4 @@
             }
             return false;
         }
+<# } #>

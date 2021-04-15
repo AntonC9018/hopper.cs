@@ -45,8 +45,7 @@ namespace Hopper.Core.Components.Basic
 
         public void DefaultPreset()
         {
-            _CheckChain.Add(SetDigHandler);
-            _CheckChain.Add(SetTargetsHandler);
+            _CheckChain.Add(SetDigHandler, SetTargetsHandler);
             _DoChain.Add(AttackHandler);
         }
     }

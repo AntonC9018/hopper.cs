@@ -16,6 +16,7 @@ namespace Meta
         public INamedTypeSymbol aliasAttribute;
         public INamedTypeSymbol activationAliasAttribute;
         public INamedTypeSymbol autoActivationAttribute;
+        public INamedTypeSymbol noActivationAttribute;
         public INamedTypeSymbol chainsAttribute;
         public INamedTypeSymbol injectAttribute;
         public INamedTypeSymbol flagsAttribute;
@@ -59,6 +60,7 @@ namespace Meta
             omitAttribute   = GetKnownSymbol(compilation, typeof(OmitAttribute));
             activationAliasAttribute = GetKnownSymbol(compilation, typeof(ActivationAliasAttribute));
             autoActivationAttribute = GetKnownSymbol(compilation, typeof(AutoActivationAttribute));
+            noActivationAttribute = GetKnownSymbol(compilation, typeof(NoActivationAttribute));
             boolType = compilation.GetSpecialType(SpecialType.System_Boolean);
             voidType = compilation.GetSpecialType(SpecialType.System_Void);
         }

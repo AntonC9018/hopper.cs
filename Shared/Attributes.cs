@@ -23,6 +23,11 @@ namespace Hopper.Shared.Attributes
         }
     }
 
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class NoActivationAttribute : Attribute
+    {
+    }
+
     /// <summary>
     /// Autogenerates 2 shortcut methods as extensions for the entity class. 
     /// The first method tries to retrieve the specified component and call the specified method.

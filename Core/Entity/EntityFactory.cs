@@ -5,6 +5,7 @@ namespace Hopper.Core
 {
     public class EntityFactory
     {
+        public Identifier id;
         public Entity subject;
 
         public EntityFactory()

@@ -5,7 +5,7 @@ using Hopper.Shared.Attributes;
 namespace Hopper.Core.Components.Basic
 {
     [Chains("Do", "Check", "Success", "Fail")]
-    [ActivationAlias("Act")]
+    [NoActivation]
     public partial class Acting : IBehavior
     {
         [Flags] public enum Flags 
@@ -19,6 +19,7 @@ namespace Hopper.Core.Components.Basic
 
         [Inject] public System.Func<Entity, ParticularAction> _CalculateAction;
         [Inject] public System.Action<Context> _DoAction;
+        [Inject] public Order order;
         public ParticularAction nextAction;
         public Entity actor;
 
@@ -28,18 +29,18 @@ namespace Hopper.Core.Components.Basic
             [Omit] public bool success = false;
         }
 
-        [Alias("InitActivation")]
+        [Alias("InitActing")]
         public Acting Init(Entity actor)
         {
             this.actor = actor;
             return this;
         }
 
-        public bool Activate(Entity entity)
+        public bool Activate()
         {
             var ctx = new Context
             {
-                actor = entity,
+                actor = actor,
                 action = nextAction
             };
 
@@ -81,11 +82,11 @@ namespace Hopper.Core.Components.Basic
             nextAction = null;
         }
 
-        public void CalculateNextAction(Entity entity)
+        public void CalculateNextAction()
         {
             if (nextAction == null && _CalculateAction != null)
             {
-                nextAction = _CalculateAction(entity);
+                nextAction = _CalculateAction(actor);
             }
         }
 
@@ -105,7 +106,7 @@ namespace Hopper.Core.Components.Basic
                     var currentStep = sequential.sequence.CurrentStep;
                     if (currentStep.movs != null)
                     {
-                        foreach (var dir in currentStep.movs(actor))
+                        foreach (var dir in currentStep.movs(actor.GetTransform()))
                         {
                             yield return dir;
                         }

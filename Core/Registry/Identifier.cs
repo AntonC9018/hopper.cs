@@ -19,5 +19,17 @@ namespace Hopper.Core
         }
 
         public override int GetHashCode() => (mod_number << 16) | number;
+
+        public override string ToString() => $"{mod_number}:{number}";
+
+        public static bool operator ==(Identifier id1, Identifier id2)
+        {
+            return id1.mod_number == id2.mod_number && id1.number == id2.number;
+        }
+
+        public static bool operator !=(Identifier id1, Identifier id2)
+        {
+            return !(id1.number == id2.number);
+        }
     }
 }

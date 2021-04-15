@@ -228,19 +228,19 @@ namespace Hopper.Core
             }
         }
 
-        private static bool ActivateBehavior<T>(Entity entity, IntVector2 direction)
+        private static bool ActivateBehavior<T>(Index<T> index, Entity entity, IntVector2 direction)
             where T : IBehavior, IStandartActivateable
         {
-            Assert.That(entity.Behaviors.Has<T>(), "Cannot execute action if the target behavior is missing");
-            return entity.Behaviors.Get<T>().Activate(direction);
+            Assert.That(entity.HasComponent(index), "Cannot execute action if the target behavior is missing");
+            return entity.GetComponent(index).Activate(entity, direction);
         }
 
-        private static IEnumerable<IntVector2> PredictViaBehavior<T>(Entity entity, IntVector2 direction)
+        private static IEnumerable<IntVector2> PredictViaBehavior<T>(Index<T> index, Entity entity, IntVector2 direction)
             where T : IBehavior, IStandartActivateable
         {
-            Assert.That(entity.Behaviors.Has<T>(), "Cannot predict if the target behavior is missing");
-            Assert.That(entity.Behaviors.Get<T>() is IBehaviorPredictable, "Cannot predict if the target behavior is not predictable");
-            return ((IBehaviorPredictable)entity.Behaviors.Get<T>()).Predict(direction);
+            Assert.That(entity.HasComponent(index), "Cannot predict if the target behavior is missing");
+            Assert.That(entity.GetComponent(index) is IBehaviorPredictable, "Cannot predict if the target behavior is not predictable");
+            return ((IBehaviorPredictable)entity.GetComponent(index)).Predict(direction);
         }
     }
 }
