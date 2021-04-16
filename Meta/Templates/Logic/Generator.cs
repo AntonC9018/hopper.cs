@@ -8,7 +8,7 @@ using Hopper.Meta.Template;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace Meta
+namespace Hopper.Meta
 {
     public class Generator
     {

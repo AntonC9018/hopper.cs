@@ -1,7 +1,7 @@
 using Hopper.Shared.Attributes;
 using Microsoft.CodeAnalysis;
 
-namespace Meta
+namespace Hopper.Meta
 {
     // Singleton
     public class RelevantSymbols

@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace Meta
+namespace Hopper.Meta
 {
     public sealed class ExportedMethodSymbolWrapper
     {

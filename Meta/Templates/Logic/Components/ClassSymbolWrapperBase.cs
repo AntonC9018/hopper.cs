@@ -5,8 +5,9 @@ using Hopper.Shared.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Meta
+namespace Hopper.Meta
 {
+
     abstract public class ClassSymbolWrapperBase
     {
         public INamedTypeSymbol symbol;
@@ -142,8 +143,7 @@ namespace Meta
         // Has are the values for behaviors and components, Is is the value for tags.
         public virtual string HasAlias => "Has";
         public string ClassName => symbol.Name;
-        public string Namespace => symbol.ContainingNamespace.FullName();
-        public string FullyQualifiedClassName => $"{Namespace}.{ClassName}";
+        public string Namespace => symbol.ContainingNamespace.GetFullName();
         public string Calling => $"{ClassName} {TypeText}";
     }
 }

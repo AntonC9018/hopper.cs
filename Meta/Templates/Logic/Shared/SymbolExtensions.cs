@@ -6,21 +6,47 @@ using System.Text;
 using Hopper.Shared.Attributes;
 using Microsoft.CodeAnalysis;
 
-namespace Meta
+namespace Hopper.Meta
 {
     public static class SymbolExtensions
     {
-        public static string FullName(this INamespaceSymbol symbol)
+        public static string GetFullQualification(this INamedTypeSymbol symbol)
         {
             Stack<string> names = new Stack<string>();
 
-            while (symbol != null && symbol.Name != "")
+            while (symbol.ContainingType != null && symbol.ContainingType.Name != "")
             {
-                names.Push(symbol.Name);
-                symbol = symbol.ContainingNamespace;
+                names.Push(symbol.ContainingType.Name);
+                symbol = symbol.ContainingType;
+            }
+
+            foreach (var n in symbol.ContainingNamespace.GetNamespaceNames())
+            {
+                names.Push(n);
             }
 
             return String.Join(".", names);
+        }
+
+        public static string GetFullName(this INamespaceSymbol symbol)
+        {
+            Stack<string> names = new Stack<string>();
+
+            foreach (var n in symbol.ContainingNamespace.GetNamespaceNames())
+            {
+                names.Push(n);
+            }
+
+            return String.Join(".", names);
+        }
+
+        public static IEnumerable<string> GetNamespaceNames(this INamespaceSymbol symbol)
+        {
+            while (symbol != null && symbol.Name != "")
+            {
+                yield return symbol.Name;
+                symbol = symbol.ContainingNamespace;
+            }
         }
 
         // TODO: This function is pretty jank. Learn the right way to do this.

@@ -1,7 +1,7 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Meta
+namespace Hopper.Meta
 {
     public class StaticClassSymbolWrapper : ClassSymbolWrapperBase
     {

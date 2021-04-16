@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
 
-namespace Meta
+namespace Hopper.Meta
 {
     class Program
     {

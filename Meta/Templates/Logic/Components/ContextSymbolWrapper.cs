@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 using System.Text;
 
-namespace Meta
+namespace Hopper.Meta
 {
     public class ContextSymbolWrapper
     {

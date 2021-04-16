@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Meta;
+using Hopper.Meta;
 
 namespace Hopper.Meta.Template
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Meta
+namespace Hopper.Meta
 {
     public class GeneratorException : Exception
     {

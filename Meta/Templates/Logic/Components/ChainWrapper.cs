@@ -1,7 +1,7 @@
 using Microsoft.CodeAnalysis;
 using System.Linq;
 
-namespace Meta
+namespace Hopper.Meta
 {
     public class ChainWrapper
     {

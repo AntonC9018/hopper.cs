@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace Meta
+namespace Hopper.Meta
 {
     public class TagSymbolWrapper : ComponentSymbolWrapper
     {

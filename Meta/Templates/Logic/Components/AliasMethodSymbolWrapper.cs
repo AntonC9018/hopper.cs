@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Meta
+namespace Hopper.Meta
 {
     public sealed class AliasMethodSymbolWrapper
     {
