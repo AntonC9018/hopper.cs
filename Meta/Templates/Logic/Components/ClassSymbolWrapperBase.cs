@@ -144,6 +144,7 @@ namespace Hopper.Meta
         public virtual string HasAlias => "Has";
         public string ClassName => symbol.Name;
         public string Namespace => symbol.ContainingNamespace.GetFullName();
+        public string FullyQualifiedClassName => $"{Namespace}.{ClassName}";
         public string Calling => $"{ClassName} {TypeText}";
     }
 }

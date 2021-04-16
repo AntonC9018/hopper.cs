@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Hopper.Meta.Stats;
 using Microsoft.Build.Locator;
 
 namespace Hopper.Meta
@@ -7,9 +8,10 @@ namespace Hopper.Meta
     {
         public static async Task Main()
         {
-            MSBuildLocator.RegisterDefaults();
-            var generator = new Generator();
-            await generator.Start();
+            StatType.ToCode();
+            // MSBuildLocator.RegisterDefaults();
+            // var generator = new Generator();
+            // await generator.Start();
         }
     }
 }

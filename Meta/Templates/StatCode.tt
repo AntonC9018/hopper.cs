@@ -1,0 +1,82 @@
+public struct <#= stat.Name #>
+{
+<# if (stat.metadata.identifiedNestedTypeName == null) { #>
+<# foreach (var field in stat.fields) {  #>
+    public <#= field.metadata.type #> <#= field.name #>; 
+<# } #>
+    
+    public <#= stat.Name #>(<#= stat.JoinedParams #>)
+    {
+<# foreach (var field in stat.fields) { #>
+        this.<#= field.name #> = <#= field.name #>;
+<# } #>
+    }
+
+    public <#= stat.Name #> AddWith(<#= stat.Name #> other) => new <#= stat.Name #>
+    (
+<#  for (int i = 0; i < stat.fields.Count; i++) 
+    { 
+        var field = stat.fields[i];
+        if (field.metadata.type == "int")
+        { #>
+            <#= field.name #> : <#= field.name #> + other.<#= field.name #>
+<#      }
+        else 
+        { #>
+            <#= field.name #> : other.<#= field.name #>
+<#      }
+        if (i < stat.fields.Count - 1) Write(",");
+    } #>
+    );
+
+    public static Index<<#= stat.Name #>> Index;
+
+    public static <#= stat.Name #> Default => new <#= stat.Name #>
+    (
+<#  for (int i = 0; i < stat.fields.Count; i++) 
+    { 
+        var field = stat.fields[i]; #>
+        <#= field.name #> : <#= field.metadata.defaultValue #>
+<#      if (i < stat.fields.Count - 1) Write(",");
+    } #>
+    );
+
+<# /* It identifies a type (aka it is a source) */ } else { #>
+    public Index<<#= stat.metadata.identifiedNestedTypeName #>> Index;
+
+    public System.Func<<#= stat.metadata.identifiedNestedTypeName #>> Default;
+<# } #>
+
+<#  foreach (var nestedType in stat.nestedTypes) 
+    {
+        stat = nestedType;
+        TransformText();
+    } #> 
+
+<#  /* this is not complete as of now, there are edge cases and the code is not very stable
+       but it will work for know */
+    foreach (var field in stat.staticIndentiyingFields) { #>
+    <# var identifiedType = field.metadata.scope.value; #>
+    public static <#= identifiedType.name #> <#= field.name #> = new <#= identifiedType.name #>
+    {
+        
+<#  if (field.metadata.fields != null) 
+    { #>
+        Default = () => new <#= identifiedType.metadata.identifiedNestedTypeName #>
+        (
+<#      for (int i = 0; i < field.metadata.fields.Count; i++) 
+        { 
+            var f = field.metadata.fields[i]; #>
+        <#= f.name #> : <#= f.defaultValue #>
+<#          if (i < field.metadata.fields.Count - 1) Write(",");
+        } #>
+        )
+<#  }
+    else
+    { #>
+        Default = <#= identifiedType.metadata.identifiedNestedTypeName #>.Default
+<#  }#>
+    };
+<#  } #> 
+
+}

@@ -1,33 +1,20 @@
 using System.Collections.Generic;
 using System.IO;
 using Hopper.Meta;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Hopper.Meta.Template;
+using System.Linq;
 
 namespace Hopper.Meta.Stats
 {
     public struct Metadata
     {
-        public bool identifies;
+        public string identifiedNestedTypeName;
         public string alias;
-    }
-
-    public struct FieldMetadata
-    {
-        public string type;
-        public string _default;
-    }
-
-    public struct Field
-    {
-        public string name;
-        public FieldMetadata metadata;
-
-        public Field(string name, FieldMetadata metadata)
-        {
-            this.name = name;
-            this.metadata = metadata;
-        }
     }
 
     public class StatType
@@ -37,92 +24,92 @@ namespace Hopper.Meta.Stats
         public static string OutPath = $@"{OutFolder}/Attack.json";
         
 
-        public List<Field> fields;
+        public string name;
+        public string Name => metadata.alias == null ? name : metadata.alias;
+        public string JoinedParams => System.String.Join(", ", fields.Select(f => $"{f.metadata.type} {f.name}"));
+        public List<FieldDeclaration> fields;
+        // TODO: this is kind of dumb, since if one has fields, the other one shall be empty (maybe)
+        // I'm leaving this detail for later
+        public List<StaticObjectFieldDeclaration> staticIndentiyingFields;
+        public List<StatType> nestedTypes;
         public Metadata metadata; 
 
         public StatType()
         {
-            fields = new List<Field>();
+            fields = new List<FieldDeclaration>();
+            staticIndentiyingFields = new List<StaticObjectFieldDeclaration>();
+            nestedTypes = new List<StatType>();
         }
 
         public static void ParseJson()
         {
             string statJson = File.ReadAllText(InPath);
             var obj = JObject.Parse(statJson);
+            var ctx = new ParsingContext(InPath);
+            ctx.PushScope("Hopper");
+            ctx.PushScope("Core");
+            ctx.PushScope("Attack");
+            var attack = new StatType();
+            attack.name = "Attack";
+            attack.Populate(obj, ctx);
+            
+            System.Console.WriteLine( JsonConvert.SerializeObject(attack, Formatting.Indented));
         }
 
-        public enum KvpType
+        public static void ToCode()
         {
-            Field, Metadata, StaticField, NestedType
+            string statJson = File.ReadAllText(InPath);
+            var obj = JObject.Parse(statJson);
+            var ctx = new ParsingContext(InPath);
+            ctx.PushScope("Hopper");
+            ctx.PushScope("Core");
+            ctx.PushScope("Attack");
+            var attack = new StatType();
+            attack.name = "Attack";
+            attack.Populate(obj, ctx);
+
+            var statCodePrinter = new StatCode { stat = attack };
+            var statCodePrinterStart = new StatStartCode { statCodePrinter = statCodePrinter };
+            System.Console.WriteLine(statCodePrinter.TransformText());
         }
 
-        public static StatType ParseJObjectAsStatType(JObject jobj)
+        public void Populate(JObject jobj, ParsingContext ctx)
         {
-            var result = new StatType();
-
             foreach (var kvp in jobj)
-            switch (ParseType(kvp.Key, out string actualName))
             {
-                case KvpType.Field:
-                    result.fields.Add(new Field(actualName, ParseAsField(kvp.Value, actualName)));
-                    break;
-                case KvpType.Metadata:
-                    if (actualName == "identifies") { result.metadata.identifies = (bool) kvp.Value; }
-                    else if (actualName == "alias") { result.metadata.alias = (string) kvp.Value;    }
-                    break;
-                case KvpType.StaticField:
-
-                    break;
-                case KvpType.NestedType:
-                    break;
-            }
-        }
-
-        public static FieldMetadata ParseAsField(JToken jtok, string name)
-        {
-            if (jtok is JValue jval)
-            {
-                if (jval.Type == JTokenType.Integer)
+                ctx.Push(kvp.Key);
+                var type = ParseType(kvp.Key, out string actualName);
+                switch (type)
                 {
-                    return new FieldMetadata 
-                    { 
-                        type = "int",
-                        _default = jval.Value.ToString()
-                    };
+                    case KvpType.Field:
+                        fields.Add(new FieldDeclaration(actualName, FieldMetadata.Parse(kvp.Value, ctx)));
+                        break;
+                    case KvpType.Metadata:
+                        if (actualName == "identifies") { metadata.identifiedNestedTypeName = (string)kvp.Value; }
+                        else if (actualName == "alias") { metadata.alias = (string) kvp.Value;    }
+                        else { ctx.Report($"Unrecognized metadata: {kvp.Key}"); }
+                        break;
+                    case KvpType.StaticField:
+                        staticIndentiyingFields.Add(new StaticObjectFieldDeclaration(actualName, StaticStatFieldMetadata.Parse(kvp.Value, ctx)));
+                        break;
+                    case KvpType.NestedType:
+                        if (kvp.Value is JObject jobj_nested)
+                        {
+                            ctx.PushScope(this);
+                            var nestedType = new StatType();
+                            nestedType.name = actualName;
+                            nestedType.Populate(jobj_nested, ctx);
+                            nestedTypes.Add(nestedType);
+                            ctx.PopScope();
+                        }
+                        else
+                        {
+                            ctx.Report($"Nested types must be objects, got {kvp.Value.Type}");
+                        }
+                        break;
                 }
+                ctx.Pop();
             }
-            else if (jtok is JObject jobj)
-            {
-                var result = new FieldMetadata();
-
-                foreach (var kvp in jobj)
-                {
-                    var type = ParseType(kvp.Key, out string actualName);
-                    switch (type)
-                    {
-                        case KvpType.Metadata:
-                            if (actualName == "type") { result.type = kvp.Value.ToString(); }
-                            else if (actualName == "default") 
-                            { 
-                                if (kvp.Value.Type == JTokenType.String)
-                                {
-                                    result._default = (string) kvp.Value.ToString(); 
-                                }
-                                else
-                                {
-
-                                }
-                            }
-                            else throw new SyntaxException($"Unexpected metadata name {kvp.Key} while parsing {name}. Expected either @type or @default");
-                            break;
-                        default:
-                            throw new SyntaxException($"Parsed a {type} with name {kvp.Key}. Expected a Metadata (the name must start with a @).");
-                    }
-                }
-
-                return result;
-            }
-            throw new SyntaxException($"While parsing {name}, expected an object or an int, received {jtok.GetType()}.");
         }
 
         public static KvpType ParseType(string name, out string actualName)
@@ -133,6 +120,72 @@ namespace Hopper.Meta.Stats
 
             actualName = name; return KvpType.Field;
         }
+
+        // F*CK this, it is too dang expressive XD
+        /* public void ToCode__()
+        {
+            var _public = Token(SyntaxKind.PublicKeyword);
+
+            var structDecl = StructDeclaration(name);
+            structDecl.AddModifiers(_public);
+            structDecl.AddBaseListTypes(SimpleBaseType(ParseTypeName("IStat")));
+            
+            var constrDecl = ConstructorDeclaration(name);
+            var constrParameters = ParameterList();
+            var constrBody = Block();
+
+            var addWith = MethodDeclaration(IdentifierName(name), Identifier("AddWith"));
+            addWith.AddModifiers(_public);
+            addWith.AddParameterListParameters(
+                Parameter(Identifier("other"))
+                .WithType(IdentifierName(name)));
+
+            var addWithArguments = ArgumentList();
+
+            foreach (var field in fields)
+            {
+                var fieldType = ParseTypeName(field.metadata.type);
+                var fieldName = VariableDeclarator(field.name);
+                var fieldVariable = VariableDeclaration(fieldType).AddVariables(fieldName);
+                var fieldDecl = FieldDeclaration(fieldVariable)
+                    .AddModifiers(_public);
+                
+                var fieldAsParam = Parameter(Identifier(field.name)).WithType(fieldType);
+                var fieldAsArgument = Argument(IdentifierName(field.name));
+
+
+                if (field.metadata.type == "int")
+                {
+                    addWithArguments.AddArguments(
+                        Argument(ParseExpression($"{field.name} = other.{field.name}")));
+                }
+                else
+                {
+                    // sample : sample
+                    addWithArguments.AddArguments(
+                        fieldAsArgument.WithNameColon(NameColon(IdentifierName(field.name))));
+                }
+
+                structDecl.AddMembers(fieldDecl);
+
+                constrBody.AddStatements(ExpressionStatement(
+                    AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, 
+                        MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                            ThisExpression(), IdentifierName(field.name)),
+                            IdentifierName(field.name))));
+
+                constrParameters.AddParameters(fieldAsParam);
+            }
+
+            
+            var addWithBody = ArrowExpressionClause(
+                ObjectCreationExpression(IdentifierName(name))
+                .WithArgumentList(addWithArguments));
+
+            constrDecl.WithBody(constrBody).WithParameterList(constrParameters);
+            structDecl.AddMembers(constrDecl);
+        }
+        */
 
     }
 }

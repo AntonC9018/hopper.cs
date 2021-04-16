@@ -1,0 +1,5 @@
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="Meta" #>
+<#@ include file="Templates/Snippets/autogen_notice.txt" #>
+
+<#= statCodePrinter.TransformText() #>
