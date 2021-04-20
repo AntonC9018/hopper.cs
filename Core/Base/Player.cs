@@ -2,10 +2,10 @@ using System.Runtime.Serialization;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Core.Retouchers;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 using Hopper.Core.Targeting;
 using Hopper.Core.History;
-using Hopper.Core.Stats;
+using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.Core
@@ -61,7 +61,7 @@ namespace Hopper.Core
             Controllable.AddTo(subject, null);
 
             // TODO: rename the namespaces
-            Stats.Stats.AddTo(subject);
+            Stat.Stats.AddTo(subject);
             History.History.AddTo(subject);
         }
 

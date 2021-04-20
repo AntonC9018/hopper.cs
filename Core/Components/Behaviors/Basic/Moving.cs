@@ -1,6 +1,6 @@
-using Hopper.Core.Stats;
+using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 
 namespace Hopper.Core.Components.Basic
 {

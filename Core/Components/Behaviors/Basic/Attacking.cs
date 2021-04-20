@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using Hopper.Core.Items;
 using Hopper.Core.Targeting;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 using System.Linq;
 using Hopper.Utils.Vector;
 using Hopper.Core.Predictions;
-using Hopper.Core.Stats;
+using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 using System;
 
@@ -44,7 +44,7 @@ namespace Hopper.Core.Components.Basic
         /// It loads the attack and push from the stats manager.  
         /// </summary>
         [Export] public static void SetStats(
-            Stats.Stats stats, ref Attack attack, ref Push push)
+            Stat.Stats stats, ref Attack attack, ref Push push)
         {
             if (attack == null)
             {

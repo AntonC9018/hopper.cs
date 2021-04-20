@@ -1,9 +1,9 @@
 using Hopper.Utils.Chains;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Hopper.Core.Stats;
+using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 using System;
 

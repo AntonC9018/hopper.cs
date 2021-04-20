@@ -1,6 +1,6 @@
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 using Hopper.Utils.Vector;
-using Hopper.Core.Stats;
+using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 using System;
 
@@ -16,12 +16,12 @@ namespace Hopper.Core.Components.Basic
             [Omit] public Push.Resistance resistance;
         }
 
-        [Export] public static void SetResistance(Stats.Stats stats, out Push.Resistance resistance)
+        [Export] public static void SetResistance(Stat.Stats stats, out Push.Resistance resistance)
         {
             resistance = stats.GetLazy(Push.Resistance.Path);
         }
 
-        [Export] public static void ResistSource(Stats.Stats stats, Push push)
+        [Export] public static void ResistSource(Stat.Stats stats, Push push)
         {
             var sourceRes = stats.GetLazy(Push.Source.Resistance.Path);
             if (sourceRes[push.sourceId] > push.power)

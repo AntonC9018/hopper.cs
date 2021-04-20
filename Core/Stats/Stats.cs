@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
 
-namespace Hopper.Core.Stats
+namespace Hopper.Core.Stat
 {
     /* 
         The way stats work currently is to me a bit complicated.
@@ -59,16 +59,9 @@ namespace Hopper.Core.Stats
         IStat Copy();
     }
 
-    public class DefaultStats : Stats
-    {
-        public DefaultStats(DefaultStats defaultStats = null) : base(defaultStats)
-        {
-        }
-    }
-
     public partial class Stats : IComponent
     {
-        [Inject] public DefaultStats defaultStats;
+        [Inject] public Dictionary<Identifier, IStat> defaultStats;
         public Dictionary<Identifier, IStat> store;
 
         public void Init()
@@ -76,38 +69,46 @@ namespace Hopper.Core.Stats
             store = new Dictionary<Identifier, IStat>();
         }
 
-        public T GetLazy<T>(Index<T> index) where T : IStat
+        public void GetLazy<T>(Index<T> index, out T stat) where T : IStat
         {
             if (!store.ContainsKey(index.Id))
             {   
-                Set(index, (T) defaultStats.GetLazy(index).Copy());
+                stat = (T) defaultStats[index.Id];
+                Set(index, stat);
             }
-            return Get(index);
+            else
+            {
+                Get(index, out stat);
+            }
         }
 
-        public T GetRaw<T>(Index<T> index) where T : IStat
+        public void GetRaw<T>(Index<T> index, out T stat) where T : IStat
         {
-            return (T) store[index.Id];
+            stat = (T) store[index.Id];
         }
 
-        public T Get<T>(Index<T> index) where T : IStat
+        public void Get<T>(Index<T> index, out T stat) where T : IStat
         {
             // TODO: chain iteration
-            return (T) GetRaw(index).Copy();
+            GetRaw(index, out stat);
         }
 
-        public void Set<T>(Index<T> index, T stat) where T : IStat
+        public void Set<T>(Index<T> index, in T stat) where T : IStat
         {
             store[index.Id] = stat;
         }
 
-        public T GetRawLazy<T>(Index<T> index) where T : IStat
+        public void GetRawLazy<T>(Index<T> index, out T stat) where T : IStat
         {
             if (!store.ContainsKey(index.Id))
             {   
-                Set(index, (T) defaultStats.GetLazy(index).Copy());
+                stat = (T) defaultStats[index.Id];
+                Set(index, stat);
             }
-            return GetRaw(index);
+            else
+            {
+                GetRaw(index, out stat);
+            }
         }
     }
 }

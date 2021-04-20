@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Core.Predictions;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting

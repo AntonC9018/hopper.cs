@@ -1,5 +1,5 @@
 using System;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic

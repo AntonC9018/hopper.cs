@@ -1,6 +1,6 @@
 using Hopper.Core.Registries;
 
-namespace Hopper.Core.Stats
+namespace Hopper.Core.Stat
 {
     // these are either static or created uniquely for kinds
     public class DictStatPath : IStatPath<DictFile>

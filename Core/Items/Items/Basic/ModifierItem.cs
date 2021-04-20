@@ -1,5 +1,5 @@
 using Hopper.Core.Registries;
-using Hopper.Core.Stats;
+using Hopper.Core.Stat;
 
 namespace Hopper.Core.Items
 {

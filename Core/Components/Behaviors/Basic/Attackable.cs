@@ -1,10 +1,10 @@
 using Hopper.Utils.Chains;
 using Hopper.Utils;
 using System.Runtime.Serialization;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 using Hopper.Utils.Vector;
 using Hopper.Core.Targeting;
-using Hopper.Core.Stats;
+using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic
@@ -53,7 +53,7 @@ namespace Hopper.Core.Components.Basic
         /// Sets the initial resistance stat from stats manager.
         /// </summary>
         [Export] public static void SetResistance(
-            Stats.Stats stats, out Attack.Resistance resistance)
+            Stat.Stats stats, out Attack.Resistance resistance)
         {
             resistance = stats.GetLazy(Attack.Resistance.Path);
             // priority = PriorityMapping.Medium + 0x8000
@@ -64,7 +64,7 @@ namespace Hopper.Core.Components.Basic
         /// It queries attack source resistance stat, and sets the attack damage to 0 
         /// if the resistance to the source specified by the attack is greater than the attack power.
         /// </summary>
-        [Export] public static void ResistSource(Stats.Stats stats, Attack attack)
+        [Export] public static void ResistSource(Stat.Stats stats, Attack attack)
         {
             if (stats.GetLazy(Attack.Source.Resistance.Path)[attack.sourceId] > attack.power)
             {

@@ -2,8 +2,8 @@ using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Registries;
 using Hopper.Core.Retouchers;
-using Hopper.Core.Stats;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat;
+using Hopper.Core.Stat.Basic;
 using Hopper.Core.Targeting;
 
 namespace Hopper.Test_Content.Explosion

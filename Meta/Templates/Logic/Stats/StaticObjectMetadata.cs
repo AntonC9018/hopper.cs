@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Hopper.Meta.Stats
@@ -19,6 +20,11 @@ namespace Hopper.Meta.Stats
     {
         public Scope<StatType> scope;
         public List<FieldAssignment> fields;
+
+        public string FieldCommaJoin(System.Func<FieldAssignment, string> func)
+        {
+            return System.String.Join(", ", fields.Select(func));
+        }
 
         public static StaticStatFieldMetadata Parse(JToken jtok, ParsingContext ctx)
         {

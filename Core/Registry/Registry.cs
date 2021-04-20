@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.Core
@@ -17,12 +19,15 @@ namespace Hopper.Core
         public PriorityAssigner _priority;
         public RuntimeRegistry<Entity> _entities;
         public StaticRegistry<EntityFactory> _entityFactory;
+        public IdentifierAssigner _stats;
+        public Dictionary<Identifier, IStat> _defaultStats;
 
         public void Init()
         {
             _priority.Init();
             _entities.Init();
             _entityFactory.Init();
+            _defaultStats = new Dictionary<Identifier, IStat>();
         }
 
         public int NextMod()
@@ -53,6 +58,13 @@ namespace Hopper.Core
         public void UnregisterEntityFactory(EntityFactory factory)
         {
             _entityFactory.Remove(factory.id);
+        }
+
+        public Identifier RegisterStat(IStat stat)
+        {
+            var id = new Identifier(_currentMod, _stats.Next());
+            _defaultStats[id] = stat;
+            return id;
         }
 
         public int NextPriority(PriorityRank rank)

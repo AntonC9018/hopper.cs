@@ -38,6 +38,11 @@ namespace Hopper.Meta.Stats
         
         public string JoinedParams => System.String.Join(", ", fields.Select(f => $"{f.metadata.type} {f.name}"));
 
+        public string FieldCommaJoin(System.Func<FieldDeclaration, string> func)
+        {
+            return System.String.Join(", ", fields.Select(func));
+        }
+
         public bool IsIdentifying => identifiedType != null;
         public bool IsIdentified => metadata.isIdentified;
 
@@ -68,6 +73,7 @@ namespace Hopper.Meta.Stats
             var stat = new StatType();
             stat.name = statName;
             stat.metadata.scope = ctx.scope;
+            ctx.scope.value = stat;
             stat.Populate(jobj, ctx);
 
             ctx.PopScope();
@@ -97,9 +103,9 @@ namespace Hopper.Meta.Stats
                     case KvpType.NestedType:
                         if (kvp.Value is JObject jobj_nested)
                         {
-                            ctx.PushScope(this);
                             var nestedType = new StatType();
                             nestedType.name = actualName;
+                            ctx.PushScope(nestedType);
                             nestedType.Populate(jobj_nested, ctx);
                             nestedType.metadata.scope = ctx.scope;
                             

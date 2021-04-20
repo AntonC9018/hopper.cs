@@ -2,7 +2,7 @@ using Hopper.Utils.FS;
 using Hopper.Utils;
 using System;
 
-namespace Hopper.Core.Stats
+namespace Hopper.Core.Stat
 {
     public interface IModifier
     {

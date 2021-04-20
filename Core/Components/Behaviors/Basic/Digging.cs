@@ -3,9 +3,9 @@ using Hopper.Utils.Chains;
 using System.Collections.Generic;
 using Hopper.Core.Items;
 using Hopper.Core.Targeting;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 using Hopper.Utils.Vector;
-using Hopper.Core.Stats;
+using Hopper.Core.Stat;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -18,7 +18,7 @@ namespace Hopper.Core.Components.Basic
             [Omit] public List<Target> targets;
         }
 
-        [Export] public static void SetDig(Stats.Stats stats, out Dig dig)
+        [Export] public static void SetDig(Stat.Stats stats, out Dig dig)
         {
             dig = stats.GetLazy(Dig.Path);
         }

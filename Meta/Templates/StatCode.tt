@@ -1,4 +1,4 @@
-public struct <#= stat.Name #>
+public struct <#= stat.Name #> : IStat
 {
 <# if (!stat.IsIdentifying) { #>
 <# foreach (var field in stat.fields) {  #>
@@ -14,33 +14,17 @@ public struct <#= stat.Name #>
 
     public <#= stat.Name #> AddWith(<#= stat.Name #> other) => new <#= stat.Name #>
     (
-<#  for (int i = 0; i < stat.fields.Count; i++) 
-    { 
-        var field = stat.fields[i];
-        if (field.metadata.type == "int")
-        { #>
-            <#= field.name #> : <#= field.name #> + other.<#= field.name #>
-<#      }
-        else 
-        { #>
-            <#= field.name #> : other.<#= field.name #>
-<#      }
-        if (i < stat.fields.Count - 1) Write(",");
-    } #>
-    
+        <#= stat.FieldCommaJoin(f => f.metadata.type == "int" 
+            ? $"{f.name} : {f.name} + other.{f.name}"
+            : $"{f.name} : other.{f.name}") #>
     );
+
 <# if (!stat.IsIdentified) { #>
     public static Index<<#= stat.Name #>> Index;
 <# } #>
-    public static <#= stat.Name #> Default => new <#= stat.Name #>
+    public static <#= stat.Name #> Default() => new <#= stat.Name #>
     (
-<#  for (int i = 0; i < stat.fields.Count; i++) 
-    { 
-        var field = stat.fields[i]; #>
-        <#= field.name #> : <#= field.metadata.defaultValue #>
-        <# if (i < stat.fields.Count - 1) Write(",");
-    } #>
-
+        <#= stat.FieldCommaJoin(f => $"{f.name} : {f.metadata.defaultValue}") #>
     );
 
 <# /* It identifies a type (aka it is a source) */ } else { #>
@@ -49,6 +33,10 @@ public struct <#= stat.Name #>
     public System.Func<<#= stat.identifiedType.Name #>> Default;
 
 <# } #>
+    public <#= stat.Name #> Copy() => this;
+    
+    IStat IStat.Copy() => this;
+
 <#  foreach (var nestedType in stat.nestedTypes) 
     {
         var printer = new StatCode();
@@ -69,17 +57,12 @@ public struct <#= stat.Name #>
     { #>
         Default = () => new <#= identifiedTypeName #>
         (
-<#      for (int i = 0; i < field.metadata.fields.Count; i++) 
-        { 
-            var f = field.metadata.fields[i]; #>
-            <#= f.name #> : <#= f.defaultValue #>
-<#          if (i < field.metadata.fields.Count - 1) Write(",");
-        } #>
+            <#= field.metadata.FieldCommaJoin(f => $"{f.name} : {f.defaultValue}") #>
         )
 <#  }
     else
     { #>
-        Default = () => <#= identifiedTypeName #>.Default
+        Default = <#= identifiedTypeName #>.Default
 <#  }#>
     };
 <#  } #> 

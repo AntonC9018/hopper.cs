@@ -1,8 +1,8 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Registries;
-using Hopper.Core.Stats;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat;
+using Hopper.Core.Stat.Basic;
 
 namespace Hopper.Test_Content.Projectiles
 {

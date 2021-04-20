@@ -1,4 +1,4 @@
-namespace Hopper.Core.Stats.Basic
+namespace Hopper.Core.Stat.Basic
 {
     public class Health
     {

@@ -1,6 +1,6 @@
 using Hopper.Utils.FS;
 
-namespace Hopper.Core.Stats
+namespace Hopper.Core.Stat
 {
     public interface IStatPath<out T>
     {

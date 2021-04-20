@@ -1,7 +1,7 @@
 using Hopper.Utils.FS;
 using Hopper.Core.Registries;
 
-namespace Hopper.Core.Stats
+namespace Hopper.Core.Stat
 {
     public class SimpleStatPath<T> : IStatPath<T>
         where T : File, new()

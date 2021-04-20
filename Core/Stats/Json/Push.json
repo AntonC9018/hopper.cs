@@ -1,14 +1,11 @@
 {
-    "damage": 1,
-    "pierce": 1,
     "power": 1,
+    "distance": 1,
+    "pierce": 1,
     "source": { "@type": "Index<Source.Resistance>", "@default": "Source.Basic.Index" },
 
     "_Resistance":
     {
-        "armor": 0,
-        "minDamage": 1,
-        "maxDamage": 10,
         "pierce": 1
     },
 

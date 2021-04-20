@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Hopper.Core.Registries;
-using Hopper.Core.Stats.Basic;
+using Hopper.Core.Stat.Basic;
 
-namespace Hopper.Core.Stats
+namespace Hopper.Core.Stat
 {
     public class DictPatchSubRegistry<T> : PatchSubArea<T> where T : SourceBase<T>
     {
