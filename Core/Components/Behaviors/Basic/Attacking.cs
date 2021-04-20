@@ -17,6 +17,7 @@ namespace Hopper.Core.Components.Basic
         public class Context : StandartContext
         {
             public List<Target> targets;
+            [Omit] public bool haveStatsBeenSet;
             [Omit] public Attack attack;
             [Omit] public Push push;
         }
@@ -43,18 +44,14 @@ namespace Hopper.Core.Components.Basic
         /// This is one of the default handlers of the CHECK chain.
         /// It loads the attack and push from the stats manager.  
         /// </summary>
-        [Export] public static void SetStats(
-            Stat.Stats stats, ref Attack attack, ref Push push)
+        [Export(Priority = PriorityRank.Low)] public static void SetStats(Context ctx)
         {
-            if (attack == null)
+            if (!ctx.haveStatsBeenSet)
             {
-                attack = stats.GetLazy(Attack.Path);
+                var stats = ctx.actor.GetStats();
+                stats.GetLazy(Attack.Index, out ctx.attack);
+                stats.GetLazy(Push.Index, out ctx.push);
             }
-            if (push == null)
-            {
-                push = stats.GetLazy(Push.Path);
-            }
-            // priority = PriorityMapping.Low + 0x8000
         }
 
         /// <summary>
@@ -63,7 +60,7 @@ namespace Hopper.Core.Components.Basic
         /// Otherwise, the default target provider is used.
         /// @Rethink this should really be two separate handlers: one for entities with inventory and one for ones without one. There's no point in being extra abstract.
         /// </summary>
-        [Export] public static void SetTargets(Context ctx)
+        [Export(Priority = PriorityRank.Low)] public static void SetTargets(Context ctx)
         {
             if (ctx.targets == null)
             {
@@ -89,7 +86,6 @@ namespace Hopper.Core.Components.Basic
                     ctx.targets = TargetProvider.SimpleAttack.GetTargets(ctx.actor, ctx.direction).ToList();
                 }
             }
-            // priority = PriorityMapping.Low + 0x2000,
         }
 
         /// <summary>

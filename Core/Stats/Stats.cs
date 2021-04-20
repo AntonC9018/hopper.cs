@@ -49,32 +49,38 @@ namespace Hopper.Core.Stat
         System.Action<T> Default;
     }
 
-    public struct StatPath<T> : IPath
-    {
-        public System.Func<Entity, T> Stat;
-    }
-
     public interface IStat 
     {
         IStat Copy();
     }
 
+    public interface IHolder {};
+
+    public class Holder<T> : IHolder where T : struct
+    {
+        public T item;
+        public Holder(T item)
+        {
+            this.item = item;
+        }
+    }
+
     public partial class Stats : IComponent
     {
         [Inject] public Dictionary<Identifier, IStat> defaultStats;
-        public Dictionary<Identifier, IStat> store;
+        public Dictionary<Identifier, IHolder> store;
 
         public void Init()
         {
-            store = new Dictionary<Identifier, IStat>();
+            store = new Dictionary<Identifier, IHolder>();
         }
 
-        public void GetLazy<T>(Index<T> index, out T stat) where T : IStat
+        public void GetLazy<T>(Index<T> index, out T stat) where T : struct, IStat 
         {
             if (!store.ContainsKey(index.Id))
             {   
                 stat = (T) defaultStats[index.Id];
-                Set(index, stat);
+                Set(index, in stat);
             }
             else
             {
@@ -82,33 +88,31 @@ namespace Hopper.Core.Stat
             }
         }
 
-        public void GetRaw<T>(Index<T> index, out T stat) where T : IStat
+        public ref T GetRaw<T>(Index<T> index) where T : struct, IStat
         {
-            stat = (T) store[index.Id];
+            return ref ((Holder<T>)store[index.Id]).item;
         }
 
-        public void Get<T>(Index<T> index, out T stat) where T : IStat
+        public void Get<T>(Index<T> index, out T stat) where T : struct, IStat
         {
             // TODO: chain iteration
-            GetRaw(index, out stat);
+            stat = ((Holder<T>)store[index.Id]).item;
         }
 
-        public void Set<T>(Index<T> index, in T stat) where T : IStat
+        public ref T Set<T>(Index<T> index, in T stat) where T : struct, IStat
         {
-            store[index.Id] = stat;
+            var holder = new Holder<T>(stat);
+            store[index.Id] = holder;
+            return ref holder.item;
         }
 
-        public void GetRawLazy<T>(Index<T> index, out T stat) where T : IStat
+        public ref T GetRawLazy<T>(Index<T> index) where T : struct, IStat
         {
             if (!store.ContainsKey(index.Id))
             {   
-                stat = (T) defaultStats[index.Id];
-                Set(index, stat);
+                Set(index, (T) defaultStats[index.Id]);
             }
-            else
-            {
-                GetRaw(index, out stat);
-            }
+            return ref GetRaw(index);
         }
     }
 }

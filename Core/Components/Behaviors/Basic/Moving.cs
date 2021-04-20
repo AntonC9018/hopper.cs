@@ -14,10 +14,7 @@ namespace Hopper.Core.Components.Basic
 
         [Export] public static void SetBase(Context ctx)
         {
-            if (ctx.move == null)
-            {
-                ctx.move = ctx.actor.GetStats().GetLazy(Move.Path);
-            }
+            ctx.actor.GetStats().GetLazy(Move.Index, out ctx.move);
         }
 
         [Export] public static void Displace(Context ctx)

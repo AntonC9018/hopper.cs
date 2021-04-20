@@ -18,9 +18,9 @@ namespace Hopper.Core.Components.Basic
             [Omit] public List<Target> targets;
         }
 
-        [Export] public static void SetDig(Stat.Stats stats, out Dig dig)
+        [Export] public static void SetDig(Stats stats, out Dig dig)
         {
-            dig = stats.GetLazy(Dig.Path);
+            stats.GetLazy(Dig.Index, out dig);
         }
 
         [Export] public static void SetTargets(Context ctx)
@@ -39,7 +39,8 @@ namespace Hopper.Core.Components.Basic
         {
             foreach (var target in ctx.targets)
             {
-                target.entity.TryBeAttacked(ctx.actor, ctx.dig.ToAttack(), ctx.direction);
+                ctx.dig.ToAttack(out Attack attack);
+                target.entity.TryBeAttacked(ctx.actor, attack, ctx.direction);
             }
         }
 

@@ -53,10 +53,9 @@ namespace Hopper.Core.Components.Basic
         /// Sets the initial resistance stat from stats manager.
         /// </summary>
         [Export] public static void SetResistance(
-            Stat.Stats stats, out Attack.Resistance resistance)
+            Stats stats, out Attack.Resistance resistance)
         {
-            resistance = stats.GetLazy(Attack.Resistance.Path);
-            // priority = PriorityMapping.Medium + 0x8000
+            stats.GetLazy(Attack.Resistance.Index, out resistance);
         }
 
         /// <summary>
@@ -64,20 +63,20 @@ namespace Hopper.Core.Components.Basic
         /// It queries attack source resistance stat, and sets the attack damage to 0 
         /// if the resistance to the source specified by the attack is greater than the attack power.
         /// </summary>
-        [Export] public static void ResistSource(Stat.Stats stats, Attack attack)
+        [Export] public static void ResistSource(Stats stats, ref Attack attack)
         {
-            if (stats.GetLazy(Attack.Source.Resistance.Path)[attack.sourceId] > attack.power)
+            stats.GetLazy(Attack.Source.Basic.Index, out var sourceRes);
+            if (sourceRes.amount > attack.power)
             {
                 attack.damage = 0;
             }
-            // priority = PriorityMapping.Low + 0x8000
         }
 
         /// <summary>
         /// This is one of the default handlers used by the CHECK chain. 
         /// If the damage is not already zero, it decreases it by the armor amount.
         /// </summary>
-        [Export] public static void Armor(Attack attack, Attack.Resistance resistance)
+        [Export] public static void Armor(ref Attack attack, in Attack.Resistance resistance)
         {
             if (attack.damage > 0)
             {
@@ -87,40 +86,29 @@ namespace Hopper.Core.Components.Basic
                     resistance.maxDamage
                 );
             }
-            // priority = PriorityMapping.Low + 0x2000
         }
 
         /// <summary>
         /// This is one of the default handlers used by the DO chain. 
         /// It activates the <c>Damageable</c> behavior if the attack's pierce is as high as the pierce resistance.
         /// </summary>
-        [Export] public static void TakeHit(
-            Entity actor, 
-            Attack attack, 
-            Attack.Resistance resistance)
+        [Export] public static void TakeHit(Entity actor, 
+            in Attack attack, in Attack.Resistance resistance)
         {
             // if pierce is high enough, resist the taken damage altogether
             if (resistance.pierce <= attack.pierce)
             {
                 actor.BeDamaged(attack.damage);
             }
-            // priority = PriorityMapping.Low + 0x8000
         }
 
+        /// <summary>
+        /// The preset of attackable that uses the default handlers.
+        /// </summary>
         public void DefaultPreset()
         {
             _CheckChain.Add(SetResistanceHandler, ResistSourceHandler, ArmorHandler);
             _DoChain   .Add(TakeHitHandler);
         }
-
-        /// <summary>
-        /// The preset of attackable that uses the default handlers.
-        /// The attackness is set to ALWAYS.
-        /// </summary>
-
-        /// <summary>
-        /// The preset of attackable that uses the default handlers.
-        /// It lets you specify the attackness that you wish.
-        /// </summary>
     }
 }

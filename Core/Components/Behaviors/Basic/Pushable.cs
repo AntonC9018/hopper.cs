@@ -16,15 +16,15 @@ namespace Hopper.Core.Components.Basic
             [Omit] public Push.Resistance resistance;
         }
 
-        [Export] public static void SetResistance(Stat.Stats stats, out Push.Resistance resistance)
+        [Export] public static void SetResistance(Stats stats, out Push.Resistance resistance)
         {
-            resistance = stats.GetLazy(Push.Resistance.Path);
+            stats.GetLazy(Push.Resistance.Index, out resistance);
         }
 
-        [Export] public static void ResistSource(Stat.Stats stats, Push push)
+        [Export] public static void ResistSource(Stats stats, Push push)
         {
-            var sourceRes = stats.GetLazy(Push.Source.Resistance.Path);
-            if (sourceRes[push.sourceId] > push.power)
+            stats.GetLazy(Push.Source.Basic.Index, out var sourceRes);
+            if (sourceRes.amount > push.power)
             {
                 push.distance = 0;
             }
@@ -34,15 +34,17 @@ namespace Hopper.Core.Components.Basic
         {
             if (ctx.push.pierce <= ctx.resistance.pierce)
             {
+                // ??
                 // ctx.propagate = false;
             }
         }
 
-        [Export] public static void BePushed(Entity actor, IntVector2 direction, Push push)
+        [Export] public static void BePushed(Entity actor, IntVector2 direction, in Push push)
         {
             if (push.distance > 0)
             {
-                actor.Displace(direction, push.ConvertToMove());
+                push.ToMove(out var move);
+                actor.Displace(direction, move);
             }
         }
 

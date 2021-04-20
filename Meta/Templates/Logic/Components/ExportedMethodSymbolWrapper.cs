@@ -123,6 +123,10 @@ namespace Hopper.Meta
                     {
                         sb_call.Append($"ref ctx.{s.Name}, ");
                     }
+                    else if (s.RefKind == RefKind.In)
+                    {
+                        sb_call.Append($"in ctx.{s.Name}, ");
+                    }
                     else
                     {
                         sb_params.AppendLine($"var _{s.Name} = ctx.{s.Name};");

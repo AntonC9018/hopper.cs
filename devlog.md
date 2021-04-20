@@ -404,7 +404,7 @@ public struct Attack : IStat
     public int pierce;
 
     public static Index<Attack> Index;
-    public static Attack Default => new Attack
+    public static Attack Default() => new Attack
     {
         source = BasicSource,
         power = 1,
@@ -429,7 +429,7 @@ public struct Attack : IStat
         public int pierce;
 
         public static Index<Resistance> Index;
-        public static Resistance Default => new Resistance
+        public static Resistance Default() => new Resistance
         {
             armor = 0,
             minDamage = 1,
@@ -449,12 +449,12 @@ public struct Attack : IStat
     public struct Source
     {
         public Index<Resistance> Index;
-        public System.Action<Resistance> Default;
+        public System.Func<Resistance> Default;
 
         public struct Resistance : IStat
         {
             public int amount;
-            public Source.Resistance Default => new Resistance
+            public Source.Resistance Default() => new Resistance
             {
                 amount = 1   
             };
@@ -483,4 +483,11 @@ Summing up what we need for this:
 1. Read json files.
 2. Identify special symbols @ $ and _ and react differently depending on that.
 3. Types and the default values may be copied as text for now (not verified), since doing errors for this is whole other problem.
-4. Build up structs either with roslyn syntax factories or with templates. I'm going to go for syntax factories on this one, just to try it out.
+4. Build up structs either with Roslyn syntax factories or with templates. I'm going to go for syntax factories on this one, just to try it out.
+
+Ended up not using syntax factories but building it all up with T4 and I'm glad I did.
+The code with syntax factories turns out too verbose.
+Since the stats are now structs, had to make some changes in the functions that set up these stats on the context.
+Also, found out that one cannot return a reference (`ref T`) of a struct inside a dictionary (stored by the interface, i.e. the boxed version. 
+The solution is to store them in a *user-defined* box, that is, a class that has the stat as a field.
+Actually, I'm going to try that next since I really want to be able to return them by ref.
