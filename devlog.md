@@ -491,3 +491,17 @@ Since the stats are now structs, had to make some changes in the functions that 
 Also, found out that one cannot return a reference (`ref T`) of a struct inside a dictionary (stored by the interface, i.e. the boxed version. 
 The solution is to store them in a *user-defined* box, that is, a class that has the stat as a field.
 Actually, I'm going to try that next since I really want to be able to return them by ref.
+
+
+### Targeting
+
+Seriously, show to me the idiot who wrote this! (it was me)
+```C#
+public interface IWorldSpot
+{
+    IntVector2 Pos { get; }
+    World World { get; }
+}
+```
+
+Like, what is the point of this? Why not just have it be a struct and cast the Entity to this struct implicitly? 
