@@ -27,7 +27,19 @@ namespace <#= Namespace #>
                 factory.id = Registry.Global.RegisterEntityFactory(factory);
                 <#= entityType.FullyQualifiedClassName #>.Factory = factory;
             }
-<# } #>
+<#  } 
+    foreach (var stat in statRootScope.GetAllChildrenValues()) 
+    {
+        if (!stat.IsIdentifying && !stat.IsIdentified) 
+        { #>
+            <#= stat.QualifiedName #>.Index = Registry.Global.RegisterStat(<#= stat.QualifiedName #>.Default);
+<#      }
+        foreach (var identifyingField in stat.staticIndentiyingFields) 
+        { #>
+            <#= stat.QualifiedName #>.<#= identifyingField.name #>.Index = Registry.Global.RegisterStat(<#= stat.QualifiedName #>.<#= identifyingField.name #>.Default);
+<#      }
+    }
+#>
         }
     }
 }

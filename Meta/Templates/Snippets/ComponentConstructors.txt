@@ -20,7 +20,7 @@
         {
 <# foreach (var injected in component.injectedFields) { #>
 <# if (injected.IsCopyable) { #>
-            <#= injected.Name #> = (injected.TypeName) other.<#= injected.Name #>.Copy();
+            <#= injected.Name #> = (<#= injected.TypeName #>) other.<#= injected.Name #>.Copy();
 <# } else { #>
             <#= injected.Name #> = other.<#= injected.Name #>;
 <# } } #>

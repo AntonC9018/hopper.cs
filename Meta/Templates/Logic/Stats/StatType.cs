@@ -13,25 +13,40 @@ namespace Hopper.Meta.Stats
 {
     public struct Metadata
     {
-        public string identifiedNestedTypeName;
         public string alias;
+        public bool isIdentified;
+        public Scope<StatType> scope;
     }
 
     public class StatType
     {
-        public static string InPath = @"../Core/Stats/Json/Attack.json";
-        public static string OutFolder = @"../Core/Autogen/Stats";
-        public static string OutPath = $@"{OutFolder}/Attack.json";
-        
-
         public string name;
         public string Name => metadata.alias == null ? name : metadata.alias;
+        
+        public Stack<string> GetScopeQualification()
+        {
+            var stack = new Stack<string>();
+            var scope = metadata.scope;
+            while (scope != null)
+            {
+                stack.Push(scope.name);
+                scope = scope.parentScope;
+            }
+            return stack;
+        }
+        public string QualifiedName => System.String.Join(".", GetScopeQualification());
+        
         public string JoinedParams => System.String.Join(", ", fields.Select(f => $"{f.metadata.type} {f.name}"));
+
+        public bool IsIdentifying => identifiedType != null;
+        public bool IsIdentified => metadata.isIdentified;
+
         public List<FieldDeclaration> fields;
         // TODO: this is kind of dumb, since if one has fields, the other one shall be empty (maybe)
         // I'm leaving this detail for later
         public List<StaticObjectFieldDeclaration> staticIndentiyingFields;
         public List<StatType> nestedTypes;
+        public StatType identifiedType;
         public Metadata metadata; 
 
         public StatType()
@@ -41,36 +56,23 @@ namespace Hopper.Meta.Stats
             nestedTypes = new List<StatType>();
         }
 
-        public static void ParseJson()
+        public static StatType ParseJson(ParsingContext ctx, string inPath)
         {
-            string statJson = File.ReadAllText(InPath);
-            var obj = JObject.Parse(statJson);
-            var ctx = new ParsingContext(InPath);
-            ctx.PushScope("Hopper");
-            ctx.PushScope("Core");
-            ctx.PushScope("Attack");
-            var attack = new StatType();
-            attack.name = "Attack";
-            attack.Populate(obj, ctx);
+            string statJson = File.ReadAllText(inPath);
+            var jobj = JObject.Parse(statJson);
             
-            System.Console.WriteLine( JsonConvert.SerializeObject(attack, Formatting.Indented));
-        }
+            var statName = Path.GetFileNameWithoutExtension(inPath);
+            ctx.ResetFileName(inPath);
+            ctx.PushScope(statName);
 
-        public static void ToCode()
-        {
-            string statJson = File.ReadAllText(InPath);
-            var obj = JObject.Parse(statJson);
-            var ctx = new ParsingContext(InPath);
-            ctx.PushScope("Hopper");
-            ctx.PushScope("Core");
-            ctx.PushScope("Attack");
-            var attack = new StatType();
-            attack.name = "Attack";
-            attack.Populate(obj, ctx);
+            var stat = new StatType();
+            stat.name = statName;
+            stat.metadata.scope = ctx.scope;
+            stat.Populate(jobj, ctx);
 
-            var statCodePrinter = new StatCode { stat = attack };
-            var statCodePrinterStart = new StatStartCode { statCodePrinter = statCodePrinter };
-            System.Console.WriteLine(statCodePrinter.TransformText());
+            ctx.PopScope();
+
+            return stat;
         }
 
         public void Populate(JObject jobj, ParsingContext ctx)
@@ -85,7 +87,7 @@ namespace Hopper.Meta.Stats
                         fields.Add(new FieldDeclaration(actualName, FieldMetadata.Parse(kvp.Value, ctx)));
                         break;
                     case KvpType.Metadata:
-                        if (actualName == "identifies") { metadata.identifiedNestedTypeName = (string)kvp.Value; }
+                        if (actualName == "identifies") { /*skip*/ }
                         else if (actualName == "alias") { metadata.alias = (string) kvp.Value;    }
                         else { ctx.Report($"Unrecognized metadata: {kvp.Key}"); }
                         break;
@@ -99,6 +101,14 @@ namespace Hopper.Meta.Stats
                             var nestedType = new StatType();
                             nestedType.name = actualName;
                             nestedType.Populate(jobj_nested, ctx);
+                            nestedType.metadata.scope = ctx.scope;
+                            
+                            if (jobj.TryGetValue("@identifies", out var token) 
+                                && token.Value<string>() == actualName)
+                            {
+                                identifiedType = nestedType;
+                                identifiedType.metadata.isIdentified = true;
+                            }
                             nestedTypes.Add(nestedType);
                             ctx.PopScope();
                         }

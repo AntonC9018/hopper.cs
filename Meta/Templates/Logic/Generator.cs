@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hopper.Meta.Stats;
 using Hopper.Meta.Template;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -15,11 +16,13 @@ namespace Hopper.Meta
         const string coreProjectPath = @"../Core/Hopper_Core.csproj";
         const string sharedProjectPath = @"../Shared/Hopper_Shared.csproj";
         const string autogenFolder = @"../Core/Autogen";
+        const string statJsonsFolder = @"../Core/Stats/Json";
         static readonly string behaviorAutogenFolder = $@"{autogenFolder}/Behaviors";
         static readonly string componentAutogenFolder = $@"{autogenFolder}/Components";
         static readonly string tagsAutogenFolder = $@"{autogenFolder}/Tags";
         static readonly string handlersAutogenFolder = $@"{autogenFolder}/Handlers";
         static readonly string mainAutogenFile = $@"{autogenFolder}/Main.cs";
+        static readonly string statAutogenFolder = $@"{autogenFolder}/Stats";
 
         public MSBuildWorkspace msWorkspace;
         public Project coreProject;
@@ -66,6 +69,7 @@ namespace Hopper.Meta
             CreateOrEmptyDirectory(componentAutogenFolder);
             CreateOrEmptyDirectory(handlersAutogenFolder);
             CreateOrEmptyDirectory(tagsAutogenFolder);
+            CreateOrEmptyDirectory(statAutogenFolder);
 
             await msWorkspace.OpenProjectAsync(sharedProjectPath);
 
@@ -85,6 +89,14 @@ namespace Hopper.Meta
             else
             foreach (var file in new DirectoryInfo(directory).GetFiles())
                 file.Delete(); 
+        }
+
+        public static IEnumerable<string> GetJsonFileNames(string directory)
+        {
+            foreach (var file in Directory.EnumerateFiles(directory))
+            {
+                yield return file;
+            }
         }
 
         public async Task Generate()
@@ -109,10 +121,7 @@ namespace Hopper.Meta
                 foreach (var behavior in behaviorWrappers)
                 {
                     var behaviorPrinter = new BehaviorCode();
-                    behaviorPrinter.Initialize();
                     behaviorPrinter.behavior = behavior;
-
-                    var behaviorDocument = ctx._solution.GetDocument(behavior.symbol.Locations.First().SourceTree);
 
                     Console.WriteLine($"Generating code for {behavior.Calling}");
 
@@ -140,7 +149,6 @@ namespace Hopper.Meta
                 foreach (var component in componentWrappers)
                 {
                     var componentPrinter = new ComponentCode();
-                    componentPrinter.Initialize();
                     componentPrinter.component = component;
 
                     Console.WriteLine($"Generating code for {component.Calling}");
@@ -169,7 +177,6 @@ namespace Hopper.Meta
                 foreach (var component in tagWrappers)
                 {
                     var componentPrinter = new ComponentCode();
-                    componentPrinter.Initialize();
                     componentPrinter.component = component;
 
                     Console.WriteLine($"Generating code for {component.Calling}");
@@ -197,7 +204,8 @@ namespace Hopper.Meta
                 }
             }
 
-            var entityTypes = ctx.GetEntityTypes();
+            // TODO: do this before any generation has occured
+            string commonNamespace;
             {
                 string reference = behaviorWrappers[0].Namespace;
                 int commonPartEndIndex = reference.Length;
@@ -211,8 +219,36 @@ namespace Hopper.Meta
                     }
                 }
 
+                commonNamespace = reference.Substring(0, commonPartEndIndex);
+            }
+
+            var statNamespace = $"{commonNamespace}.Stat.Basic";
+            var statContext = new ParsingContext(statNamespace);
+            var topLevelStatTypes = GetJsonFileNames(statJsonsFolder).Select(
+                fname => StatType.ParseJson(statContext, fname));
+            {
+                var startPrinter = new StatStartCode();
+                var subPrinter = new StatCode();
+                startPrinter.statCodePrinter = subPrinter;
+                startPrinter.Namespace = statNamespace;
+
+                foreach (var stat in topLevelStatTypes)
+                {
+                    Console.WriteLine($"Generating code for stat {stat.Name}");
+
+                    subPrinter.stat = stat;
+
+                    File.WriteAllText(
+                        $@"{statAutogenFolder}/{stat.Name}.cs",
+                        startPrinter.TransformText(),
+                        Encoding.UTF8);
+                }
+            }
+
+            var entityTypes = ctx.GetEntityTypes();
+            {
                 // They must live in at least the base namespace hopper
-                if (commonPartEndIndex >= "Hopper".Length)
+                if (commonNamespace.Length >= "Hopper".Length)
                 {
                     var mainPrinter = new AllInitCode()
                     {
@@ -220,7 +256,8 @@ namespace Hopper.Meta
                         behaviors = behaviorWrappers,
                         staticClasses = staticClassesWithExportedMethods,
                         entityTypes = entityTypes,
-                        Namespace = reference.Substring(0, commonPartEndIndex)
+                        statRootScope = statContext.scope,
+                        Namespace = commonNamespace
                     };
 
                     Console.WriteLine("Generating code for the main init function");
@@ -229,7 +266,7 @@ namespace Hopper.Meta
                 }
                 else
                 {
-                    Console.WriteLine($"The common namespace between components must at least contain 'Hopper' (got '{reference.Substring(0, commonPartEndIndex)})'");
+                    Console.WriteLine($"The common namespace between components must at least contain 'Hopper' (got '{commonNamespace})'");
                 }
 
             }

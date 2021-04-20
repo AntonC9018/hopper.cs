@@ -1,6 +1,6 @@
 public struct <#= stat.Name #>
 {
-<# if (stat.metadata.identifiedNestedTypeName == null) { #>
+<# if (!stat.IsIdentifying) { #>
 <# foreach (var field in stat.fields) {  #>
     public <#= field.metadata.type #> <#= field.name #>; 
 <# } #>
@@ -27,56 +27,60 @@ public struct <#= stat.Name #>
 <#      }
         if (i < stat.fields.Count - 1) Write(",");
     } #>
+    
     );
-
+<# if (!stat.IsIdentified) { #>
     public static Index<<#= stat.Name #>> Index;
-
+<# } #>
     public static <#= stat.Name #> Default => new <#= stat.Name #>
     (
 <#  for (int i = 0; i < stat.fields.Count; i++) 
     { 
         var field = stat.fields[i]; #>
         <#= field.name #> : <#= field.metadata.defaultValue #>
-<#      if (i < stat.fields.Count - 1) Write(",");
+        <# if (i < stat.fields.Count - 1) Write(",");
     } #>
+
     );
 
 <# /* It identifies a type (aka it is a source) */ } else { #>
-    public Index<<#= stat.metadata.identifiedNestedTypeName #>> Index;
+    public Index<<#= stat.identifiedType.Name #>> Index;
 
-    public System.Func<<#= stat.metadata.identifiedNestedTypeName #>> Default;
+    public System.Func<<#= stat.identifiedType.Name #>> Default;
+
 <# } #>
-
 <#  foreach (var nestedType in stat.nestedTypes) 
     {
-        stat = nestedType;
-        TransformText();
-    } #> 
-
+        var printer = new StatCode();
+        printer.stat = nestedType;
+        WriteLine(printer.TransformText());
+    } #>
 <#  /* this is not complete as of now, there are edge cases and the code is not very stable
-       but it will work for know */
-    foreach (var field in stat.staticIndentiyingFields) { #>
-    <# var identifiedType = field.metadata.scope.value; #>
-    public static <#= identifiedType.name #> <#= field.name #> = new <#= identifiedType.name #>
+       but it will work for now. TODO: refactor the hell out of this, it is not ok. */
+    foreach (var field in stat.staticIndentiyingFields) 
+    { 
+        var identifyingType = field.metadata.scope.value; 
+        var identifiedType = identifyingType.identifiedType;
+        var identifyingTypeName = identifyingType == stat ? identifyingType.Name : identifyingType.QualifiedName;
+        var identifiedTypeName = identifiedType == stat.identifiedType ? identifiedType.Name : identifiedType.QualifiedName; #>
+    public static <#= identifyingTypeName #> <#= field.name #> = new <#= identifyingTypeName #>
     {
-        
-<#  if (field.metadata.fields != null) 
+<#  if (field.metadata.fields.Count > 0) 
     { #>
-        Default = () => new <#= identifiedType.metadata.identifiedNestedTypeName #>
+        Default = () => new <#= identifiedTypeName #>
         (
 <#      for (int i = 0; i < field.metadata.fields.Count; i++) 
         { 
             var f = field.metadata.fields[i]; #>
-        <#= f.name #> : <#= f.defaultValue #>
+            <#= f.name #> : <#= f.defaultValue #>
 <#          if (i < field.metadata.fields.Count - 1) Write(",");
         } #>
         )
 <#  }
     else
     { #>
-        Default = <#= identifiedType.metadata.identifiedNestedTypeName #>.Default
+        Default = () => <#= identifiedTypeName #>.Default
 <#  }#>
     };
 <#  } #> 
-
 }

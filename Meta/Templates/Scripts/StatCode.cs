@@ -12,5 +12,6 @@ namespace Hopper.Meta.Template
     public partial class StatStartCode
     {
         public StatCode statCodePrinter;
+        public string Namespace;
     }
 }

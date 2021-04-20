@@ -32,7 +32,7 @@ namespace Hopper.Meta
         {
             Stack<string> names = new Stack<string>();
 
-            foreach (var n in symbol.ContainingNamespace.GetNamespaceNames())
+            foreach (var n in symbol.GetNamespaceNames())
             {
                 names.Push(n);
             }

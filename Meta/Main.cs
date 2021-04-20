@@ -8,10 +8,9 @@ namespace Hopper.Meta
     {
         public static async Task Main()
         {
-            StatType.ToCode();
-            // MSBuildLocator.RegisterDefaults();
-            // var generator = new Generator();
-            // await generator.Start();
+            MSBuildLocator.RegisterDefaults();
+            var generator = new Generator();
+            await generator.Start();
         }
     }
 }

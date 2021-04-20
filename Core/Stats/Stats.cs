@@ -59,9 +59,16 @@ namespace Hopper.Core.Stats
         IStat Copy();
     }
 
+    public class DefaultStats : Stats
+    {
+        public DefaultStats(DefaultStats defaultStats = null) : base(defaultStats)
+        {
+        }
+    }
+
     public partial class Stats : IComponent
     {
-        [Inject] public Stats defaultStats;
+        [Inject] public DefaultStats defaultStats;
         public Dictionary<Identifier, IStat> store;
 
         public void Init()

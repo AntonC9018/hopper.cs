@@ -7,18 +7,27 @@ namespace Hopper.Meta.Stats
     {
         public Dictionary<string, Scope<T>> children; 
         public Scope<T> parentScope;
+        public string name;
         public T value; // may have a stat defined here
 
-        public Scope(T value, Scope<T> parentScope = null)
+        public Scope(string name, T value, Scope<T> parentScope)
         {
-            this.parentScope = parentScope;
+            this.name = name;
             this.value = value;
+            this.parentScope = parentScope;
             this.children = new Dictionary<string, Scope<T>>();
         }
 
         public bool IsRoot => parentScope == null;
 
-        public void Add(string name, Scope<T> scope)
+        public Scope<T> Add(string name, T value)
+        {
+            var scope = new Scope<T>(name, value, this);
+            AddScope(name, scope);
+            return scope;
+        }
+
+        public void AddScope(string name, Scope<T> scope)
         {
             children.Add(name, scope);
         }
@@ -54,6 +63,17 @@ namespace Hopper.Meta.Stats
                 return null;
             }
             return this;
+        }
+
+        public IEnumerable<T> GetAllChildrenValues()
+        {
+            if (value != null) yield return value;
+            
+            foreach (var kvp in children)
+            foreach (var value in kvp.Value.GetAllChildrenValues())
+            {
+                yield return value;
+            }
         }
     }
 }

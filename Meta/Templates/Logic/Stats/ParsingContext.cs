@@ -8,19 +8,22 @@ namespace Hopper.Meta.Stats
         public List<string> tokenNames;
         public Scope<StatType> scope;
 
-        public ParsingContext(string fileName)
+        public ParsingContext(string rootScopeName)
         {
             this.tokenNames = new List<string>();
+            this.scope = new Scope<StatType>(rootScopeName, null, null);
+        }
+
+        public void ResetFileName(string fileName)
+        {
             this.fileName = fileName;
-            this.scope = new Scope<StatType>(null);
         }
 
         public void PushScope(string scopeName)
         {
-            var newScope = new Scope<StatType>(null, scope);
-            scope.Add(scopeName, newScope);
-            scope = newScope;
+            scope = scope.Add(scopeName, null);
         }
+
         public void PushScope(StatType stat)
         {
             if (scope.children.ContainsKey(stat.name))
@@ -31,9 +34,7 @@ namespace Hopper.Meta.Stats
             }
             else
             {
-                var newScope = new Scope<StatType>(stat, scope);
-                scope.Add(stat.name, newScope);
-                scope = newScope;
+                scope = scope.Add(stat.name, stat);
             }
         }
 

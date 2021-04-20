@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Meta;
+using Hopper.Meta.Stats;
 
 namespace Hopper.Meta.Template
 {
@@ -10,5 +11,6 @@ namespace Hopper.Meta.Template
         public IEnumerable<BehaviorSymbolWrapper> behaviors;
         public IEnumerable<StaticClassSymbolWrapper> staticClasses;
         public IEnumerable<EntityTypeWrapper> entityTypes;
+        public Scope<StatType> statRootScope;
     }
 }
