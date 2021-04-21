@@ -16,7 +16,7 @@ namespace Hopper.Core.Components.Basic
     {
         public class Context : StandartContext
         {
-            public List<Target> targets;
+            public AttackTargetingContext targetingContext;
             [Omit] public bool haveStatsBeenSet;
             [Omit] public Attack attack;
             [Omit] public Push push;
@@ -57,34 +57,29 @@ namespace Hopper.Core.Components.Basic
         /// <summary>
         /// This is one of the default handlers of the CHECK chain.
         /// It finds targets using the target provider of the currently equipped weapon, if the entity has an inventory.
-        /// Otherwise, the default target provider is used.
-        /// @Rethink this should really be two separate handlers: one for entities with inventory and one for ones without one. There's no point in being extra abstract.
         /// </summary>
         [Export(Priority = PriorityRank.Low)] public static void SetTargets(Context ctx)
         {
-            if (ctx.targets == null)
+            if (
+                ctx.targetingContext == null
+                && ctx.actor.TryGetInventory(out var inventory)
+                && inventory.TryGetWeapon(out var weapon)
+                && weapon.TryGetWeaponTargetProvider(out var provider))
             {
-                if (ctx.actor.TryGetInventory(out var inventory))
-                {
-                    if (inventory.GetWeapon(out var weapon))
-                    {
-                        // Get targets from weapon, using its target provider
-                        // @Incomplete: Save these initial targets at history or something
-                        // since we don't want our context to have excessive data. 
-                        // It may be useful in some cases, but not currenlty
-                        ctx.targets = weapon
-                            .GetTargets(ctx.actor, ctx.direction)
-                            .ConvertAll(t => new Target(t.entity, t.piece.dir));
-                    }
-                    else
-                    {
-                        ctx.targets = new List<Target>();
-                    }
-                }
-                else
-                {
-                    ctx.targets = TargetProvider.SimpleAttack.GetTargets(ctx.actor, ctx.direction).ToList();
-                }
+                ctx.targetingContext = provider.GetTargets(ctx.actor, ctx.direction);
+            }
+        }
+
+        /// <summary>
+        /// This is one of the default handlers of the CHECK chain.
+        /// It gets the entity that is right in the direction that this entity has decided to attack.
+        /// Should be used for enemies without a weapon in the inventory.
+        /// </summary>
+        [Export(Priority = PriorityRank.Low)] public static void SetTargetsRightBeside(Context ctx)
+        {
+            if (ctx.targetingContext == null)
+            {
+                ctx.targetingContext = WeaponTargetProvider.Simple.GetTargets(ctx.actor, ctx.direction);
             }
         }
 
@@ -93,11 +88,11 @@ namespace Hopper.Core.Components.Basic
         /// It tries to ATTACK all the targets one by one.
         /// </summary>
         [Export] public static void ApplyAttacks(
-            List<Target> targets, Attack attack, Entity actor)
+            AttackTargetingContext targetingContext, Attack attack, Entity actor)
         {
-            foreach (var target in targets)
+            foreach (var target in targetingContext.targetContexts)
             {
-                TryApplyAttack(target.entity, actor, (Attack)attack.Copy(), target.direction);
+                TryApplyAttack(target.transform.entity, actor, attack.Copy(), target.direction);
             }
         }
 
@@ -105,11 +100,11 @@ namespace Hopper.Core.Components.Basic
         /// This is one of the default handlers of the DO chain.
         /// It tries to PUSH all the targets one by one.
         /// </summary>
-        [Export] public static void ApplyPushes(List<Target> targets, Push push)
+        [Export] public static void ApplyPushes(AttackTargetingContext targetingContext, Push push)
         {
-            foreach (var target in targets)
+            foreach (var target in targetingContext.targetContexts)
             {
-                target.entity.TryBePushed((Push)push.Copy(), target.direction);
+                target.transform.entity.TryBePushed(push.Copy(), target.direction);
             }
         }
 

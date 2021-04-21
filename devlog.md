@@ -505,3 +505,13 @@ public interface IWorldSpot
 ```
 
 Like, what is the point of this? Why not just have it be a struct and cast the Entity to this struct implicitly? 
+
+There are different targeting options employed currently in the code:
+1. Buffered
+2. Unbuffered
+
+The buffered version uses Pattern objects to get relevant entities from the relevant positions, then runs a sequence of handlers to select just one or just a few entities from the list of targeted entities.
+
+I guess this is fine, but the problem is that there is no benefit in using chains over simply functions.
+Why not just call a bunch of functions in succession, or compose them with + operators?
+

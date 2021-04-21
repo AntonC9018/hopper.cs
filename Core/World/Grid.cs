@@ -33,6 +33,11 @@ namespace Hopper.Core
             return pos.y < 0 || pos.x < 0 || pos.y >= Height || pos.x >= Width;
         }
 
+        public bool IsInBounds(IntVector2 pos)
+        {
+            return !IsOutOfBounds(pos);
+        }
+
         public Cell GetCellAt(IntVector2 pos)
         {
             return m_grid[pos.y, pos.x];
@@ -51,7 +56,7 @@ namespace Hopper.Core
 
         public bool AddTransform(Transform transform)
         {
-            if (!IsOutOfBounds(transform.position))
+            if (IsInBounds(transform.position))
             {
                 GetCellAt(transform.position).m_transforms.Add(transform);
                 return true;
@@ -87,10 +92,28 @@ namespace Hopper.Core
             return GetAllFromLayer(position, direction, layer).FirstOrDefault();
         }
 
+        public bool TryGetTransformFromLayer(
+            IntVector2 position, IntVector2 direction, Layer layer, out Transform transform)
+        {
+            transform = GetTransformFromLayer(position, direction, layer);
+            return transform != null;
+        }
+        
+        public bool HasNoTransformAt(IntVector2 position, IntVector2 direction, Layer layer)
+        {
+            return GetTransformFromLayer(position, direction, layer) == null;
+        }
+        
+        public bool HasTransformAt(IntVector2 position, IntVector2 direction, Layer layer)
+        {
+            return !HasNoTransformAt(position, direction, layer);
+        }
+
+
         public IEnumerable<Transform> GetAllFromLayer(
             IntVector2 position, IntVector2 direction, Layer layer)
         {
-            if (!IsOutOfBounds(-direction + position))
+            if (IsInBounds(-direction + position))
             {
                 var prevCell = GetCellAt(-direction + position);
                 foreach (var entity in prevCell.GetAllDirectedFromLayer(direction, layer))

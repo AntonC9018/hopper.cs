@@ -40,19 +40,19 @@ namespace Hopper.Core
             // ResetInGrid(entity, null);
         }
 
-        public void RemoveFromGrid(Entity entity, GridManager grid)
+        public void RemoveFromGrid(GridManager grid)
         {
             var cell = grid.GetCellAt(position);
-            bool wasRemoved = cell.m_transforms.Remove(entity);
+            bool wasRemoved = cell.m_transforms.Remove(this);
             Assert.That(wasRemoved, "Trying to remove an entity which is not in the cell is not allowed");
-            cell.FireLeaveEvent(entity);
+            cell.FireLeaveEvent(this);
         }
 
-        public void ResetInGrid(Entity entity, GridManager grid)
+        public void ResetInGrid(GridManager grid)
         {
             var cell = grid.GetCellAt(position);
-            cell.m_transforms.Add(entity);
-            cell.FireEnterEvent(entity);
+            cell.m_transforms.Add(this);
+            cell.FireEnterEvent(this);
         }
 
         public bool HasBlockRelative(IntVector2 direction, Layer layer)

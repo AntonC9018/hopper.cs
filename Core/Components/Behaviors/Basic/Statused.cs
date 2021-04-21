@@ -17,7 +17,7 @@ namespace Hopper.Core.Components.Basic
         {
             public Entity actor;
             public StatusParam[] statusParams;
-            [Omit] public DictFile resistance;
+            [Omit] public int resistance;
         }
 
         public HashSet<IStatus> _appliedStatuses = new HashSet<IStatus>();

@@ -165,7 +165,7 @@ namespace Hopper.Meta
                 }
                 else
                 {
-                    throw new GeneratorException($"The name {s.Name} is invalid. It does not correspond directly to any of the Context fields and the type of the parameter was not a component type");
+                    throw new GeneratorException($"The name \"{s.Name}\" is invalid. It does not correspond directly to any of the Context fields and the type of the parameter was not a component type");
                 }
             }
 

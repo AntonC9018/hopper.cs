@@ -5,26 +5,17 @@ namespace Hopper.Core.Targeting
 {
     public class Piece
     {
-        // vector offset
-        public IntVector2 pos;
-        // = knockback direction
-        public IntVector2 dir;
-        // null is no checking required
-        // empty list to check all previous indices
-        // list of indices to check the specified indices
-        public int[] reach;
-
-        // set automatically, if created for a pattern. otherwise, leave at default
-        public int index;
+        public IntVector2 relativePosition;
+        public IntVector2 knockbackDirection;
+        public Reach reach;
 
         public Piece Rotate(double angle)
         {
             return new Piece
             {
-                pos = pos.RotateAndRound(angle),
-                dir = dir.RotateAndRound(angle),
-                reach = reach,
-                index = index
+                relativePosition = relativePosition.RotateAndRound(angle),
+                knockbackDirection = knockbackDirection.RotateAndRound(angle),
+                reach = reach
             };
         }
 
@@ -33,25 +24,24 @@ namespace Hopper.Core.Targeting
             double angle = IntVector2.Right.AngleTo(direction);
             return new Piece
             {
-                pos = pos.RotateAndRound(angle),
-                dir = dir.RotateAndRound(angle),
-                reach = reach,
-                index = index
+                relativePosition = relativePosition.RotateAndRound(angle),
+                knockbackDirection = knockbackDirection.RotateAndRound(angle),
+                reach = reach
             };
         }
 
         public static readonly Piece Default = new Piece
         {
-            pos = IntVector2.Right,
-            dir = IntVector2.Right,
-            reach = null
+            relativePosition = IntVector2.Right,
+            knockbackDirection = IntVector2.Right,
+            reach = new Reach(true)
         };
 
         public static readonly Piece Under = new Piece
         {
-            pos = IntVector2.Zero,
-            dir = IntVector2.Right,
-            reach = null
+            relativePosition = IntVector2.Zero,
+            knockbackDirection = IntVector2.Right,
+            reach = new Reach(true)
         };
     }
 }

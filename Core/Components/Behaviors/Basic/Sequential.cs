@@ -17,10 +17,10 @@ namespace Hopper.Core.Components.Basic
         //     );
 
         [Alias("GetMovs")] 
-        public List<IntVector2> GetMovs(Entity actor)
+        public IEnumerable<IntVector2> GetMovs(Entity actor)
         {
             Assert.That(sequence.CurrentStep.movs != null);
-            return sequence.CurrentStep.movs(actor);
+            return sequence.CurrentStep.movs(actor.GetTransform());
         }
 
         public void ApplyCurrentAlgo(Acting.Context ctx)

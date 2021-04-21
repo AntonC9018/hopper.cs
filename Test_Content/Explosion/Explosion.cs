@@ -46,7 +46,7 @@ namespace Hopper.Test_Content.Explosion
         };
 
         private static readonly MultiAtkTargetProvider targetProvider =
-            new MultiAtkTargetProvider(Pattern.Under, TargetLayers);
+            new MultiAtkTargetProvider(PieceAttackPattern.Under, TargetLayers);
         private static Attackable.Params CreateMeta() => new Attackable.Params(BaseAtk, null);
 
         // TODO: Add a parameter for exposion attack stat

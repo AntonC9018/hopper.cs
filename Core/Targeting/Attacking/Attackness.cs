@@ -1,8 +1,9 @@
 using Hopper.Core.Components;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Targeting
 {
-    public enum Attackness
+    [Flags] public enum Attackness
     {
         CAN_BE_ATTACKED = 0b_0000_0001,
         BY_DEFAULT = 0b_0000_1000,
@@ -14,18 +15,5 @@ namespace Hopper.Core.Targeting
         MAYBE = CAN_BE_ATTACKED | IS_BLOCK, // can be attacked, not by default
         SKIP = CAN_BE_ATTACKED,             // can be attacked, no block
         CAN_BE_ATTACKED_IF_NEXT_TO = CAN_BE_ATTACKED | BY_DEFAULT | IS_BLOCK | IF_NEXT_TO
-    }
-
-    public static class AttacknessExtensions
-    {
-        public static bool Is(this Attackness attackness, Attackness checkAgainst)
-        {
-            return (attackness & checkAgainst) != 0;
-        }
-
-        public static bool IsNot(this Attackness attackness, Attackness checkAgainst)
-        {
-            return (attackness & checkAgainst) == 0;
-        }
     }
 }

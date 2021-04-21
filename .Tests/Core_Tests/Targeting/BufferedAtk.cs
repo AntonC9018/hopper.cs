@@ -43,11 +43,11 @@ namespace Hopper.Tests
                 ^ - -   Expecting to get the entity as the target
                 - - -
             */
-            var pattern = new Pattern(
+            var pattern = new PieceAttackPattern(
                 new Piece
                 {
-                    dir = IntVector2.Right,
-                    pos = IntVector2.Right,
+                    knockbackDirection = IntVector2.Right,
+                    relativePosition = IntVector2.Right,
                     reach = null
                 }
             );
@@ -76,17 +76,17 @@ namespace Hopper.Tests
              2  B - -   Expecting to get an empty list, since the reach is not set to null 
                 ^ - -
             */
-            var pattern = new Pattern(
+            var pattern = new PieceAttackPattern(
                 new Piece
                 {
-                    dir = IntVector2.Right,
-                    pos = IntVector2.Right,
+                    knockbackDirection = IntVector2.Right,
+                    relativePosition = IntVector2.Right,
                     reach = null
                 },
                 new Piece
                 {
-                    dir = IntVector2.Right,
-                    pos = IntVector2.Right * 2,
+                    knockbackDirection = IntVector2.Right,
+                    relativePosition = IntVector2.Right * 2,
                     reach = new int[0]
                 }
             );
@@ -126,17 +126,17 @@ namespace Hopper.Tests
              2  - - -   Expecting to NOT get the entity as the target
                 ^ - -
             */
-            var pattern = new Pattern(
+            var pattern = new PieceAttackPattern(
                 new Piece
                 {
-                    dir = IntVector2.Right,
-                    pos = IntVector2.Right,
+                    knockbackDirection = IntVector2.Right,
+                    relativePosition = IntVector2.Right,
                     reach = null
                 },
                 new Piece
                 {
-                    dir = IntVector2.Right,
-                    pos = IntVector2.Right * 2,
+                    knockbackDirection = IntVector2.Right,
+                    relativePosition = IntVector2.Right * 2,
                     reach = null
                 }
             );

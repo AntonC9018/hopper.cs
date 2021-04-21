@@ -6,7 +6,7 @@ namespace Hopper.Core
         {
             float minDist = 0;
             Entity closestPlayerTransform = null;
-            foreach (var player in World.Global.State.Players)
+            foreach (var player in World.Global.state.Players)
             {
                 float curDist = (transform.position - player.GetTransform().position).SqMag;
 

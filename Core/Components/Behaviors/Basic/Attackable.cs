@@ -28,7 +28,7 @@ namespace Hopper.Core.Components.Basic
         /// <summary> 
         /// Specifies the criteria used for deciding whether this entity will be targeted by an attack 
         /// </summary>
-        [Inject] public Attackness m_attackness;
+        [Inject] public Attackness _attackness;
 
         /// <returns>
         /// Returns true if the owner of the queried attackable behavior can be attacked by the given attacker
@@ -37,14 +37,14 @@ namespace Hopper.Core.Components.Basic
             Transform transform, Transform attacker_Transform)
         {
             // if can be attacked only if next to
-            if (m_attackness.Is(Attackness.CAN_BE_ATTACKED_IF_NEXT_TO))
+            if (_attackness.HasFlag(Attackness.CAN_BE_ATTACKED_IF_NEXT_TO))
             {
                 // returns true if the attacker is next to the entity
                 return transform == null 
                     || (transform.position - attacker_Transform.position).Abs().ComponentSum() <= 1;
             }
             // if can be attacked by default
-            return m_attackness.Is(Attackness.CAN_BE_ATTACKED | Attackness.BY_DEFAULT);
+            return _attackness.HasFlag(Attackness.CAN_BE_ATTACKED | Attackness.BY_DEFAULT);
         }
 
         
