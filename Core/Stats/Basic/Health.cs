@@ -1,6 +1,6 @@
 namespace Hopper.Core.Stat.Basic
 {
-    public class Health
+    public struct Health
     {
         public int amount;
 

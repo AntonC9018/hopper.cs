@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Targeting
 {
-    public class UnbufferedTargetProvider : IComponent
+    public partial class UnbufferedTargetProvider : IComponent
     {
         [Inject] private IGeneralizedPattern _pattern;
         [Inject] private Layer _targetedLayer;

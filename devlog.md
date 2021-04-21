@@ -515,3 +515,105 @@ The buffered version uses Pattern objects to get relevant entities from the rele
 I guess this is fine, but the problem is that there is no benefit in using chains over simply functions.
 Why not just call a bunch of functions in succession, or compose them with + operators?
 
+Ended up splitting the two implementations: the buffered one and the unbuffered one completely. The buffered implementation just works with attacking (highly parameterizable one-class pattern through piece objects) while the unbuffered one works with the pattern interface and is more generic. To be noted, it disallows passing extra data with the targeting context since it lacks the context altogether (the individual targets are processed independently). 
+
+
+### Items
+
+Items will be entities. When they are dropped and exist in the world, they will be added to the grid. When they are picked up, they will be removed from it, but the entity itself will not die.
+
+It may be a good idea to remove the transform component together with taking the item out of the grid.
+
+It will have the following components:
+1. `ItemComponent` holds the logic associated with a particular item. In fact, this is going to be a parametrizeable behavior with chains.
+2. `Transform` to indicate position in the world.
+3. If the items will become susceptible to explosions (I have not decided yet) they should also be granted the attackable and the damageable behaviors.
+4. Shovels will have unbuffered target providers, while melee weapons will have weapon target providers. (These are both components).
+5. Ranged weapons will also have a unbuffered target provider, which they will make use of upon activation. 
+
+Now, it is not clear how the activation should work. There are a couple of possibilities:
+
+1. As I'm doing it now: the item manually attaches a handler onto the chain for one of the action types on the controllable behavior. 
+This way, when the player presses a corresponding button, the item's handler will pick up on that and force the item's selected action to be activated. 
+This scales just fine to entities without controllable behavior: the e.g. sequence may just reference the action defined by the item and so the entity will e.g. shoot no problem, although at the same time the entity will have to have an inventory and the item will have to be stored in there.
+
+2. When a key is pressed, go to the inventory and look for the items that mention this action type. 
+This way, the item's activation condition will be centralized.
+I feel that this is way more complicated for these reasons:
+    - Cases when one item references multiple action slots have to be accounted for;
+    - Cases when the item does not actually need to be activated have to be detected and then the next item in sequence will have to try to activate;
+    - It is less efficient (probably) because one will have to iterate through all the items;
+    - Hard to introduce priority;
+    - Some more complicated cases just cannot be covered by this approach.
+
+There is a problem though. The logical thing is to associate each (activateable) slot in the inventory to a button slot in the controllable behavior. This way, the item's side effects will be separated from the activations:
+- First, traverse some check action chain with the selected action code;
+- Second, if that succeded, go to the inventory, look at that slot and set the action to activating that item;
+- Set the actions direction to player's orientation;
+- When time comes to act, just execute the action.
+
+The only problem with this approach is that check will not allow for action substitution, but that can be remedied by trying to get an action from handlers at that stage. 
+But here is a problem again: those handlers will have to check the actual action slot selected. If they were in the inventory, that would have been easier. 
+So, there should be a before chain and a after chain and in between those the actual getting the action of the particular item, all stored in the inventory. 
+But then the problem is that the inventory now is tighly coupled with action slots, which is probably undesirable if we wanted ordinary entities to have an inventory.
+Although actually, this is totally fine. 
+To get the action the entities may just ask the slot in the inventory to give them an action for the specified direction instead of setting them directly.
+The inventory is a component and must not be inherited!
+
+Ok, so, summing it all up:
+1. There are three types of (input) action slots:
+    - Vector action slot (direction input);
+    - Item action slot (reach out to the inventory and retrieve the action from there);
+    - Other (direct chains on the controllable behavior. This may actually be just totally omitted and is probably never going to prove useful).
+2. The items will define an activation for the ItemComponent in form of chain handlers.
+3. The items will also define a "get action" strategy for the ItemComponent (again, through chains).
+4. The slots in the inventory will contain a before and an after chains (probably, I'm not sure if this is useful).
+5. Actually, I think bullet 4 is not useful. 
+There should be one such chain, in the controllable behavior. It will be responsible for completely overwriting an action gained from the item.
+Although a similar algorithm will have to be written the second time for the sequential entities.
+I feel like this is not the solution also. 
+What I'm certain of is that the actions will be retrieved from slots, whether or not the chains for before or after should exist for all the actions or just the one particular action slot we'll see later when it becomes more clear what is actually needed and what is not.
+So let's first implement the part with the slots.
+6. The slots in the inventory will contain either:
+- a single activateable item;
+- a single non-activateable item; (not associated an input)
+- a countable activateable item; (associated a slot)
+- a countable non-activateable item; (not associated an input)
+7. The slots in the inventory may or may not be mapped to inputs; the same is true for slots, although this idea is going to be neglected for now.
+
+For now, I'm not going to worry about mutiple possible slots for an item.
+
+What now is clear is that the items will have to be handled differently, like, completely differently depending on the category:
+1. Unique activateable items will be as described above: they will have the transform component already in place and they will not stack.
+2. Countable items WILL STACK, but their effect will not. So e.g. bombs need a counter. The big difference is that when such item is picked up, it must be destroyed and coalesced with the one already in the inventory. 
+This is hard, because how do you code it then? 
+Should any item just have a Pickuppable component with the pickup handlers and a separate active item component with the activate handler? 
+Should all items' transform be taken away when they are picked up?
+
+Actually yes, that makes sense. This split (Pickuppable and Active) is not enough though. It does not account for passive effects: should they be on the pickuppable or on the active? 
+If they were to be on the pickuppable, then how do you check if this item has already been picked up to not activate the handler?
+
+So the answer is probably more separation:
+1. Pickuppable responsible for whether an item can be picked up.
+2. ~~PassiveItem is activated once the item has been picked up~~.
+3. ~~ActionItem is queried for getting the action.~~
+4. ActiveItem is responsible for the action execution.
+5. ItemCounter.
+
+Now, the inventory can check whether an item can or cannot be activated by checking if the ActionItem is present on the item entity.
+
+Pickuppable can be used for not letting the player get the item by walking over it (together with a sort of cost component, through the check chain). 
+Pickuppable will also remove the item off the grid and remove its transform components. 
+If the item is countable, it will have to be counter toward the ItemCounter and destroyed. 
+If it is not countable, it should be just appended to the Inventory, given as input. 
+
+~~Action item has an explicit input mapping attached to it. ~~
+~~It will spit out an action as the result of its activation.~~
+
+Active item has an activation method and can be activated. 
+This is the place where one would add the particular handlers e.g. handling the exact shooting mechanism.
+If an item is active, it will be activated automatically when the input mapped to it is provided. 
+
+
+There may be items that overwrite other items' active abilities. 
+This can be achieved by changing the handlers of that item with your own ones, from the Active, or overwriting the action returned by Action.

@@ -23,7 +23,7 @@ namespace Hopper.Core
             return m_transforms.FindLast(t => t.layer.HasFlag(layer));
         }
 
-        public List<Transform> GetAllFromLayer(Layer layer)
+        public IEnumerable<Transform> GetAllFromLayer(Layer layer)
         {
             return m_transforms.Where(t => t.layer.HasFlag(layer));
         }
