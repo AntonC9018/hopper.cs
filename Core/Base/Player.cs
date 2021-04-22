@@ -13,23 +13,6 @@ namespace Hopper.Core
     [EntityType]
     public static class Player
     {
-        /* TODO: generate such code from json
-            {
-                name: "Player",
-                components: [
-                    
-                    { name = "Acting"
-                    , "_DoAction" = "SimpleAlgo", // the default should be this?
-                    , "_CalculateAction" = null   // should not be required
-                    },
-
-                    { name = "
-
-                    }
-                ]
-            }
-        */
-
         public static EntityFactory Factory;
 
         public static void AddComponents(Entity subject)

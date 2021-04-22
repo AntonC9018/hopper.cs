@@ -166,15 +166,15 @@ namespace Hopper.Core
             return action;
         }
 
-        public static DirectedAction CreateBehavioral<T>()
+        public static DirectedAction CreateBehavioral<T>(Index<T> index)
             where T : IBehavior, IStandartActivateable
         {
             var action = new DirectedAction();
-            action.function = ActivateBehavior<T>;
+            action.function = (e, d) => ActivateBehavior(index, e, d);
 
             if (typeof(IBehaviorPredictable).IsAssignableFrom(typeof(T)))
             {
-                action.predict = PredictViaBehavior<T>;
+                action.predict = (e, d) => PredictViaBehavior(index, e, d);
             }
 
             return action;

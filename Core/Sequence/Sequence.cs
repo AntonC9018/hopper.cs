@@ -1,4 +1,5 @@
 using System.Runtime.Serialization;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils;
 
 namespace Hopper.Core
@@ -28,7 +29,7 @@ namespace Hopper.Core
 
         public Step CurrentStep => m_steps[currentStepIndex];
 
-        public void TickAction(Entity actor)
+        public void TickAction(Acting acting)
         {
             currentRepeatCount++;
             Step currentStep = m_steps[currentStepIndex];
@@ -36,15 +37,15 @@ namespace Hopper.Core
             if (!currentStep.IsRepeatLimitMet(currentRepeatCount))
                 return;
 
-            int relativeIndex = currentStep.CheckSuccessAndGetRelativeIndex(actor);
+            int relativeIndex = currentStep.CheckSuccessAndGetRelativeIndex(acting);
 
             if (relativeIndex != 0)
             {
                 currentStepIndex += relativeIndex + m_steps.Length;
                 currentStepIndex %= m_steps.Length;
                 currentRepeatCount = 0;
-                currentStep.Exit(actor);
-                m_steps[currentStepIndex].Enter(actor);
+                currentStep.Exit(acting);
+                m_steps[currentStepIndex].Enter(acting);
             }
         }
     }
