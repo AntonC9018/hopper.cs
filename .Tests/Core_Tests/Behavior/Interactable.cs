@@ -71,16 +71,16 @@ namespace Hopper.Tests
             var spec = new PoolItemContentSpec("test");
             ActivateInteractableWith(spec);
 
-            Assert.AreEqual(((DroppedItem)GetFirstEntity()).Item.Id, item.Id);
+            Assert.AreEqual(((ItemBase)GetFirstEntity()).Item.Id, item.Id);
         }
 
         [Test]
         public void Test_SetEntity()
         {
-            var spec = new SetEntityContentSpec(DroppedItem.Factory);
+            var spec = new SetEntityContentSpec(ItemBase.Factory);
             ActivateInteractableWith(spec);
 
-            Assert.AreEqual(GetFirstEntity().GetFactoryId(), DroppedItem.Factory.Id);
+            Assert.AreEqual(GetFirstEntity().GetFactoryId(), ItemBase.Factory.Id);
         }
 
         [Test]
@@ -89,7 +89,7 @@ namespace Hopper.Tests
             var spec = new SetItemContentSpec(item);
             ActivateInteractableWith(spec);
 
-            Assert.AreEqual(((DroppedItem)GetFirstEntity()).Item.Id, item.Id);
+            Assert.AreEqual(((ItemBase)GetFirstEntity()).Item.Id, item.Id);
         }
     }
 }

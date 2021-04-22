@@ -45,7 +45,7 @@ namespace Hopper.Test_Content
                 Action.CreateBehavioral<Attacking>(),
                 Action.CreateBehavioral<Moving>()
             );
-            TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.GOLD;
+            TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.ITEM;
             Steps = new Step[]
             {
                 new Step

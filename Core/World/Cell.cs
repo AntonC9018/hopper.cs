@@ -18,6 +18,8 @@ namespace Hopper.Core
             return m_transforms[0];
         }
 
+        public IEnumerable<Transform> GetAllTransforms() => m_transforms;
+
         public Transform GetAnyTransformFromLayer(Layer layer)
         {
             return m_transforms.FindLast(t => t.layer.HasFlag(layer));

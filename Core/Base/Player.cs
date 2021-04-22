@@ -61,7 +61,7 @@ namespace Hopper.Core
             Controllable.AddTo(subject, null);
 
             // TODO: rename the namespaces
-            Stats.AddTo(subject);
+            Stats.AddTo(subject, Registry.Global._defaultStats);
             History.History.AddTo(subject);
         }
 

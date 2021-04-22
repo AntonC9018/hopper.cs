@@ -594,7 +594,7 @@ Actually yes, that makes sense. This split (Pickuppable and Active) is not enoug
 If they were to be on the pickuppable, then how do you check if this item has already been picked up to not activate the handler?
 
 So the answer is probably more separation:
-1. Pickuppable responsible for whether an item can be picked up.
+1. ~~Pickuppable~~ `Equippable` responsible for whether an item can be picked up.
 2. ~~PassiveItem is activated once the item has been picked up~~.
 3. ~~ActionItem is queried for getting the action.~~
 4. ActiveItem is responsible for the action execution.

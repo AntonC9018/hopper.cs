@@ -9,18 +9,20 @@ namespace Hopper.Core.Retouchers
         [Export(Chain = "Displaceable.Do", Dynamic = true)]
         private static void OnDisplace(Inventory inventory, Transform transform)
         {
-            foreach (var droppedItem in transform.GetCell().m_transforms)
+            foreach (var itemTransform in transform.GetCell().GetAllTransforms())
             {
-                if (droppedItem.entity.TryGetItemComponent(out var item) 
-                    && inventory.CanEquipItem(item))
+                if (itemTransform.entity.TryGetEquippable(out var equippable))
                 {
-                    // eventually, kill through an abstraction
-                    droppedItem.entity.Die();
-                    inventory.Equip(item);
+                    equippable.Activate(itemTransform.entity, transform.entity, inventory); 
                 }
             }
 
-            inventory.DropExcess();
+            foreach (var item in inventory.GetExcess())
+            {
+                item.GetTransform().ResetInGrid();
+            }
+            
+            inventory.ClearExcess();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Hopper.Test_Content.Explosion
         private static TargetLayers TargetLayers = new TargetLayers
         {
             targeted = Layer.DROPPED
-                | Layer.GOLD
+                | Layer.ITEM
                 | Layer.MISC
                 | Layer.PROJECTILE
                 | Layer.REAL

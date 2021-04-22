@@ -12,7 +12,7 @@ namespace Hopper.Test_Content
     public class Gold : Entity, IGold
     {
         public int Amount { get; set; }
-        public override Layer Layer => Layer.GOLD;
+        public override Layer Layer => Layer.ITEM;
 
         public static Gold Drop(IntVector2 pos, int amount, World world)
             => Drop(pos, amount, world, Factory);
@@ -21,7 +21,7 @@ namespace Hopper.Test_Content
         {
             var cell = world.grid.GetCellAt(pos);
             if (cell == null) return null;
-            var gold = (Gold)cell.GetAnyEntityFromLayer(Layer.GOLD);
+            var gold = (Gold)cell.GetAnyEntityFromLayer(Layer.ITEM);
             if (gold == null)
             {
                 gold = world.SpawnEntity(Factory, pos);
@@ -44,7 +44,7 @@ namespace Hopper.Test_Content
 
         private static void PickUp(Displaceable.Context ev)
         {
-            var golds = ev.actor.GetCell().GetAllFromLayer(Layer.GOLD);
+            var golds = ev.actor.GetCell().GetAllFromLayer(Layer.ITEM);
             foreach (var gold in golds)
             {
                 if (gold != null && gold.IsDead == false)

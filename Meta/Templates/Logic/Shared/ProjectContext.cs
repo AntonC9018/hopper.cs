@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.FindSymbols;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Meta
 {
@@ -95,8 +96,10 @@ namespace Hopper.Meta
 
             foreach (var typeSymbol in typeSymbols)
             {
-                if (typeSymbol.IsStatic && typeSymbol.GetAttributes().Any(
-                    a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.entityTypeAttribute)))
+                if (typeSymbol.IsStatic 
+                    && typeSymbol.GetAttributes().Any(
+                        a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.entityTypeAttribute)
+                            && a.MapToType<EntityTypeAttribute>().Abstract == false))
                 {
                     var wrapper = new EntityTypeWrapper(typeSymbol);
                     wrapper.InitWithErrorHandling(this);

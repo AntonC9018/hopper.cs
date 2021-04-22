@@ -2,25 +2,25 @@ using System.Collections.Generic;
 
 namespace Hopper.Core
 {
-    public struct RuntimeRegistry<T>
+    public struct StaticRegistry<T>
     {
         public IdentifierAssigner assigner;
-        public Dictionary<RuntimeIdentifier, T> map;
+        public Dictionary<Identifier, T> map;
 
         public void Init()
         {
             assigner = new IdentifierAssigner();
-            map = new Dictionary<RuntimeIdentifier, T>();
+            map = new Dictionary<Identifier, T>();
         }        
 
-        public RuntimeIdentifier Add(T thing)
+        public Identifier Add(int modId, T thing)
         {
-            var id = new RuntimeIdentifier(assigner.Next());
+            var id = new Identifier(modId, assigner.Next());
             map.Add(id, thing);
             return id;
         }
 
-        public void Remove(RuntimeIdentifier id)
+        public void Remove(Identifier id)
         {
             map.Remove(id);
         }

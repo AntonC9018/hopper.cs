@@ -153,6 +153,7 @@ namespace Hopper.Shared.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public class EntityTypeAttribute : Attribute 
     {
-        bool IsGenerated = false;
+        public bool IsGenerated = false;
+        public bool Abstract = false;
     }
 }

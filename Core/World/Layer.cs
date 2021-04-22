@@ -8,7 +8,7 @@ namespace Hopper.Core
         MISC = 0b_0000_0010,
         WALL = 0b_0000_0100,
         PROJECTILE = 0b_0000_1000,
-        GOLD = 0b_0001_0000,
+        ITEM = 0b_0001_0000,
         FLOOR = 0b_0010_0000,
         TRAP = 0b_0100_0000,
         DROPPED = 0b_1000_0000,

@@ -27,6 +27,7 @@ namespace Hopper.Core
         public Entity Instantiate()
         {
             Entity entity = new Entity(); // subject.Clone()?
+            entity.typeId = id;
             entity.components = new Dictionary<Identifier, IComponent>();
 
             // Instantiate and save behaviors

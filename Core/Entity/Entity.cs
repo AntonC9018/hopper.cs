@@ -1,4 +1,5 @@
 using Hopper.Core.Components;
+using System;
 using System.Collections.Generic;
 
 namespace Hopper.Core
@@ -6,7 +7,9 @@ namespace Hopper.Core
     // TODO: make this a struct!
     public sealed class Entity
     {
+        public Identifier typeId;
         public RuntimeIdentifier id;
+
 
         // Do it the easy way, with classes, for now.
         // In the future, maybe switch to value types and store them in central place, 
@@ -22,7 +25,12 @@ namespace Hopper.Core
             }
             return false;
         }
-
+        
+        public void RemoveComponent<T>(Index<T> index) where T : IComponent
+        {
+            components.Remove(index.Id);
+        }
+        
         public void AddComponent<T>(Index<T> index, T component) where T : IComponent
         {
             components.Add(index.Id, component);
@@ -70,5 +78,15 @@ namespace Hopper.Core
         }
 
         public override int GetHashCode() => id.GetHashCode();
+        
+        public static bool operator==(Entity a, Entity b)
+        {
+            return a.id == b.id;
+        }
+
+        public static bool operator!=(Entity a, Entity b)
+        {
+            return a.id != b.id;
+        }
     }
 }

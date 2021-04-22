@@ -40,12 +40,20 @@ namespace Hopper.Core
             // ResetInGrid(entity, null);
         }
 
+        public void RemoveFromGrid()
+        {
+        }
+
         public void RemoveFromGrid(GridManager grid)
         {
             var cell = grid.GetCellAt(position);
             bool wasRemoved = cell.m_transforms.Remove(this);
             Assert.That(wasRemoved, "Trying to remove an entity which is not in the cell is not allowed");
             cell.FireLeaveEvent(this);
+        }
+
+        public void ResetInGrid()
+        {
         }
 
         public void ResetInGrid(GridManager grid)

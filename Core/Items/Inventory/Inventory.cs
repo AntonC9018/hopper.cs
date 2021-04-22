@@ -1,109 +1,119 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Hopper.Core.Components;
 using Hopper.Utils;
 
 
 namespace Hopper.Core.Items
 {
-    public partial class Inventory : IComponent, IInventory
+    public partial class Inventory : IComponent
     {
-        private Dictionary<int, IItemContainer<IItem>> m_itemSlots;
-        private Entity m_actor;
+        // This associates a slot it to an item id.
+        // Note that the item id is NOT the entity (runtime) id, it is the TYPE id.
+        // This means that any item can be picked up just once, unless it is countable.
+        // The item itself is stored in the general storage.
+        // Every slot can have at most 1 item.
+        public Dictionary<Identifier, Identifier> _slots;
 
-        public IEnumerable<IItem> AllItems
+        // There are items that are stored independently, in a dictionary 
+        // (that is, items without activation that can be collected idependently)
+        // HasEquippable(), !HasItemActivation(), ?HasCountable()
+        // Anyway, the item repartition is decentralized (items decide where to go themselves)
+        // The id is the TYPE id, NOT the runtime id.
+        public Dictionary<Identifier, Entity> _generalStorage;
+
+        public List<Entity> _excess;
+
+        // TODO: the slots should be injects?
+        // TODO: a new attribute for copying the items on injection?
+        // TODO: no, better add an initialization function for the entity type.
+        public void Init()
         {
-            get
+            _slots          = new Dictionary<Identifier, Identifier>();
+            _generalStorage = new Dictionary<Identifier, Entity>();
+            _excess         = new List<Entity>();
+        }
+
+        public bool MapSlot(Identifier slotId, out Identifier itemId)
+        {
+            return _slots.TryGetValue(slotId, out itemId);
+        }
+
+        public Entity GetItem(Identifier id)
+        {
+            return _generalStorage[id];
+        }
+
+        public Entity TryGetItem(Identifier id)
+        {
+            if (_generalStorage.ContainsKey(id))
+                return _generalStorage[id];
+            return null;
+        }
+
+        public bool TryGetItem(Identifier id, out Entity item)
+        {
+            return _generalStorage.TryGetValue(id, out item);
+        }
+
+        public void ReplaceForSlot(Identifier slotId, Entity item)
+        {
+            if (_slots.ContainsKey(slotId))
             {
-                foreach (var container in m_itemSlots.Values)
-                {
-                    foreach (var item in container.AllItems)
-                        yield return item;
-                }
+                var otherItemId = _slots[slotId];
+                _excess.Add(_generalStorage[otherItemId]);
+                _generalStorage.Remove(otherItemId);
             }
+            _slots[slotId] = item.typeId;
+            _generalStorage[item.typeId] = item; 
         }
 
-        // define slots manually
-        public Inventory(Entity entity, Dictionary<int, IItemContainer<IItem>> slots)
+        public bool TryGetFromSlot(Identifier slotId, out Entity entity)
         {
-            m_itemSlots = slots;
-            m_actor = entity;
-        }
-
-        // Intialize with the slots defined by default in the slots enum
-        public Inventory(Entity entity)
-        {
-            var patchArea = entity.World.m_currentRepository;
-            var patchRegistry = patchArea.GetPatchSubRegistry<ISlot>();
-            m_itemSlots = new Dictionary<int, IItemContainer<IItem>>(patchRegistry.patches.Count);
-            foreach (var slot in patchRegistry.patches.Values)
+            if (_slots.TryGetValue(slotId, out var itemId))
             {
-                m_itemSlots.Add(slot.Id, slot.CreateContainer());
+                return _generalStorage.TryGetValue(itemId, out entity);
             }
-            m_actor = entity;
+            entity = null;
+            return false;
         }
 
-        public void Equip(IItem item)
+        public List<Entity> GetExcess() => _excess;
+        public void ClearExcess() => _excess.Clear();
+
+        public void Equip(Entity item)
         {
-            var container = m_itemSlots[item.Slot.Id];
-            item.BeEquipped(m_actor);
-            container.Insert(item.Decompose());
-            System.Console.WriteLine($"Picked up item {item.Metadata.name}");
+            Assert.That(!_generalStorage.ContainsKey(item.typeId));
+            _generalStorage.Add(item.typeId, item);
         }
 
-        public void Unequip(IItem item)
+        public void IncreaseCount(Identifier itemId, int amount)
         {
-            var container = m_itemSlots[item.Slot.Id];
-            container.Remove(item.Decompose());
-            item.BeUnequipped(m_actor);
-            System.Console.WriteLine($"Dropped item {item.Metadata.name}");
+            var otherCountable = _generalStorage[itemId].GetCountable();
+            otherCountable.count += amount;
         }
 
-        public void Destroy(IItem item)
+        public Entity DropFromSlot(Identifier slotId)
         {
-            var container = m_itemSlots[item.Slot.Id];
-            container.Remove(item.Decompose());
-            item.BeDestroyed(m_actor);
-            System.Console.WriteLine($"Destroyed item {item.Metadata.name}");
+            return Drop(_slots[slotId]);
         }
 
-        public void DropExcess()
+        public Entity Drop(Identifier itemId)
         {
-            foreach (var container in m_itemSlots.Values)
-            {
-                var excess = container.PullOutExcess();
-                foreach (IItem item in excess)
-                {
-                    item.BeUnequipped(m_actor);
-                    System.Console.WriteLine($"Dropped excess item {item.Metadata.name}");
-                }
-            }
+            var item = _generalStorage[itemId];
+            _generalStorage.Remove(itemId);
+            _excess.Add(item);
+            return item;
         }
 
-        public void AddContainer<T>(SlotBase<T> slot) where T : IItemContainer<IItem>
-        {
-            AddContainer(slot, (T)slot.CreateContainer());
-        }
-
-        public void AddContainer<T>(SlotBase<T> slot, T container) where T : IItemContainer<IItem>
-        {
-            Assert.That(
-                m_itemSlots.ContainsKey(slot.Id) == false,
-                $"Container for key {slot.m_name} has already been defined"
-            );
-            m_itemSlots[slot.Id] = container;
-        }
-
-        public bool CanEquipItem(IItem item)
-        {
-            return m_itemSlots.ContainsKey(item.Slot.Id);
-        }
-
-        // public T GetContainer<T>(ISlot<T> slot) where T : IItemContainer<IItem>
+        // public void Replace(Entity item)
         // {
-        //     return (T)m_itemSlots[slot.Id];
+        //     if (_generalStorage.ContainsKey(item.typeId))
+        //     {
+        //         _excess.Add(_generalStorage[item.typeId]);
+        //         _generalStorage.Remove(item.typeId);
+        //     }
+        //     _generalStorage.Add(
         // }
-
-        public bool IsEquipped(IItem item) =>
-            m_itemSlots[item.Slot.Id].Contains(item.Decompose().item);
     }
 }
