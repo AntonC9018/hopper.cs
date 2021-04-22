@@ -97,13 +97,42 @@ namespace Hopper.Meta
             foreach (var typeSymbol in typeSymbols)
             {
                 if (typeSymbol.IsStatic 
-                    && typeSymbol.GetAttributes().Any(
-                        a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.entityTypeAttribute)
-                            && a.MapToType<EntityTypeAttribute>().Abstract == false))
+                    && typeSymbol.TryGetAttribute(RelevantSymbols.Instance.entityTypeAttribute, out var a)
+                    && a.MapToType<EntityTypeAttribute>().Abstract == false)
                 {
                     var wrapper = new EntityTypeWrapper(typeSymbol);
                     wrapper.InitWithErrorHandling(this);
                     yield return wrapper;
+                }
+            }
+        }
+
+        public IEnumerable<IFieldSymbol> GetAllFields(INamespaceOrTypeSymbol symbol)
+        {
+            foreach (var member in symbol.GetMembers())
+            {
+                if (member is IFieldSymbol field)
+                {
+                    yield return field;
+                }
+                else if (member is INamespaceOrTypeSymbol nested)
+                {
+                    foreach (var f in GetAllFields(nested))
+                    {
+                        yield return f;
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<SlotSymbolWrapper> GetSlots()
+        {
+            foreach (var field in GetAllFields(compilation.GlobalNamespace))
+            {
+                if (field.IsStatic 
+                    && field.HasAttribute(RelevantSymbols.Instance.slotAttribute))
+                {
+                    yield return new SlotSymbolWrapper(field);
                 }
             }
         }

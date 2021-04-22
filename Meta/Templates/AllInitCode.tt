@@ -27,7 +27,9 @@ namespace <#= Namespace #>
                 factory.id = Registry.Global.RegisterEntityFactory(factory);
                 <#= entityType.FullyQualifiedClassName #>.Factory = factory;
             }
-<#  } 
+<#  } foreach (var slot in slots) { #>
+            <#= slot.FullyQualifiedName #>.Id = Registry.Global.NextSlotId();
+<#  }
     foreach (var stat in statRootScope.GetAllChildrenValues()) 
     {
         if (!stat.IsIdentifying && !stat.IsIdentified) 

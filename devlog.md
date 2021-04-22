@@ -617,3 +617,23 @@ If an item is active, it will be activated automatically when the input mapped t
 
 There may be items that overwrite other items' active abilities. 
 This can be achieved by changing the handlers of that item with your own ones, from the Active, or overwriting the action returned by Action.
+
+Ok, that was straightforward enough. Now, how do you allocate slots?
+Well, slots are needed for controllable for mapping inputs to actual items in the inventory, but also they will be useful for getting certain item categories: shovel, ranged weapon, melee weapon.
+So the slot may be mapped and may not be mapped.
+
+```C#
+struct Slot { bool isActionMapped; Identifier id; }
+```
+
+And then these slots will have to be assigner id's by the registry, which means more code generation!
+At this point, though, I could make it a bit more general maybe? 
+Nah, for now let's do it this way. 
+I thought that for such structs, that just need a category and do not have to be stored anywhere, a more general generator can be used (in order to not make one for slots, one for whatever else there is going to be, etc.
+I may add entity wrappers in the future, to make certain guarantees about the entity type.
+The wrappers would restrict which components can be accessed directly by component query methods.
+These slots would then wrap the items that are returned by them in the wrapper struct for that entity type.
+
+So, I'm going to add another attribute for slots and add code generation for fields marked with that.
+
+Also, one probably would like to store them somewhere, especially because of the metadata associated with them, like the name of the thing, although this is not clear to me right now.

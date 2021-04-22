@@ -246,6 +246,8 @@ namespace Hopper.Meta
             }
 
             var entityTypes = ctx.GetEntityTypes();
+            var slots = ctx.GetSlots();
+
             {
                 // They must live in at least the base namespace hopper
                 if (commonNamespace.Length >= "Hopper".Length)
@@ -257,6 +259,7 @@ namespace Hopper.Meta
                         staticClasses = staticClassesWithExportedMethods,
                         entityTypes = entityTypes,
                         statRootScope = statContext.scope,
+                        slots = slots,
                         Namespace = commonNamespace
                     };
 

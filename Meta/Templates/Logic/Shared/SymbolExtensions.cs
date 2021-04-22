@@ -10,7 +10,7 @@ namespace Hopper.Meta
 {
     public static class SymbolExtensions
     {
-        public static string GetFullQualification(this INamedTypeSymbol symbol)
+        public static string GetFullQualification(this ISymbol symbol)
         {
             Stack<string> names = new Stack<string>();
 
@@ -233,6 +233,32 @@ namespace Hopper.Meta
                     return index;
             }
             return count == y.Length ? -1 : count;
+        }
+
+        public static bool TryGetAttribute(this ISymbol symbol, ISymbol attributeType, out AttributeData attributeData)
+        {
+            foreach (var a in symbol.GetAttributes())
+            {
+                if (SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeType))
+                {
+                    attributeData = a;
+                    return true;
+                }
+            }
+            attributeData = default;
+            return false;
+        }
+
+        public static bool HasAttribute(this ISymbol symbol, ISymbol attributeType)
+        {
+            foreach (var a in symbol.GetAttributes())
+            {
+                if (SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeType))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

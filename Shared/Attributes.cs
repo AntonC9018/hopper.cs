@@ -156,4 +156,9 @@ namespace Hopper.Shared.Attributes
         public bool IsGenerated = false;
         public bool Abstract = false;
     }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public class SlotAttribute : Attribute
+    {
+    }
 }

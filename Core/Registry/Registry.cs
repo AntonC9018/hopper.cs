@@ -20,6 +20,7 @@ namespace Hopper.Core
         public RuntimeRegistry<Entity> _entities;
         public StaticRegistry<EntityFactory> _entityFactory;
         public IdentifierAssigner _stats;
+        public IdentifierAssigner _slots;
         public Dictionary<Identifier, IStat> _defaultStats;
 
         public void Init()
@@ -65,6 +66,11 @@ namespace Hopper.Core
             var id = new Identifier(_currentMod, _stats.Next());
             _defaultStats[id] = stat;
             return id;
+        }
+
+        public Identifier NextSlotId()
+        {
+            return new Identifier(_currentMod, _slots.Next());
         }
 
         public int NextPriority(PriorityRank rank)

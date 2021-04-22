@@ -11,6 +11,7 @@ namespace Hopper.Meta.Template
         public IEnumerable<BehaviorSymbolWrapper> behaviors;
         public IEnumerable<StaticClassSymbolWrapper> staticClasses;
         public IEnumerable<EntityTypeWrapper> entityTypes;
+        public IEnumerable<SlotSymbolWrapper> slots;
         public Scope<StatType> statRootScope;
     }
 }
