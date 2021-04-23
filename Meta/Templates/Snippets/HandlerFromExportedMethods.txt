@@ -13,7 +13,6 @@
 <#  } #>
         public static void InitHandlers()
         {
-            // for demo, set priority directly
 <#  foreach (var method in ExportedMethods) { #>
             <#= method.Name #>Handler.handler = <#= method.Name #>HandlerAdapter;
             <#= method.Name #>Handler.priority = Registry.Global.NextPriority(PriorityRank.<#= method.Priority #>);
