@@ -164,9 +164,17 @@ namespace Hopper.Shared.Attributes
     /// handler on that component (as a non-static field)?).
     /// The same class may also export static methods, in which case the handlers corresponding to these
     /// will be static too.
+    ///
+    /// Instances of this class are not going to be detected automatically. 
+    /// You need to additionally mark them with this same attribute to indicate export. 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Field)]
     public class InstanceExportAttribute : Attribute
+    {
+    }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public class RequiringInitAttribute : Attribute
     {
     }
 

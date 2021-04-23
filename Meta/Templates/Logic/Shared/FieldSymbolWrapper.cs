@@ -2,11 +2,11 @@ using Microsoft.CodeAnalysis;
 
 namespace Hopper.Meta
 {
-    public class SlotSymbolWrapper
+    public class FieldSymbolWrapper
     {
         public IFieldSymbol symbol;
 
-        public SlotSymbolWrapper(IFieldSymbol symbol)
+        public FieldSymbolWrapper(IFieldSymbol symbol)
         {
             this.symbol = symbol;
         }

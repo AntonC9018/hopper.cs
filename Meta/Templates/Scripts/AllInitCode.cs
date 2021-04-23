@@ -9,9 +9,11 @@ namespace Hopper.Meta.Template
         public string Namespace;
         public IEnumerable<ComponentSymbolWrapper> components;
         public IEnumerable<BehaviorSymbolWrapper> behaviors;
-        public IEnumerable<ExportedMethodsClassSymbolWrapper> staticClasses;
+        public IEnumerable<ExportedMethodsClassSymbolWrapper> methodClasses;
+        public IEnumerable<FieldSymbolWrapper> methodClassInstances;
+        public IEnumerable<FieldSymbolWrapper> fieldsRequiringInit;
         public IEnumerable<EntityTypeWrapper> entityTypes;
-        public IEnumerable<SlotSymbolWrapper> slots;
+        public IEnumerable<FieldSymbolWrapper> slots;
         public Scope<StatType> statRootScope;
     }
 }

@@ -10,24 +10,30 @@ namespace <#= Namespace #>
         public static void Init()
         {
             int modId = Registry.Global.NextMod();            
-<# foreach(var component in components) { #>
+<#  foreach(var component in components) 
+    { #>
             <#= component.FullyQualifiedClassName #>.InitIndex();
             <#= component.FullyQualifiedClassName #>.InitHandlers();
-<# } foreach (var behavior in behaviors) { #>
+<#  } 
+    foreach (var behavior in behaviors) 
+    { #>
             <#= behavior.FullyQualifiedClassName #>.InitIndex();
             <#= behavior.FullyQualifiedClassName #>.InitHandlers();
-<# } foreach (var staticClass in staticClasses) { #>
-            <#= staticClass.FullyQualifiedClassName #>.InitHandlers();
-<# } foreach (var entityType in entityTypes) { /* TODO: Link the metadata (the name or whatever) */#>
-            {
-                var factory = new EntityFactory();
-                <#= entityType.FullyQualifiedClassName #>.AddComponents(factory);
-                <#= entityType.FullyQualifiedClassName #>.InitComponents(factory);
-                <#= entityType.FullyQualifiedClassName #>.Retouch(factory);
-                factory.id = Registry.Global.RegisterEntityFactory(factory);
-                <#= entityType.FullyQualifiedClassName #>.Factory = factory;
-            }
-<#  } foreach (var slot in slots) { #>
+<#  } 
+    foreach (var methodClass in methodClasses) 
+    { #>
+            <#= methodClass.FullyQualifiedClassName #>.InitHandlers();
+<#  } 
+    foreach (var methodClassInstance in methodClassInstances)
+    { #>
+            <#= methodClassInstance.FullyQualifiedName #>.InitInstanceHandlers();
+<#  }
+    foreach (var fieldRequiringInit in fieldsRequiringInit)
+    { #>
+            <#= fieldRequiringInit.FullyQualifiedName #>.Init();
+<#  } 
+    foreach (var slot in slots) 
+    { #>
             <#= slot.FullyQualifiedName #>.Id = Registry.Global.NextSlotId();
 <#  }
     foreach (var stat in statRootScope.GetAllChildrenValues()) 
@@ -41,7 +47,17 @@ namespace <#= Namespace #>
             <#= stat.QualifiedName #>.<#= identifyingField.name #>.Index.Id = Registry.Global.RegisterStat(<#= stat.QualifiedName #>.<#= identifyingField.name #>.Default());
 <#      }
     }
-#>
+    foreach (var entityType in entityTypes) 
+    { /* TODO: Link the metadata (the name or whatever) */#>
+            {
+                var factory = new EntityFactory();
+                <#= entityType.FullyQualifiedClassName #>.AddComponents(factory);
+                <#= entityType.FullyQualifiedClassName #>.InitComponents(factory);
+                <#= entityType.FullyQualifiedClassName #>.Retouch(factory);
+                factory.id = Registry.Global.RegisterEntityFactory(factory);
+                <#= entityType.FullyQualifiedClassName #>.Factory = factory;
+            }
+<#  } #>
         }
     }
 }

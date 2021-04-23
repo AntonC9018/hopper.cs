@@ -192,6 +192,11 @@ namespace Hopper.Meta
                 }
                 else
                 {
+                    if (SymbolEqualityComparer.Default.Equals(s.Type, RelevantSymbols.entity))
+                    {
+                        throw new GeneratorException($"The entity must be named \"actor\", like on the context class");
+                    }
+
                     throw new GeneratorException($"The name \"{s.Name}\" is invalid. It does not correspond directly to any of the Context fields and the type of the parameter was not a component type");
                 }
             }

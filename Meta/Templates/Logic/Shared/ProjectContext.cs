@@ -72,7 +72,7 @@ namespace Hopper.Meta
                 yield return type;
         }
 
-        public IEnumerable<ExportedMethodsClassSymbolWrapper> GetMethodClassesWithExportedMethods()
+        public IEnumerable<ExportedMethodsClassSymbolWrapper> GetExportedMethodClasses()
         {
             var typeSymbols = GetNotNestedTypes();
 
@@ -125,14 +125,38 @@ namespace Hopper.Meta
             }
         }
 
-        public IEnumerable<SlotSymbolWrapper> GetSlots()
+        public IEnumerable<FieldSymbolWrapper> GetSlots()
         {
             foreach (var field in GetAllFields(compilation.GlobalNamespace))
             {
                 if (field.IsStatic 
                     && field.HasAttribute(RelevantSymbols.slotAttribute))
                 {
-                    yield return new SlotSymbolWrapper(field);
+                    yield return new FieldSymbolWrapper(field);
+                }
+            }
+        }
+
+        public IEnumerable<FieldSymbolWrapper> GetMethodClassInstances()
+        {
+            foreach (var field in GetAllFields(compilation.GlobalNamespace))
+            {
+                if (field.IsStatic 
+                    && field.HasAttribute(RelevantSymbols.instanceExportAttribute))
+                {
+                    yield return new FieldSymbolWrapper(field);
+                }
+            }
+        }
+
+        public IEnumerable<FieldSymbolWrapper> GetFieldsRequiringInit()
+        {
+            foreach (var field in GetAllFields(compilation.GlobalNamespace))
+            {
+                if (field.IsStatic 
+                    && field.HasAttribute(RelevantSymbols.requiringInitAttribute))
+                {
+                    yield return new FieldSymbolWrapper(field);
                 }
             }
         }

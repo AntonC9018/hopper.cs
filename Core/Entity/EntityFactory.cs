@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Core.Components;
+using Hopper.Utils;
 
 namespace Hopper.Core
 {
@@ -26,7 +27,7 @@ namespace Hopper.Core
 
         public Entity Instantiate()
         {
-            Entity entity = new Entity(); // subject.Clone()?
+            Entity entity = new Entity();
             entity.typeId = id;
             entity.components = new Dictionary<Identifier, IComponent>();
 
@@ -34,7 +35,7 @@ namespace Hopper.Core
             foreach (var kvp in subject.components)
             {
                 // Create copies of chains etc.
-                entity.components.Add(kvp.Key, (IComponent) kvp.Value.Copy());
+                entity.components.Add(kvp.Key, (IComponent)((ICopyable)kvp.Value).Copy());
             }
 
             return entity;

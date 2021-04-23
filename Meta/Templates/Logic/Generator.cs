@@ -188,9 +188,9 @@ namespace Hopper.Meta
                 }
             }
 
-            var methodClassesWithExportedMethods = ctx.GetMethodClassesWithExportedMethods();
+            var methodClasses = ctx.GetExportedMethodClasses();
             {
-                foreach (var methodClass in methodClassesWithExportedMethods)
+                foreach (var methodClass in methodClasses)
                 {
                     var handlersPrinter = new ChainHandlersCode();
                     handlersPrinter.methodClass = methodClass;
@@ -247,6 +247,8 @@ namespace Hopper.Meta
 
             var entityTypes = ctx.GetEntityTypes();
             var slots = ctx.GetSlots();
+            var methodClassInstances = ctx.GetMethodClassInstances();
+            var fieldsRequiringInit = ctx.GetFieldsRequiringInit();
 
             {
                 // They must live in at least the base namespace hopper
@@ -256,7 +258,9 @@ namespace Hopper.Meta
                     {
                         components = componentWrappers,
                         behaviors = behaviorWrappers,
-                        staticClasses = methodClassesWithExportedMethods,
+                        methodClasses = methodClasses,
+                        methodClassInstances = methodClassInstances,
+                        fieldsRequiringInit = fieldsRequiringInit,
                         entityTypes = entityTypes,
                         statRootScope = statContext.scope,
                         slots = slots,

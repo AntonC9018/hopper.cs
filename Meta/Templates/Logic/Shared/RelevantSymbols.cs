@@ -25,6 +25,7 @@ namespace Hopper.Meta
         public static INamedTypeSymbol entityTypeAttribute;
         public static INamedTypeSymbol slotAttribute;
         public static INamedTypeSymbol instanceExportAttribute;
+        public static INamedTypeSymbol requiringInitAttribute;
 
         public static INamedTypeSymbol boolType;
         public static INamedTypeSymbol voidType;
@@ -66,6 +67,7 @@ namespace Hopper.Meta
             noActivationAttribute    = GetKnownSymbol(compilation, typeof(NoActivationAttribute));
             entityTypeAttribute      = GetKnownSymbol(compilation, typeof(EntityTypeAttribute));
             instanceExportAttribute  = GetKnownSymbol(compilation, typeof(InstanceExportAttribute));
+            requiringInitAttribute   = GetKnownSymbol(compilation, typeof(RequiringInitAttribute));
             slotAttribute = GetKnownSymbol(compilation, typeof(SlotAttribute));
             boolType = compilation.GetSpecialType(SpecialType.System_Boolean);
             voidType = compilation.GetSpecialType(SpecialType.System_Void);
