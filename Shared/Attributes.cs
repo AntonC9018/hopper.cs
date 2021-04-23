@@ -122,6 +122,9 @@ namespace Hopper.Shared.Attributes
     /// This attribute may also be applied to target behaviors outside the class it was used in.
     /// In this case, names of chains have to be provided via Chains.
     /// This feature enables usage of this attribute outside behavior classes.
+    ///
+    /// You may also mark methods for export on a non-static class, in which case the adapters and
+    /// the handlers will be non-static too. For that, see <cref>InstanceExportAttribute</cref>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class ExportAttribute : Attribute
@@ -143,6 +146,28 @@ namespace Hopper.Shared.Attributes
         /// The value of this field does not affect whether or not the method will be exposed to json.
         /// </summary>
         public bool Dynamic = false;
+    }
+
+
+    /// <summary>
+    /// Indicates that the given (non-static!) class / struct wants its methods to be exported.
+    /// In this case, InitHandlers() methods, as well as possibly some others, will be generated
+    /// as non-static members of the class / struct. The exported handlers, their adapters 
+    /// and optionally their wrappers.
+    /// This is useful for creating closures for your handlers, e.g. capturing the identifier of
+    /// the entity modifier to be removed.
+    /// The presense of non-static member functions marked for export on a class without this
+    /// attribute will trigger an error (unless the class is a component).
+    /// This attribute cannot be applied to components or behaviors (since that would be ambiguous:
+    /// do I need to generate handlers for this instance method to be a static member, retrieving
+    /// the component of type in which it has been defined from the entity, or do I generate an instance
+    /// handler on that component (as a non-static field)?).
+    /// The same class may also export static methods, in which case the handlers corresponding to these
+    /// will be static too.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class InstanceExportAttribute : Attribute
+    {
     }
 
     [AttributeUsage(AttributeTargets.Field)]

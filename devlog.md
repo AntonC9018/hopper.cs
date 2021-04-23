@@ -654,3 +654,15 @@ That may be done either with subclassing (interfaces).
 No, I'm thinking these will just be handled with normal inheritance.
 There will be Status instances, instantiated from StatusIndices.
 Status indices will contain the status index.
+
+Currently, only static handlers are exported.
+I have renamed statuses that are treated as temporary components into EntityModifiers.
+So, there will be wrappers, who will be given functions of instantiation + hooking up process of the entity modifier.
+Some parts of this code will be very similar. 
+For example, hooking up the component is just adding the component to the entity by its identifier.
+Thing is, in order for a single function to do this, for the sake of code reusability, closures have to be created.
+NO! like that does not need any closures. There can just be a function that istantiates the modifier, and the other function would be a member function and would just append it to the entity using the member field of index.
+The problem is with the removing bit.
+It can be done generically, by getting the component by its index, removing it and then calling the unbind function (through an interface).
+So, it would be nice to allow closures to become handlers too (closures on wrappers).
+(So now we need to allow instance functions to become handlers).

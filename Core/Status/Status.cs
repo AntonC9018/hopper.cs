@@ -1,20 +1,120 @@
 using Hopper.Core.Stat;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Components;
+using Hopper.Core.Stat.Basic;
+using System;
+using Hopper.Utils;
+using Hopper.Core.Retouchers;
+using Hopper.Shared.Attributes;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core
 {
-    public struct EntityModifierWrapper<T>
+    public struct EntityModifierWrapper<T> where T : IEntityModifier
     {
-        public System.Func<T> ApplyTo;
+        public System.Func<Entity, T> InstantiateAndBind;
+        public System.Action<T, Entity> Unbind;
+        public StatusSource Source;
         public Index<T> Index;
+
+        public EntityModifierWrapper(System.Func<Entity, T> InstantiateAndBind, System.Action<T, Entity> Unbind) 
+            : this(InstantiateAndBind, Unbind, StatusSource.Resistance.Default)
+        {
+        }
+
+        public EntityModifierWrapper(System.Func<Entity, T> Instantiate, System.Action<T, Entity> Unbind, System.Func<StatusSource.Resistance> DefaultResistance) : this()
+        {
+            this.InstantiateAndBind = Instantiate;
+            this.Source.Default = DefaultResistance;
+        }
+
+        public void Init()
+        {
+            Index.Id        = Registry.Global.NextComponentId();
+            Source.Index.Id = Registry.Global.RegisterStat(Source.Default());
+        }
+
+        public bool TryApplyTo(Entity entity, int power)
+        {
+            if (entity.TryGetStats(out var stats))
+            {
+                stats.GetLazy(Source.Index, out var resistance);
+                if (resistance.amount >= power)
+                {
+                    ApplyTo(entity);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void ApplyTo(Entity entity)
+        {
+            if (!entity.HasComponent(Index))
+            {
+                var component = InstantiateAndBind(entity);
+
+                if (component != null)
+                {
+                    entity.AddComponent(Index, component);
+                }
+            }
+        }
+
+        public void RemoveFrom(Entity entity)
+        {
+            var component = entity.GetComponent(Index);
+            Unbind(component, entity);
+            entity.RemoveComponent(Index);
+        }
+
+        public bool TryRemoveFrom(Entity entity)
+        {
+            if (entity.TryGetComponent(Index, out var component))
+            {
+                Unbind(component, entity);
+                entity.RemoveComponent(Index);
+                return true;
+            }
+            return false;
+        }
     }
 
-    public class Status
+    public interface IEntityModifier : IComponent
     {
-        public struct Source
+    }
+
+    public class BindingEntityModifier : IEntityModifier
+    {
+    }
+
+    [InstanceExportAttribute]
+    public partial class Bind
+    {
+        public EntityModifierWrapper<BindingEntityModifier> Wrapper;
+
+        [Export(Chain = "Ticking.Do", Priority = PriorityRank.High, Dynamic = true)] 
+        public void Remove(Entity actor) => Wrapper.TryRemoveFrom(actor);
+
+        public Bind()
         {
-            public 
+            Wrapper = new EntityModifierWrapper<BindingEntityModifier>(InstantiateAndBind, Unbind);
+        }
+
+        public void Init()
+        {
+            Wrapper.Init();
+
+        }
+
+        public BindingEntityModifier InstantiateAndBind(Entity actor) 
+        {
+            RemoveHandlerWrapper.ApplyTo(actor);
+            return new BindingEntityModifier();
+        }
+
+        public void Unbind(BindingEntityModifier component, Entity actor)
+        {
         }
     }
 

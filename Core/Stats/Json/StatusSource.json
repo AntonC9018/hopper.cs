@@ -4,5 +4,5 @@
     {
         "amount": 0
     },
-    "$Test": { "@type": "Status" }
+    "$Test": { "@type": "StatusSource" }
 }

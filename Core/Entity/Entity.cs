@@ -30,6 +30,11 @@ namespace Hopper.Core
         {
             components.Remove(index.Id);
         }
+
+        public bool TryRemoveComponent<T>(Index<T> index) where T : IComponent
+        {
+            return components.Remove(index.Id);
+        }
         
         public void AddComponent<T>(Index<T> index, T component) where T : IComponent
         {
