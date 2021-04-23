@@ -4,50 +4,51 @@ using Microsoft.CodeAnalysis;
 namespace Hopper.Meta
 {
     // Singleton
-    public class RelevantSymbols
+    public static class RelevantSymbols
     {
-        public static RelevantSymbols Instance; 
+        private static bool IsInited;
 
-        public INamedTypeSymbol entity;
-        public INamedTypeSymbol icopyable;
-        public INamedTypeSymbol icomponent;
-        public INamedTypeSymbol ibehavior;
-        public INamedTypeSymbol itag;
-        public INamedTypeSymbol aliasAttribute;
-        public INamedTypeSymbol activationAliasAttribute;
-        public INamedTypeSymbol autoActivationAttribute;
-        public INamedTypeSymbol noActivationAttribute;
-        public INamedTypeSymbol chainsAttribute;
-        public INamedTypeSymbol injectAttribute;
-        public INamedTypeSymbol flagsAttribute;
-        public INamedTypeSymbol exportAttribute;
-        public INamedTypeSymbol omitAttribute;
-        public INamedTypeSymbol entityTypeAttribute;
-        public INamedTypeSymbol slotAttribute;
+        public static INamedTypeSymbol entity;
+        public static INamedTypeSymbol icopyable;
+        public static INamedTypeSymbol icomponent;
+        public static INamedTypeSymbol ibehavior;
+        public static INamedTypeSymbol itag;
+        public static INamedTypeSymbol aliasAttribute;
+        public static INamedTypeSymbol activationAliasAttribute;
+        public static INamedTypeSymbol autoActivationAttribute;
+        public static INamedTypeSymbol noActivationAttribute;
+        public static INamedTypeSymbol chainsAttribute;
+        public static INamedTypeSymbol injectAttribute;
+        public static INamedTypeSymbol flagsAttribute;
+        public static INamedTypeSymbol exportAttribute;
+        public static INamedTypeSymbol omitAttribute;
+        public static INamedTypeSymbol entityTypeAttribute;
+        public static INamedTypeSymbol slotAttribute;
+        public static INamedTypeSymbol instanceExportAttribute;
 
-        public INamedTypeSymbol boolType;
-        public INamedTypeSymbol voidType;
+        public static INamedTypeSymbol boolType;
+        public static INamedTypeSymbol voidType;
 
         public static void TryInitializeSingleton(Compilation compilation)
         {
-            if (Instance == null)
+            if (!IsInited)
             {
-                Instance = new RelevantSymbols();
-                Instance.Init(compilation);
+                Init(compilation);
+                IsInited = true;
             }
         }
         
-        public static INamedTypeSymbol GetComponentSymbol(Compilation compilation, string name)
+        private static INamedTypeSymbol GetComponentSymbol(Compilation compilation, string name)
         {
             return (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Components.{name}");
         }
 
-        public static INamedTypeSymbol GetKnownSymbol(Compilation compilation, System.Type t)
+        private static INamedTypeSymbol GetKnownSymbol(Compilation compilation, System.Type t)
         {
             return (INamedTypeSymbol)compilation.GetTypeByMetadataName(t.FullName);
         }
 
-        public void Init(Compilation compilation)
+        private static void Init(Compilation compilation)
         {
             entity = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Entity");
             icopyable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Utils.ICopyable");
@@ -64,6 +65,7 @@ namespace Hopper.Meta
             autoActivationAttribute  = GetKnownSymbol(compilation, typeof(AutoActivationAttribute));
             noActivationAttribute    = GetKnownSymbol(compilation, typeof(NoActivationAttribute));
             entityTypeAttribute      = GetKnownSymbol(compilation, typeof(EntityTypeAttribute));
+            instanceExportAttribute  = GetKnownSymbol(compilation, typeof(InstanceExportAttribute));
             slotAttribute = GetKnownSymbol(compilation, typeof(SlotAttribute));
             boolType = compilation.GetSpecialType(SpecialType.System_Boolean);
             voidType = compilation.GetSpecialType(SpecialType.System_Void);

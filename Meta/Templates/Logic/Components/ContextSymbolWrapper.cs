@@ -54,7 +54,7 @@ namespace Hopper.Meta
                     {
                         fieldsHashed.Add(field.Name, field);
 
-                        if (field.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.omitAttribute)) || field.HasConstantValue || field.Name == "propagate")
+                        if (field.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.omitAttribute)) || field.HasConstantValue || field.Name == "propagate")
                         {
                             omitted.Add(field.Name);
                         }
@@ -68,7 +68,7 @@ namespace Hopper.Meta
         }
 
         public bool ContainsEntity(string name) => fieldsHashed.TryGetValue(name, out var t) 
-            && SymbolEqualityComparer.Default.Equals(t, RelevantSymbols.Instance.entity);
+            && SymbolEqualityComparer.Default.Equals(t, RelevantSymbols.entity);
         public bool ContainsFieldWithNameAndType(string name, ITypeSymbol type) 
         {
             return fieldsHashed.TryGetValue(name, out var t) && 

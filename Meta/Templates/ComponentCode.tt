@@ -13,7 +13,7 @@ namespace <#= component.Namespace #>
 
 <#@ include file="Templates/Snippets/ComponentAddingCopying.txt" #>
 
-<#@ include file="Templates/Snippets/HandlerFromExportedMethod.txt" #>
+<#@ include file="Templates/Snippets/HandlerFromExportedMethods.txt" #>
     }
 
     public static class <#= component.ClassName #>EntityExtensions

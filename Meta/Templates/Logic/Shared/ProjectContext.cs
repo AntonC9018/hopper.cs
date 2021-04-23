@@ -42,21 +42,21 @@ namespace Hopper.Meta
         public Task<IEnumerable<INamedTypeSymbol>> FindAllDirectComponents()
         {
             return SymbolFinder.FindImplementationsAsync(
-                RelevantSymbols.Instance.icomponent, _solution, transitive: false, projectSet.ToImmutableHashSet()
+                RelevantSymbols.icomponent, _solution, transitive: false, projectSet.ToImmutableHashSet()
             );
         }
 
         public Task<IEnumerable<INamedTypeSymbol>> FindAllTags()
         {
             return SymbolFinder.FindImplementationsAsync(
-                RelevantSymbols.Instance.itag, _solution, transitive: false, projectSet.ToImmutableHashSet()
+                RelevantSymbols.itag, _solution, transitive: false, projectSet.ToImmutableHashSet()
             );
         }
 
         public Task<IEnumerable<INamedTypeSymbol>> FindAllBehaviors()
         {
             return SymbolFinder.FindImplementationsAsync(
-                RelevantSymbols.Instance.ibehavior, _solution, transitive: false, projectSet.ToImmutableHashSet()
+                RelevantSymbols.ibehavior, _solution, transitive: false, projectSet.ToImmutableHashSet()
             );
         }
         public IEnumerable<INamedTypeSymbol> GetNotNestedTypes() =>
@@ -72,15 +72,15 @@ namespace Hopper.Meta
                 yield return type;
         }
 
-        public IEnumerable<StaticClassSymbolWrapper> GetStaticClassesWithExportedMethods()
+        public IEnumerable<ExportedMethodsClassSymbolWrapper> GetMethodClassesWithExportedMethods()
         {
             var typeSymbols = GetNotNestedTypes();
 
             foreach (var typeSymbol in typeSymbols)
             {
-                if (typeSymbol.IsStatic)
+                if (typeSymbol.IsStatic || typeSymbol.HasAttribute(RelevantSymbols.instanceExportAttribute))
                 {
-                    var classWrapper = new StaticClassSymbolWrapper(typeSymbol);
+                    var classWrapper = new ExportedMethodsClassSymbolWrapper(typeSymbol);
                     classWrapper.Init(this);
                     if (classWrapper.ShouldGenerate())
                     {
@@ -97,7 +97,7 @@ namespace Hopper.Meta
             foreach (var typeSymbol in typeSymbols)
             {
                 if (typeSymbol.IsStatic 
-                    && typeSymbol.TryGetAttribute(RelevantSymbols.Instance.entityTypeAttribute, out var a)
+                    && typeSymbol.TryGetAttribute(RelevantSymbols.entityTypeAttribute, out var a)
                     && a.MapToType<EntityTypeAttribute>().Abstract == false)
                 {
                     var wrapper = new EntityTypeWrapper(typeSymbol);
@@ -130,7 +130,7 @@ namespace Hopper.Meta
             foreach (var field in GetAllFields(compilation.GlobalNamespace))
             {
                 if (field.IsStatic 
-                    && field.HasAttribute(RelevantSymbols.Instance.slotAttribute))
+                    && field.HasAttribute(RelevantSymbols.slotAttribute))
                 {
                     yield return new SlotSymbolWrapper(field);
                 }

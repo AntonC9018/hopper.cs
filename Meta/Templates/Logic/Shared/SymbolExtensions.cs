@@ -28,6 +28,19 @@ namespace Hopper.Meta
             return String.Join(".", names);
         }
 
+        public static string GetTypeQualification(this ISymbol symbol)
+        {
+            Stack<string> names = new Stack<string>();
+
+            while (symbol.ContainingType != null && symbol.ContainingType.Name != "")
+            {
+                names.Push(symbol.ContainingType.Name);
+                symbol = symbol.ContainingType;
+            }
+
+            return String.Join(".", names);
+        }
+
         public static string GetFullName(this INamespaceSymbol symbol)
         {
             Stack<string> names = new Stack<string>();
@@ -90,7 +103,7 @@ namespace Hopper.Meta
             var first = fields.FirstOrDefault();
             if (first != null)
             {
-                if (SymbolEqualityComparer.Default.Equals(first.Type, RelevantSymbols.Instance.entity))
+                if (SymbolEqualityComparer.Default.Equals(first.Type, RelevantSymbols.entity))
                     return Params(fields);
                 else
                     return $"Entity actor, {Params(fields)}";
@@ -104,7 +117,7 @@ namespace Hopper.Meta
             var first = parameters.FirstOrDefault();
             if (first != null)
             {
-                if (SymbolEqualityComparer.Default.Equals(first.Type, RelevantSymbols.Instance.entity))
+                if (SymbolEqualityComparer.Default.Equals(first.Type, RelevantSymbols.entity))
                     return Params(parameters);
                 else
                     return $"Entity actor, {Params(parameters)}";
@@ -186,7 +199,7 @@ namespace Hopper.Meta
         public static bool TryGetExportAttribute(this IMethodSymbol method, out ExportAttribute attribute)
         {
             AttributeData attributeData = method.GetAttributes().FirstOrDefault(a =>
-                SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.exportAttribute));
+                SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.exportAttribute));
 
             if (attributeData == null)
             {
@@ -254,6 +267,18 @@ namespace Hopper.Meta
             foreach (var a in symbol.GetAttributes())
             {
                 if (SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeType))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool HasInterface(this ITypeSymbol symbol, ISymbol interfaceType)
+        {
+            foreach (var i in symbol.AllInterfaces)
+            {
+                if (SymbolEqualityComparer.Default.Equals(i, interfaceType))
                 {
                     return true;
                 }

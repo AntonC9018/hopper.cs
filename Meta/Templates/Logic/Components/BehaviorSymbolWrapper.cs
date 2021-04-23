@@ -49,11 +49,11 @@ namespace Hopper.Meta
 
             // Get the chains
             var chainsAttribute = symbol.GetAttributes().SingleOrDefault(a =>
-                SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.chainsAttribute));
+                SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.chainsAttribute));
 
             // See if we have the AutoActivation attribute
             var autoActivation = symbol.GetAttributes().SingleOrDefault(a => 
-                SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.autoActivationAttribute));
+                SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.autoActivationAttribute));
 
             if (chainsAttribute != null)
             {
@@ -62,7 +62,7 @@ namespace Hopper.Meta
             }
 
             if (!symbol.GetAttributes().Any(
-                a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.noActivationAttribute))) 
+                a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.noActivationAttribute))) 
             {
                 if (autoActivation == null && chainsAttribute == null)
                 {
@@ -88,7 +88,7 @@ namespace Hopper.Meta
 
                 // Find activation alias attribute
                 var activation = symbol.GetAttributes().FirstOrDefault(a =>
-                        SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.activationAliasAttribute));
+                        SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.activationAliasAttribute));
 
                 if (autoActivation != null)
                 {
@@ -162,7 +162,7 @@ namespace Hopper.Meta
                     // Or split by dot at this point.
                     if (attribute.Chain == null)
                     {
-                        yield return new ExportedMethodSymbolWrapper(context, method, attribute);
+                        yield return new ExportedMethodSymbolWrapper(this, method, attribute);
                     }
                     else
                     {

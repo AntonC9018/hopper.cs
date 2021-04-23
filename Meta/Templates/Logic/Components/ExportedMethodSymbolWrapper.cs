@@ -8,22 +8,23 @@ namespace Hopper.Meta
 {
     public sealed class ExportedMethodSymbolWrapper
     {
-        public ContextSymbolWrapper context;
         public IMethodSymbol symbol;
         public ExportAttribute exportAttribute;
+        public BehaviorSymbolWrapper referencedBehavior;
 
+        public ContextSymbolWrapper Context => referencedBehavior.context;
         public string Name => symbol.Name;
-        public string ContextName => context.NameWithParentClass;
+        public string ContextName => Context.NameWithParentClass;
         public bool IsDynamic => exportAttribute.Dynamic;
         public string Priority => exportAttribute.Priority.ToString();
         public string Chain => exportAttribute.Chain;
 
 
-        public ExportedMethodSymbolWrapper(ContextSymbolWrapper context, IMethodSymbol symbol, ExportAttribute exportAttribute)
+        public ExportedMethodSymbolWrapper(BehaviorSymbolWrapper behavior, IMethodSymbol symbol, ExportAttribute exportAttribute)
         {
             this.symbol = symbol;
             this.exportAttribute = exportAttribute;
-            Init(context);
+            Init(behavior);
         }
 
         public ExportedMethodSymbolWrapper(ProjectContext projectContext, IMethodSymbol symbol, ExportAttribute exportAttribute)
@@ -33,9 +34,9 @@ namespace Hopper.Meta
             Init(projectContext);
         }
 
-        public void Init(ContextSymbolWrapper context)
+        public void Init(BehaviorSymbolWrapper behavior)
         {
-            this.context = context;
+            this.referencedBehavior = behavior;
         }
 
         public void Init(ProjectContext projectContext)
@@ -63,7 +64,7 @@ namespace Hopper.Meta
             {
                 if (behavior.chains.Any(ch => ch.Name == chainName))
                 {
-                    this.context = behavior.context;
+                    this.referencedBehavior = behavior;
                 }
                 else
                 {
@@ -76,44 +77,70 @@ namespace Hopper.Meta
             }
         }
 
+        private string GetNamePrefixAtCall()
+        {
+            if (symbol.IsStatic)
+            {
+                // If it is inside a behavior while referencing that behavior.
+                if (referencedBehavior.symbol == symbol.ContainingType)
+                {
+                    return "";
+                }
+
+                // If inside a context (which also means it references the same behavior).
+                if (Context.symbol == symbol.ContainingType)
+                {
+                    return $"{ContextName}.";
+                }
+
+                // Otherwise, we're in some other type.
+                // Return the longer qualification (all nested types).
+                return $"{symbol.GetTypeQualification()}.";
+            }
+
+            // Else, we're not static.
+
+            // If we're inside any component, get that component from the entity and call ourselves.
+            if (symbol.ContainingType.HasInterface(RelevantSymbols.icomponent))
+            {
+                return $"ctx.actor.GetComponent({symbol.ContainingType.Name}.Index).";
+            }
+
+            // If we're in a context class, just call ourselves directly
+            if (Context.symbol == symbol.ContainingType)
+            {
+                return $"ctx.";
+            }
+
+            // If we're in a static class, we must be static, so accounted for above
+            // Otherwise, we're a member of a non-static class, so just call ourselves directly.
+            return "";
+        }
+
         public string AdapterBody()
         {
             StringBuilder sb_params = new StringBuilder();
             StringBuilder sb_call = new StringBuilder();
 
-            if (SymbolEqualityComparer.Default.Equals(symbol.ReturnType, RelevantSymbols.Instance.boolType))
+            // If the method returns bool, it is treated toward propagation.
+            if (SymbolEqualityComparer.Default.Equals(symbol.ReturnType, RelevantSymbols.boolType))
             {
                 sb_call.Append("ctx.propagate = ");
             }
-            if (SymbolEqualityComparer.Default.Equals(context.symbol, symbol.ContainingType))
-            {
-                sb_call.Append(symbol.IsStatic 
-                    // NOTE: This allows for at most 1 level depth.
-                    ? $"{ContextName}.{Name}(" 
-                    : $"ctx.{Name}(");
-            }
-            else// if (SymbolEqualityComparer.Default.Equals(component.symbol, symbol.ContainingType))
-            {
-                sb_call.Append(symbol.IsStatic 
-                    ? $"{symbol.ContainingType.Name}.{Name}("
-                    // TODO: this is wrong for exported methods not in component classes
-                    : $"ctx.actor.Get{symbol.ContainingType.Name}().{Name}(");
-            }
-            // else
-            // {
-            //     throw new GeneratorException("Could not have been defined here");
-            // }
+
+            sb_call.Append(GetNamePrefixAtCall());
+            sb_call.Append($"{Name}(");
 
             foreach (var s in symbol.Parameters)
             {
                 // If the parameter is of Context type
-                if (SymbolEqualityComparer.Default.Equals(s.Type, context.symbol))
+                if (SymbolEqualityComparer.Default.Equals(s.Type, Context.symbol))
                 {
                     // The parameters need not be appended, since the handlers take ctx by default.
                     sb_call.Append("ctx, ");
                 }
                 // if ctx class has a field of that name and type, reference it directly
-                else if (context.ContainsFieldWithNameAndType(s.Name, s.Type))
+                else if (Context.ContainsFieldWithNameAndType(s.Name, s.Type))
                 {
                     if (s.RefKind == RefKind.Out)
                     {
@@ -134,7 +161,7 @@ namespace Hopper.Meta
                     }
                 }
                 // if it is of a component type, retrieve it from the entity 
-                else if (s.Type.AllInterfaces.Contains(RelevantSymbols.Instance.icomponent))
+                else if (s.Type.HasInterface(RelevantSymbols.icomponent))
                 {
                     // if the name contains the name of an entity type field
                     // of the context followed by an underscore, get the component
@@ -144,7 +171,7 @@ namespace Hopper.Meta
                     if (indexOf_ != -1)
                     {
                         string entity_name = s.Name.Substring(0, indexOf_);
-                        if (context.ContainsEntity(entity_name))
+                        if (Context.ContainsEntity(entity_name))
                         {
                             success = true;
                             sb_params.AppendLine($"var _{s.Name} = ctx.{entity_name}.Get{s.Type.Name}();");

@@ -188,17 +188,17 @@ namespace Hopper.Meta
                 }
             }
 
-            var staticClassesWithExportedMethods = ctx.GetStaticClassesWithExportedMethods();
+            var methodClassesWithExportedMethods = ctx.GetMethodClassesWithExportedMethods();
             {
-                foreach (var staticClass in staticClassesWithExportedMethods)
+                foreach (var methodClass in methodClassesWithExportedMethods)
                 {
                     var handlersPrinter = new ChainHandlersCode();
-                    handlersPrinter.staticClass = staticClass;
+                    handlersPrinter.methodClass = methodClass;
 
-                    Console.WriteLine($"Generating code for {staticClass.Calling}");
+                    Console.WriteLine($"Generating code for {methodClass.Calling}");
 
                     File.WriteAllText(
-                        $"{handlersAutogenFolder}/{staticClass.ClassName}.cs",
+                        $"{handlersAutogenFolder}/{methodClass.ClassName}.cs",
                         handlersPrinter.TransformText(),
                         Encoding.UTF8);
                 }
@@ -256,7 +256,7 @@ namespace Hopper.Meta
                     {
                         components = componentWrappers,
                         behaviors = behaviorWrappers,
-                        staticClasses = staticClassesWithExportedMethods,
+                        staticClasses = methodClassesWithExportedMethods,
                         entityTypes = entityTypes,
                         statRootScope = statContext.scope,
                         slots = slots,
@@ -291,7 +291,7 @@ namespace Hopper.Meta
                 foreach (var method in behavior.GetMembers().OfType<IMethodSymbol>())
                 foreach (var attrib in method.GetAttributes())
                 {
-                    if (SymbolEqualityComparer.Default.Equals(attrib.AttributeClass, RelevantSymbols.Instance.aliasAttribute))
+                    if (SymbolEqualityComparer.Default.Equals(attrib.AttributeClass, RelevantSymbols.aliasAttribute))
                     foreach (var arg in attrib.ConstructorArguments)
                     {
                         var t = (TypedConstant)arg;

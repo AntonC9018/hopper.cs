@@ -15,7 +15,7 @@ namespace <#= behavior.Namespace #>
 
 <#@ include file="Templates/Snippets/BehaviorChains.txt" #>
 
-<#@ include file="Templates/Snippets/HandlerFromExportedMethod.txt" #>
+<#@ include file="Templates/Snippets/HandlerFromExportedMethods.txt" #>
 
 <# /*foreach (var preset in presets) {*/ #>
         /* TODO: presets */

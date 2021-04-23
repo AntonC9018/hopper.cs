@@ -18,7 +18,7 @@ namespace Hopper.Meta
         /* Things mainly called in the template */
         public string Alias => _alias;
         public string Name => _symbol.Name;
-        public bool ReturnTypeIsVoid() => SymbolEqualityComparer.Default.Equals(_symbol.ReturnType, RelevantSymbols.Instance.voidType);  
+        public bool ReturnTypeIsVoid() => SymbolEqualityComparer.Default.Equals(_symbol.ReturnType, RelevantSymbols.voidType);  
         public string ReturnType => ReturnTypeIsVoid() ? "void" : ((INamedTypeSymbol)_symbol.ReturnType).TypeToText();
         public string ParamsWithActor() => _symbol.Parameters.ParamsWithActor();
         public string Params() => _symbol.Parameters.Params();

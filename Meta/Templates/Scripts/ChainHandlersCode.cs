@@ -1,12 +1,18 @@
 using System.Collections.Generic;
+using System.Linq;
 using Hopper.Meta;
 
 namespace Hopper.Meta.Template
 {
     public partial class ChainHandlersCode
     {
-        public StaticClassSymbolWrapper staticClass;
-        public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => staticClass.exportedMethods;
-        public IEnumerable<string> Usings() => staticClass.Usings();
+        public ExportedMethodsClassSymbolWrapper methodClass;
+        public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => 
+            methodClass.exportedMethods.Where(m => m.symbol.IsStatic);
+
+        public IEnumerable<ExportedMethodSymbolWrapper> ExportedInstanceMethods => 
+            methodClass.exportedMethods.Where(m => !m.symbol.IsStatic);
+
+        public IEnumerable<string> Usings() => methodClass.Usings();
     }
 }

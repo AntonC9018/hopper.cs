@@ -1,0 +1,25 @@
+<#  foreach (var method in ExportedInstanceMethods) 
+    { #>
+        public void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
+        {
+<#= method.AdapterBody() #>
+        }
+        public Handler<<#= method.ContextName #>> <#= method.Name #>Handler;
+<#      if (method.IsDynamic) 
+        { #>
+        public HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper;
+<#      } #>
+
+<#  } #>
+        public void InitInstanceHandlers()
+        {
+            // for demo, set priority directly
+<#  foreach (var method in ExportedInstanceMethods) { #>
+            <#= method.Name #>Handler.handler = <#= method.Name #>HandlerAdapter;
+            <#= method.Name #>Handler.priority = Registry.Global.NextPriority(PriorityRank.<#= method.Priority #>);
+<#      if (method.IsDynamic) { #>
+            <#= method.Name #>HandlerWrapper.handler = <#= method.Name #>Handler;
+            <#= method.Name #>HandlerWrapper.chainPath = <#= method.Chain #>Path;
+<#      } 
+    } #>
+        }

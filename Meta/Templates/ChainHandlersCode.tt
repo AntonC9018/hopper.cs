@@ -4,10 +4,17 @@
 <#@ include file="Templates/Snippets/GenericUsings.txt" #>
 using Hopper.Utils.Chains;
 
-namespace <#= staticClass.Namespace #>
+namespace <#= methodClass.Namespace #>
 {
-    public static partial class <#= staticClass.ClassName #>
+    public <#= methodClass.Staticity#>partial class <#= methodClass.ClassName #>
     {
-<#@ include file="Templates/Snippets/HandlerFromExportedMethod.txt" #>
+<#@ include file="Templates/Snippets/HandlerFromExportedMethods.txt" #>
+
+
+<#  if (methodClass.IsExportingInstanceMethods) 
+    { #>
+<#@ include file="Templates/Snippets/InstanceHandlerFromExportedMethods.txt" #>
+<#  } #>
+    
     }
 }

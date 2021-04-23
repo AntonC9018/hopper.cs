@@ -3,11 +3,11 @@ using Microsoft.CodeAnalysis;
 
 namespace Hopper.Meta
 {
-    public class StaticClassSymbolWrapper : ClassSymbolWrapperBase
+    public class ExportedMethodsClassSymbolWrapper : ClassSymbolWrapperBase
     {
         public ExportedMethodSymbolWrapper[] exportedMethods;
 
-        public StaticClassSymbolWrapper(INamedTypeSymbol symbol) : base(symbol)
+        public ExportedMethodsClassSymbolWrapper(INamedTypeSymbol symbol) : base(symbol)
         {
         }
 

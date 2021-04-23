@@ -31,7 +31,7 @@ namespace Hopper.Meta
             }
             catch (GeneratorException e)
             {
-                Console.WriteLine($"An error occured while processing {Calling}:");
+                Console.WriteLine($"An error occured while processing {Calling}, exported from {symbol.Locations.First()}:");
                 Console.WriteLine(e.Message);
                 Console.WriteLine("");
                 return false;
@@ -52,7 +52,7 @@ namespace Hopper.Meta
             }
             catch (GeneratorException e)
             {
-                Console.WriteLine($"An error occured while processing {Calling}:");
+                Console.WriteLine($"An error occured while processing {Calling}, exported from {symbol.Locations.First()}:");
                 Console.WriteLine(e.Message);
                 Console.WriteLine("");
                 return false;
@@ -89,12 +89,11 @@ namespace Hopper.Meta
         {
             // Find aliases
             var aliasMethods = symbol.GetMembers().OfType<IMethodSymbol>()
-                .FilterMap(m => {
-                    var alias = m.GetAttributes().FirstOrDefault(a =>
-                        SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.aliasAttribute));
-                    if (alias == null) return null;
-                    return new AliasMethodSymbolWrapper(m, (string)alias.ConstructorArguments.Single().Value);
-                })
+                .FilterMap(m =>
+                    m.TryGetAttribute(RelevantSymbols.aliasAttribute, out var alias) 
+                        ? new AliasMethodSymbolWrapper(m, (string)alias.ConstructorArguments.Single().Value)
+                        : null
+                )
                 .ToArray();
             
             // Add alias strings to global aliases
@@ -146,5 +145,7 @@ namespace Hopper.Meta
         public string Namespace => symbol.ContainingNamespace.GetFullName();
         public string FullyQualifiedClassName => $"{Namespace}.{ClassName}";
         public string Calling => $"{ClassName} {TypeText}";
+        public string Staticity => symbol.IsStatic ? "static " : "";
+        public bool IsExportingInstanceMethods => symbol.HasAttribute(RelevantSymbols.instanceExportAttribute);
     }
 }

@@ -15,6 +15,6 @@ namespace Hopper.Meta
         public string Name => symbol.Name;
         public string TypeName => symbol.Type.TypeToText();
         public bool IsCopyable => symbol.Type.AllInterfaces.Any(i => 
-            SymbolEqualityComparer.Default.Equals(i, RelevantSymbols.Instance.icopyable));
+            SymbolEqualityComparer.Default.Equals(i, RelevantSymbols.icopyable));
     }
 }

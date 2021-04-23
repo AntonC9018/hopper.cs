@@ -20,6 +20,10 @@ namespace Hopper.Meta
         public override void Init(ProjectContext projectContext)
         {
             base.Init(projectContext);
+            if (symbol.HasAttribute(RelevantSymbols.instanceExportAttribute))
+            {
+                throw new GeneratorException($"Components must not have the {RelevantSymbols.instanceExportAttribute.Name} attribute since its usage is ambiguous for components.");
+            }
             flaggedFields = GetFlaggedFields();
             aliasMethods = GetAliasMethods(projectContext.globalAliases);
             injectedFields = GetInjectedFields().ToArray();
@@ -36,7 +40,7 @@ namespace Hopper.Meta
             return symbol.GetMembers()
                 .OfType<IFieldSymbol>()
                 .Where(f => f.GetAttributes().Any(a => 
-                    SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.Instance.injectAttribute)))
+                    SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.injectAttribute)))
                 .Select(f => new InjectedFieldSymbolWrapper(f));
         }
 
