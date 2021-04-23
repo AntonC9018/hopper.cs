@@ -1,10 +1,23 @@
-using Hopper.Core.Registries;
 using Hopper.Core.Stat;
-using Hopper.Core.Stat.Basic;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.Components;
 
 namespace Hopper.Core
 {
+    public struct EntityModifierWrapper<T>
+    {
+        public System.Func<T> ApplyTo;
+        public Index<T> Index;
+    }
+
+    public class Status
+    {
+        public struct Source
+        {
+            public 
+        }
+    }
+
     public interface IStatus : IExtendent
     {
         int SourceId { get; }

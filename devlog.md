@@ -637,3 +637,20 @@ These slots would then wrap the items that are returned by them in the wrapper s
 So, I'm going to add another attribute for slots and add code generation for fields marked with that.
 
 Also, one probably would like to store them somewhere, especially because of the metadata associated with them, like the name of the thing, although this is not clear to me right now.
+
+### Statuses
+
+Requirements:
+1. The effect should be completely custom (achieved through chain handlers).
+2. The effect should tick down, if needed. When the tick value is zero, the effect should be removed.
+3. The effect can have storage (achieved through temporary components).
+4. Some effects may choose to not be affected by ticking and remove themselves only when they deem necessary.
+
+Why not implement all of statuses as temporary components? 
+The components will be responsible for storage, they may add chains if they really needed to. 
+The effect that they apply will be the first function that is called when they are applied.
+That may be done either with subclassing (interfaces).
+
+No, I'm thinking these will just be handled with normal inheritance.
+There will be Status instances, instantiated from StatusIndices.
+Status indices will contain the status index.
