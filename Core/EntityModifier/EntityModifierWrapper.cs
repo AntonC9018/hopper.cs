@@ -18,8 +18,9 @@ namespace Hopper.Core
 
         public EntityModifierIndex(System.Func<Entity, T> Instantiate, System.Action<T, Entity> Unbind, System.Func<StatusSource.Resistance> DefaultResistance) : this()
         {
-            this.InstantiateAndBind = Instantiate;
+            this.Unbind         = Unbind;
             this.Source.Default = DefaultResistance;
+            this.InstantiateAndBind = Instantiate;
         }
 
         public void Init()
