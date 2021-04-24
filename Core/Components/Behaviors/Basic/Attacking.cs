@@ -111,21 +111,24 @@ namespace Hopper.Core.Components.Basic
         /// <summary>
         /// Returns the positions that would be attacked if the behavior's activate were to be called. 
         /// </summary>
-        public IEnumerable<IntVector2> Predict(IntVector2 direction)
+        public IEnumerable<IntVector2> Predict(Acting acting, IntVector2 direction)
         {
-            if (m_entity.Inventory != null)
+            Entity actor = acting.actor;
+            if (_DoChain.Has(SetTargetsRightBesideHandler))
             {
-                if (m_entity.Inventory.GetWeapon(out var weapon))
-                {
-                    foreach (var relativePos in weapon.Pattern.Predict(direction))
-                    {
-                        yield return m_entity.Pos + relativePos;
-                    }
-                }
+                yield return actor.GetTransform().position + direction;
             }
-            else
+            else if (actor.TryGetInventory(out var inventory)
+                && inventory.TryGetWeapon(out var weapon)
+                && weapon.TryGetWeaponTargetProvider(out var provider))
             {
-                yield return m_entity.Pos + direction;
+                var pos = actor.GetTransform().position;
+
+                foreach (var ctx in provider._pattern.MakeContexts(pos, direction))
+                {
+                    // This has more info, can use.
+                    yield return ctx.position;
+                }
             }
         }
 

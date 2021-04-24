@@ -29,7 +29,6 @@ namespace Hopper.Core
             Moving  .AddTo(subject);
             Digging .AddTo(subject);
             Pushable.AddTo(subject);
-            Statused.AddTo(subject);
             Attacking   .AddTo(subject);
             Attackable  .AddTo(subject, Attackness.ALWAYS);
             Damageable  .AddTo(subject, new Health(5));
@@ -55,7 +54,6 @@ namespace Hopper.Core
             subject.GetDigging().DefaultPreset();
             subject.GetTicking().DefaultPreset();
             subject.GetPushable()  .DefaultPreset();
-            subject.GetStatused()  .DefaultPreset();
             subject.GetAttacking() .DefaultPreset();
             subject.GetAttackable().DefaultPreset();
             subject.GetDamageable().DefaultPreset();

@@ -24,5 +24,7 @@ namespace Hopper.Core
         {
             map.Remove(id);
         }
+
+        public T Get(Identifier identifier) => map[identifier];
     }
 }

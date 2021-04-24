@@ -6,6 +6,7 @@ using Hopper.Core.Targeting;
 using Hopper.Core.Stat.Basic;
 using Hopper.Utils.Vector;
 using Hopper.Core.Stat;
+using System.Linq;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -30,7 +31,7 @@ namespace Hopper.Core.Components.Basic
                 && inv.TryGetShovel(out var shovel)
                 && shovel.TryGetUnbufferedTargetProvider(out var provider))
             {
-                ctx.targets = provider.GetTargets(ctx.actor, ctx.direction).ToList();
+                ctx.targets = provider.GetTargets(ctx.actor.GetTransform().position, ctx.direction).ToList();
             }
         }
 

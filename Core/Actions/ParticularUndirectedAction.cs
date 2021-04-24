@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core
@@ -19,16 +20,16 @@ namespace Hopper.Core
             action.predict = predict;
         }
 
-        public override bool Do(Entity entity)
+        public override bool Do(Acting acting)
         {
-            return action.function(entity);
+            return action.function(acting);
         }
 
-        public IEnumerable<IntVector2> Predict(Entity entity)
+        public IEnumerable<IntVector2> Predict(Acting acting)
         {
             if (action.predict != null)
             {
-                return action.predict(entity);
+                return action.predict(acting);
             }
             return Enumerable.Empty<IntVector2>();
         }

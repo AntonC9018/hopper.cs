@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Predictions
@@ -8,6 +9,6 @@ namespace Hopper.Core.Predictions
     // }
     public interface IBehaviorPredictable
     {
-        IEnumerable<IntVector2> Predict(IntVector2 direction);
+        IEnumerable<IntVector2> Predict(Acting acting, IntVector2 direction);
     }
 }

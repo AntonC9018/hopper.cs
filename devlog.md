@@ -666,3 +666,6 @@ The problem is with the removing bit.
 It can be done generically, by getting the component by its index, removing it and then calling the unbind function (through an interface).
 So, it would be nice to allow closures to become handlers too (closures on wrappers).
 (So now we need to allow instance functions to become handlers).
+
+Implemented code generation for instance fields and instance handlers.
+This was the solution, since instance handlers can capture any data.

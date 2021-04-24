@@ -1,6 +1,7 @@
 using Hopper.Utils.Vector;
 using System.Collections.Generic;
 using Hopper.Shared.Attributes;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -23,8 +24,10 @@ namespace Hopper.Core.Components.Basic
         public ParticularAction nextAction;
         public Entity actor;
 
-        public class Context : ActorContext
+        public class Context : ContextBase
         {
+            public Entity actor => acting.actor;
+            [Omit] public Acting acting;
             [Omit] public ParticularAction action;
             [Omit] public bool success = false;
         }
@@ -40,7 +43,7 @@ namespace Hopper.Core.Components.Basic
         {
             var ctx = new Context
             {
-                actor = actor,
+                acting = this,
                 action = nextAction
             };
 

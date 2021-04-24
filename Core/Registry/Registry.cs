@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hopper.Core.Items;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 
@@ -22,6 +23,8 @@ namespace Hopper.Core
         public IdentifierAssigner _stats;
         public IdentifierAssigner _slots;
         public Dictionary<Identifier, IStat> _defaultStats;
+        public Pools _pools;
+        
 
         public void Init()
         {
@@ -29,6 +32,7 @@ namespace Hopper.Core
             _entities.Init();
             _entityFactory.Init();
             _defaultStats = new Dictionary<Identifier, IStat>();
+            _pools.Init();
         }
 
         public int NextMod()
@@ -76,6 +80,11 @@ namespace Hopper.Core
         public int NextPriority(PriorityRank rank)
         {
             return _priority.Next(rank);
+        }
+
+        public void RegisterEntitySubPool(Identifier subpool)
+        {
+
         }
     }
 }

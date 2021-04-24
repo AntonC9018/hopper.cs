@@ -6,34 +6,34 @@ namespace Hopper.Core
 {
     public static partial class Algos
     {
-        static bool AskMove(Entity actor, IntVector2 direction)
+        static bool AskMove(Acting acting, IntVector2 direction)
         {
-            var transform = actor.GetTransform();
+            var transform = acting.actor.GetTransform();
             var targetTransforms = World.Global.grid.GetAllFromLayer(transform.position, direction, Layer.REAL);
             bool success = false;
             foreach (var targetTransform in targetTransforms)
             {
-                if (targetTransform.entity.TryGetActing(out var acting)
-                    && !acting._flags.HasFlag(Acting.Flags.DidAction|Acting.Flags.DoingAction))
+                if (targetTransform.entity.TryGetActing(out var otherActing)
+                    && !otherActing._flags.HasFlag(Acting.Flags.DidAction|Acting.Flags.DoingAction))
                 {
-                    acting.Activate();
+                    otherActing.Activate();
                     success = true;
                 }
             }
             return success;
         }
 
-        static bool Iterate(Entity actor, ParticularDirectedAction action)
+        static bool Iterate(Acting acting, ParticularDirectedAction action)
         {
-            bool success = action.Do(actor);
+            bool success = action.Do(acting);
 
             if (!success)
             {
-                bool otherEntitySuccess = AskMove(actor, action.direction);
+                bool otherEntitySuccess = AskMove(acting, action.direction);
 
                 if (otherEntitySuccess)
                 {
-                    return Iterate(actor, action);
+                    return Iterate(acting, action);
                 }
             }
 
@@ -44,7 +44,7 @@ namespace Hopper.Core
         {
             if (ctx.action is ParticularUndirectedAction)
             {
-                ctx.action.Do(ctx.actor);
+                ctx.action.Do(ctx.acting);
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace Hopper.Core
             foreach (var dir in dirs)
             {
                 action.direction = dir;
-                if (Iterate(ctx.actor, action))
+                if (Iterate(ctx.acting, action))
                 {
                     ctx.success = true;
                     return;

@@ -1,5 +1,6 @@
 using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
+using static Hopper.Core.Faction;
 
 namespace Hopper.Core
 {
@@ -20,5 +21,8 @@ namespace Hopper.Core
 
         [Alias("IsPlayer")]
         public bool IsPlayer() => faction.HasFlag(Flags.Player);
+
+        [Alias("CheckFaction")]
+        public bool CheckFaction(Flags flags) => faction.HasFlag(flags); 
     }
 }

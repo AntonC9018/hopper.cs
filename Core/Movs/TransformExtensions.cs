@@ -2,18 +2,23 @@ namespace Hopper.Core
 {
     public static partial class Movs
     {
-        public static Entity GetClosestPlayer(this Transform transform)
+        public static Transform GetClosestPlayer(this Transform transform)
         {
             float minDist = 0;
-            Entity closestPlayerTransform = null;
-            foreach (var player in World.Global.state.Players)
+            Transform closestPlayerTransform = null;
+
+            // TODO: optimize such queries
+            foreach (var entity in Registry.Global._entities.map.Values)
+            if (entity.TryGetFaction(out var f) 
+                && f.faction.HasFlag(Faction.Flags.Player)
+                && entity.TryGetTransform(out var playerTransform))
             {
-                float curDist = (transform.position - player.GetTransform().position).SqMag;
+                float curDist = (transform.position - playerTransform.position).SqMag;
 
                 if (closestPlayerTransform == null || curDist < minDist)
                 {
                     minDist = curDist;
-                    closestPlayerTransform = player;
+                    closestPlayerTransform = playerTransform;
                 }
             }
             return closestPlayerTransform;
@@ -21,7 +26,7 @@ namespace Hopper.Core
 
         public static bool TryGetClosestPlayer(this Transform transform, out Entity player)
         {
-            player = GetClosestPlayer(transform);
+            player = GetClosestPlayer(transform)?.entity;
             return player != null;
         }
 
@@ -31,7 +36,7 @@ namespace Hopper.Core
             var player = GetClosestPlayer(transform);
             if (player != null)
             {
-                playerTransform = player.GetTransform();
+                playerTransform = player;
                 return true;
             }
             playerTransform = null;
