@@ -9,4 +9,8 @@
     <ProjectReference Include="..\Core\Hopper_Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Hopper_Shared.csproj" />
+  </ItemGroup>
+
 </Project>

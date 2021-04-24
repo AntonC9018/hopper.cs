@@ -111,6 +111,23 @@ namespace Hopper.Core
             };
         }
 
+        public static DirectedAction CreateSimple(System.Action<IntVector2, IntVector2> function, DirectedPredict predict = null)
+        {
+            return new DirectedAction
+            {
+                function = (acting, direction) => 
+                { 
+                    if (acting.actor.TryGetTransform(out var transform)) 
+                    {
+                        function(transform.position, direction); 
+                        return true; 
+                    }
+                    return false;
+                },
+                predict = predict
+            };
+        }
+
         public static DirectedAction CreateSimple(System.Action<Acting, IntVector2> function, DirectedPredict predict = null)
         {
             return new DirectedAction

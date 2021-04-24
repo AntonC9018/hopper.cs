@@ -14,6 +14,7 @@ namespace Hopper.Meta.Template
         public IEnumerable<FieldSymbolWrapper> fieldsRequiringInit;
         public IEnumerable<EntityTypeWrapper> entityTypes;
         public IEnumerable<FieldSymbolWrapper> slots;
+        public IEnumerable<FieldSymbolWrapper> staticIndentiyingStatFields;
         public Scope<StatType> statRootScope;
     }
 }

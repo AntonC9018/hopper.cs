@@ -53,27 +53,23 @@ namespace Hopper.Core
         //
         // public event System.Action<int> SpawnParticleEvent;
 
-        private Entity SpawnEntityNoEvent(EntityFactory factory, IntVector2 pos, IntVector2 orientation)
-        {
-            var entity = factory.Instantiate();
-            entity.id = Registry.Global.RegisterRuntimeEntity(entity);
-            grid.AddTransform(entity.InitTransform(pos, orientation));
-            state.AddActor(entity.InitActing());
-
-            return entity;
-        }
-
-        public Entity SpawnHangingEntity(EntityFactory factory, IntVector2 pos, IntVector2 orientation)
-        {
-            var entity = SpawnEntityNoEvent(factory, pos, orientation);
-            SpawnEntityEvent?.Invoke(entity);
-            return entity;
-        }
-
         public Entity SpawnEntity(EntityFactory factory, IntVector2 pos, IntVector2 orientation)
         {
             System.Console.WriteLine($"Creating entity of factory id : {factory.id}");
-            var entity = SpawnEntityNoEvent(factory, pos, orientation);
+
+            var entity = factory.Instantiate();
+            entity.id = Registry.Global.RegisterRuntimeEntity(entity);
+
+            if (entity.TryInitTransform(pos, orientation, out var transform))
+            {
+                grid.AddTransformNoEvent(transform);
+            }
+
+            if (entity.TryInitActing(out var acting))
+            {
+                state.AddActor(acting);
+            }
+
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }

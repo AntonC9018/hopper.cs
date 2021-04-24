@@ -46,7 +46,12 @@ namespace <#= Namespace #>
         { #>
             <#= stat.QualifiedName #>.<#= identifyingField.name #>.Index.Id = Registry.Global.RegisterStat(<#= stat.QualifiedName #>.<#= identifyingField.name #>.Default());
 <#      }
+        
     }
+    foreach (var identifyingField in staticIndentiyingStatFields) 
+    { #>
+            <#= identifyingField.FullyQualifiedName #>.Index.Id = Registry.Global.RegisterStat(<#= identifyingField.FullyQualifiedName #>.Default());
+<#  }
     foreach (var entityType in entityTypes) 
     { /* TODO: Link the metadata (the name or whatever) */#>
             {

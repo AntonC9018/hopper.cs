@@ -125,40 +125,27 @@ namespace Hopper.Meta
             }
         }
 
-        public IEnumerable<FieldSymbolWrapper> GetSlots()
+        public IEnumerable<FieldSymbolWrapper> GetStaticFieldsWithAttibute(INamedTypeSymbol attribute)
         {
             foreach (var field in GetAllFields(compilation.GlobalNamespace))
             {
-                if (field.IsStatic 
-                    && field.HasAttribute(RelevantSymbols.slotAttribute))
+                if (field.IsStatic && field.HasAttribute(attribute))
                 {
                     yield return new FieldSymbolWrapper(field);
                 }
             }
         }
 
-        public IEnumerable<FieldSymbolWrapper> GetMethodClassInstances()
-        {
-            foreach (var field in GetAllFields(compilation.GlobalNamespace))
-            {
-                if (field.IsStatic 
-                    && field.HasAttribute(RelevantSymbols.instanceExportAttribute))
-                {
-                    yield return new FieldSymbolWrapper(field);
-                }
-            }
-        }
+        public IEnumerable<FieldSymbolWrapper> GetSlots() =>
+            GetStaticFieldsWithAttibute(RelevantSymbols.slotAttribute);
 
-        public IEnumerable<FieldSymbolWrapper> GetFieldsRequiringInit()
-        {
-            foreach (var field in GetAllFields(compilation.GlobalNamespace))
-            {
-                if (field.IsStatic 
-                    && field.HasAttribute(RelevantSymbols.requiringInitAttribute))
-                {
-                    yield return new FieldSymbolWrapper(field);
-                }
-            }
-        }
+        public IEnumerable<FieldSymbolWrapper> GetMethodClassInstances() =>
+            GetStaticFieldsWithAttibute(RelevantSymbols.instanceExportAttribute);
+
+        public IEnumerable<FieldSymbolWrapper> GetFieldsRequiringInit() =>
+            GetStaticFieldsWithAttibute(RelevantSymbols.requiringInitAttribute);
+
+        public IEnumerable<FieldSymbolWrapper> GetStaticIdentifyingStatFields() =>
+            GetStaticFieldsWithAttibute(RelevantSymbols.identifyingStatAttribute);
     }
 }

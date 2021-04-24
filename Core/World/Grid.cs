@@ -60,11 +60,24 @@ namespace Hopper.Core
             return true;
         }
 
+        public bool AddTransformNoEvent(Transform transform)
+        {
+            if (IsInBounds(transform.position))
+            {
+                GetCellAt(transform.position).Add(transform);
+                return true;
+            }
+            return false;
+        }
+
         public bool AddTransform(Transform transform)
         {
             if (IsInBounds(transform.position))
             {
-                GetCellAt(transform.position)._transforms.Add(transform);
+                var cell = GetCellAt(transform.position);
+                cell.Add(transform);
+                cell.FireEnterEvent(transform);
+
                 return true;
             }
             return false;

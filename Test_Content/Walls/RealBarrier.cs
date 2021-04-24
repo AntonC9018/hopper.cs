@@ -1,16 +1,24 @@
 using Hopper.Core;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.Test_Content
 {
-    public class RealBarrier : Entity
+    [EntityType]
+    public static class RealBarrier
     {
-        public override bool IsDirected => true;
-        public override Layer Layer => Layer.REAL;
-
-        public static EntityFactory<RealBarrier> Factory = CreateFactory();
-        public static EntityFactory<RealBarrier> CreateFactory()
+        public static EntityFactory Factory;
+        
+        public static void AddComponents(Entity subject)
         {
-            return new EntityFactory<RealBarrier>();
+            Transform.AddTo(subject, Layer.REAL);
+            Directed.AddTo(subject);
+            // Stats.AddTo(subject, Registry.Global._defaultStats);
         }
+
+        public static void InitComponents(Entity subject)
+        {
+        }
+
+        public static void Retouch(Entity subject) {}
     }
 }

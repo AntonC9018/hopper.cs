@@ -1,0 +1,5 @@
+{
+    "$StatusSource": { "@type": "Basic.StatusSource" },
+    "power": 1,
+    "amount": 3
+}

@@ -194,4 +194,9 @@ namespace Hopper.Shared.Attributes
     public class SlotAttribute : Attribute
     {
     }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public class IdentifyingStatAttribute : Attribute
+    {
+    }
 }

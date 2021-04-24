@@ -249,6 +249,7 @@ namespace Hopper.Meta
             var slots = ctx.GetSlots();
             var methodClassInstances = ctx.GetMethodClassInstances();
             var fieldsRequiringInit = ctx.GetFieldsRequiringInit();
+            var staticIndentiyingStatFields = ctx.GetStaticIdentifyingStatFields();
 
             {
                 // They must live in at least the base namespace hopper
@@ -261,6 +262,7 @@ namespace Hopper.Meta
                         methodClasses = methodClasses,
                         methodClassInstances = methodClassInstances,
                         fieldsRequiringInit = fieldsRequiringInit,
+                        staticIndentiyingStatFields = staticIndentiyingStatFields,
                         entityTypes = entityTypes,
                         statRootScope = statContext.scope,
                         slots = slots,

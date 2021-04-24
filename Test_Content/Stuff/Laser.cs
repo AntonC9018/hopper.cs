@@ -1,63 +1,63 @@
+using System.Collections.Generic;
+using System.Linq;
 using Hopper.Core;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat.Basic;
 using Hopper.Core.Targeting;
+using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Test_Content
 {
-    public class LaserInfo
-    {
-        public IntVector2 direction;
-        public IntVector2 pos_start;
-        public IntVector2 pos_end;
-
-        public LaserInfo(IntVector2 direction, IntVector2 pos_start, IntVector2 pos_end)
-        {
-            this.direction = direction;
-            this.pos_start = pos_start;
-            this.pos_end = pos_end;
-        }
-    }
-
     public static class Laser
     {
-        public static readonly WorldEventPath<LaserInfo> EventPath = new WorldEventPath<LaserInfo>();
-        public static readonly Attack.Source AttackSource = new Attack.Source { resistance = 1 };
-        public static readonly Push.Source PushSource = new Push.Source { resistance = 1 };
+        [IdentifyingStat] public static Attack.Source AttackSource = 
+            new Attack.Source { Default = Attack.Source.Resistance.Default };
+        [IdentifyingStat] public static Push.Source PushSource =            
+            new Push.Source { Default = Push.Source.Resistance.Default };
 
-        private static Attack DefaultAttack =
-            new Attack
-            {
-                power = 1,
-                sourceId = AttackSource.Id,
-                damage = 2,
-                pierce = 5
-            };
-        private static Push DefaultPush =
-            new Push
-            {
-                sourceId = PushSource.Id,
-                power = 1,
-                distance = 1,
-                pierce = 1
-            };
-        private static readonly TargetLayers TargetLayers = new TargetLayers
+        private static Attack DefaultAttack => new Attack
+        (
+            power  : 1,
+            source : AttackSource.Index,
+            damage : 2,
+            pierce : 5
+        );
+        private static Push DefaultPush => new Push
+        (
+            source   : PushSource.Index,
+            power    : 1,
+            distance : 1,
+            pierce   : 1
+        );
+
+        private static readonly StraightPattern DefaultPattern = new StraightPattern(Layer.WALL);
+
+        private static readonly UnbufferedTargetProvider DefaultShooting 
+            = new UnbufferedTargetProvider(DefaultPattern, Layer.REAL);
+
+        public static void Shoot(IntVector2 position, IntVector2 direction)
         {
-            targeted = Layer.REAL,
-            skip = Layer.WALL
-        };
+            var targets = DefaultShooting.GetTargets(position, direction);
 
-        private static readonly AnonShooting DefaultShooting = new AnonShooting(
-            TargetLayers, DefaultAttack, DefaultPush, false);
-
-        public static void Shoot(IWorldSpot spot, IntVector2 dir)
-        {
-            var shooting_info = DefaultShooting.ShootAnon(spot, dir);
-            var laser_info = new LaserInfo(dir, spot.Pos + dir, shooting_info.last_checked_pos - dir);
-            EventPath.Fire(spot.World, laser_info);
+            foreach (var target in targets)
+            {
+                target.transform.entity.TryBeAttacked(null, DefaultAttack, direction);
+                target.transform.entity.TryBePushed(DefaultPush, direction);
+            }
         }
 
-        public static readonly DirectedAction LaserShootAction =
-            Action.CreateSimple(Laser.Shoot, DefaultShooting.Predict);
+        // TODO: Code generation for these adaptors
+        // TODO: The predictions should work with target contexts?
+        public static IEnumerable<IntVector2> Predict(Acting acting, IntVector2 direction)
+        {
+            return DefaultShooting.GetTargets(
+                    // crap like this is not ok
+                    acting.actor.GetTransform().position, 
+                    direction)
+                .Select(t => t.position);
+        }
+
+        public static readonly DirectedAction ShootAction = Action.CreateSimple(Shoot, Predict);
     }
 }
