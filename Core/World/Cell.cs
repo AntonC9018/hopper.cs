@@ -7,34 +7,42 @@ namespace Hopper.Core
 {
     public struct Cell
     {
-        public List<Transform> m_transforms;
+        public List<Transform> _transforms;
         public event System.Action<Transform> EnterEvent;
         public event System.Action<Transform> LeaveEvent;
 
-        public void Init() { m_transforms = new List<Transform>(); }
+        public void Init() { _transforms = new List<Transform>(); }
+
+        public bool Remove(Transform transform) => _transforms.Remove(transform);
+        public bool Contains(Transform transform) => _transforms.Contains(transform);
+        public void Add(Transform transform) 
+        {
+            Assert.That(!_transforms.Contains(transform), "Cannot add a transform twice");
+            _transforms.Add(transform);
+        }
 
         public Transform GetFirstTransform()
         {
-            return m_transforms[0];
+            return _transforms[0];
         }
 
-        public IEnumerable<Transform> GetAllTransforms() => m_transforms;
+        public IEnumerable<Transform> GetAllTransforms() => _transforms;
 
         public Transform GetAnyTransformFromLayer(Layer layer)
         {
-            return m_transforms.FindLast(t => t.layer.HasFlag(layer));
+            return _transforms.FindLast(t => t.layer.HasFlag(layer));
         }
 
         public IEnumerable<Transform> GetAllFromLayer(Layer layer)
         {
-            return m_transforms.Where(t => t.layer.HasFlag(layer));
+            return _transforms.Where(t => t.layer.HasFlag(layer));
         }
 
         public IEnumerable<Transform> GetAllDirectedFromLayer(IntVector2 direction, Layer layer)
         {
-            for (int i = m_transforms.Count - 1; i >= 0; i--)
+            for (int i = _transforms.Count - 1; i >= 0; i--)
             {
-                var t = m_transforms[i];
+                var t = _transforms[i];
                 if (t.entity.IsDirected() && t.layer.HasFlag(layer) && t.orientation == direction)
                 {
                     yield return t;
@@ -44,7 +52,7 @@ namespace Hopper.Core
 
         public Transform GetUndirectedTransformFromLayer(Layer layer)
         {
-            return m_transforms
+            return _transforms
                 .FindLast(t => t.layer.HasFlag(layer) && t.entity.IsDirected() == false);
         }
 
@@ -57,7 +65,7 @@ namespace Hopper.Core
         public bool HasDirectionalBlock(IntVector2 direction, Layer layer)
         {
             var dir = direction;
-            foreach (var t in m_transforms)
+            foreach (var t in _transforms)
             {
                 if (t.entity.IsDirected() && t.layer.HasFlag(layer))
                 {

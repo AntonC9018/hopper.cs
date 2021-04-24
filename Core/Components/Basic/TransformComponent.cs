@@ -17,6 +17,8 @@ namespace Hopper.Core
         public IntVector2 position;
         public IntVector2 orientation;
         [Inject] public Layer layer;
+
+        private GridManager Grid => World.Global.grid;
         
 
         [Alias("InitTransform")]
@@ -35,52 +37,44 @@ namespace Hopper.Core
 
         public void ResetPosInGrid(Entity entity, IntVector2 newPos)
         {
-            // RemoveFromGrid(entity, null);
+            RemoveFromGrid();
             position = newPos;
-            // ResetInGrid(entity, null);
+            ResetInGrid();
         }
 
         public void RemoveFromGrid()
         {
-        }
-
-        public void RemoveFromGrid(GridManager grid)
-        {
-            var cell = grid.GetCellAt(position);
-            bool wasRemoved = cell.m_transforms.Remove(this);
+            var cell = Grid.GetCellAt(position);
+            bool wasRemoved = cell.Remove(this);
             Assert.That(wasRemoved, "Trying to remove an entity which is not in the cell is not allowed");
             cell.FireLeaveEvent(this);
         }
 
         public void ResetInGrid()
         {
-        }
-
-        public void ResetInGrid(GridManager grid)
-        {
-            var cell = grid.GetCellAt(position);
-            cell.m_transforms.Add(this);
+            var cell = Grid.GetCellAt(position);
+            cell.Add(this);
             cell.FireEnterEvent(this);
         }
 
         public bool HasBlockRelative(IntVector2 direction, Layer layer)
         {
-
+            return Grid.HasBlockAt(position + direction, direction, layer);
         }
 
         public bool HasBlockRelative(IntVector2 direction)
         {
-
+            return Grid.HasBlockAt(position + direction, direction, ExtendedLayer.BLOCK);
         }
         
         public IntVector2 GetPosRelative(IntVector2 offset)
         {
-
+            return position + offset;
         }
 
         public Cell GetCell()
         {
-            return null;
+            return Grid.GetCellAt(position);
         }
     }
 }

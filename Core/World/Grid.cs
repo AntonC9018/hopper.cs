@@ -43,6 +43,12 @@ namespace Hopper.Core
             return m_grid[pos.y, pos.x];
         }
 
+        public bool TryRemove(Transform transform)
+        {
+            return IsInBounds(transform.position)
+                && GetCellAt(transform.position).Remove(transform);
+        }
+
         public bool TryGetCell(IntVector2 pos, out Cell cell)
         {
             if (IsOutOfBounds(pos)) 
@@ -58,7 +64,7 @@ namespace Hopper.Core
         {
             if (IsInBounds(transform.position))
             {
-                GetCellAt(transform.position).m_transforms.Add(transform);
+                GetCellAt(transform.position)._transforms.Add(transform);
                 return true;
             }
             return false;
@@ -124,9 +130,9 @@ namespace Hopper.Core
             
             var cell = GetCellAt(-direction + position);
 
-            for (int i = cell.m_transforms.Count - 1; i >= 0; i--)
+            for (int i = cell._transforms.Count - 1; i >= 0; i--)
             {
-                var t = cell.m_transforms[i];
+                var t = cell._transforms[i];
                 if (t.layer.HasFlag(layer))
                 {
                     if (t.entity.IsDirected() && t.orientation != -direction)

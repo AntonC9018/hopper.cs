@@ -5,8 +5,7 @@ namespace Hopper.Tests
 {
     public class SuperPool
     {
-        private SuperPool<EndlessSubPool> endlessPool;
-        private SuperPool<NormalSubPool> normalPool;
+        private Pool pool;
 
         public SuperPool()
         {
@@ -15,14 +14,14 @@ namespace Hopper.Tests
         [SetUp]
         public void Setup()
         {
-            endlessPool = new SuperPool<EndlessSubPool>();
-            normalPool = new SuperPool<NormalSubPool>();
+            pool = new Pool();
+
         }
 
         [Test]
         public void DrawingFrom_EmptyPool_Throws()
         {
-            Assert.Throws<Hopper.Utils.Exception>(() => endlessPool.GetNextItem(""));
+            Assert.Throws<Hopper.Utils.Exception>(() => pool.(""));
         }
 
         [Test]

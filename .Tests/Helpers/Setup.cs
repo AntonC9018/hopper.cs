@@ -5,17 +5,12 @@ namespace Hopper.Tests
 {
     public static class SetupThing
     {
-        static ModResult result;
+        private static bool isLoaded;
 
-        public static ModResult SetupContent()
+        public static void SetupContent()
         {
-            if (result == null)
-            {
-                var loader = new ModLoader();
-                loader.Add<TestMod>();
-                result = loader.RegisterAll();
-            }
-            return result;
+            var loader = new ModLoader();
+            loader.Init();
         }
     }
 }

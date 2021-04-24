@@ -669,3 +669,13 @@ So, it would be nice to allow closures to become handlers too (closures on wrapp
 
 Implemented code generation for instance fields and instance handlers.
 This was the solution, since instance handlers can capture any data.
+
+
+### Fixes
+
+Changed around the pool implementation (it used to work with decks, now it is a simple less than pool).
+
+Fixed some more stuff.
+
+Now code generation needs to be adjusted to work dynamically with mods.
+1. Take a project and a root namespace name. In case of Core, it should take the project path, 

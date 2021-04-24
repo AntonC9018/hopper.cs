@@ -15,21 +15,19 @@ namespace Hopper.Tests
 {
     public class Prediction_Tests
     {
-        public ModResult result;
-        public EntityFactory<Player> playerFactory;
-        public World world;
+        public EntityFactory playerFactory;
         public Predictor prediction;
 
         public Prediction_Tests()
         {
             result = SetupThing.SetupContent();
-            playerFactory = new EntityFactory<Player>();
+            playerFactory = new EntityFactory();
         }
 
         [SetUp]
         public void Setup()
         {
-            world = new World(3, 3, result.patchArea);
+            World.Global = new World(3, 3);
             prediction = new Predictor(world, Faction.Player);
         }
 

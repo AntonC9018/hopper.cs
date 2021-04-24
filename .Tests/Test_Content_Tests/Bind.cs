@@ -50,8 +50,8 @@ namespace Hopper.Tests.Test_Content
 
             Assert.That(Bind.StopMoveStatus.IsApplied(player));
             Assert.AreEqual(player.Pos, spider.Pos);
-            Assert.AreEqual(2, zero_zero_cell.m_transforms.Count);
-            Assert.AreEqual(player, zero_zero_cell.m_transforms[0]);
+            Assert.AreEqual(2, zero_zero_cell._transforms.Count);
+            Assert.AreEqual(player, zero_zero_cell._transforms[0]);
 
             player.Behaviors.Get<Acting>().nextAction = move_action.ToDirectedParticular(IntVector2.Right);
             world.Loop();
@@ -67,7 +67,7 @@ namespace Hopper.Tests.Test_Content
 
             Assert.AreEqual(new IntVector2(1, 0), player.Pos);
 
-            Assert.AreEqual(0, zero_zero_cell.m_transforms.Count);
+            Assert.AreEqual(0, zero_zero_cell._transforms.Count);
             Assert.AreEqual(player.Pos, spider.Pos);
             Assert.AreEqual(player, player.GetCell().m_transforms[0]);
 

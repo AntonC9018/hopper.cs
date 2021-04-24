@@ -55,7 +55,7 @@ namespace Hopper.Tests
 
             var cell = grid.GetCellAt(new IntVector2(0, 0));
 
-            Assert.AreEqual(0, cell.m_transforms.Count);
+            Assert.AreEqual(0, cell._transforms.Count);
 
             Assert.Throws<Hopper.Utils.Exception>(() => entity.RemoveFromGrid(grid));
         }

@@ -43,6 +43,7 @@ namespace Hopper.Core.Components.Basic
             // e.g. listeners on cell's enter and leave events. 
             if (ctx.newPos == transform.position)
             {
+                ctx.propagate = false;
             }
         }
 

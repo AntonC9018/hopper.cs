@@ -3,7 +3,8 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.History;
 using Hopper.Core.Items;
 using Hopper.Core.Mods;
-using Hopper.Core.Registries;
+using Hopper.Core.Stat;
+using Hopper.Core.Targeting;
 using Hopper.Test_Content.Explosion;
 using Hopper.Test_Content.SimpleMobs;
 using Hopper.Utils.Chains;
@@ -15,35 +16,42 @@ namespace Hopper.Tests
     public class Attacking_Tests
     {
         public World world;
-        public ModResult result;
         public Entity attacking_entity;
         public Entity dummy;
-        public EntityFactory<Entity> attacking_entity_factory;
-        public EntityFactory<Dummy> dummy_factory;
+        public EntityFactory attacking_entity_factory;
+        public EntityFactory dummy_factory;
 
         public Attacking_Tests()
         {
-            result = SetupThing.SetupContent();
-            attacking_entity_factory = new EntityFactory<Entity>().AddBehavior(Attacking.Preset);
+            SetupThing.SetupContent();
+
+            attacking_entity_factory = new EntityFactory();
+            Attacking.AddTo(attacking_entity_factory).NoInventoryPreset();
+            Transform.AddTo(attacking_entity_factory, Layer.REAL);
+            Stats    .AddTo(attacking_entity_factory, Registry.Global._defaultStats);
+            
             dummy_factory = Dummy.Factory;
+            Transform .AddTo(dummy_factory, Layer.REAL);
+            Attackable.AddTo(dummy_factory, Attackness.ALWAYS);
+            Stats     .AddTo(dummy_factory, Registry.Global._defaultStats);
         }
 
         [SetUp]
         public void Setup()
         {
-            world = new World(3, 3, result.patchArea);
-            dummy = world.SpawnEntity(dummy_factory, new IntVector2(1, 1));
+            World.Global = new World(3, 3);
+            dummy            = world.SpawnEntity(dummy_factory, new IntVector2(1, 1));
             attacking_entity = world.SpawnEntity(attacking_entity_factory, new IntVector2(0, 1));
         }
 
-        public Entity GetFirstEntity()
+        public Transform GetFirstTransform()
         {
-            return world.grid.GetCellAt(IntVector2.Zero).GetFirstEntity();
+            return World.Global.grid.GetCellAt(IntVector2.Zero).GetFirstTransform();
         }
 
         public void AttackRight()
         {
-            attacking_entity.Behaviors.Get<Attacking>().Activate(new IntVector2(1, 0));
+            attacking_entity.Attack(new IntVector2(1, 0), null);
         }
 
         [Test]
@@ -70,11 +78,10 @@ namespace Hopper.Tests
         public void AttackingPushes()
         {
             // Add pushable behavior
-            var pushable = Pushable.Preset.Instantiate(dummy);
-            dummy.Behaviors.Add(typeof(Pushable), pushable);
+            Pushable.AddTo(dummy).DefaultPreset();
             // As well as displaceable
-            var displaceable = Displaceable.DefaultPreset.Instantiate(dummy);
-            dummy.Behaviors.Add(typeof(Displaceable), displaceable);
+            Displaceable.AddTo(dummy, ExtendedLayer.BLOCK).DefaultPreset();
+
             AttackRight();
             Assert.True(dummy.Did(UpdateCode.pushed_do));
         }

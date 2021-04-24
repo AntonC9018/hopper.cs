@@ -54,7 +54,7 @@ namespace Hopper.Core
             subject.GetDigging().DefaultPreset();
             subject.GetTicking().DefaultPreset();
             subject.GetPushable()  .DefaultPreset();
-            subject.GetAttacking() .DefaultPreset();
+            subject.GetAttacking() .InventoryPreset();
             subject.GetAttackable().DefaultPreset();
             subject.GetDamageable().DefaultPreset();
             subject.GetDisplaceable().DefaultPreset();

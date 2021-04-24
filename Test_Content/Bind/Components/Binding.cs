@@ -21,11 +21,10 @@ namespace Hopper.Test_Content.Bind
             BindRetouchers.CreateBindRetoucher(Bind.StopMoveStatus);
     }
 
-    public class Binding : IBehavior<BindStatus>, IStandartActivateable
+    public class Binding : IStandartActivateable
     {
         public class Context : StandartContext
         {
-            public StatusFile statusStat;
             public BindStatus bindStatus;
             public Entity applyTo;
         }
@@ -51,7 +50,7 @@ namespace Hopper.Test_Content.Bind
             return CheckDoCycle<Event>(ev);
         }
 
-        static void GetTarget(Event ev)
+        static void GetTarget(Context ev)
         {
             if (ev.applyTo == null)
             {
@@ -66,38 +65,14 @@ namespace Hopper.Test_Content.Bind
             }
         }
 
-        static void CheckCanBind(Event ev)
+        static void CheckCanBind(Context ev)
         {
             ev.propagate = ev.bindStatus.IsApplied(ev.applyTo) == false;
         }
 
-        static void BindTarget(Event ev)
+        static void BindTarget(Context ev)
         {
             ev.propagate = ev.bindStatus.TryApply(ev.applyTo, new BindData(ev.actor), ev.statusStat);
-        }
-
-        public static readonly ChainPaths<Binding, Event> Check;
-        public static readonly ChainPaths<Binding, Event> Do;
-        public static readonly ChainTemplateBuilder DefaultBuilder;
-
-        public static ConfigurableBehaviorFactory<Binding, BindStatus> Preset(BindStatus status)
-             => new ConfigurableBehaviorFactory<Binding, BindStatus>(DefaultBuilder, status);
-
-        static Binding()
-        {
-            Check = new ChainPaths<Binding, Event>(ChainName.Check);
-            Do = new ChainPaths<Binding, Event>(ChainName.Do);
-
-            DefaultBuilder = new ChainTemplateBuilder()
-
-                .AddTemplate<Event>(ChainName.Check)
-                .AddHandler(GetTarget)
-                .AddHandler(CheckCanBind)
-
-                .AddTemplate<Event>(ChainName.Do)
-                .AddHandler(BindTarget)
-                //  .AddHandler(Utils.AddHistoryEvent(History.EventCode.pushed_do))
-                .End();
         }
     }
 }

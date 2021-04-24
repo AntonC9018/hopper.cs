@@ -3,7 +3,8 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core.History
 {
-    public class EntityState // possible include some more data
+    public interface IUpdateInfo{}
+    public class EntityState : IUpdateInfo // possible include some more data
     {
         public TransformSnapshot transformSnapshot;
         public int timeframe;
