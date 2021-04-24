@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Registries;
 
-namespace Hopper.Test_Content.Projectiles
+namespace Hopper.TestContent.Projectiles
 {
     internal class ProjectileContent : ISubMod
     {

@@ -1,6 +1,6 @@
 using Hopper.Core;
 
-namespace Hopper.Test_Content.Bind
+namespace Hopper.TestContent.Bind
 {
     // this is easily 
     public interface ISelfBinder

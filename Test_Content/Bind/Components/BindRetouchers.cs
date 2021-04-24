@@ -3,7 +3,7 @@ using Hopper.Utils.Chains;
 using Hopper.Core.Components.Basic;
 using System;
 
-namespace Hopper.Test_Content.Bind
+namespace Hopper.TestContent.Bind
 {
     public static class BindRetouchers
     {

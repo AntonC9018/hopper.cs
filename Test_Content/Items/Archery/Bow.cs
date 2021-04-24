@@ -8,7 +8,7 @@ using Hopper.Utils.Vector;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hopper.Test_Content
+namespace Hopper.TestContent
 {
     public class BowTinkerData : TinkerData
     {

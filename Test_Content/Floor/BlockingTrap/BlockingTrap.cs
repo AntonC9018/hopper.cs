@@ -4,7 +4,7 @@ using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content.Floor
+namespace Hopper.TestContent.Floor
 {
     public class BlockingTrap : Trap
     {

@@ -1,8 +1,8 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
-using Hopper.Test_Content;
+using Hopper.TestContent;
 
-namespace Hopper.Test_Content.Floor
+namespace Hopper.TestContent.Floor
 {
     /*
         This water has been implemented without using behaviors

@@ -1,62 +1,50 @@
 using Hopper.Core;
+using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.Items;
+using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content
+namespace Hopper.TestContent
 {
-    public interface IGold
+    [EntityType]
+    public static class Gold
     {
-        int Amount { get; set; }
-    }
+        public static EntityFactory Factory;
 
-    public class Gold : Entity, IGold
-    {
-        public int Amount { get; set; }
-        public override Layer Layer => Layer.ITEM;
-
-        public static Gold Drop(IntVector2 pos, int amount, World world)
-            => Drop(pos, amount, world, Factory);
-
-        public static Gold Drop(IntVector2 pos, int amount, World world, IFactory<Gold> factory)
+        public static void AddComponents(Entity subject)
         {
-            var cell = world.grid.GetCellAt(pos);
-            if (cell == null) return null;
-            var gold = (Gold)cell.GetAnyEntityFromLayer(Layer.ITEM);
-            if (gold == null)
+            ItemBase.AddComponents(subject);
+
+            // Item stuff
+            Equippable.AddTo(subject);
+            Countable.AddTo(subject, 0);
+        }
+
+        public static void InitComponents(Entity subject)
+        {
+            subject.GetEquippable().DefaultPreset();
+        }
+
+        public static void Retouch(Entity subject)
+        {
+            Equippable.AddToInventoryCountableHandlerWrapper.AddTo(subject);
+        }
+
+        public static Entity Drop(IntVector2 position, int amount)
+        {
+            if (World.Global.grid.GetCellAt(position).TryGetAnyFromLayer(Layer.ITEM, out var transform)
+                && transform.entity.typeId == Factory.id)
             {
-                gold = world.SpawnEntity(Factory, pos);
+                var countable = transform.entity.GetCountable();
+                countable.count += amount;
+                return transform.entity;
             }
-            gold.Amount += amount;
-            // TODO: save update of amount to history
-            // gold.History.Add(UpdateCode.amount_changed)
+            var gold = World.Global.SpawnEntity(Factory, position, IntVector2.Zero);
+            gold.GetCountable().count = amount;
             return gold;
         }
 
-        public static EntityFactory<Gold> Factory = CreateFactory();
-        public static readonly Retoucher PickUpRetoucher =
-            Retoucher.SingleHandlered(Displaceable.Do, PickUp);
-
-        public static EntityFactory<Gold> CreateFactory()
-        {
-            return new EntityFactory<Gold>()
-                .AddBehavior(Attackable.DefaultPreset);
-        }
-
-        private static void PickUp(Displaceable.Context ev)
-        {
-            var golds = ev.actor.GetCell().GetAllFromLayer(Layer.ITEM);
-            foreach (var gold in golds)
-            {
-                if (gold != null && gold.IsDead == false)
-                {
-                    var igold = (IGold)gold;
-                    // ((ICanPickupGold)ev.actor).UpdateAmount(gold.m_amount);
-                    System.Console.WriteLine($"Updated amount of gold by {igold.Amount}");
-                    igold.Amount = 0;
-                    gold.Die();
-                }
-            }
-        }
-
+        [Slot] public static Slot Slot = new Slot(false);
     }
 }

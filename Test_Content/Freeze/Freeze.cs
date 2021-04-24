@@ -2,7 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Shared.Attributes;
 
-namespace Hopper.Test_Content.Freezing
+namespace Hopper.TestContent.Freezing
 {
     public class FreezingEntityModifier : IEntityModifier
     {

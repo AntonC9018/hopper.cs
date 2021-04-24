@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Registries;
 
-namespace Hopper.Test_Content.Floor
+namespace Hopper.TestContent.Floor
 {
     internal class TrapContent : ISubMod
     {

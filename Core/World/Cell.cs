@@ -21,14 +21,17 @@ namespace Hopper.Core
             _transforms.Add(transform);
         }
 
-        public Transform GetFirstTransform()
+        public Transform GetFirstTransform() => _transforms[0];
+
+        public bool TryGetAnyFromLayer(Layer layer, out Transform transform)
         {
-            return _transforms[0];
+            transform = GetAnyFromLayer(layer);
+            return transform != null;
         }
 
         public IEnumerable<Transform> GetAllTransforms() => _transforms;
 
-        public Transform GetAnyTransformFromLayer(Layer layer)
+        public Transform GetAnyFromLayer(Layer layer)
         {
             return _transforms.FindLast(t => t.layer.HasFlag(layer));
         }
@@ -50,14 +53,19 @@ namespace Hopper.Core
             }
         }
 
-        public Transform GetUndirectedTransformFromLayer(Layer layer)
+        public IEnumerable<Transform> GetAllUndirectedFromLayer(Layer layer)
+        {
+            return GetAllFromLayer(layer).Where(t => !t.entity.IsDirected());
+        }
+
+        public Transform GetUndirectedFromLayer(Layer layer)
         {
             return _transforms
                 .FindLast(t => t.layer.HasFlag(layer) && t.entity.IsDirected() == false);
         }
 
         // this one looks for the fitting barriers
-        public Transform GetDirectedTransformFromLayer(IntVector2 direction, Layer layer)
+        public Transform GetDirectedFromLayer(IntVector2 direction, Layer layer)
         {
             return GetAllDirectedFromLayer(direction, layer).FirstOrDefault();
         }

@@ -2,6 +2,8 @@ using Hopper.Utils.Vector;
 using Hopper.Utils;
 using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Hopper.Core
 {
@@ -35,7 +37,7 @@ namespace Hopper.Core
             return new TransformSnapshot { position = position, orientation = orientation };
         }
 
-        public void ResetPosInGrid(Entity entity, IntVector2 newPos)
+        public void ResetPositionInGrid(IntVector2 newPos)
         {
             RemoveFromGrid();
             position = newPos;
@@ -65,6 +67,26 @@ namespace Hopper.Core
         public bool HasBlockRelative(IntVector2 direction)
         {
             return Grid.HasBlockAt(position + direction, direction, ExtendedLayer.BLOCK);
+        }
+
+        public IEnumerable<Transform> GetAllFromLayer(Layer layer)
+        {
+            return Grid.GetAllFromLayer(position, orientation, layer);
+        }
+
+        public IEnumerable<Transform> GetAllButSelfFromLayer(Layer layer)
+        {
+            return Grid.GetAllFromLayer(position, orientation, layer).Where(t => t != this);
+        }
+
+        public IEnumerable<Transform> GetAllUndirectedFromLayer(Layer layer)
+        {
+            return GetCell().GetAllUndirectedFromLayer(layer);
+        }
+
+        public IEnumerable<Transform> GetAllUndirectedButSelfFromLayer(Layer layer)
+        {
+            return GetCell().GetAllUndirectedFromLayer(layer).Where(t => t != this);
         }
         
         public IntVector2 GetPosRelative(IntVector2 offset)

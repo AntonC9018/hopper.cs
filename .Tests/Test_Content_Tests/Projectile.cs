@@ -1,9 +1,9 @@
 using NUnit.Framework;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
-using Hopper.Test_Content.Projectiles;
+using Hopper.TestContent.Projectiles;
 using Hopper.Core.Mods;
-using Hopper.Test_Content.SimpleMobs;
+using Hopper.TestContent.SimpleMobs;
 using Hopper.Utils.Vector;
 using Hopper.Core.History;
 

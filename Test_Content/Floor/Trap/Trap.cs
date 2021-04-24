@@ -1,6 +1,6 @@
 using Hopper.Core;
 
-namespace Hopper.Test_Content.Floor
+namespace Hopper.TestContent.Floor
 {
     public class Trap : Entity
     {

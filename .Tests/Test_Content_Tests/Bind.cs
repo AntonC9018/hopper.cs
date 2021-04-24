@@ -2,13 +2,13 @@ using NUnit.Framework;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Mods;
-using Hopper.Test_Content.Bind;
+using Hopper.TestContent.Bind;
 using Hopper.Utils.Vector;
 using Hopper.Core.Stat.Basic;
-using Hopper.Test_Content.SimpleMobs;
+using Hopper.TestContent.SimpleMobs;
 using System.Linq;
 using Hopper.Core.History;
-using Hopper.Test_Content.Explosion;
+using Hopper.TestContent.Explosion;
 
 namespace Hopper.Tests.Test_Content
 {

@@ -26,9 +26,9 @@ namespace Hopper.Core.Components.Basic
         // }
 
         // for now, let the default response be `die` 
-        [Export] public static void Die(Damageable damageable)
+        [Export] public static void Die(Context ctx)
         {
-            damageable.Die();
+            ctx.actor.Die();
         }
 
         [Export] public static void ReleaseContent(Context ctx)

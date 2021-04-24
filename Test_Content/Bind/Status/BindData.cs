@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Newtonsoft.Json;
 
-namespace Hopper.Test_Content.Bind
+namespace Hopper.TestContent.Bind
 {
     public class BindData : StatusData
     {

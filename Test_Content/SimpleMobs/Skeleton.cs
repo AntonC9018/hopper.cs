@@ -1,51 +1,42 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Retouchers;
+using Hopper.Shared.Attributes;
 
-namespace Hopper.Test_Content.SimpleMobs
+namespace Hopper.TestContent.SimpleMobs
 {
+    [EntityType]
     public static class Skeleton
     {
-        public static EntityFactory<Entity> Factory = CreateFactory();
-        public static EntityFactory<Entity> CreateFactory()
-        {
-            return new EntityFactory<Entity>()
-                .AddBehavior(Acting.Preset(new Acting.Config(Algos.EnemyAlgo)))
-                .AddBehavior(Sequential.Preset(new Sequential.Config(CreateSequenceData())))
+        public static EntityFactory Factory;
 
-                .AddBehavior(Attacking.Preset)
-                .AddBehavior(Moving.Preset)
-
-                .AddBehavior(Displaceable.DefaultPreset)
-                .AddBehavior(Attackable.DefaultPreset)
-                .AddBehavior(Pushable.Preset)
-                .AddBehavior(Statused.Preset)
-
-                .Retouch(Skip.NoPlayer)
-                .Retouch(Skip.BlockedMove)
-                .Retouch(Reorient.OnActionSuccessToClosestPlayer);
-        }
-
-        static Step[] CreateSequenceData()
+        public static void AddComponents(Entity subject)
         {
             var attackMoveAction = Action.CreateCompositeDirected(
-                Action.CreateBehavioral<Attacking>(),
-                Action.CreateBehavioral<Moving>()
+                Action.CreateBehavioral(Attacking.Index),
+                Action.CreateBehavioral(Moving.Index)
             );
-
-            var stepData = new Step[]
-            {
+            SequentialMobBase.AddComponents(subject,
+                Algos.EnemyAlgo, 
                 new Step
                 {
                     action = attackMoveAction,
                     movs = Movs.Basic
                 },
                 new Step()
-                {
-                }
-            };
+            );
+        }
 
-            return stepData;
+        public static void InitComponents(Entity subject)
+        {
+            SequentialMobBase.InitComponents(subject);
+        }
+
+        public static void Retouch(Entity subject)
+        {
+            Skip.SkipNoPlayerHandlerWrapper.AddTo(subject);
+            Skip.SkipBlockedHandlerWrapper.AddTo(subject);
+            Reorient.OnActionSuccessHandlerWrapper.AddTo(subject);
         }
     }
 }

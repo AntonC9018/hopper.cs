@@ -185,7 +185,7 @@ namespace Hopper.Core
             {
                 return true;
             }
-            return cell.GetUndirectedTransformFromLayer(layer) != null;
+            return cell.GetUndirectedFromLayer(layer) != null;
         }
     }
 }

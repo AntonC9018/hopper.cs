@@ -18,8 +18,8 @@ namespace Hopper.Core.Components.Basic
 
         [Flags] public Flags _flags;
 
-        [Inject] public System.Func<Entity, ParticularAction> _CalculateAction;
-        [Inject] public System.Action<Context> _DoAction;
+        [Inject] public System.Func<Entity, ParticularAction> ActionCalculationAlgorithm;
+        [Inject] public System.Action<Context> ActionExecutionAlgorithm;
         [Inject] public Order order;
         public ParticularAction nextAction;
         public Entity actor;
@@ -59,7 +59,7 @@ namespace Hopper.Core.Components.Basic
             if (TraverseCheck(ctx))
             {
                 ctx.success = true;
-                _DoAction(ctx);
+                ActionExecutionAlgorithm(ctx);
             }
 
             ctx.propagate = true;
@@ -87,9 +87,9 @@ namespace Hopper.Core.Components.Basic
 
         public void CalculateNextAction()
         {
-            if (nextAction == null && _CalculateAction != null)
+            if (nextAction == null && ActionCalculationAlgorithm != null)
             {
-                nextAction = _CalculateAction(actor);
+                nextAction = ActionCalculationAlgorithm(actor);
             }
         }
 

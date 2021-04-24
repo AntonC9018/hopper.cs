@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Stat;
 
-namespace Hopper.Test_Content.Bind
+namespace Hopper.TestContent.Bind
 {
     public class BindStatus : Status<BindData>
     {

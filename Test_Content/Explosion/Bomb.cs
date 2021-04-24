@@ -2,7 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 
-namespace Hopper.Test_Content.Explosion
+namespace Hopper.TestContent.Explosion
 {
     public static class Bomb
     {

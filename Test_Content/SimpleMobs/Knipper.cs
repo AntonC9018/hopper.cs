@@ -1,53 +1,24 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
-using Hopper.Test_Content.Explosion;
+using Hopper.Shared.Attributes;
+using Hopper.TestContent.Explosion;
 
-namespace Hopper.Test_Content.SimpleMobs
+namespace Hopper.TestContent.SimpleMobs
 {
-    public class Knipper : Entity
+    [EntityType]
+    public static class Knipper
     {
-        public static EntityFactory<Knipper> Factory;
-        private static readonly Step[] Steps;
-
-        private static System.Func<Entity, Result> IsPlayerClose(int success, int fail)
+        public static EntityFactory Factory;
+        
+        public static void AddComponents(Entity subject)
         {
-            return e =>
-            {
-                bool close = false;
-                if (e.TryGetClosestPlayer(out var player))
-                {
-                    var absOffsetVec = (player.Pos - e.Pos).Abs();
-                    close = absOffsetVec.x <= 1 && absOffsetVec.y <= 1;
-                }
-                return new Result
-                {
-                    index = close ? success : fail
-                };
-            };
-        }
-
-
-        public static EntityFactory<Knipper> CreateFactory()
-        {
-            return new EntityFactory<Knipper>()
-                .AddBehavior(Attackable.DefaultPreset)
-                .AddBehavior(Pushable.Preset)
-                .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)))
-                .AddBehavior(Acting.Preset(new Acting.Config(Algos.StepBased)))
-                .AddBehavior(Moving.Preset)
-                .AddBehavior(Damageable.Preset)
-                .AddBehavior(Displaceable.DefaultPreset);
-        }
-
-        static Knipper()
-        {
-            Steps = new Step[]
+            var steps = new Step[]
             {
                 // 0: move. if near player, start exploding
                 new Step
                 {
                     successFunction = IsPlayerClose(fail : 1, success : 2),
-                    action = Action.CreateBehavioral<Moving>(),
+                    action = Action.CreateBehavioral(Moving.Index),
                     movs = Movs.Basic,
                     algo = Algos.EnemyAlgo
                 },
@@ -73,7 +44,35 @@ namespace Hopper.Test_Content.SimpleMobs
                     algo = Algos.SimpleAlgo
                 }
             };
-            Factory = CreateFactory();
+            SequentialMobBase.AddComponents(subject, Algos.StepBased, steps);
+        }
+
+        public static void InitComponents(Entity subject)
+        {
+            SequentialMobBase.InitComponents(subject);
+        }
+
+        public static void Retouch(Entity subject)
+        {
+        }
+
+        private static System.Func<Acting, Result> IsPlayerClose(int success, int fail)
+        {
+            return acting =>
+            {
+                bool close = false;
+                var transform = acting.actor.GetTransform();
+                if (transform.TryGetClosestPlayer(out var player)
+                    && player.TryGetTransform(out var playerTransform))
+                {
+                    var absOffsetVec = (playerTransform.position - transform.position).Abs();
+                    close = absOffsetVec.x <= 1 && absOffsetVec.y <= 1;
+                }
+                return new Result
+                {
+                    index = close ? success : fail
+                };
+            };
         }
     }
 }

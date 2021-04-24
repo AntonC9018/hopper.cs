@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Stat;
 
-namespace Hopper.Test_Content.Floor
+namespace Hopper.TestContent.Floor
 {
     public class Stuck : StatusFile
     {

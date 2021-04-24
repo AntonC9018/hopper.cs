@@ -4,7 +4,7 @@ using Hopper.Core.Registries;
 using Hopper.Core.Stat;
 using Hopper.Core.Stat.Basic;
 
-namespace Hopper.Test_Content.Projectiles
+namespace Hopper.TestContent.Projectiles
 {
     public class Projectile : Entity
     {

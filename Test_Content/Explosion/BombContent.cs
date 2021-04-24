@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Registries;
 
-namespace Hopper.Test_Content.Explosion
+namespace Hopper.TestContent.Explosion
 {
     internal class BombContent : ISubMod
     {

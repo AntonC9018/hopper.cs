@@ -4,7 +4,7 @@ using Hopper.Core.History;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content.Floor
+namespace Hopper.TestContent.Floor
 {
     public class Sliding : IBehavior<SlideStatus>
     {

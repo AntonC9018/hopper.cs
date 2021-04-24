@@ -2,7 +2,7 @@ using System.Runtime.Serialization;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 
-namespace Hopper.Test_Content.Bind
+namespace Hopper.TestContent.Bind
 {
     [DataContract]
     public class Spider : Entity, ISelfBinder

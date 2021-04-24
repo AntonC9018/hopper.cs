@@ -5,7 +5,7 @@ using Hopper.Core.History;
 using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content.Bind
+namespace Hopper.TestContent.Bind
 {
     public class BindStatuses
     {

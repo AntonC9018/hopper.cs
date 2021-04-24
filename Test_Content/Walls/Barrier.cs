@@ -2,7 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 
-namespace Hopper.Test_Content
+namespace Hopper.TestContent
 {
     [EntityType]
     public static class Barrier

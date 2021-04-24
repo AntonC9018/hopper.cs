@@ -3,7 +3,7 @@ using Hopper.Core.Components.Basic;
 using Hopper.Utils.Chains;
 using Hopper.Core.Stat.Basic;
 
-namespace Hopper.Test_Content.Floor
+namespace Hopper.TestContent.Floor
 {
     public class SlideStatus : Status<SlideData>
     {

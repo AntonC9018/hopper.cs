@@ -5,7 +5,7 @@ using Hopper.Core.Stat;
 using Hopper.Core.Stat.Basic;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content.Floor
+namespace Hopper.TestContent.Floor
 {
     public static class Spikes
     {

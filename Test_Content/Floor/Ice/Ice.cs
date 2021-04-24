@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 
-namespace Hopper.Test_Content.Floor
+namespace Hopper.TestContent.Floor
 {
     public class IceFloor : Entity
     {

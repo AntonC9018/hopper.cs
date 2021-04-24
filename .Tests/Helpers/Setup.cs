@@ -1,5 +1,5 @@
 using Hopper.Core.Mods;
-using Hopper.Test_Content;
+using Hopper.TestContent;
 
 namespace Hopper.Tests
 {

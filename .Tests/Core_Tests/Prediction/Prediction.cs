@@ -5,9 +5,9 @@ using Hopper.Core.Mods;
 using Hopper.Core.Predictions;
 using Hopper.Core.Stat.Basic;
 using Hopper.Core.Targeting;
-using Hopper.Test_Content;
-using Hopper.Test_Content.Explosion;
-using Hopper.Test_Content.SimpleMobs;
+using Hopper.TestContent;
+using Hopper.TestContent.Explosion;
+using Hopper.TestContent.SimpleMobs;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
 
@@ -66,7 +66,7 @@ namespace Hopper.Tests
         [Test]
         public void ExplosionPredictionWorks()
         {
-            var entity = world.SpawnEntity(Hopper.Test_Content.SimpleMobs.Dummy.Factory, new IntVector2(1, 1));
+            var entity = world.SpawnEntity(Hopper.TestContent.SimpleMobs.Dummy.Factory, new IntVector2(1, 1));
             var predictions = Explosion.DefaultExplodeAction(1).predict(entity).ToArray();
             Assert.AreEqual(9, predictions.Length, "Would explode 9 cells");
         }

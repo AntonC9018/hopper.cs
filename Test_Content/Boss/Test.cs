@@ -1,10 +1,10 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Retouchers;
-using Hopper.Test_Content;
+using Hopper.TestContent;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content.Boss
+namespace Hopper.TestContent.Boss
 {
     public class TestBoss : Entity
     {

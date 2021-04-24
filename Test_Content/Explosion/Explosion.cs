@@ -5,7 +5,7 @@ using Hopper.Core.Stat.Basic;
 using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content.Explosion
+namespace Hopper.TestContent.Explosion
 {
     public class Explosion
     {

@@ -31,11 +31,11 @@ namespace Hopper.Core.Components.Basic
         /// A helper method. Tries to apply the given attack to the given entity, without checking the attackness. 
         /// </summary>
         // [Alias("TryApplyAttack")] 
-        public static bool TryApplyAttack(Entity actor, Entity to, Attack attack, IntVector2 direction)
+        public static bool TryApplyAttack(Entity attacker, Entity attacked, Attack attack, IntVector2 direction)
         {
-            if (!to.IsDead())
+            if (!attacked.IsDead())
             {
-                return to.TryBeAttacked(actor, attack, direction);
+                return attacked.TryBeAttacked(attacker, attack, direction);
             }
             return false;
         }

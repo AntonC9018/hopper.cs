@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+    using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Hopper.Utils.Vector;
@@ -27,5 +27,8 @@ namespace Hopper.Core.Components.Basic
         {
             sequence.CurrentStep.algo(ctx);
         }
+
+        public static ParticularAction CalculateAction(Entity entity) 
+            => entity.GetSequential().CurrentAction;
     }
 }

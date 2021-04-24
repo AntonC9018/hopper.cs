@@ -2,119 +2,108 @@ using System.Collections.Generic;
 using Hopper.Core;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.Stat;
 using Hopper.Core.Stat.Basic;
 using Hopper.Core.Targeting;
+using Hopper.Shared.Attributes;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Test_Content.Projectiles
+namespace Hopper.TestContent.Projectiles
 {
-    public class ProjectileBehavior : IBehavior, IStandartActivateable<Layer>
+    public class ProjectileBehavior : IComponent, IStandartActivateable
     {
-        public Layer targetedLayer;
-        private Cell m_cellBeingWatched;
-
-        public bool IsWatching => m_cellBeingWatched != null;
-
-        public void Init(Layer layer)
-        {
-            targetedLayer = layer;
-            Tick.Chain.ChainPath(m_entity.Behaviors)
-                // .AddHandler(e => e.actor.Behaviors.Get<ProjectileBehavior>().TryStopWatching());
-                .AddHandler(e => TryStopWatching());
-        }
+        [Inject] public Layer targetedLayer;
+        public Cell _cellBeingWatched;
+        public bool _isWatching;
 
         /// <summary>
         /// Attacks the entity looking in the specified direction. Otherwise, 
         /// moves in the specified direction, after which tries to attack whatever is
         /// at the same cell as the projectile at that point. Would not attack if provided direction of zero.
         /// Would start watching the cell's <c>EnterEvent</c> and attack entities that enter the cell 
-        /// until the end of loop. Attacking is only done on entities at the <c>targetLayer</c>, given at config. 
+        /// until the end of loop. Attacking is only done on entities at the <c>targetLayer</c>. 
         /// </summary>
         /// <returns>Always returns true.</returns>
         /// <remarks>
         /// In the future, should add a `Do` chain that should be traversed instead of attacking entities directly.
         /// </remarks>
-        public bool Activate(IntVector2 direction)
+        public bool Activate(Entity actor, IntVector2 direction)
         {
             // Assert.AreNotEqual(IntVector2.Zero, direction, "Must be moving somewhere");
+            var transform = actor.GetTransform();
+            var stats = actor.GetStats();
+            stats.GetLazy(Attack.Index, out var attack);
 
             // If the projectile is not floating at one spot
             if (direction != IntVector2.Zero)
             {
-                Assert.That(!m_entity.Behaviors.Get<Displaceable>().blockLayer.IsOfLayer(Layer.WALL),
+                Assert.That(!actor.GetDisplaceable().blockLayer.HasFlag(Layer.WALL),
                     "We should be able to move INTO walls");
 
                 // First, attack entities, that are looking at us, standing at the same cell as us.
                 // Ignore any directed entities.
-                var target = m_entity.GetCell().m_transforms.Find(
-                    e => e.IsOfLayer(targetedLayer)
-                        && !e.IsDirected
-                        && e.Orientation == -direction
-                        && e != m_entity
-                );
 
-                if (target != null)
+                foreach (var targetTransform in transform.GetAllUndirectedButSelfFromLayer(targetedLayer))
                 {
-                    // Attack and die.
-                    Hit(target);
+                    if (targetTransform.orientation != -direction) continue;
+
+                    if (targetTransform.entity.TryBeAttacked(actor, attack, transform.orientation))
+                    {
+                        actor.Die();
+                        return true;
+                    }
                 }
-                if (!m_entity.IsDead)
-                {
-                    // Move in the direction specified by action.
-                    var move = m_entity.GetStats().GetLazy(Move.Path);
-                    m_entity.Behaviors.Get<Displaceable>().Activate(direction, move);
-                }
+
+                stats.GetLazy(Move.Index, out var move);
+                actor.TryDisplace(direction, move);
             }
 
-            if (!m_entity.IsDead)
+            if (!actor.IsDead())
             {
                 // Attack the entity (entities) from the same cell, but not oneself.
-                foreach (var entity in m_entity.GetCell().GetAllFromLayer(m_entity.Orientation, targetedLayer))
+                foreach (var targetTransform in transform.GetAllButSelfFromLayer(targetedLayer))
                 {
-                    if (entity != m_entity)
+                    if (targetTransform.entity.TryBeAttacked(actor, attack, transform.orientation))
                     {
-                        Hit(entity);
-                    }
-                    if (m_entity.IsDead)
-                    {
+                        actor.Die();
                         return true;
                     }
                 }
 
                 // Attack anything that enters the spot.
                 {
-                    m_cellBeingWatched = m_entity.GetCell();
-                    m_cellBeingWatched.EnterEvent += HitEntered;
+                    _cellBeingWatched = actor.GetCell();
+                    _cellBeingWatched.EnterEvent += HitEntered;
                 }
             }
 
             return true;
         }
 
-        private void Hit(Entity entity)
+        private void Hit(Entity actor)
         {
             Attacking.TryApplyAttack(
-                attacked: entity,
-                direction: entity.Orientation,
-                attack: m_entity.GetStats().GetLazy(Attack.Path),
-                attacker: m_entity
+                attacked    : actor,
+                direction   : actor.GetTransform().,
+                attack      : actor.GetStats().GetLazy(Attack.Index),
+                attacker    : actor
             );
-            m_entity.Die(); // For now, just die. Add a do chain later.
+            actor.Die(); // For now, just die. Add a do chain later.
         }
 
         private void TryStopWatching()
         {
-            if (IsWatching)
+            if (_isWatching)
             {
-                m_cellBeingWatched.EnterEvent -= HitEntered;
-                m_cellBeingWatched = null;
+                _cellBeingWatched.EnterEvent -= HitEntered;
+                _cellBeingWatched = null;
             }
         }
 
         private void HitEntered(Entity enteredEntity)
         {
-            if (m_entity.IsDead)
+            if (actor.IsDead)
             {
                 TryStopWatching();
             }
@@ -123,8 +112,5 @@ namespace Hopper.Test_Content.Projectiles
                 Hit(enteredEntity);
             }
         }
-
-        public static ConfigurableBehaviorFactory<ProjectileBehavior, Layer> Preset(Layer targetedLayer) =>
-            new ConfigurableBehaviorFactory<ProjectileBehavior, Layer>(null, targetedLayer);
     }
 }

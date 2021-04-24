@@ -4,7 +4,7 @@ using Hopper.Core.Items;
 using Hopper.Utils.Vector;
 using Hopper.Utils.Chains;
 
-namespace Hopper.Test_Content
+namespace Hopper.TestContent
 {
     public class ShieldModule : TinkerModule
     {

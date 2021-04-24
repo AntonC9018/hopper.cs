@@ -2,7 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Registries;
 using Hopper.Core.Retouchers;
 
-namespace Hopper.Test_Content.Boss
+namespace Hopper.TestContent.Boss
 {
     internal class BossContent : ISubMod
     {

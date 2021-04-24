@@ -6,7 +6,7 @@ using Hopper.Core.Stat;
 using Hopper.Core.Stat.Basic;
 using Hopper.Core.Targeting;
 
-namespace Hopper.Test_Content.Explosion
+namespace Hopper.TestContent.Explosion
 {
     public class BombEntity : Entity
     {

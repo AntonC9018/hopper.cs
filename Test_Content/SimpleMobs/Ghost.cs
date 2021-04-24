@@ -1,62 +1,61 @@
-using Hopper.Utils.Chains;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.Stat;
+using Hopper.Shared.Attributes;
+using Hopper.Core.Targeting;
+using Hopper.Core.Items;
 
-namespace Hopper.Test_Content
+namespace Hopper.TestContent
 {
-    public class Ghost : Entity
+    [EntityType]
+    public static class Ghost
     {
-        public static EntityFactory<Ghost> Factory;
-        public static readonly Retoucher TeleportAfterAttackRetoucher;
-        public static readonly Action GhostAction;
-        private static readonly Layer TeleportedLayer;
-        private static readonly Step[] Steps;
+        public static EntityFactory Factory;
 
-        private static void Teleport(Attackable.Event ev)
+        public static readonly Action GhostAction = GhostAction = 
+            Action.CreateCompositeDirected(
+                Action.CreateBehavioral(Attacking.Index),
+                Action.CreateBehavioral(Moving.Index));
+        private const Layer TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.ITEM;
+
+
+        [Export(Chain = "Attackable.Do", Priority = PriorityRank.Lowest, Dynamic = true)]
+        public static void Teleport(Attackable.Context ctx)
         {
-            if (ev.actor.IsDead && ev.atkParams.attacker != null)
+            if (ctx.actor.IsDead() && ctx.attacker != null)
             {
-                foreach (var ent in ev.actor.GetCell().GetAllFromLayer(TeleportedLayer))
+                var transform = ctx.actor.GetTransform();
+                var attackerTransform = ctx.attacker.GetTransform();
+
+                foreach (var t in transform.GetCell().GetAllFromLayer(TeleportedLayer))
                 {
-                    ent.ResetPosInGrid(ev.atkParams.attacker.Pos);
+                    t.ResetPositionInGrid(attackerTransform.position);
                 }
-                ev.atkParams.attacker.ResetPosInGrid(ev.actor.Pos);
-                // TODO: add update to history
+
+                attackerTransform.ResetPositionInGrid(transform.position);
             }
         }
-
-        public static EntityFactory<Ghost> CreateFactory()
+        
+        public static void AddComponents(Entity subject)
         {
-            return new EntityFactory<Ghost>()
-                .AddBehavior(Moving.Preset)
-                .AddBehavior(Displaceable.DefaultPreset)
-                .AddBehavior(Attacking.Preset)
-                .AddBehavior(Attackable.DefaultPreset)
-                .AddBehavior(Pushable.Preset)
-                .AddBehavior(Acting.Preset(new Acting.Config(Algos.EnemyAlgo)))
-                .AddBehavior(Sequential.Preset(new Sequential.Config(Steps)))
-                .AddBehavior(Damageable.Preset)
-                .Retouch(TeleportAfterAttackRetoucher);
-        }
-
-        static Ghost()
-        {
-            GhostAction = Action.CreateCompositeDirected(
-                Action.CreateBehavioral<Attacking>(),
-                Action.CreateBehavioral<Moving>()
-            );
-            TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.ITEM;
-            Steps = new Step[]
-            {
-                new Step
+            SequentialMobBase.AddComponents(subject,
+                Algos.EnemyAlgo, 
+                new Step 
                 {
                     action = GhostAction,
                     movs = Movs.Basic
                 }
-            };
-            TeleportAfterAttackRetoucher =
-               Retoucher.SingleHandlered(Attackable.Do, Teleport, PriorityRank.Lowest);
-            Factory = CreateFactory();
+            );
+        }
+
+        public static void InitComponents(Entity subject)
+        {
+            SequentialMobBase.InitComponents(subject);
+        }
+
+        public static void Retouch(Entity subject)
+        {
+            Equippable.AddToInventoryCountableHandlerWrapper.AddTo(subject);
         }
     }
 }

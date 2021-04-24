@@ -3,7 +3,7 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Mods;
 using Hopper.Core.Retouchers;
 using Hopper.Core.Stat.Basic;
-using Hopper.Test_Content.Floor;
+using Hopper.TestContent.Floor;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
 
