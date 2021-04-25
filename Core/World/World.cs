@@ -26,6 +26,7 @@ namespace Hopper.Core
         public void Loop()
         {
             state.Loop();
+            grid.ResetCellTriggers();
         }
 
         public int GetNextTimeFrame()

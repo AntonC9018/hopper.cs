@@ -98,5 +98,15 @@ namespace Hopper.Core
         {
             return Grid.GetCellAt(position);
         }
+
+        public void SubsribeToEnterEvent(System.Action<CellMovementContext> handler)
+        {
+            Grid.EnterTriggerGrid.Subscribe(position, handler);
+        }
+        
+        public void SubsribeToLeaveEvent(System.Action<CellMovementContext> handler)
+        {
+            Grid.LeaveTriggerGrid.Subscribe(position, handler);
+        }
     }
 }

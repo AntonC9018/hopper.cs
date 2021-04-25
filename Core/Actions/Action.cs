@@ -184,15 +184,15 @@ namespace Hopper.Core
             return action;
         }
 
-        public static DirectedAction CreateBehavioral<T>(Index<T> index)
-            where T : IBehavior, IStandartActivateable
+        public static DirectedAction CreateFromActivateable<T>(Index<T> index)
+            where T : IComponent, IStandartActivateable
         {
             var action = new DirectedAction();
-            action.function = (acting, d) => ActivateBehavior(index, acting, d);
+            action.function = (acting, d) => Activate(index, acting, d);
 
             if (typeof(IBehaviorPredictable).IsAssignableFrom(typeof(T)))
             {
-                action.predict = (acting, d) => PredictViaBehavior(index, acting, d);
+                action.predict = (acting, d) => PredictVia(index, acting, d);
             }
 
             return action;
@@ -246,15 +246,15 @@ namespace Hopper.Core
             }
         }
 
-        private static bool ActivateBehavior<T>(Index<T> index, Acting acting, IntVector2 direction)
-            where T : IBehavior, IStandartActivateable
+        private static bool Activate<T>(Index<T> index, Acting acting, IntVector2 direction)
+            where T : IComponent, IStandartActivateable
         {
             Assert.That(acting.actor.HasComponent(index), "Cannot execute action if the target behavior is missing");
             return acting.actor.GetComponent(index).Activate(acting.actor, direction);
         }
 
-        private static IEnumerable<IntVector2> PredictViaBehavior<T>(Index<T> index, Acting acting, IntVector2 direction)
-            where T : IBehavior, IStandartActivateable
+        private static IEnumerable<IntVector2> PredictVia<T>(Index<T> index, Acting acting, IntVector2 direction)
+            where T : IComponent, IStandartActivateable
         {
             Assert.That(acting.actor.HasComponent(index), "Cannot predict if the target behavior is missing");
             return ((IBehaviorPredictable)acting.actor.GetComponent(index)).Predict(acting, direction);

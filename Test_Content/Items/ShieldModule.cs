@@ -3,9 +3,42 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Utils.Vector;
 using Hopper.Utils.Chains;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.TestContent
 {
+    [EntityType(Abstract = true)]
+    public static class Shield
+    {
+        public static EntityFactory Factory;
+
+        public static void AddComponent(Entity subject)
+        {
+        }
+
+        public static void InitComponents(Entity subject)
+        {
+        }
+
+        public static void Retouch(Entity subject) {}
+    }
+
+    [EntityType]
+    public static class ShieldFront
+    {
+        public static EntityFactory Factory;
+        
+        public static void AddComponent(Entity subject)
+        {
+        }
+
+        public static void InitComponents(Entity subject)
+        {
+        }
+
+        public static void Retouch(Entity subject) {}
+    }
+
     public class ShieldModule : TinkerModule
     {
         private IntVector2 m_relativeDir;

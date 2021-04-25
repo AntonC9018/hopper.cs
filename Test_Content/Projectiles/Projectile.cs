@@ -1,37 +1,44 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
-using Hopper.Core.Registries;
 using Hopper.Core.Stat;
 using Hopper.Core.Stat.Basic;
+using Hopper.Core.Targeting;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.TestContent.Projectiles
 {
-    public class Projectile : Entity
+    [EntityType]
+    public static class NormalProjectile
     {
-        public override Layer Layer => Layer.PROJECTILE;
-
-        public static DefaultStats CreateDefaultStats(PatchArea patchArea)
-        {
-            return new DefaultStats(patchArea).Set(Health.Path, new Health { amount = 1 });
-        }
-
+        public static EntityFactory Factory;
+        
         public static DirectedAction ProjectileAction =>
-            Action.CreateBehavioral<ProjectileBehavior>();
+            Action.CreateFromActivateable(ProjectileComponent.Index);
 
-        public static EntityFactory<Projectile> CreateFactory()
+        public static void AddComponent(Entity subject)
         {
-            return new EntityFactory<Projectile>()
-                .AddBehavior(Displaceable.Preset(0)) // not blocked by anything
-                .AddBehavior(Attackable.DefaultPreset)
-                .AddBehavior(Damageable.Preset)
-                .SetDefaultStats(CreateDefaultStats)
-                .AddBehavior(ProjectileBehavior.Preset(Layer.REAL | Layer.WALL | Layer.PROJECTILE))
-                .AddBehavior(Acting.Preset(
-                    new Acting.Config(Algos.SimpleAlgo, e => ProjectileAction.ToDirectedParticular(e.Orientation)))
-                );
-
+            Stats.AddTo(subject, Registry.Global._defaultStats);
+            Transform.AddTo(subject, Layer.PROJECTILE);
+            Faction.AddTo(subject, Faction.Flags.Environment);
+            Displaceable.AddTo(subject, 0);
+            ProjectileComponent.AddTo(subject, Layer.REAL | Layer.WALL | Layer.PROJECTILE);
+            Attackable.AddTo(subject, Attackness.CAN_BE_ATTACKED);
+            Damageable.AddTo(subject, new Health(1));
+            Acting.AddTo(subject, 
+                entity => ProjectileAction.ToDirectedParticular(entity.GetTransform().orientation),
+                Algos.SimpleAlgo);
         }
 
-        public static EntityFactory<Projectile> SimpleFactory = CreateFactory();
+        public static void InitComponents(Entity subject)
+        {
+            subject.GetDisplaceable().DefaultPreset();
+            // subject.GetProjectileComponent()
+            subject.GetAttackable().DefaultPreset();
+            subject.GetActing().DefaultPreset(subject);
+            subject.GetDamageable().DefaultPreset();
+        }
+
+        public static void Retouch(Entity subject) {}
+
     }
 }

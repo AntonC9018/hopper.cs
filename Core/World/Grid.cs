@@ -13,8 +13,8 @@ namespace Hopper.Core
         public int Height => m_grid.GetLength(0);
         public int Width => m_grid.GetLength(1);
 
-        public CellMovementTriggerGrid EnterTriggerGrid = new CellMovementTriggerGrid(); 
-        public CellMovementTriggerGrid LeaveTriggerGrid = new CellMovementTriggerGrid(); 
+        public CellMovementTriggerGrid EnterTriggerGrid; 
+        public CellMovementTriggerGrid LeaveTriggerGrid; 
 
         public GridManager(int width, int height)
         {
@@ -26,11 +26,15 @@ namespace Hopper.Core
                     m_grid[j, i] = new Cell();
                 }
             }
+            EnterTriggerGrid.Init();
+            LeaveTriggerGrid.Init();
         }
 
         public GridManager(Cell[,] grid)
         {
             m_grid = grid;
+            EnterTriggerGrid.Init();
+            LeaveTriggerGrid.Init();
         }
 
         public bool IsOutOfBounds(IntVector2 pos)
@@ -174,8 +178,8 @@ namespace Hopper.Core
         public bool HasBlockAt(IntVector2 position, IntVector2 direction, Layer layer)
         {
             // Has directional block prev
-            if (TryGetCell(-direction + position, out var cellPrev) 
-                && cellPrev.HasDirectionalBlock(direction, layer))
+            if (TryGetCell(-direction + position, out var prevCell) 
+                && prevCell.HasDirectionalBlock(direction, layer))
             {
                 return true;
             }

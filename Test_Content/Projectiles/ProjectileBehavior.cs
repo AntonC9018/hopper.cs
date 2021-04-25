@@ -11,11 +11,9 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.TestContent.Projectiles
 {
-    public class ProjectileBehavior : IComponent, IStandartActivateable
+    public class ProjectileComponent : IComponent, IStandartActivateable
     {
         [Inject] public Layer targetedLayer;
-        public Cell _cellBeingWatched;
-        public bool _isWatching;
 
         /// <summary>
         /// Attacks the entity looking in the specified direction. Otherwise, 
@@ -72,50 +70,24 @@ namespace Hopper.TestContent.Projectiles
                 }
 
                 // Attack anything that enters the spot.
-                {
-                    _cellBeingWatched = actor.GetCell();
-                    _cellBeingWatched.EnterEvent += HitEntered;
-                }
+                transform.SubsribeToEnterEvent(context => HitEntered(actor, context));
             }
 
             return true;
         }
 
-        private static void HitEntered(Entity projectile, Entity actor)
+        private static void HitEntered(Entity projectile, CellMovementContext context)
         {
-            if (projectile.IsDead())
+            if (!projectile.IsDead() 
+                && !context.actor.IsDead() 
+                && context.transform.layer.HasFlag(projectile.GetProjectileBehavior().targetedLayer))
             {
+                projectile.GetStats().Get(Attack.Index, out var attack);
 
-            }
-            projectile.GetStats().Get(Attack.Index, out var attack);
-
-            Attacking.TryApplyAttack(
-                attacked    : actor,
-                direction   : projectile.GetTransform().orientation,
-                attack      : attack,
-                attacker    : projectile
-            );
-            actor.Die(); // For now, just die. Add a do chain later.
-        }
-
-        private void TryStopWatching()
-        {
-            if (_isWatching)
-            {
-                _cellBeingWatched.EnterEvent -= HitEntered;
-                _cellBeingWatched = null;
-            }
-        }
-
-        private void HitEntered(Entity enteredEntity)
-        {
-            if (actor.IsDead)
-            {
-                TryStopWatching();
-            }
-            else if (enteredEntity.IsOfLayer(targetedLayer))
-            {
-                Hit(enteredEntity);
+                if (context.actor.TryBeAttacked(projectile, attack, projectile.GetTransform().orientation))
+                {
+                    projectile.Die(); // For now, just die. Add a do chain later.
+                }
             }
         }
     }

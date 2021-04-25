@@ -14,8 +14,8 @@ namespace Hopper.TestContent
 
         public static readonly Action GhostAction = GhostAction = 
             Action.CreateCompositeDirected(
-                Action.CreateBehavioral(Attacking.Index),
-                Action.CreateBehavioral(Moving.Index));
+                Action.CreateFromActivateable(Attacking.Index),
+                Action.CreateFromActivateable(Moving.Index));
         private const Layer TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.ITEM;
 
 

@@ -4,16 +4,19 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
-    public class CellMovementTriggerGrid : Dictionary<IntVector2, LinearChain<CellMovementContext>>
+    public struct CellMovementTriggerGrid
     {
-        public CellMovementTriggerGrid() : base()
+        private Dictionary<IntVector2, LinearChain<CellMovementContext>> _triggers;
+
+        public void Init()
         {
+            _triggers = new Dictionary<IntVector2, LinearChain<CellMovementContext>>();
         }
 
         public void Subscribe(IntVector2 position, System.Action<CellMovementContext> handler)
         {
             LinearChain<CellMovementContext> chain;
-            if (!TryGetValue(position, out chain))
+            if (!_triggers.TryGetValue(position, out chain))
             {
                 chain = new LinearChain<CellMovementContext>();
             }
@@ -22,7 +25,7 @@ namespace Hopper.Core
 
         public void Trigger(Transform transform)
         {
-            if (TryGetValue(transform.position, out var chain))
+            if (_triggers.TryGetValue(transform.position, out var chain))
             {
                 var context = new CellMovementContext(transform); 
                 chain.PassWithoutStop(context);
@@ -31,7 +34,7 @@ namespace Hopper.Core
 
         public void Reset()
         {
-            foreach (var chain in Values)
+            foreach (var chain in _triggers.Values)
             {
                 chain.Clear();
             }
