@@ -81,13 +81,19 @@ namespace Hopper.TestContent.Projectiles
             return true;
         }
 
-        private void Hit(Entity actor)
+        private static void HitEntered(Entity projectile, Entity actor)
         {
+            if (projectile.IsDead())
+            {
+
+            }
+            projectile.GetStats().Get(Attack.Index, out var attack);
+
             Attacking.TryApplyAttack(
                 attacked    : actor,
-                direction   : actor.GetTransform().,
-                attack      : actor.GetStats().GetLazy(Attack.Index),
-                attacker    : actor
+                direction   : projectile.GetTransform().orientation,
+                attack      : attack,
+                attacker    : projectile
             );
             actor.Die(); // For now, just die. Add a do chain later.
         }

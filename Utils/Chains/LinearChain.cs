@@ -2,23 +2,15 @@ using System.Collections.Generic;
 
 namespace Hopper.Utils.Chains
 {
-    public class LinearChain<Context>
+    public class LinearChain<Context> : List<System.Action<Context>>
     {
-        public readonly List<System.Action<Context>> m_handlers;
-
-        public LinearChain()
+        public LinearChain(int capacity = 1) : base(capacity)
         {
-            m_handlers = new List<System.Action<Context>>();
-        }
-
-        public void Add(System.Action<Context> handler)
-        {
-            m_handlers.Add(handler);
         }
 
         public void PassWithoutStop(Context ev)
         {
-            foreach (var handler in m_handlers)
+            foreach (var handler in this)
             {
                 handler(ev);
             }
@@ -26,17 +18,12 @@ namespace Hopper.Utils.Chains
 
         public void Pass(Context ev, System.Func<Context, bool> stopFunc)
         {
-            foreach (var handler in m_handlers)
+            foreach (var handler in this)
             {
                 if (stopFunc(ev))
                     return;
                 handler(ev);
             }
-        }
-
-        public void Clear()
-        {
-            m_handlers.Clear();
         }
     }
 }

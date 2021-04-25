@@ -17,7 +17,7 @@ namespace Hopper.Core
         public bool IsAdded(Entity entity)
         {
             var chain = chainPath.Chain(entity);
-            return chain.Has(handler);
+            return chain.Contains(handler);
         }
 
         public void RemoveFrom(Entity entity)
@@ -51,7 +51,7 @@ namespace Hopper.Core
         public bool IsAdded(Entity entity)
         {
             var chain = chainPath.Chain(entity);
-            return chain.Has(handlers[0]);
+            return chain.Contains(handlers[0]);
         }
 
         public void RemoveFrom(Entity entity)
@@ -67,7 +67,7 @@ namespace Hopper.Core
         public bool TryAddTo(Entity entity)
         {
             var chain = chainPath.Chain(entity);
-            if (chain.Has(handlers[0]))
+            if (chain.Contains(handlers[0]))
             {
                 return false;
             }

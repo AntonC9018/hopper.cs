@@ -105,7 +105,7 @@ namespace Hopper.Utils.Vector
 
         public override int GetHashCode()
         {
-            return (int)x ^ (int)y;
+            return x ^ (y >> 16);
         }
 
         public int Cross(IntVector2 v)

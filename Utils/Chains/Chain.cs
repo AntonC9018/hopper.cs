@@ -1,36 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Hopper.Utils.Chains
 {
-    public sealed class Chain<Context> : ICopyable where Context : ContextBase
+    public sealed class Chain<Context> : SortedSet<Handler<Context>>, ICopyable where Context : ContextBase
     {
-        internal SortedSet<Handler<Context>> m_handlers;
-
-        public Chain()
+        public Chain() : base()
         {
-            m_handlers = new SortedSet<Handler<Context>>();
         }
 
-        public Chain(Chain<Context> other)
+        public Chain(IEnumerable<Handler<Context>> other) : base(other)
         {
-            m_handlers = new SortedSet<Handler<Context>>(other.m_handlers);
-        }
-
-        public bool Add(Handler<Context> handler)
-        {
-            return m_handlers.Add(handler);
         }
 
         public void Add(params Handler<Context>[] handlers)
         {
             foreach (var handler in handlers)
-                m_handlers.Add(handler);
+                Add(handler);
         }
 
         public void PassNoCondition(Context ev)
         {
-            foreach (var handler in m_handlers.ToArray())
+            foreach (var handler in this.ToArray())
             {
                 handler.handler(ev);
             }
@@ -38,7 +30,7 @@ namespace Hopper.Utils.Chains
 
         public void Pass(Context ev)
         {
-            foreach (var handler in m_handlers.ToArray())
+            foreach (var handler in this.ToArray())
             {
                 if (!ev.propagate)
                     return;
@@ -48,22 +40,12 @@ namespace Hopper.Utils.Chains
 
         public void Pass(Context ev, System.Func<Context, bool> stopFunc)
         {
-            foreach (var handler in m_handlers.ToArray())
+            foreach (var handler in this.ToArray())
             {
                 if (stopFunc(ev))
                     return;
                 handler.handler(ev);
             }
-        }
-
-        public bool Remove(Handler<Context> handler)
-        {
-            return m_handlers.Remove(handler);
-        }
-
-        public bool Has(Handler<Context> handler)
-        {
-            return m_handlers.Contains(handler);
         }
 
         ICopyable ICopyable.Copy() => new Chain<Context>(this);

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using Hopper.Utils;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core
@@ -8,17 +10,20 @@ namespace Hopper.Core
     {
         private Cell[,] m_grid;
 
-        public int Width => m_grid.GetLength(0);
-        public int Height => m_grid.GetLength(1);
+        public int Height => m_grid.GetLength(0);
+        public int Width => m_grid.GetLength(1);
+
+        public CellMovementTriggerGrid EnterTriggerGrid = new CellMovementTriggerGrid(); 
+        public CellMovementTriggerGrid LeaveTriggerGrid = new CellMovementTriggerGrid(); 
 
         public GridManager(int width, int height)
         {
             m_grid = new Cell[height, width];
-            for (int i = 0; i < width; i++)
+            for (int j = 0; j < height; j++)
             {
-                for (int j = 0; j < height; j++)
+                for (int i = 0; i < width; i++)
                 {
-                    m_grid[j, i].Init();
+                    m_grid[j, i] = new Cell();
                 }
             }
         }
@@ -53,34 +58,26 @@ namespace Hopper.Core
         {
             if (IsOutOfBounds(pos)) 
             {
-                cell = new Cell();
+                cell = null;
                 return false;
             }
             cell = GetCellAt(pos);
             return true;
         }
 
-        public bool AddTransformNoEvent(Transform transform)
+        public void AddTransformNoEvent(Transform transform)
         {
-            if (IsInBounds(transform.position))
-            {
-                GetCellAt(transform.position).Add(transform);
-                return true;
-            }
-            return false;
+            Assert.That(IsInBounds(transform.position));
+            GetCellAt(transform.position).Add(transform);
         }
 
-        public bool AddTransform(Transform transform)
+        public void AddTransform(Transform transform)
         {
-            if (IsInBounds(transform.position))
-            {
-                var cell = GetCellAt(transform.position);
-                cell.Add(transform);
-                cell.FireEnterEvent(transform);
+            Assert.That(IsInBounds(transform.position));
 
-                return true;
-            }
-            return false;
+            var cell = GetCellAt(transform.position);
+            cell.Add(transform);
+            EnterTriggerGrid.Trigger(transform);
         }
 
         /*
@@ -128,7 +125,6 @@ namespace Hopper.Core
             return !HasNoTransformAt(position, direction, layer);
         }
 
-
         public IEnumerable<Transform> GetAllFromLayer(
             IntVector2 position, IntVector2 direction, Layer layer)
         {
@@ -140,19 +136,22 @@ namespace Hopper.Core
                     yield return entity;
                 }
             }
-            
-            var cell = GetCellAt(-direction + position);
 
-            for (int i = cell._transforms.Count - 1; i >= 0; i--)
+            if (IsInBounds(position))
             {
-                var t = cell._transforms[i];
-                if (t.layer.HasFlag(layer))
+                var cell = GetCellAt(-direction + position);
+
+                for (int i = cell.Count - 1; i >= 0; i--)
                 {
-                    if (t.entity.IsDirected() && t.orientation != -direction)
+                    var t = cell[i];
+                    if (t.layer.HasFlag(layer))
                     {
-                        continue;
+                        if (t.entity.IsDirected() && t.orientation != -direction)
+                        {
+                            continue;
+                        }
+                        yield return t;
                     }
-                    yield return t;
                 }
             }
         }
@@ -175,17 +174,31 @@ namespace Hopper.Core
         public bool HasBlockAt(IntVector2 position, IntVector2 direction, Layer layer)
         {
             // Has directional block prev
-            if (!IsOutOfBounds(position))
-            {
-                return GetCellAt(-direction + position).HasDirectionalBlock(direction, layer);
-            }
-            // Has directional block current
-            var cell = GetCellAt(position);
-            if (cell.HasDirectionalBlock(-direction, layer))
+            if (TryGetCell(-direction + position, out var cellPrev) 
+                && cellPrev.HasDirectionalBlock(direction, layer))
             {
                 return true;
             }
-            return cell.GetUndirectedFromLayer(layer) != null;
+
+            if (IsInBounds(position))
+            {
+                // Has directional block current
+                var cell = GetCellAt(position);
+                if (cell.HasDirectionalBlock(-direction, layer))
+                {
+                    return true;
+                }
+                return cell.GetUndirectedFromLayer(layer) != null;
+            }
+
+            return false;
+        }
+
+        // TODO: is it worth it to clear them entirely?
+        public void ResetCellTriggers()
+        {
+            EnterTriggerGrid.Reset();
+            LeaveTriggerGrid.Reset();
         }
     }
 }

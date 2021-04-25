@@ -46,7 +46,7 @@ namespace Hopper.Tests
 
         public Transform GetFirstTransform()
         {
-            return World.Global.grid.GetCellAt(IntVector2.Zero).GetFirstTransform();
+            return World.Global.grid.GetCellAt(IntVector2.Zero).GetFirst();
         }
 
         public void AttackRight()

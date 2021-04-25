@@ -114,7 +114,7 @@ namespace Hopper.Core.Components.Basic
         public IEnumerable<IntVector2> Predict(Acting acting, IntVector2 direction)
         {
             Entity actor = acting.actor;
-            if (_DoChain.Has(SetTargetsRightBesideHandler))
+            if (_DoChain.Contains(SetTargetsRightBesideHandler))
             {
                 yield return actor.GetTransform().position + direction;
             }
