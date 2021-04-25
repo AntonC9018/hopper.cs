@@ -1,3 +1,28 @@
+<!-- TOC -->
+
+    - [Some stuff](#some-stuff)
+- [Registry](#registry)
+    - [Update](#update)
+    - [Solution](#solution)
+    - [New stuff, 2021](#new-stuff-2021)
+    - [Newer stuff, April 2021](#newer-stuff-april-2021)
+        - [Component Copying](#component-copying)
+        - [What to do next](#what-to-do-next)
+        - [Registry](#registry-1)
+        - [World](#world)
+        - [Entity type — registry interaction](#entity-type--registry-interaction)
+        - [Stats](#stats)
+        - [Targeting](#targeting)
+        - [Items](#items)
+        - [Statuses](#statuses)
+        - [Fixes](#fixes)
+        - [Shield](#shield)
+        - [Problem with Items](#problem-with-items)
+
+<!-- /TOC -->
+
+## Some stuff
+
 1. (+) Events like bombs should be on world, accessible via paths like I have done before with stats and behaviors.
 2. I don't like the difference in the way we handle e.g. bomb explosions vs normal entity actions, i.e. history.
 3. (+) The target logic is overgeneralized. It shall be simplified to a less generic thing, since the current code is too hard to understand, let alone reuse.
@@ -679,3 +704,62 @@ Fixed some more stuff.
 
 Now code generation needs to be adjusted to work dynamically with mods.
 1. Take a project and a root namespace name. In case of Core, it should take the project path, 
+
+
+### Shield
+
+The shield item defines handlers that look at the current shield.
+
+
+
+### Problem with Items
+
+Items sometimes need to add or remove handlers on equipping / unequipping, and those handlers should be able to also remove the item that added them.
+
+With items, the workflow has been the following:
+1. The item defines a slot, which it is going to bind to.
+2. The item specifies a component (added to the item) to hold their data.
+3. Subtypes of that item (e.g. tweaking stats) are created as normal entity types.
+4. The subtypes add that new component, reconfigured as needed.
+5. The base type adds to equippable component handlers that add those other handlers onto entity chains when the item is equipped.
+6. When removing the item from the specific item slot of this item from handlers, hooked onto entity chains, the item is found and removed by its item slot.
+
+Problems:
+
+1. So, the items of that base type end up sort of being grouped together in that slot. This is intentional.
+If that was not the case, the handlers will have to have captured the id of the item. 
+I guess this can be done with the InstanceExport attribute, it's just really annoying, because you'd need to (optionally) create the base Entity type, then the particular Entity type, already parametrized, then a closure for that type that references that type, which also, by the way, has to be referenced in the entity type, then that closure has to be inited, handlers have to be manually given id's, handler groups need to be manually initialized too. 
+The id of the entity type has to be referenced in that closure, which is not even possible yet.
+2. 
+
+
+
+
+1. Code generation for slots (inventory Get<Slot>, TryGet<Slot>, entity Get<Slot>, TryGet<Slot>).
+2. Code generation for autogenerating handlers for adding (removing) items to (from) slot, with adding (removing) of their handlers too (automatic generation of handlers added onto the equippable component which would add (remove) the specified group of handlers).
+3. Code generation for groups of handlers with multiple target chains.
+4. Allow instance entity types. E.g. the factory of the item, that has tweaked damage, should be generated from a parametrizeable entity type static class (perhaps allow non-static entity types? that is, the same I've done with InstanceExport).
+
+Now, these has a lot in common with the problems encountered with entity modifiers. 
+Now perhaps this is not a problem to be solved with entity modifiers but with a different strategy, but anyways.
+Assume we had a freeze stat that applied different amounts of freeze effect onto targets.
+We do not need to create different closures for each of these "submodifiers", because they should add the same entity modifier, that is, their entity modifier is of the same class AND is indexed in the entities component dictionary by the same id. 
+However, as it stands currently, the only way to apply this exact amount of modifier, or even pass any data to the entity modifier component, is by referencing this amount through the closure. 
+But, creating a closure also means creating a new index for the component, as well as new handlers and a new bind function.
+So we want the bind function to reference the same exact entity modifier component in the component dictionary on the entity, while also having the ability to pass to it parameters via the bind function.
+This can be done by either by:
+1. Having the bind function take another parameter with type object and casting it to the expected type and then passing the data. This is terrible.
+2. Having the bind function be generic, as well as the index, that encapsulates this function, and pass to it the data of the required type. This involves generics and so is messy. 
+Also, it would mean creating another structure just to pass some data to the component. 
+The exact data that it needs is already known based on the component (the injects).
+3. Take an already correctly instantiated component as input. 
+This is viable actually. The closure could also define a function that would take as arguments the data that needs to be passed to the index, which then would use the bind function to bind the necessary things to the entity.
+
+There is a boilerplate element to this, though.
+The thing to notice is that these entity modifiers are basically, or actually just like components and presets:
+1. Components get passed injected data.
+2. Components are added onto the entity.
+3. Components are intialized by calling one of their presets.
+
+Entity modifiers, though, might have additional logic. 
+They kind of work like entity types, but without a factory.

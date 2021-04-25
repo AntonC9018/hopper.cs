@@ -39,7 +39,7 @@ namespace Hopper.Core.Items
         [Export(Dynamic = true, Chain = "Equippable.Do")] 
         public static void AssignToInventorySlotUnique(Context ctx)
         {
-            ctx.inventory.ReplaceForSlot(ctx.actor.GetItemActivation().slotId, ctx.actor);
+            ctx.inventory.ReplaceForSlot(ctx.actor.GetSlotComponent().slotId, ctx.actor);
         }
 
         [Export(Dynamic = true, Chain = "Equippable.Do")] 

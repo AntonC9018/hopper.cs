@@ -3,10 +3,14 @@ using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Items
 {
+    public partial class SlotComponent : IComponent
+    {
+        [Inject] public Identifier slotId;
+    }
+
     [AutoActivation("ItemActivate")]
     public partial class ItemActivation : IBehavior
     {
-        [Inject] public Identifier slotId;
         public class Context : ActorContext
         {
         }

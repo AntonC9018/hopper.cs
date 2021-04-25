@@ -95,7 +95,9 @@ namespace Hopper.Core.Items
 
         public Entity DropFromSlot(Identifier slotId)
         {
-            return Drop(_slots[slotId]);
+            var itemId = _slots[slotId];
+            _slots.Remove(slotId);
+            return Drop(itemId);
         }
 
         public Entity Drop(Identifier itemId)
@@ -104,6 +106,18 @@ namespace Hopper.Core.Items
             _generalStorage.Remove(itemId);
             _excess.Add(item);
             return item;
+        }
+
+        public void Remove(Identifier itemId)
+        {
+            _generalStorage.Remove(itemId);
+        }
+
+        public void RemoveFromSlot(Identifier slotId)
+        {
+            var itemId = _slots[slotId];
+            _slots.Remove(slotId);
+            Remove(itemId);
         }
 
         // public void Replace(Entity item)

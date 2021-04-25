@@ -4,6 +4,7 @@ using Hopper.Core.Items;
 using Hopper.Utils.Vector;
 using Hopper.Utils.Chains;
 using Hopper.Shared.Attributes;
+using Hopper.Core.Components;
 
 namespace Hopper.TestContent
 {
@@ -11,16 +12,28 @@ namespace Hopper.TestContent
     public static class Shield
     {
         public static EntityFactory Factory;
+        [Slot] public static Slot Slot = new Slot(false);
 
-        public static void AddComponent(Entity subject)
+
+
+        public static void AddComponents(Entity subject)
         {
+            ItemBase.AddComponents(subject);
+
+            // Item stuff
+            Equippable.AddTo(subject);
+            SlotComponent.AddTo(subject, Slot.Id);
         }
 
         public static void InitComponents(Entity subject)
         {
+            subject.GetEquippable().DefaultPreset();
         }
 
-        public static void Retouch(Entity subject) {}
+        public static void Retouch(Entity subject)
+        {
+            Equippable.AssignToInventorySlotUniqueHandlerWrapper.AddTo(subject);
+        }
     }
 
     [EntityType]
@@ -39,60 +52,58 @@ namespace Hopper.TestContent
         public static void Retouch(Entity subject) {}
     }
 
-    public class ShieldModule : TinkerModule
+    public class ShieldComponent : IComponent
     {
-        private IntVector2 m_relativeDir;
-        private int m_pierceIncrease;
-        private IItem m_item;
+        [Inject] public IntVector2 _relativeDirection;
+        [Inject] public int _pierceIncrease;
 
-        private ShieldModule(IntVector2 relativeDir, int pierceIncrease) : base(null)
+        private IntVector2 GetRotatedRelativeOrientation(Entity actor)
         {
-            m_relativeDir = relativeDir;
-            m_pierceIncrease = pierceIncrease;
-            var builder = new ChainDefBuilder()
-                .AddDef(Attackable.Check)
-                .AddHandler(BlockDirection, PriorityRank.High)
-                .AddDef(Attackable.Do)
-                .AddHandler(AbsorbDamageAndBreak, PriorityRank.High)
-                .End();
-            m_tinker = new Tinker<TinkerData>(builder.ToStatic());
+            var angle = actor.GetTransform().orientation.AngleTo(IntVector2.Right);
+            return _relativeDirection.Rotate(angle);
         }
 
-        public override void Init(IItem item) => m_item = item;
-
-        private IntVector2 GetRotatedRelativeDir(Entity actor)
+        public static bool TryGetShieldComponent(Entity actor, out ShieldComponent shield)
         {
-            var angle = actor.Orientation.AngleTo(IntVector2.Right);
-            return m_relativeDir.Rotate(angle);
-        }
-
-        private void BlockDirection(Attackable.Event ev)
-        {
-            var blockDir = GetRotatedRelativeDir(ev.actor);
-            if (ev.dir == -blockDir)
+            if (actor.TryGetShield(out var shieldItem))
             {
-                ev.resistance.pierce += m_pierceIncrease;
+                shield = shieldItem.GetShieldComponent();
+                return true;
+            }
+            shield = null;
+            return false;
+        }
+
+        [Handlers(nameof(BlockDirection), nameof(AbsorbDamageAndBreak))]
+        public static HandlerGroup<Attackable.Context> HandlerGroup;
+
+
+        [Export(Chain = "Attackable.Do")]
+        public static void BlockDirection(Attackable.Context ctx)
+        {
+            if (TryGetShieldComponent(ctx.actor, out var shield)
+                && ctx.direction == -shield.GetRotatedRelativeOrientation(ctx.actor))
+            {
+                ctx.resistance.pierce += shield._pierceIncrease;
             }
         }
 
-        private void AbsorbDamageAndBreak(Attackable.Event ev)
+        [Export(Chain = "Attackable.Do")]
+        private void AbsorbDamageAndBreak(Attackable.Context ctx)
         {
-            var blockDir = GetRotatedRelativeDir(ev.actor);
-            if (ev.atkParams.attack.damage > 0 && ev.dir == -blockDir)
+            if (ctx.attack.damage > 0
+                && ctx.actor.TryGetInventory(out var inventory)
+                && inventory.TryGetShield(out var shieldItem))
             {
-                // TODO: dummy inventory that just calls the equip methods on item
-                ev.actor.Inventory?.Destroy(m_item);
-                ev.atkParams.attack.damage = 0;
+                var shieldComponent = shieldItem.GetShieldComponent();
+
+                if (ctx.direction == -shieldComponent.GetRotatedRelativeOrientation(ctx.actor))
+                {
+                    HandlerGroup.RemoveFrom(ctx.actor);
+                    inventory.RemoveFromSlot(Shield.Slot.Id);
+                    ctx.attack.damage = 0;
+                }
             }
         }
-
-        public static TinkerModule CreateFront(int pierceIncrease)
-            => new ShieldModule(IntVector2.Right, pierceIncrease);
-        public static TinkerModule CreateBack(int pierceIncrease)
-            => new ShieldModule(IntVector2.Left, pierceIncrease);
-        public static TinkerModule CreateRight(int pierceIncrease)
-            => new ShieldModule(IntVector2.Down, pierceIncrease);
-        public static TinkerModule CreateLeft(int pierceIncrease)
-            => new ShieldModule(IntVector2.Up, pierceIncrease);
     }
 }
