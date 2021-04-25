@@ -7,7 +7,7 @@ namespace Hopper.TestContent.Freezing
 {
     public class IceCubeComponent : IComponent
     {
-        public Entity captured;
+        [Inject] public Entity captured;
     }
 
     [EntityType]
@@ -29,17 +29,6 @@ namespace Hopper.TestContent.Freezing
         {
         }
 
-        public static EntityFactory<IceCube> CreateFactory()
-        {
-            return new EntityFactory<IceCube>()
-                .AddBehavior(Displaceable.DefaultPreset)
-                .AddBehavior(Attackable.DefaultPreset)
-                .AddBehavior(Pushable.Preset)
-                .AddBehavior(Damageable.Preset)
-                .Retouch(MoveCapturedRetoucher)
-                .AddDieListener(ReleaseOnDeath);
-        }
-
         [Export(Chain = "Displaceable.Do", Dynamic = true)]
         public static void DisplaceCaptured(IceCubeComponent iceCubeComponent, Transform transform)
         {
@@ -50,9 +39,9 @@ namespace Hopper.TestContent.Freezing
         private static void ReleaseOnDeath(IceCubeComponent iceCubeComponent)
         {
             // release
-            iceCubeComponent.captured.GetTransform().ResetInGrid();
             // remove the status effect
-            Freeze.Default.Index.RemoveFrom(iceCubeComponent.captured);
+            iceCubeComponent.captured.GetFreezingEntityModifier()
+                .RemoveLogic(iceCubeComponent.captured);
             // TODO: apply 1 invulnerable to the captured entity
         }
     }

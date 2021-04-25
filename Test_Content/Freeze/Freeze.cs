@@ -1,65 +1,96 @@
 using Hopper.Core;
+using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.Stat.Basic;
 using Hopper.Shared.Attributes;
+using Hopper.Utils;
 
 namespace Hopper.TestContent.Freezing
 {
-    public class FreezingEntityModifier : IEntityModifier
+    public partial class FreezingEntityModifier : IEntityModifier
     {
         public Entity outerEntity;
 
-        public FreezingEntityModifier(Entity outerEntity)
+
+        [Export(Chain = "Ticking.Do", Priority = PriorityRank.High, Dynamic = true)] 
+        public void RemoveByKillingOuter(FreezingEntityModifier freezing) 
         {
-            this.outerEntity = outerEntity;
+            // this also removes this modifier, so we're done
+            freezing.outerEntity.Die();
+        }
+
+        public void Preset(Entity entity, int hp)
+        {
+            var transform = entity.GetTransform();
+            var iceCube = World.Global.SpawnEntity(
+                IceCube.Factory, transform.position, transform.orientation);
+            this.outerEntity = iceCube;
+
+            RemoveByKillingOuterHandlerWrapper.AddTo(entity);
+        }
+
+        public void Unset(Entity entity)
+        {
+            if (!outerEntity.IsDead())
+            {
+                outerEntity.Die();
+            }
+            Assert.That(!entity.HasFreezingEntityModifier());
+        }
+
+        public void RemoveLogic(Entity entity)
+        {
+            entity.GetTransform().ResetInGrid();
+            RemoveByKillingOuterHandlerWrapper.TryRemoveFrom(entity);
         }
     }
 
-    [InstanceExport]
-    public partial class Freeze
+    public static partial class Freeze
     {
-        [InstanceExport] [RequiringInit] 
-        public static Freeze Default = new Freeze();
+        public static StatusSource Source;
 
-        public EntityModifierIndex<FreezingEntityModifier> Index;
-        
-        
-        [Export(Chain = "Ticking.Do", Priority = PriorityRank.High, Dynamic = true)] 
-        public void Remove(Entity actor) 
+        public static bool TryApplyTo(Entity target, int hp)
         {
-            if (actor.TryGetComponent(Index.ComponentIndex, out var modifier))
+            if (!Source.CheckResistance(target, hp))
             {
-                // this also removes this modifier, so we're done
-                modifier.outerEntity.Die();
+                return false;
             }
+            if (target.TryFreezingEntityModifier(out var modifier))
+            {
+                // Reset hp back up
+                modifier.GetDamageable().health.amount = hp;
+                // damageable.health.amount += hp;
+
+                // These two are possible for selection?
+                // freezing.amount += amount;
+                // freezing.amount = amount;
+            }
+            else
+            {   
+                ApplyTo(target, hp);
+            }
+            return true;
         }
 
-        public Freeze()
+        public static void ApplyTo(Entity target, int hp)
         {
-            Index = new EntityModifierIndex<FreezingEntityModifier>(InstantiateAndBind, Unbind);
+            var modifier = new FreezingEntityModifier();
+            modifier.Preset(target, hp);
         }
 
-        public void Init()
+        public void RemoveFrom(Entity entity)
         {
-            Index.Init();
+            entity.GetFreezingEntityModifier().Unset(entity);
         }
 
-        public FreezingEntityModifier InstantiateAndBind(Entity actor) 
+        public bool TryRemoveFrom(Entity entity)
         {
-            var transform = actor.GetTransform();
-            var iceCube = World.Global.SpawnEntity(
-                IceCube.Factory, transform.position, transform.orientation);
-
-            // Setup the Ice Cube
-            IceCubeComponent.AddTo(iceCube, actor);
-
-            // Block Attack Dig Move (Or simply acting?)
-
-            return new FreezingEntityModifier(outer);
-        }
-
-        public void Unbind(FreezingEntityModifier modifier, Entity actor)
-        {
-            modifier.outerEntity.Die();
+            if (entity.TryGetFreezingEntityModifier(out var modifier))
+            {
+                modifier.Remove(entity);
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -4,6 +4,22 @@ using Hopper.Core.Stat.Basic;
 
 namespace Hopper.Core
 {
+    public static class StatusSourceExtensions
+    {
+        public static bool CheckResistance(this StatusSource source, Entity entity, int power)
+        {
+            if (entity.TryGetStats(out var stats))
+            {
+                stats.GetLazy(source.Index, out var resistance);
+                if (resistance.amount >= power)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     public struct EntityModifierIndex<T> where T : IEntityModifier
     {
         public System.Func<Entity, T> InstantiateAndBind;
@@ -21,26 +37,6 @@ namespace Hopper.Core
             this.Unbind         = Unbind;
             this.Source.Default = DefaultResistance;
             this.InstantiateAndBind = Instantiate;
-        }
-
-        public void Init()
-        {
-            ComponentIndex.Id = Registry.Global.NextComponentId();
-            Source.Index.Id   = Registry.Global.RegisterStat(Source.Default());
-        }
-
-        public bool TryApplyTo(Entity entity, int power)
-        {
-            if (entity.TryGetStats(out var stats))
-            {
-                stats.GetLazy(Source.Index, out var resistance);
-                if (resistance.amount >= power)
-                {
-                    ApplyTo(entity);
-                    return true;
-                }
-            }
-            return false;
         }
 
         public void ApplyTo(Entity entity)

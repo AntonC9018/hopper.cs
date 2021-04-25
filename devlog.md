@@ -763,3 +763,11 @@ The thing to notice is that these entity modifiers are basically, or actually ju
 
 Entity modifiers, though, might have additional logic. 
 They kind of work like entity types, but without a factory.
+
+Now comes the idea of dynamic components: components that only make sense at runtime. 
+They can be both added and removed. 
+
+1. Add components by invoking a static method, which combines the constructor with the injected fields, the AddTo() method, and calls a preset.
+2. Remove components by calling a "unset", corresponding to the given preset and removing the component.
+3. Generate a wrapper for this that would define a status stat for this. It would hide the "component" part of the entity modifier.
+4. The interface for this modifier should look about the same as for the future status effects.
