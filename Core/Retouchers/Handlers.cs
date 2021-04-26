@@ -1,33 +1,48 @@
+using System.Linq;
 using Hopper.Core.Components;
+using Hopper.Utils;
 using Hopper.Utils.Chains;
 
 namespace Hopper.Core
 {
-    public struct HandlerWrapper<Context> where Context : ContextBase
+    public class HandlerWrapper<Context> : IHookable where Context : ContextBase
     {
         public Handler<Context> handler;
         public ChainPath<Chain<Context>> chainPath;
 
-        public void AddTo(Entity entity)
+        public HandlerWrapper(Handler<Context> handler, ChainPath<Chain<Context>> chainPath)
+        {
+            this.handler = handler;
+            this.chainPath = chainPath;
+        }
+
+        public void HookTo(Entity entity)
         {
             var chain = chainPath.Chain(entity);
             chain.Add(handler);
         }
 
-        public bool IsAdded(Entity entity)
+        public bool IsHookedTo(Entity entity)
         {
             var chain = chainPath.Chain(entity);
             return chain.Contains(handler);
         }
 
-        public void RemoveFrom(Entity entity)
+        public void UnhookFrom(Entity entity)
         {
             var chain = chainPath.Chain(entity);
             chain.Remove(handler);
         }
     }
 
-    public struct HandlerGroup<Context> where Context : ContextBase
+    public interface IHookable
+    {
+        void HookTo(Entity entity);
+        void UnhookFrom(Entity entity);
+        bool IsHookedTo(Entity entity);
+    }
+
+    public class HandlerGroup<Context> : IHookable where Context : ContextBase
     {
         public Handler<Context>[] handlers;
         public ChainPath<Chain<Context>> chainPath;
@@ -38,7 +53,7 @@ namespace Hopper.Core
             this.handlers = handlers;
         }
 
-        public void AddTo(Entity entity)
+        public void HookTo(Entity entity)
         {
             var chain = chainPath.Chain(entity);
             
@@ -48,13 +63,13 @@ namespace Hopper.Core
             }
         }
 
-        public bool IsAdded(Entity entity)
+        public bool IsHookedTo(Entity entity)
         {
             var chain = chainPath.Chain(entity);
             return chain.Contains(handlers[0]);
         }
 
-        public void RemoveFrom(Entity entity)
+        public void UnhookFrom(Entity entity)
         {
             var chain = chainPath.Chain(entity);
 
@@ -76,6 +91,40 @@ namespace Hopper.Core
                 chain.Add(handler);
             }
             return true;
+        }
+    }
+
+    public class HandlerGroupsWrapper : IHookable
+    {
+        public IHookable[] hookables;
+
+        public HandlerGroupsWrapper(IHookable[] hookable)
+        {
+            this.hookables = hookable;
+        }
+
+        public void HookTo(Entity entity)
+        {
+            Assert.That(!hookables.Any(h => h.IsHookedTo(entity)));
+            foreach (var h in hookables)
+            {
+                h.HookTo(entity);
+            }
+
+        }
+
+        public bool IsHookedTo(Entity entity)
+        {
+            return hookables.First().IsHookedTo(entity);
+        }
+
+        public void UnhookFrom(Entity entity)
+        {
+            Assert.That(hookables.All(h => h.IsHookedTo(entity)));
+            foreach (var h in hookables)
+            {
+                h.UnhookFrom(entity);
+            }
         }
     }
 }

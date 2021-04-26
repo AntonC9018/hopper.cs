@@ -55,7 +55,7 @@ namespace Hopper.TestContent
 
         public static void Retouch(Entity subject)
         {
-            Equippable.AddToInventoryCountableHandlerWrapper.AddTo(subject);
+            Equippable.AddToInventoryCountableHandlerWrapper.HookTo(subject);
         }
     }
 }

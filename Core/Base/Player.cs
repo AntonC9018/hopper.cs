@@ -68,10 +68,10 @@ namespace Hopper.Core
 
         public static void Retouch(Entity subject)
         {
-            Skip.SkipEmptyAttackHandlerWrapper.AddTo(subject);
-            Skip.SkipEmptyAttackHandlerWrapper.AddTo(subject);
-            Equip.OnDisplaceHandlerWrapper.AddTo(subject);
-            Reorient.OnActionSuccessHandlerWrapper.AddTo(subject);
+            Skip.SkipEmptyAttackHandlerWrapper.HookTo(subject);
+            Skip.SkipEmptyAttackHandlerWrapper.HookTo(subject);
+            Equip.OnDisplaceHandlerWrapper.HookTo(subject);
+            Reorient.OnActionSuccessHandlerWrapper.HookTo(subject);
         }
     }
 }

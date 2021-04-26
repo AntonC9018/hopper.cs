@@ -14,9 +14,7 @@ namespace Hopper.TestContent
         public static EntityFactory Factory;
         [Slot] public static Slot Slot = new Slot(false);
 
-
-
-        public static void AddComponents(Entity subject)
+        public static void AddComponents(Entity subject, IntVector2 relativeDirection, int pierceIncrease)
         {
             ItemBase.AddComponents(subject);
 
@@ -32,25 +30,10 @@ namespace Hopper.TestContent
 
         public static void Retouch(Entity subject)
         {
-            Equippable.AssignToInventorySlotUniqueHandlerWrapper.AddTo(subject);
+            Equippable.AssignToInventorySlotUniqueHandlerWrapper.HookTo(subject);
         }
     }
 
-    [EntityType]
-    public static class ShieldFront
-    {
-        public static EntityFactory Factory;
-        
-        public static void AddComponent(Entity subject)
-        {
-        }
-
-        public static void InitComponents(Entity subject)
-        {
-        }
-
-        public static void Retouch(Entity subject) {}
-    }
 
     public class ShieldComponent : IComponent
     {
@@ -74,11 +57,18 @@ namespace Hopper.TestContent
             return false;
         }
 
-        [Handlers(nameof(BlockDirection), nameof(AbsorbDamageAndBreak))]
-        public static HandlerGroup<Attackable.Context> HandlerGroup;
+        public void 
 
+        public void Preset()
+        {
 
-        [Export(Chain = "Attackable.Do")]
+        }
+    }
+
+    public class ShieldedComponent : IComponent
+    {
+        
+        [Export(Chain = "Attackable.Do", Dynamic = true)]
         public static void BlockDirection(Attackable.Context ctx)
         {
             if (TryGetShieldComponent(ctx.actor, out var shield)
@@ -88,7 +78,7 @@ namespace Hopper.TestContent
             }
         }
 
-        [Export(Chain = "Attackable.Do")]
+        [Export(Chain = "Attackable.Do", Dynamic = true)]
         private void AbsorbDamageAndBreak(Attackable.Context ctx)
         {
             if (ctx.attack.damage > 0
@@ -104,6 +94,18 @@ namespace Hopper.TestContent
                     ctx.attack.damage = 0;
                 }
             }
+        }
+
+        public void Preset(Entity entity)
+        {
+            ShieldComponent.BlockDirectionHandlerWrapper.AddTo(entity);
+            ShieldComponent.AbsorbDamageAndBreakHandlerWrapper.AddTo(entity);
+        }
+
+        public void Unset(Entity entity)
+        {
+            ShieldComponent.BlockDirectionHandlerWrapper.RemoveFrom(entity);
+            ShieldComponent.AbsorbDamageAndBreakHandlerWrapper.RemoveFrom(entity);
         }
     }
 }

@@ -24,9 +24,11 @@ namespace Hopper.TestContent.Projectiles
             ProjectileComponent.AddTo(subject, Layer.REAL | Layer.WALL | Layer.PROJECTILE);
             Attackable.AddTo(subject, Attackness.CAN_BE_ATTACKED);
             Damageable.AddTo(subject, new Health(1));
-            Acting.AddTo(subject, 
+            Acting.AddTo(
+                subject, 
                 entity => ProjectileAction.ToDirectedParticular(entity.GetTransform().orientation),
-                Algos.SimpleAlgo);
+                Algos.SimpleAlgo,
+                Order.Projectile);
         }
 
         public static void InitComponents(Entity subject)

@@ -4,6 +4,6 @@ namespace Hopper.Core
 {
     public enum Order
     {
-        Player, Entity, Trap
+        Player, Entity, Trap, Projectile
     }
 }

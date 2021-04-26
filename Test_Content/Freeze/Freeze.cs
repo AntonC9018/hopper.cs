@@ -45,13 +45,13 @@ namespace Hopper.TestContent.Freezing
         }
     }
 
-    public static partial class Freeze
+    public static class Freeze
     {
         public static StatusSource Source;
 
-        public static bool TryApplyTo(Entity target, int hp)
+        public static bool TryApplyTo(Entity target, int power, int hp)
         {
-            if (!Source.CheckResistance(target, hp))
+            if (!Source.CheckResistance(target, power))
             {
                 return false;
             }

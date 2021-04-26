@@ -18,6 +18,7 @@
         - [Fixes](#fixes)
         - [Shield](#shield)
         - [Problem with Items](#problem-with-items)
+        - [Handler update](#handler-update)
 
 <!-- /TOC -->
 
@@ -771,3 +772,14 @@ They can be both added and removed.
 2. Remove components by calling a "unset", corresponding to the given preset and removing the component.
 3. Generate a wrapper for this that would define a status stat for this. It would hide the "component" part of the entity modifier.
 4. The interface for this modifier should look about the same as for the future status effects.
+
+### Handler update
+
+Handlers should be classes! that will make easier dependency handling.
+Thing is, it is not possible to generate code for handler groups in the current version.
+A handler group may have been initialized (handlers with their priority assigned copied over) before a handler it references has been assigned priority.
+This means I would have to track dependencies between handlers from different classes.
+(If one could store references as fields or in an array, this would not be a problem, but C# does not allow that).
+With them being classes, it is also possible to create a generic attach-detach component for items that would attach its handlers on equipping and detach them on unequipping.
+This type of thing would be SO annoying to type out manually each time.
+Actually, this sort of thing would be totally possible with interfaces + boxing and dependency tracking, but again, with classes, it's just easier (and less copying, but more dereferencing).

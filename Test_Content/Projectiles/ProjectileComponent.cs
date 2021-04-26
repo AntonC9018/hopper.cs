@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using Hopper.Core;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
 using Hopper.Core.Stat.Basic;
-using Hopper.Core.Targeting;
 using Hopper.Shared.Attributes;
 using Hopper.Utils;
 using Hopper.Utils.Vector;

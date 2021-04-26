@@ -11,7 +11,7 @@ namespace Hopper.Core
     [InstanceExport]
     public partial class Bind
     {
-        [InstanceExport] [RequiringInit] public static Bind Example = new Bind(1);
+        [InstanceExport] public static Bind Example = new Bind(1);
 
         public EntityModifierIndex<BindingEntityModifier> Index;
 
@@ -34,22 +34,17 @@ namespace Hopper.Core
             // this.someField = someParameter;
         }
 
-        public void Init()
-        {
-            Index.Init();
-        }
-
         public BindingEntityModifier InstantiateAndBind(Entity actor) 
         {
-            RemoveHandlerWrapper.AddTo(actor);
-            DoSomeStuffWithComponentHandlerWrapper.AddTo(actor);
+            RemoveHandlerWrapper.HookTo(actor);
+            DoSomeStuffWithComponentHandlerWrapper.HookTo(actor);
             return new BindingEntityModifier(/* someParameter passed along */);
         }
 
         public void Unbind(BindingEntityModifier component, Entity actor)
         {
-            RemoveHandlerWrapper.RemoveFrom(actor);
-            DoSomeStuffWithComponentHandlerWrapper.RemoveFrom(actor);
+            RemoveHandlerWrapper.UnhookFrom(actor);
+            DoSomeStuffWithComponentHandlerWrapper.UnhookFrom(actor);
         }
     }
 }

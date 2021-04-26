@@ -14,11 +14,10 @@
         public void InitInstanceHandlers()
         {
 <#  foreach (var method in ExportedInstanceMethods) { #>
-            <#= method.Name #>Handler.handler = <#= method.Name #>HandlerAdapter;
+            <#= method.Name #>Handler = new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);
             <#= method.Name #>Handler.priority = Registry.Global.NextPriority(PriorityRank.<#= method.Priority #>);
 <#      if (method.IsDynamic) { #>
-            <#= method.Name #>HandlerWrapper.handler = <#= method.Name #>Handler;
-            <#= method.Name #>HandlerWrapper.chainPath = <#= method.Chain #>Path;
+            <#= method.Name #>HandlerWrapper = new HandlerWrapper<<#= method.ContextName #>>(<#= method.Name #>Handler, <#= method.Chain #>Path);
 <#      } 
     } #>
         }

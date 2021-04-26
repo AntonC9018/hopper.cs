@@ -28,7 +28,7 @@ namespace Hopper.TestContent
 
         public static void Retouch(Entity subject)
         {
-            Equippable.AddToInventoryCountableHandlerWrapper.AddTo(subject);
+            Equippable.AddToInventoryCountableHandlerWrapper.HookTo(subject);
         }
 
         public static Entity Drop(IntVector2 position, int amount)

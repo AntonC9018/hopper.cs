@@ -4,21 +4,23 @@ using Hopper.Core.History;
 using Hopper.Core.Items;
 using Hopper.Core.Stat.Basic;
 using Hopper.Core.Targeting;
+using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Hopper.TestContent
 {
-    public class BowTinkerData : TinkerData
+    public class BowComponent : IComponent
     {
-        public int numCharges = 0;
+
     }
 
 
-    public class Bow
+    [EntityType]
+    public static class Bow
     {
-        public static readonly Attack.Source ArrowSource = new Attack.Source();
+        public static Attack.Source ArrowSource = new Attack.Source();
         public static readonly ISlot<IItemContainer<IItem>> Slot = Hopper.Core.Items.BasicSlots.RangeWeapon;
         public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
         public static readonly Attack DefaultArrowAttack =

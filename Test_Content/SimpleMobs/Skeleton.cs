@@ -34,9 +34,9 @@ namespace Hopper.TestContent.SimpleMobs
 
         public static void Retouch(Entity subject)
         {
-            Skip.SkipNoPlayerHandlerWrapper.AddTo(subject);
-            Skip.SkipBlockedHandlerWrapper.AddTo(subject);
-            Reorient.OnActionSuccessHandlerWrapper.AddTo(subject);
+            Skip.SkipNoPlayerHandlerWrapper.HookTo(subject);
+            Skip.SkipBlockedHandlerWrapper.HookTo(subject);
+            Reorient.OnActionSuccessHandlerWrapper.HookTo(subject);
         }
     }
 }
