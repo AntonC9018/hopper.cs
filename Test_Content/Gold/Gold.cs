@@ -17,18 +17,16 @@ namespace Hopper.TestContent
             ItemBase.AddComponents(subject);
 
             // Item stuff
-            Equippable.AddTo(subject);
+            Equippable.AddTo(subject, null);
             Countable.AddTo(subject, 0);
         }
 
         public static void InitComponents(Entity subject)
         {
-            subject.GetEquippable().DefaultPreset();
         }
 
         public static void Retouch(Entity subject)
         {
-            Equippable.AddToInventoryCountableHandlerWrapper.HookTo(subject);
         }
 
         public static Entity Drop(IntVector2 position, int amount)

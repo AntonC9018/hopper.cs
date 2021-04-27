@@ -120,6 +120,11 @@ namespace Hopper.Core.Items
             Remove(itemId);
         }
 
+        public bool ContainsItem(Identifier itemId)
+        {
+            return _generalStorage.ContainsKey(itemId);
+        }
+
         // public void Replace(Entity item)
         // {
         //     if (_generalStorage.ContainsKey(item.typeId))

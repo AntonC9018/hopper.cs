@@ -11,10 +11,7 @@ namespace Hopper.Core.Retouchers
         {
             foreach (var itemTransform in transform.GetCell())
             {
-                if (itemTransform.entity.TryGetEquippable(out var equippable))
-                {
-                    equippable.Activate(itemTransform.entity, transform.entity, inventory); 
-                }
+                itemTransform.entity.TryBeEquipped(transform.entity, inventory);
             }
 
             foreach (var item in inventory.GetExcess())

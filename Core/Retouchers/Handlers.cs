@@ -98,7 +98,7 @@ namespace Hopper.Core
     {
         public IHookable[] hookables;
 
-        public HandlerGroupsWrapper(IHookable[] hookable)
+        public HandlerGroupsWrapper(params IHookable[] hookable)
         {
             this.hookables = hookable;
         }

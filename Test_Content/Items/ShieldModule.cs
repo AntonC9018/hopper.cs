@@ -19,18 +19,16 @@ namespace Hopper.TestContent
             ItemBase.AddComponents(subject);
 
             // Item stuff
-            Equippable.AddTo(subject);
+            Equippable.AddTo(subject, ShieldComponent.Hookable);
             SlotComponent.AddTo(subject, Slot.Id);
         }
 
         public static void InitComponents(Entity subject)
         {
-            subject.GetEquippable().DefaultPreset();
         }
 
         public static void Retouch(Entity subject)
         {
-            Equippable.AssignToInventorySlotUniqueHandlerWrapper.HookTo(subject);
         }
     }
 
@@ -46,39 +44,21 @@ namespace Hopper.TestContent
             return _relativeDirection.Rotate(angle);
         }
 
-        public static bool TryGetShieldComponent(Entity actor, out ShieldComponent shield)
-        {
-            if (actor.TryGetShield(out var shieldItem))
-            {
-                shield = shieldItem.GetShieldComponent();
-                return true;
-            }
-            shield = null;
-            return false;
-        }
-
-        public void 
-
-        public void Preset()
-        {
-
-        }
-    }
-
-    public class ShieldedComponent : IComponent
-    {
-        
-        [Export(Chain = "Attackable.Do", Dynamic = true)]
+        [Export(Chain = "Attackable.Do")]
         public static void BlockDirection(Attackable.Context ctx)
         {
-            if (TryGetShieldComponent(ctx.actor, out var shield)
-                && ctx.direction == -shield.GetRotatedRelativeOrientation(ctx.actor))
+            if (ctx.actor.TryGetShield(out var shieldItem))
             {
-                ctx.resistance.pierce += shield._pierceIncrease;
+                var shield = shieldItem.GetShieldComponent();
+
+                if (ctx.direction == -shield.GetRotatedRelativeOrientation(ctx.actor))
+                {
+                    ctx.resistance.pierce += shield._pierceIncrease;
+                }
             }
         }
 
-        [Export(Chain = "Attackable.Do", Dynamic = true)]
+        [Export(Chain = "Attackable.Do")]
         private void AbsorbDamageAndBreak(Attackable.Context ctx)
         {
             if (ctx.attack.damage > 0
@@ -89,23 +69,16 @@ namespace Hopper.TestContent
 
                 if (ctx.direction == -shieldComponent.GetRotatedRelativeOrientation(ctx.actor))
                 {
-                    HandlerGroup.RemoveFrom(ctx.actor);
-                    inventory.RemoveFromSlot(Shield.Slot.Id);
+                    shieldItem.BeDestroyed(ctx.actor, inventory);
+                    // shieldItem.BeUnequippedLogic(ctx.actor);
+                    // inventory.RemoveFromSlot(Shield.Slot.Id);
                     ctx.attack.damage = 0;
                 }
             }
         }
 
-        public void Preset(Entity entity)
-        {
-            ShieldComponent.BlockDirectionHandlerWrapper.AddTo(entity);
-            ShieldComponent.AbsorbDamageAndBreakHandlerWrapper.AddTo(entity);
-        }
-
-        public void Unset(Entity entity)
-        {
-            ShieldComponent.BlockDirectionHandlerWrapper.RemoveFrom(entity);
-            ShieldComponent.AbsorbDamageAndBreakHandlerWrapper.RemoveFrom(entity);
-        }
+        public static HandlerGroup<Attackable.Context> Hookable = new HandlerGroup<Attackable.Context>(
+            Attackable.DoPath, BlockDirectionHandler, AbsorbDamageAndBreakHandler
+        );
     }
 }

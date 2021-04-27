@@ -5,7 +5,7 @@ namespace Hopper.Core.Items
 {
     public partial class Countable : IComponent
     {
-        [Inject] public int count;
+        public int count = 1;
 
         public void AbsorbItem(Entity item)
         {
