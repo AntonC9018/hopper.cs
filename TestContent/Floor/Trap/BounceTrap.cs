@@ -2,7 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Registries;
 using Hopper.Core.Stat;
-using Hopper.Core.Stat.Basic;
+using Hopper.Core.Stat;
 
 namespace Hopper.TestContent.Floor
 {

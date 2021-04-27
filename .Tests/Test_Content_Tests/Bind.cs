@@ -4,7 +4,7 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Mods;
 using Hopper.TestContent.Bind;
 using Hopper.Utils.Vector;
-using Hopper.Core.Stat.Basic;
+using Hopper.Core.Stat;
 using Hopper.TestContent.SimpleMobs;
 using System.Linq;
 using Hopper.Core.History;

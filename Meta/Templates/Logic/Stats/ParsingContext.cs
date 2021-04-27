@@ -6,12 +6,19 @@ namespace Hopper.Meta.Stats
     {
         public string fileName;
         public List<string> tokenNames;
-        public Scope<StatType> scope;
+        public Scope<StatType> currentScope;
+        public Scope<StatType> rootScope;
 
         public ParsingContext(string rootScopeName)
         {
             this.tokenNames = new List<string>();
-            this.scope = new Scope<StatType>(rootScopeName, null, null);
+            this.rootScope = new Scope<StatType>(rootScopeName, null, null);
+            this.currentScope = rootScope;
+        }
+
+        public void ResetToRootScope()
+        {
+            currentScope = rootScope;
         }
 
         public void ResetFileName(string fileName)
@@ -21,24 +28,31 @@ namespace Hopper.Meta.Stats
 
         public void PushScope(string scopeName)
         {
-            scope = scope.Add(scopeName, null);
+            if (currentScope.children.TryGetValue(scopeName, out var newScope))
+            {
+                currentScope = newScope;
+            }
+            else
+            {
+                currentScope = currentScope.Add(scopeName, null);
+            }
         }
 
         public void PushScope(StatType stat)
         {
-            if (scope.children.ContainsKey(stat.name))
+            if (currentScope.children.ContainsKey(stat.name))
             {
-                var newScope = scope.children[stat.name];
+                var newScope = currentScope.children[stat.name];
                 newScope.value = stat;
-                scope = newScope;
+                currentScope = newScope;
             }
             else
             {
-                scope = scope.Add(stat.name, stat);
+                currentScope = currentScope.Add(stat.name, stat);
             }
         }
 
-        public void PopScope() => scope = scope.parentScope;
+        public void PopScope() => currentScope = currentScope.parentScope;
 
         public void Push(string tokenName) => tokenNames.Add(tokenName);
         public void Pop() => tokenNames.RemoveAt(tokenNames.Count - 1);

@@ -11,27 +11,28 @@ using Microsoft.CodeAnalysis.MSBuild;
 
 namespace Hopper.Meta
 {
+
     public class Generator
     {
-        const string coreProjectPath = @"../Core/Hopper_Core.csproj";
         const string sharedProjectPath = @"../Shared/Hopper_Shared.csproj";
-        const string autogenFolder = @"../Core/Autogen";
-        const string statJsonsFolder = @"../Core/Stats/Json";
-        static readonly string behaviorAutogenFolder = $@"{autogenFolder}/Behaviors";
-        static readonly string componentAutogenFolder = $@"{autogenFolder}/Components";
-        static readonly string tagsAutogenFolder = $@"{autogenFolder}/Tags";
-        static readonly string handlersAutogenFolder = $@"{autogenFolder}/Handlers";
-        static readonly string mainAutogenFile = $@"{autogenFolder}/Main.cs";
-        static readonly string statAutogenFolder = $@"{autogenFolder}/Stats";
 
         public MSBuildWorkspace msWorkspace;
-        public Project coreProject;
+        public ProjectContext context;
+
+        public Generator() 
+        {
+        }
 
         public async Task Start(params string[] projectPaths)
         {
             if (await InitWorkspace(projectPaths))
             {
-                await Generate();
+                foreach (var projectPath in projectPaths)
+                {
+                    Console.WriteLine($"Appending {projectPath}");
+                    var project = await msWorkspace.OpenProjectAsync(projectPath);
+                    await Generate(project);
+                }
             }
         } 
 
@@ -62,33 +63,11 @@ namespace Hopper.Meta
                 }
             };
 
-            if (!Directory.Exists(autogenFolder))
-                Directory.CreateDirectory(autogenFolder);
-
-            CreateOrEmptyDirectory(behaviorAutogenFolder);
-            CreateOrEmptyDirectory(componentAutogenFolder);
-            CreateOrEmptyDirectory(handlersAutogenFolder);
-            CreateOrEmptyDirectory(tagsAutogenFolder);
-            CreateOrEmptyDirectory(statAutogenFolder);
+            context = new ProjectContext(projectPaths);
 
             await msWorkspace.OpenProjectAsync(sharedProjectPath);
 
-            coreProject = await msWorkspace.OpenProjectAsync(coreProjectPath);
-            
-            // Open the mod projects
-            foreach (var projectName in projectPaths)
-                await msWorkspace.OpenProjectAsync(projectName);
-
             return success;
-        }
-
-        public static void CreateOrEmptyDirectory(string directory)
-        {
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
-            else
-            foreach (var file in new DirectoryInfo(directory).GetFiles())
-                file.Delete(); 
         }
 
         public static IEnumerable<string> GetJsonFileNames(string directory)
@@ -99,24 +78,23 @@ namespace Hopper.Meta
             }
         }
 
-        public async Task Generate()
+        public async Task Generate(Project project)
         {
-            var ctx = new ProjectContext(msWorkspace.CurrentSolution);
-            await ctx.Reset(coreProject);
+            await context.Reset(project);
 
             // TODO: parallelize
             var behaviorWrappers = new List<BehaviorSymbolWrapper>();
             {
-                foreach (var behavior in await ctx.FindAllBehaviors())
+                foreach (var behavior in await context.FindAllBehaviors())
                 {
                     var wrapped = new BehaviorSymbolWrapper(behavior);
-                    if (wrapped.InitWithErrorHandling(ctx))
+                    if (wrapped.InitWithErrorHandling(context))
                         behaviorWrappers.Add(wrapped);
                 }
                 // After init must be called after all of the behaviors have been added to the dictionary
                 foreach (var behavior in behaviorWrappers)
                 {
-                    behavior.AfterInitWithErrorHandling(ctx);              
+                    behavior.AfterInitWithErrorHandling(context);              
                 }
                 foreach (var behavior in behaviorWrappers)
                 {
@@ -126,7 +104,7 @@ namespace Hopper.Meta
                     Console.WriteLine($"Generating code for {behavior.Calling}");
 
                     File.WriteAllText(
-                        $"{behaviorAutogenFolder}/{behavior.ClassName}.cs",
+                        $"{context._paths.BehaviorAutogenFolder}/{behavior.ClassName}.cs",
                         behaviorPrinter.TransformText(),
                         Encoding.UTF8);
                 }
@@ -134,17 +112,17 @@ namespace Hopper.Meta
 
             var componentWrappers = new List<ComponentSymbolWrapper>();
             {
-                var components = await ctx.FindAllDirectComponents();
+                var components = await context.FindAllDirectComponents();
                 
                 foreach (var b in components)
                 {
                     var wrapped = new ComponentSymbolWrapper(b);
-                    if (wrapped.InitWithErrorHandling(ctx))
+                    if (wrapped.InitWithErrorHandling(context))
                         componentWrappers.Add(wrapped);
                 }
                 foreach (var component in componentWrappers)
                 {
-                    component.AfterInitWithErrorHandling(ctx);               
+                    component.AfterInitWithErrorHandling(context);               
                 }
                 foreach (var component in componentWrappers)
                 {
@@ -154,7 +132,7 @@ namespace Hopper.Meta
                     Console.WriteLine($"Generating code for {component.Calling}");
 
                     File.WriteAllText(
-                        $"{componentAutogenFolder}/{component.ClassName}.cs",
+                        $"{context._paths.ComponentAutogenFolder}/{component.ClassName}.cs",
                         componentPrinter.TransformText(),
                         Encoding.UTF8);
                 }
@@ -162,17 +140,17 @@ namespace Hopper.Meta
 
             var tagWrappers = new List<ComponentSymbolWrapper>();
             {
-                var tags = await ctx.FindAllTags();
+                var tags = await context.FindAllTags();
                 
                 foreach (var b in tags)
                 {
                     var wrapped = new TagSymbolWrapper(b);
-                    if (wrapped.InitWithErrorHandling(ctx))
+                    if (wrapped.InitWithErrorHandling(context))
                         tagWrappers.Add(wrapped);
                 }
                 foreach (var component in tagWrappers)
                 {
-                    component.AfterInitWithErrorHandling(ctx);               
+                    component.AfterInitWithErrorHandling(context);               
                 }
                 foreach (var component in tagWrappers)
                 {
@@ -182,13 +160,13 @@ namespace Hopper.Meta
                     Console.WriteLine($"Generating code for {component.Calling}");
 
                     File.WriteAllText(
-                        $"{tagsAutogenFolder}/{component.ClassName}.cs",
+                        $"{context._paths.TagsAutogenFolder}/{component.ClassName}.cs",
                         componentPrinter.TransformText(),
                         Encoding.UTF8);
                 }
             }
 
-            var methodClasses = ctx.GetExportedMethodClasses();
+            var methodClasses = context.GetExportedMethodClasses();
             {
                 foreach (var methodClass in methodClasses)
                 {
@@ -198,39 +176,20 @@ namespace Hopper.Meta
                     Console.WriteLine($"Generating code for {methodClass.Calling}");
 
                     File.WriteAllText(
-                        $"{handlersAutogenFolder}/{methodClass.ClassName}.cs",
+                        $"{context._paths.HandlersAutogenFolder}/{methodClass.ClassName}.cs",
                         handlersPrinter.TransformText(),
                         Encoding.UTF8);
                 }
             }
 
-            // TODO: do this before any generation has occured
-            string commonNamespace;
-            {
-                string reference = behaviorWrappers[0].Namespace;
-                int commonPartEndIndex = reference.Length;
-
-                foreach (var p in componentWrappers)
-                {
-                    int index = p.Namespace.IndexOfFirstDifference(reference);
-                    if (index != -1 && index < commonPartEndIndex)
-                    {
-                        commonPartEndIndex = index;
-                    }
-                }
-
-                commonNamespace = reference.Substring(0, commonPartEndIndex);
-            }
-
-            var statNamespace = $"{commonNamespace}.Stat.Basic";
-            var statContext = new ParsingContext(statNamespace);
-            var topLevelStatTypes = GetJsonFileNames(statJsonsFolder).Select(
-                fname => StatType.ParseJson(statContext, fname));
+            
+            var topLevelStatTypes = GetJsonFileNames(context._paths.StatJsonsFolder).Select(
+                fname => StatType.ParseJson(context.statParsingContext, fname));
             {
                 var startPrinter = new StatStartCode();
                 var subPrinter = new StatCode();
                 startPrinter.statCodePrinter = subPrinter;
-                startPrinter.Namespace = statNamespace;
+                startPrinter.Namespace = $"{context.RootNamespaceName}.Stat";
 
                 foreach (var stat in topLevelStatTypes)
                 {
@@ -239,21 +198,21 @@ namespace Hopper.Meta
                     subPrinter.stat = stat;
 
                     File.WriteAllText(
-                        $@"{statAutogenFolder}/{stat.Name}.cs",
+                        $@"{context._paths.StatAutogenFolder}/{stat.Name}.cs",
                         startPrinter.TransformText(),
                         Encoding.UTF8);
                 }
             }
 
-            var entityTypes = ctx.GetEntityTypes();
-            var slots = ctx.GetSlots();
-            var methodClassInstances = ctx.GetMethodClassInstances();
-            var fieldsRequiringInit = ctx.GetFieldsRequiringInit();
-            var staticIndentiyingStatFields = ctx.GetStaticIdentifyingStatFields();
+            var entityTypes = context.GetEntityTypes();
+            var slots = context.GetSlots();
+            var methodClassInstances = context.GetMethodClassInstances();
+            var fieldsRequiringInit = context.GetFieldsRequiringInit();
+            var staticIndentiyingStatFields = context.GetStaticIdentifyingStatFields();
 
             {
                 // They must live in at least the base namespace hopper
-                if (commonNamespace.Length >= "Hopper".Length)
+                if (context.RootNamespaceName.Length >= "Hopper".Length)
                 {
                     var mainPrinter = new AllInitCode()
                     {
@@ -264,48 +223,23 @@ namespace Hopper.Meta
                         fieldsRequiringInit = fieldsRequiringInit,
                         staticIndentiyingStatFields = staticIndentiyingStatFields,
                         entityTypes = entityTypes,
-                        statRootScope = statContext.scope,
+                        statRootScope = context.statParsingContext.currentScope,
                         slots = slots,
-                        Namespace = commonNamespace
+                        Namespace = context.RootNamespaceName
                     };
 
                     Console.WriteLine("Generating code for the main init function");
 
-                    File.WriteAllText(mainAutogenFile, mainPrinter.TransformText(), Encoding.UTF8);
+                    File.WriteAllText(context._paths.MainAutogenFile, mainPrinter.TransformText(), Encoding.UTF8);
                 }
                 else
                 {
-                    Console.WriteLine($"The common namespace between components must at least contain 'Hopper' (got '{commonNamespace})'");
+                    Console.WriteLine($"The common namespace between components must at least contain 'Hopper' (got '{context.RootNamespaceName})'");
                 }
 
             }
-            // var components = await ctx.FindAllDirectComponents();
-            // var tags = await ctx.FindAllTags();
-        }
-
-        public async Task Test2()
-        {
-            var ctx = new ProjectContext(msWorkspace.CurrentSolution);
-            await ctx.Reset(coreProject);
-            
-            var implementations = await ctx.FindAllTags();
-
-            Console.WriteLine(implementations.Count());
-
-            foreach (var behavior in implementations)
-            {
-                foreach (var method in behavior.GetMembers().OfType<IMethodSymbol>())
-                foreach (var attrib in method.GetAttributes())
-                {
-                    if (SymbolEqualityComparer.Default.Equals(attrib.AttributeClass, RelevantSymbols.aliasAttribute))
-                    foreach (var arg in attrib.ConstructorArguments)
-                    {
-                        var t = (TypedConstant)arg;
-                        Console.WriteLine(t.Value);
-                    }
-                }
-            }
-            return;
+            // var components = await context.FindAllDirectComponents();
+            // var tags = await context.FindAllTags();
         }
     }
 

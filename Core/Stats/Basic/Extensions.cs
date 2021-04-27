@@ -1,4 +1,4 @@
-namespace Hopper.Core.Stat.Basic
+namespace Hopper.Core.Stat
 {
     public static class StatExtensions
     {

@@ -1,6 +1,5 @@
-using Hopper.Core.Stat.Basic;
-using Hopper.Utils.Vector;
 using Hopper.Core.Stat;
+using Hopper.Utils.Vector;
 using Hopper.Shared.Attributes;
 using System;
 

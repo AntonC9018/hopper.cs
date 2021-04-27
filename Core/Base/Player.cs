@@ -2,7 +2,7 @@ using System.Runtime.Serialization;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Core.Retouchers;
-using Hopper.Core.Stat.Basic;
+using Hopper.Core.Stat;
 using Hopper.Core.Targeting;
 using Hopper.Core.History;
 using Hopper.Core.Stat;

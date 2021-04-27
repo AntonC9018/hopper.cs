@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Utils.Chains;
-using Hopper.Core.Stat.Basic;
+using Hopper.Core.Stat;
 
 namespace Hopper.TestContent.Floor
 {

@@ -3,9 +3,8 @@ using Hopper.Utils.Chains;
 using System.Collections.Generic;
 using Hopper.Core.Items;
 using Hopper.Core.Targeting;
-using Hopper.Core.Stat.Basic;
-using Hopper.Utils.Vector;
 using Hopper.Core.Stat;
+using Hopper.Utils.Vector;
 using System.Linq;
 
 namespace Hopper.Core.Components.Basic

@@ -1,7 +1,7 @@
 using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 using System.Runtime.Serialization;
-using Hopper.Core.Stat.Basic;
+using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 using System;
 

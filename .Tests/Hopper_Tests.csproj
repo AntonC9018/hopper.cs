@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Hopper_Core.csproj" />
-    <ProjectReference Include="..\Test_Content\Hopper_Test_Content.csproj" />
+    <ProjectReference Include="..\TestContent\Hopper_Test_Content.csproj" />
   </ItemGroup>
 
 </Project>

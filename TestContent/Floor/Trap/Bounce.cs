@@ -1,5 +1,5 @@
 using Hopper.Core.Stat;
-using Hopper.Core.Stat.Basic;
+using Hopper.Core.Stat;
 
 namespace Hopper.TestContent.Floor
 {

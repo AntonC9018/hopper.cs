@@ -285,5 +285,19 @@ namespace Hopper.Meta
             }
             return false;
         }
+
+        public static bool IsContainedInNamespace(this ISymbol symbol, INamespaceSymbol namespaceSymbol)
+        {
+            while (symbol.ContainingType != null) symbol = symbol.ContainingType;
+            while (symbol.ContainingNamespace != null)
+            {
+                symbol = symbol.ContainingNamespace;
+                if (namespaceSymbol == symbol)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

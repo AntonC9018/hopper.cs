@@ -1,6 +1,5 @@
 using Hopper.Core.Stat;
 using Hopper.Core.Components;
-using Hopper.Core.Stat.Basic;
 
 namespace Hopper.Core
 {

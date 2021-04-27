@@ -50,16 +50,24 @@ namespace Hopper.Meta.Stats
             {
                 var first = names.First();
                 var rest = names.Skip(1);
+                
+                if (first == name && IsRoot)
+                {
+                    return Lookup(rest);
+                }
                 if (children.ContainsKey(first))
                 {
+                    System.Console.WriteLine($"Matched {first}");
                     var result = children[first].Lookup(rest);
                     if (result != null) return result;
                 }
                 if (!IsRoot)
                 {
+                    System.Console.WriteLine($"Did not matched {first}");
                     var result = parentScope.Lookup(names);
                     return result;
                 }
+
                 return null;
             }
             return this;

@@ -47,7 +47,7 @@ public struct <#= stat.Name #> : IStat
        but it will work for now. TODO: refactor the hell out of this, it is not ok. */
     foreach (var field in stat.staticIndentiyingFields) 
     { 
-        var identifyingType = field.metadata.scope.value; 
+        var identifyingType = field.metadata.scope.value;
         var identifiedType = identifyingType.identifiedType;
         var identifyingTypeName = identifyingType == stat ? identifyingType.Name : identifyingType.QualifiedName;
         var identifiedTypeName = identifiedType == stat.identifiedType ? identifiedType.Name : identifiedType.QualifiedName; #>

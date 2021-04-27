@@ -43,7 +43,7 @@ namespace Hopper.Meta.Stats
                             if (actualName == "type") 
                             { 
                                 var typeName = (string)kvp.Value;
-                                result.scope = ctx.scope.Lookup(typeName.Split('.'));
+                                result.scope = ctx.currentScope.Lookup(typeName.Split('.'));
                             }
                             else if (actualName == "default") 
                             { 
@@ -51,11 +51,11 @@ namespace Hopper.Meta.Stats
                             }
                             else
                             {
-                                ctx.Report($"Unexpected metadata name {kvp.Key}. Expected either @type or @default");
+                                ctx.Report($"Unexpected metadata name \"{kvp.Key}\". Expected either @type or @default");
                             }
                             break;
                         default:
-                            ctx.Report($"Parsed a {type} with name {kvp.Key}. Expected a Metadata (the name must start with a @).");
+                            ctx.Report($"Parsed a \"{type}\" with name \"{kvp.Key}\". Expected a Metadata (the name must start with a @).");
                             break;
                     }
                     ctx.Pop();
@@ -63,7 +63,7 @@ namespace Hopper.Meta.Stats
 
                 if (result.scope == null)
                 {
-                    ctx.Report($"The field type must be specified explicitly. Alternatively, just specify an integer instead of an entire json object as the field value.");
+                    ctx.Report($"The field type must be fully specified explicitly. Alternatively, just specify an integer instead of an entire json object as the field value.");
                 }
 
                 return result;

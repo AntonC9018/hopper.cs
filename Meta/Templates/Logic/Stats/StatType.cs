@@ -72,8 +72,8 @@ namespace Hopper.Meta.Stats
 
             var stat = new StatType();
             stat.name = statName;
-            stat.metadata.scope = ctx.scope;
-            ctx.scope.value = stat;
+            stat.metadata.scope = ctx.currentScope;
+            ctx.currentScope.value = stat;
             stat.Populate(jobj, ctx);
 
             ctx.PopScope();
@@ -107,7 +107,7 @@ namespace Hopper.Meta.Stats
                             nestedType.name = actualName;
                             ctx.PushScope(nestedType);
                             nestedType.Populate(jobj_nested, ctx);
-                            nestedType.metadata.scope = ctx.scope;
+                            nestedType.metadata.scope = ctx.currentScope;
                             
                             if (jobj.TryGetValue("@identifies", out var token) 
                                 && token.Value<string>() == actualName)

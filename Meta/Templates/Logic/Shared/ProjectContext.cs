@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Hopper.Shared.Attributes;
+using System.IO;
+using Hopper.Meta.Stats;
 
 namespace Hopper.Meta
 {
@@ -12,6 +14,7 @@ namespace Hopper.Meta
     {
         public Solution _solution;
         public Project _project;
+        public AutogenPaths _paths;
         public HashSet<Project> projectSet;
         public Compilation compilation;
 
@@ -22,45 +25,83 @@ namespace Hopper.Meta
         public Dictionary<string, ComponentSymbolWrapper> globalComponents;
         // Same problem here.
         public HashSet<string> globalAliases;
+        public INamespaceSymbol rootNamespace;
+        public string RootNamespaceName => _project.AssemblyName;
+        public ParsingContext statParsingContext;
 
 
-        public ProjectContext(Solution solution)
+        public ProjectContext(string[] projectPaths)
         {
-            _solution = solution;
             globalAliases = new HashSet<string>();
             globalComponents = new Dictionary<string, ComponentSymbolWrapper>();
+            statParsingContext = new ParsingContext("Hopper");
+
+            _paths = new AutogenPaths();
+            foreach (var p in projectPaths)
+            {
+                _paths.Reset(Path.GetDirectoryName(p));
+                _paths.CreateOrEmpty();
+            }
+            
         }
         
         public async Task Reset(Project project)
         {
             _project = project;
+            _solution = _project.Solution;
             projectSet = new HashSet<Project>{project};
             compilation = await project.GetCompilationAsync();
             RelevantSymbols.TryInitializeSingleton(compilation);
+            _paths.Reset(Path.GetDirectoryName(project.FilePath));
+            this.rootNamespace = GetRootNamespace();
+
+            // Hopper.
+            statParsingContext.ResetToRootScope();
+            // Core.
+            foreach (var scopeName in _project.AssemblyName.Split('.').Skip(1))
+            {
+                statParsingContext.PushScope(scopeName);
+            }
+            // Stat
+            statParsingContext.PushScope("Stat");
         }
 
-        public Task<IEnumerable<INamedTypeSymbol>> FindAllDirectComponents()
+        public INamespaceSymbol GetRootNamespace()
         {
-            return SymbolFinder.FindImplementationsAsync(
+            var paths = _project.AssemblyName.Split('.');
+
+            INamespaceSymbol result = compilation.GlobalNamespace;
+            foreach (var path in paths)
+            {
+                result = result.GetNamespaceMembers().Where(ns => ns.Name == path).Single();
+            }
+
+            return result;
+        }
+
+        public async Task<IEnumerable<INamedTypeSymbol>> FindAllDirectComponents()
+        {
+            return (await SymbolFinder.FindImplementationsAsync(
                 RelevantSymbols.icomponent, _solution, transitive: false, projectSet.ToImmutableHashSet()
-            );
+            )).Where(s => s.IsContainedInNamespace(rootNamespace));
         }
 
-        public Task<IEnumerable<INamedTypeSymbol>> FindAllTags()
+        public async Task<IEnumerable<INamedTypeSymbol>> FindAllTags()
         {
-            return SymbolFinder.FindImplementationsAsync(
+            return (await SymbolFinder.FindImplementationsAsync(
                 RelevantSymbols.itag, _solution, transitive: false, projectSet.ToImmutableHashSet()
-            );
+            )).Where(s => s.IsContainedInNamespace(rootNamespace));
         }
 
-        public Task<IEnumerable<INamedTypeSymbol>> FindAllBehaviors()
+        public async Task<IEnumerable<INamedTypeSymbol>> FindAllBehaviors()
         {
-            return SymbolFinder.FindImplementationsAsync(
+            return (await SymbolFinder.FindImplementationsAsync(
                 RelevantSymbols.ibehavior, _solution, transitive: false, projectSet.ToImmutableHashSet()
-            );
+            )).Where(s => s.IsContainedInNamespace(rootNamespace));
         }
+
         public IEnumerable<INamedTypeSymbol> GetNotNestedTypes() =>
-            GetNotNestedTypes(compilation.GlobalNamespace);
+            GetNotNestedTypes(rootNamespace);
 
         public IEnumerable<INamedTypeSymbol> GetNotNestedTypes(INamespaceSymbol @namespace)
         {
@@ -107,6 +148,8 @@ namespace Hopper.Meta
             }
         }
 
+        public IEnumerable<IFieldSymbol> GetAllFields() => GetAllFields(rootNamespace);
+
         public IEnumerable<IFieldSymbol> GetAllFields(INamespaceOrTypeSymbol symbol)
         {
             foreach (var member in symbol.GetMembers())
@@ -127,7 +170,7 @@ namespace Hopper.Meta
 
         public IEnumerable<FieldSymbolWrapper> GetStaticFieldsWithAttibute(INamedTypeSymbol attribute)
         {
-            foreach (var field in GetAllFields(compilation.GlobalNamespace))
+            foreach (var field in GetAllFields())
             {
                 if (field.IsStatic && field.HasAttribute(attribute))
                 {
