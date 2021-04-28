@@ -88,6 +88,11 @@ namespace Hopper.Core
         {
             return GetCell().GetAllUndirectedFromLayer(layer).Where(t => t != this);
         }
+
+        public IEnumerable<Transform> GetAllUndirectedButSelfFromLayerRelative(Layer layer, IntVector2 direction)
+        {
+            return GetCell().GetAllUndirectedFromLayer(layer).Where(t => t != this);
+        }
         
         public IntVector2 GetPosRelative(IntVector2 offset)
         {

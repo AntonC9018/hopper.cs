@@ -36,6 +36,13 @@ namespace Hopper.Core.Targeting
             this.direction = direction;
             this.transform = null;
         }
+
+        public TargetContext(Transform transform)
+        {
+            this.transform = transform;
+            this.position  = transform.position;
+            this.direction = transform.orientation;
+        }
     }
 
     public class AttackTargetContext : TargetContext
@@ -47,6 +54,12 @@ namespace Hopper.Core.Targeting
         {
             this.attackness = Attackness.NEVER;
             this.pieceIndex = pieceIndex;
+        }
+
+        public AttackTargetContext(Transform transform) : base(transform)
+        {
+            this.attackness = Attackness.NEVER;
+            this.pieceIndex = 0;
         }
     }
 }

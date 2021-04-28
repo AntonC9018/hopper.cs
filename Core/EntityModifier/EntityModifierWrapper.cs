@@ -5,12 +5,12 @@ namespace Hopper.Core
 {
     public static class StatusSourceExtensions
     {
-        public static bool CheckResistance(this StatusSource source, Entity entity, int power)
+        public static bool CheckResistance(this StatusSource source, Entity entityTheStatIsBeingAppliedTo, int powerOfStatOfApplier)
         {
-            if (entity.TryGetStats(out var stats))
+            if (entityTheStatIsBeingAppliedTo.TryGetStats(out var stats))
             {
                 stats.GetLazy(source.Index, out var resistance);
-                if (resistance.amount >= power)
+                if (resistance.amount >= powerOfStatOfApplier)
                 {
                     return true;
                 }

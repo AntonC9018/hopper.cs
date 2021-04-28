@@ -8,7 +8,7 @@ using Hopper.Core.Items;
 namespace Hopper.TestContent
 {
     [EntityType]
-    public static class Ghost
+    public static partial class Ghost
     {
         public static EntityFactory Factory;
 
@@ -55,7 +55,6 @@ namespace Hopper.TestContent
 
         public static void Retouch(Entity subject)
         {
-            Equippable.AddToInventoryCountableHandlerWrapper.HookTo(subject);
         }
     }
 }

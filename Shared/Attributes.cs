@@ -193,6 +193,9 @@ namespace Hopper.Shared.Attributes
     [AttributeUsage(AttributeTargets.Field)]
     public class SlotAttribute : Attribute
     {
+        public string name;
+
+        public SlotAttribute(string slotName = null){}
     }
 
     [AttributeUsage(AttributeTargets.Field)]

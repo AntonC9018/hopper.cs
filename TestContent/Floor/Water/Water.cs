@@ -4,16 +4,11 @@ using Hopper.TestContent;
 
 namespace Hopper.TestContent.Floor
 {
-    /*
-        This water has been implemented without using behaviors
-        It makes use solely of events: InitEvent and DieEvent of the entity
-        And the Enter and Leave events of the Cell.
-        Currently, retouchers can only make use of the tick chain to check
-        whether the entity has died. The two tools, the events and the
-        chain, should somehow be united. In the former code, I had the 
-        `Killable` behavior, which is not necessarily a bad idea, since
-        chains are better than normal events (they have priorities).
-    */
+    public class StuckInWaterEntityModifier
+    {
+
+    }
+
     public class Water : Entity
     {
         public override Layer Layer => Layer.FLOOR;

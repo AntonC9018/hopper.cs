@@ -18,7 +18,7 @@ namespace Hopper.TestContent
 
             // Item stuff
             Equippable.AddTo(subject, null);
-            Countable.AddTo(subject, 0);
+            Countable.AddTo(subject);
         }
 
         public static void InitComponents(Entity subject)

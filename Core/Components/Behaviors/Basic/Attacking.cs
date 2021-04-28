@@ -19,6 +19,15 @@ namespace Hopper.Core.Components.Basic
             [Omit] public bool haveStatsBeenSet;
             [Omit] public Attack attack;
             [Omit] public Push push;
+
+            public void SetSingleTarget(Transform target)
+            {
+                var transform = actor.GetTransform();
+
+                targetingContext = new AttackTargetingContext(
+                    new List<AttackTargetContext>(1) { new AttackTargetContext(transform) },
+                    null, actor, transform.position, direction, target.layer, 0);
+            }
         }
 
         public bool Activate(Entity entity, IntVector2 direction)

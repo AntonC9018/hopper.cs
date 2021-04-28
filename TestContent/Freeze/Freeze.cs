@@ -3,20 +3,24 @@ using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
+using Hopper.TestContent.Stat;
 using Hopper.Utils;
 
 namespace Hopper.TestContent.Freezing
 {
-    public partial class FreezingEntityModifier : IEntityModifier
+    public partial class FreezingEntityModifier : IComponent
     {
         public Entity outerEntity;
 
 
         [Export(Chain = "Ticking.Do", Priority = PriorityRank.High, Dynamic = true)] 
-        public void RemoveByKillingOuter(FreezingEntityModifier freezing) 
+        public void TickOuterHealth() 
         {
-            // this also removes this modifier, so we're done
-            freezing.outerEntity.Die();
+            if (--outerEntity.GetDamageable().health.amount <= 0)
+            {
+                // this also removes this modifier, so we're done
+                outerEntity.Die();
+            }
         }
 
         public void Preset(Entity entity, int hp)
@@ -26,7 +30,7 @@ namespace Hopper.TestContent.Freezing
                 IceCube.Factory, transform.position, transform.orientation);
             this.outerEntity = iceCube;
 
-            RemoveByKillingOuterHandlerWrapper.AddTo(entity);
+            TickOuterHealthHandlerWrapper.HookTo(entity);
         }
 
         public void Unset(Entity entity)
@@ -41,24 +45,22 @@ namespace Hopper.TestContent.Freezing
         public void RemoveLogic(Entity entity)
         {
             entity.GetTransform().ResetInGrid();
-            RemoveByKillingOuterHandlerWrapper.TryRemoveFrom(entity);
+            TickOuterHealthHandlerWrapper.UnhookFrom(entity);
         }
     }
 
     public static class Freeze
     {
-        public static StatusSource Source;
-
         public static bool TryApplyTo(Entity target, int power, int hp)
         {
-            if (!Source.CheckResistance(target, power))
+            if (!Stat.Freeze.Source.CheckResistance(target, power))
             {
                 return false;
             }
-            if (target.TryFreezingEntityModifier(out var modifier))
+            if (target.TryGetFreezingEntityModifier(out var modifier))
             {
                 // Reset hp back up
-                modifier.GetDamageable().health.amount = hp;
+                modifier.outerEntity.GetDamageable().health.amount = hp;
                 // damageable.health.amount += hp;
 
                 // These two are possible for selection?
@@ -78,16 +80,16 @@ namespace Hopper.TestContent.Freezing
             modifier.Preset(target, hp);
         }
 
-        public void RemoveFrom(Entity entity)
+        public static void RemoveFrom(Entity entity)
         {
             entity.GetFreezingEntityModifier().Unset(entity);
         }
 
-        public bool TryRemoveFrom(Entity entity)
+        public static bool TryRemoveFrom(Entity entity)
         {
             if (entity.TryGetFreezingEntityModifier(out var modifier))
             {
-                modifier.Remove(entity);
+                modifier.Unset(entity);
                 return true;
             }
             return false;

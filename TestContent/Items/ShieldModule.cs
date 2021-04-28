@@ -33,7 +33,7 @@ namespace Hopper.TestContent
     }
 
 
-    public class ShieldComponent : IComponent
+    public partial class ShieldComponent : IComponent
     {
         [Inject] public IntVector2 _relativeDirection;
         [Inject] public int _pierceIncrease;

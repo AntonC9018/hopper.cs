@@ -5,13 +5,13 @@ using Hopper.Shared.Attributes;
 
 namespace Hopper.TestContent.Freezing
 {
-    public class IceCubeComponent : IComponent
+    public partial class IceCubeComponent : IComponent
     {
         [Inject] public Entity captured;
     }
 
     [EntityType]
-    public static class IceCube
+    public static partial class IceCube
     {
         public static EntityFactory Factory;
 

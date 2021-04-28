@@ -19,6 +19,8 @@
         - [Shield](#shield)
         - [Problem with Items](#problem-with-items)
         - [Handler update](#handler-update)
+        - [Items update](#items-update)
+        - [Entity modifiers](#entity-modifiers)
 
 <!-- /TOC -->
 
@@ -783,3 +785,37 @@ This means I would have to track dependencies between handlers from different cl
 With them being classes, it is also possible to create a generic attach-detach component for items that would attach its handlers on equipping and detach them on unequipping.
 This type of thing would be SO annoying to type out manually each time.
 Actually, this sort of thing would be totally possible with interfaces + boxing and dependency tracking, but again, with classes, it's just easier (and less copying, but more dereferencing).
+
+
+### Items update
+
+Decided to reconsider how I handle the item logic. 
+Instead of having an ultra customizble chain, decided to switch it up for a general function that would handle the logic of all possible cases of item types:
+1. with countable component
+2. with slot component
+
+The handlers that are hooked onto the entity as the result of equipping the item are customizable.
+Made an interface for them called IHookable that would hook/unhook the handlers to/from the entity.
+
+This looks good and I like that currently.
+
+Maybe it is going to be worth going back to chains at some point, but not right now.
+
+
+### Entity modifiers
+
+Now to the topic of entity modifiers.
+
+They should work kind of similar to the way that items ended up working.
+
+There should be a Hookable object that should be hooked when the entity modifier is applied and unhooked afterwards. (kinda like a tinker/stat modifier).
+
+I guess the freezing stat is an example:
+1. It defines an EntityModifier called FreezingEntityModifier, that store data for the freezing stat.
+It has methods for working with that data. In this case, the data is the outer ice cube entity.
+2. It defines a static class Freeze for applying and removing the entity modifier.
+3. It defines a stat and a source for integration with the stat system.
+
+The reason a generic index is not used is because you want to pass in parameters, e.g. the hp of the ice cube or the timeout (amount), which is not currenlty exploited by the icecube.
+
+What I'm going to do, though, is I'm going to decrease the cube's health every tick and onece it reaches 0, I'm going to kill it off.

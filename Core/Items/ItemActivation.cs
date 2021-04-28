@@ -8,11 +8,15 @@ namespace Hopper.Core.Items
         [Inject] public Identifier slotId;
     }
 
-    [AutoActivation("ItemActivate")]
-    public partial class ItemActivation : IBehavior
+    public partial class ItemActivation : IComponent
     {
-        public class Context : ActorContext
+        [Inject] public System.Func<Entity, Entity, ParticularAction> GetActionFunc;
+
+
+        [Alias("GetItemAction")]
+        public ParticularAction GetAction(Entity actor, Entity entityThatWillDoTheAction)
         {
+            return GetActionFunc(actor, entityThatWillDoTheAction);
         }
     }   
 }

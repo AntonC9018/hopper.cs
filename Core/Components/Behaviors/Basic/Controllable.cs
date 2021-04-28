@@ -4,6 +4,7 @@ using Hopper.Utils.Vector;
 using System.Runtime.Serialization;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Chains;
+using Hopper.Core.Items;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -63,11 +64,31 @@ namespace Hopper.Core.Components.Basic
         public Dictionary<InputMapping, Chain<Context>> _chains;
 
 
+        /// <summary>
+        /// Gets the next action from the currently bound item slot, 
+        /// then does a guard pass over a chain dedicated to that slot.
+        /// </summary>
         public ParticularAction ConvertInputToAction(Entity entity, InputMapping input)
         {
             var ev = new Context { actor = entity };
             _chains[input].Pass(ev);
             return ev.ToParticular();
+        }
+
+
+        /// <summary>
+        /// Gets the next action from the currently bound item slot, 
+        /// then does a guard pass over a chain dedicated to that slot.
+        /// </summary>
+        public ParticularAction ConvertSlotIdToAction(Entity entity, Identifier slotId)
+        {
+            var inventory = entity.GetInventory();
+            if (inventory.TryGetFromSlot(slotId, out var item) 
+                && item.TryGetAction(entity, out var action))
+            {
+                return action;
+            }
+            return null;
         }
 
         public ParticularAction ConvertVectorToAction(Entity entity, IntVector2 direction)

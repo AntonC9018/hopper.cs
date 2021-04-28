@@ -1,7 +1,6 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
-using Hopper.Core.Stat;
 using Hopper.Core.Targeting;
 using Hopper.Shared.Attributes;
 
@@ -15,7 +14,7 @@ namespace Hopper.TestContent.Projectiles
         public static DirectedAction ProjectileAction =>
             Action.CreateFromActivateable(ProjectileComponent.Index);
 
-        public static void AddComponent(Entity subject)
+        public static void AddComponents(Entity subject)
         {
             Stats.AddTo(subject, Registry.Global._defaultStats);
             Transform.AddTo(subject, Layer.PROJECTILE);

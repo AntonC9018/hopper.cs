@@ -1,9 +1,11 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.TestContent.Explosion
 {
+    [EntityType]
     public static class Bomb
     {
         public static readonly Tinker<TinkerData> Tinker = new Tinker<TinkerData>(
@@ -16,7 +18,16 @@ namespace Hopper.TestContent.Explosion
                 })
                 .End().ToStatic()
         );
-        public static readonly CheckInventoryItem Item = new CheckInventoryItem(
+
+        public static Entity Item;
+        public static Entity Item_x3;
+
+        public static void Init()
+        {
+            
+        }
+
+
             new ItemMetadata("Bomb"), Tinker, BasicSlots.Counter);
         public static readonly PackedItem Item_x3 = new PackedItem(
             new ItemMetadata("Bomb_x3"), Item, 3);

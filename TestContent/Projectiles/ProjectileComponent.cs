@@ -2,14 +2,13 @@ using Hopper.Core;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
-using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
 
 namespace Hopper.TestContent.Projectiles
 {
-    public class ProjectileComponent : IComponent, IStandartActivateable
+    public partial class ProjectileComponent : IComponent, IStandartActivateable
     {
         [Inject] public Layer targetedLayer;
 
@@ -78,7 +77,7 @@ namespace Hopper.TestContent.Projectiles
         {
             if (!projectile.IsDead() 
                 && !context.actor.IsDead() 
-                && context.transform.layer.HasFlag(projectile.GetProjectileBehavior().targetedLayer))
+                && context.transform.layer.HasFlag(projectile.GetProjectileComponent().targetedLayer))
             {
                 projectile.GetStats().Get(Attack.Index, out var attack);
 
