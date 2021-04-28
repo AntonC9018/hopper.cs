@@ -35,7 +35,7 @@ namespace Hopper.Core.Components.Basic
             } while (i < ctx.move.power);
             i--;
 
-            ctx.newPos = transform.GetPosRelative(ctx.direction * i);
+            ctx.newPos = transform.GetRelativePosition(ctx.direction * i);
 
             // @Incomplete in this case you should probably add the bump to the history and stop
             // also this should be done in the do chain

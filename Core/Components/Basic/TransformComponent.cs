@@ -94,7 +94,7 @@ namespace Hopper.Core
             return GetCell().GetAllUndirectedFromLayer(layer).Where(t => t != this);
         }
         
-        public IntVector2 GetPosRelative(IntVector2 offset)
+        public IntVector2 GetRelativePosition(IntVector2 offset)
         {
             return position + offset;
         }

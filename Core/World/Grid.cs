@@ -123,6 +123,16 @@ namespace Hopper.Core
         {
             return GetTransformFromLayer(position, direction, layer) == null;
         }
+
+        public bool HasNoUndirectedTransformAt(IntVector2 position, Layer layer)
+        {
+            return !HasUndirectedTransformAt(position, layer);
+        }
+
+        public bool HasUndirectedTransformAt(IntVector2 position, Layer layer)
+        {
+            return GetCellAt(position).GetAllUndirectedFromLayer(layer).Any();
+        }
         
         public bool HasTransformAt(IntVector2 position, IntVector2 direction, Layer layer)
         {
