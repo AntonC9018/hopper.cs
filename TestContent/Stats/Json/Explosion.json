@@ -1,0 +1,6 @@
+{
+    "$PushSource": { "@type": "Core.Stat.Push.Source" },
+    "$AttackSource": { "@type": "Core.Stat.Attack.Source" },
+
+    "radius": 1
+}

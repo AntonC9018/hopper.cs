@@ -42,6 +42,46 @@ namespace Hopper.Utils.Vector
             }
         }
 
+        public static IEnumerable<IntVector2> Spiral(int start_x, int start_y, int end_x, int end_y)
+        {
+            while (start_x <= end_x && start_y <= end_y)
+            {
+                // the first row from the remaining rows
+                for (int i = start_y; i <= end_y; ++i)
+                {
+                    yield return new IntVector2(start_x, i);
+                }
+                start_x++;
+
+                // the last column from the remaining columns
+                for (int i = start_x; i <= end_x; ++i)
+                {
+                    yield return new IntVector2(i, end_y);
+                }
+                end_y--;
+
+                // the last row from the remaining rows
+                if (start_x <= end_x)
+                {
+                    for (int i = end_y; i >= start_y; --i)
+                    {
+                        yield return new IntVector2(end_x, i);
+                    }
+                    end_x--;
+                }
+
+                // the first column from the remaining columns
+                if (start_y <= end_y)
+                {
+                    for (int i = end_x; i >= start_x; --i)
+                    {
+                        yield return new IntVector2(i, start_y);
+                    }
+                    start_y++;
+                }
+            }
+        }
+
         public IntVector2(int x, int y)
         {
             this.x = x;

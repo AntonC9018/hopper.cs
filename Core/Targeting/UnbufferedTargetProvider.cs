@@ -21,5 +21,17 @@ namespace Hopper.Core.Targeting
                 }
             }
         }
+
+        public IEnumerable<TargetContext> GetTargetsDeep(IntVector2 position, IntVector2 direction)
+        {
+            foreach (var t in _pattern.MakeContexts(position, direction))
+            {
+                foreach (var transform in World.Global.grid.GetAllFromLayer(position, direction, _targetedLayer))
+                {
+                    var new_t = new TargetContext(transform);
+                    yield return new_t;
+                }
+            }
+        }
     }
 }

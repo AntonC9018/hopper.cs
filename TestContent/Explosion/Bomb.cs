@@ -1,10 +1,35 @@
 using Hopper.Core;
+using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.TestContent.Explosion
 {
+
+    public partial class WillExplodeEntityModifier : IComponent
+    {
+        [Inject] public int countDown;
+
+        [Export(Chain = "Ticking.Do", Dynamic = true)]
+        public void CountDown(Entity actor)
+        {
+            if (--countDown == 0)
+            {
+                actor.TryDie();
+                Explosion.ExplodeBy(actor);
+                Remove(actor);
+            }
+        }
+
+        public void Remove(Entity actor)
+        {
+            actor.RemoveComponent(Index);
+            CountDownHandlerWrapper.UnhookFrom(actor);
+        }
+    }
+
+
     [EntityType]
     public static class Bomb
     {
