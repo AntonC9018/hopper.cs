@@ -40,7 +40,7 @@ namespace Hopper.Core.Items
         [Alias("BeEquippedLogic")]
         public void BeEquippedLogic(Entity actor, Entity owner)
         {
-            hookable.HookTo(owner);
+            hookable?.HookTo(owner);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Hopper.Core.Items
         [Alias("BeUnequippedLogic")]
         public void BeUnequippedLogic(Entity actor, Entity owner)
         {
-            hookable.UnhookFrom(owner);
+            hookable?.UnhookFrom(owner);
         }
     }
 }

@@ -3,10 +3,11 @@ using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Shared.Attributes;
+using Hopper.TestContent.SimpleMobs;
+using Hopper.Utils.Vector;
 
 namespace Hopper.TestContent.Explosion
 {
-
     public partial class WillExplodeEntityModifier : IComponent
     {
         [Inject] public int countDown;
@@ -14,67 +15,120 @@ namespace Hopper.TestContent.Explosion
         [Export(Chain = "Ticking.Do", Dynamic = true)]
         public void CountDown(Entity actor)
         {
-            if (--countDown == 0)
+            if (--countDown <= 0)
             {
                 actor.TryDie();
-                Explosion.ExplodeBy(actor);
-                Remove(actor);
             }
+        }
+
+        [Export(Chain = "Damageable.Death", Dynamic = true)]
+        public void Explode(Entity actor)
+        {
+            Explosion.ExplodeBy(actor);
+            Remove(actor);
+        }
+
+        public void Preset(Entity entity)
+        {
+            CountDownHandlerWrapper.HookTo(entity);
+            ExplodeHandlerWrapper.HookTo(entity);
         }
 
         public void Remove(Entity actor)
         {
             actor.RemoveComponent(Index);
             CountDownHandlerWrapper.UnhookFrom(actor);
+            ExplodeHandlerWrapper.UnhookFrom(actor);
+        }
+    }
+
+    [EntityType]
+    public static class BombItem
+    {
+        public static EntityFactory Factory;
+        [Slot("Bomb")] public static Slot Slot = new Slot(false);
+
+        public static DirectedAction PlaceAction = Action.CreateSimple(PlantFunction);
+
+        public static void Place(IntVector2 position, IntVector2 orientation)
+        {
+            World.Global.SpawnEntity(BombEntity.Factory, position, orientation);
+        }
+
+        public static void PlantFunction(Acting acting, IntVector2 direction)
+        {
+            if (acting.actor.TryGetBomb(out var bomb))
+            {
+                var countable = bomb.GetCountable();
+                if (countable.count > 0)
+                {
+                    countable.count--;
+                    
+                    var transform = acting.actor.GetTransform();
+                    if (transform.HasBlockRelative(direction))
+                    {
+                        Place(transform.position, direction);
+                    }
+                    else
+                    {
+                        Place(transform.position + direction, direction);
+                    }
+                }
+            }
+        }
+
+        public static Action GetAction(Entity actor, Entity owner)
+        {
+            if (actor.TryGetBomb(out var bomb))
+            {
+                var countable = bomb.GetCountable();
+                if (countable.count > 0)
+                {
+                    return PlaceAction;
+                }
+            }
+            return null;
+        }
+
+        public static void AddComponents(Entity subject)
+        {
+            ItemBase.AddComponents(subject);
+
+            // Item stuff
+            Equippable.AddTo(subject, null);
+            SlotComponent.AddTo(subject, Slot.Id);
+            ItemActivation.AddTo(subject, GetAction);
+        }
+
+        public static void InitComponents(Entity subject)
+        {
+            ItemBase.InitComponents(subject);
+        }
+
+        public static void Retouch(Entity subject)
+        {
+            ItemBase.Retouch(subject);
         }
     }
 
 
     [EntityType]
-    public static class Bomb
+    public static class BombEntity
     {
-        public static readonly Tinker<TinkerData> Tinker = new Tinker<TinkerData>(
-            new ChainDefBuilder()
-                .AddDef(Controllable.Chains[InputMapping.Weapon_0])
-                .AddHandler(ev =>
-                {
-                    ev.action = placeBombAction;
-                    ev.direction = ev.actor.Orientation;
-                })
-                .End().ToStatic()
-        );
+        public static EntityFactory Factory;
 
-        public static Entity Item;
-        public static Entity Item_x3;
-
-        public static void Init()
+        public static void AddComponents(Entity subject)
         {
-            
+            SimplePassiveRealBase.AddComponents(subject);
+            WillExplodeEntityModifier.AddTo(subject, 3);
         }
 
+        public static void InitComponents(Entity subject)
+        {
+            SimplePassiveRealBase.InitComponents(subject);
+            subject.GetWillExplodeEntityModifier().Preset(subject);
+        }
 
-            new ItemMetadata("Bomb"), Tinker, BasicSlots.Counter);
-        public static readonly PackedItem Item_x3 = new PackedItem(
-            new ItemMetadata("Bomb_x3"), Item, 3);
-
-        public static DirectedAction placeBombAction => Action.CreateSimple(
-            (e, direction) =>
-            {
-                var targetPos = e.Pos;
-                if (e.HasBlockRelative(direction) == false)
-                {
-                    targetPos += direction;
-                }
-
-                // Place the bomb in the world only after the reals move
-                // This is maybe too overcomplicated, I'm not sure if we need this.
-                // System.Action activate = e.World.SpawnHangingEntity(BombEntityFactory, targetPos);
-                // e.World.m_state.OncePhaseStarts(Phase.REAL, activate);
-
-                e.World.SpawnEntity(BombEntity.Factory, targetPos);
-
-                e.Inventory.Destroy(Item);
-            }
-        );
+        public static void Retouch(Entity subject){}
     }
 }

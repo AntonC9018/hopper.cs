@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Shared.Attributes;
 
-namespace Hopper.TestContent.Freezing
+namespace Hopper.TestContent.SimpleMobs
 {
     [EntityType(Abstract = true)]
     public static class SimpleEssentials

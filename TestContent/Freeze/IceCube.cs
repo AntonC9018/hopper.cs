@@ -2,6 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Shared.Attributes;
+using Hopper.TestContent.SimpleMobs;
 
 namespace Hopper.TestContent.Freezing
 {

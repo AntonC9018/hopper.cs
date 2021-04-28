@@ -57,13 +57,11 @@ namespace Hopper.Meta.Stats
                 }
                 if (children.ContainsKey(first))
                 {
-                    System.Console.WriteLine($"Matched {first}");
                     var result = children[first].Lookup(rest);
                     if (result != null) return result;
                 }
                 if (!IsRoot)
                 {
-                    System.Console.WriteLine($"Did not matched {first}");
                     var result = parentScope.Lookup(names);
                     return result;
                 }

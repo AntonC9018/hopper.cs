@@ -80,7 +80,7 @@ namespace Hopper.Core.Components.Basic
         /// Gets the next action from the currently bound item slot, 
         /// then does a guard pass over a chain dedicated to that slot.
         /// </summary>
-        public ParticularAction ConvertSlotIdToAction(Entity entity, Identifier slotId)
+        public Action ConvertSlotIdToAction(Entity entity, Identifier slotId)
         {
             var inventory = entity.GetInventory();
             if (inventory.TryGetFromSlot(slotId, out var item) 

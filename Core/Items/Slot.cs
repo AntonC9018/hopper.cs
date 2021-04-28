@@ -13,8 +13,8 @@ namespace Hopper.Core.Items
             this.IsActionMapped = IsActionMapped;
         }
 
-        [Slot] public static Slot Weapon = new Slot(IsActionMapped : false);
-        [Slot] public static Slot Shovel = new Slot(IsActionMapped : false);
+        [Slot("Weapon")] public static Slot Weapon = new Slot(IsActionMapped : false);
+        [Slot("Shovel")] public static Slot Shovel = new Slot(IsActionMapped : false);
     }
 
     public static class InventoryExtensions

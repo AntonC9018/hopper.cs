@@ -4,7 +4,7 @@ using Hopper.Core.Stat;
 using Hopper.Core.Targeting;
 using Hopper.Shared.Attributes;
 
-namespace Hopper.TestContent.Freezing
+namespace Hopper.TestContent.SimpleMobs
 {
     [EntityType(Abstract = true)]
     public static class SimplePassiveRealBase

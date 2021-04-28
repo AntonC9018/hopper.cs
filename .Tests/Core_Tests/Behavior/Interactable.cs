@@ -24,7 +24,7 @@ namespace Hopper.Tests
         {
             result = SetupThing.SetupContent();
             dummy_factory = Dummy.Factory;
-            item = Bomb.Item;
+            item = BombEntity.Item;
 
             var entityPool = Pool.CreateEndless();
             entityPool.AddItemToSubpool("test", new PoolItem(dummy_factory.Id, 1));
