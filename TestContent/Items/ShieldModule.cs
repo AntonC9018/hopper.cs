@@ -12,7 +12,7 @@ namespace Hopper.TestContent
     public static class Shield
     {
         public static EntityFactory Factory;
-        [Slot] public static Slot Slot = new Slot(false);
+        [Slot("Shield")] public static Slot Slot = new Slot(false);
 
         public static void AddComponents(Entity subject, IntVector2 relativeDirection, int pierceIncrease)
         {
