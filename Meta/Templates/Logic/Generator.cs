@@ -204,8 +204,21 @@ namespace Hopper.Meta
                 }
             }
 
-            var entityTypes = context.GetEntityTypes();
             var slots = context.GetSlots();
+
+            {
+                
+                var printer = new SlotExtensionsCode();
+                printer.Namespace = $"{context.RootNamespaceName}";
+                printer.slots = slots;
+
+                File.WriteAllText(
+                    context._paths.SlotExtensionsPath,
+                    printer.TransformText(),
+                    Encoding.UTF8);
+            }
+
+            var entityTypes = context.GetEntityTypes();
             var methodClassInstances = context.GetMethodClassInstances();
             var fieldsRequiringInit = context.GetFieldsRequiringInit();
             var staticIndentiyingStatFields = context.GetStaticIdentifyingStatFields();

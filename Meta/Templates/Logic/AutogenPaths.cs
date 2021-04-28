@@ -46,6 +46,7 @@ namespace Hopper.Meta
         public string MainAutogenFile => $@"{AutogenFolder}/Main.cs";
         public string StatAutogenFolder => $@"{AutogenFolder}/Stats";
         public string GitignorePath => $@"{AutogenFolder}/.gitignore";
+        public string SlotExtensionsPath => $@"{AutogenFolder}/SlotExtensions.cs";
     }
 
 }

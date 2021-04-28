@@ -179,8 +179,16 @@ namespace Hopper.Meta
             }
         }
 
-        public IEnumerable<FieldSymbolWrapper> GetSlots() =>
-            GetStaticFieldsWithAttibute(RelevantSymbols.slotAttribute);
+        public IEnumerable<SlotSymbolWrapper> GetSlots()
+        {
+            foreach (var field in GetAllFields())
+            {
+                if (field.IsStatic && field.TryGetAttribute(RelevantSymbols.slotAttribute, out var attribute))
+                {
+                    yield return new SlotSymbolWrapper(field, attribute.MapToType<SlotAttribute>());
+                }
+            }
+        }
 
         public IEnumerable<FieldSymbolWrapper> GetMethodClassInstances() =>
             GetStaticFieldsWithAttibute(RelevantSymbols.instanceExportAttribute);

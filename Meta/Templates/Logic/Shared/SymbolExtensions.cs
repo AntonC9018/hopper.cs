@@ -10,6 +10,11 @@ namespace Hopper.Meta
 {
     public static class SymbolExtensions
     {
+        public static string GetFullyQualifiedName(this ISymbol symbol)
+        {
+            return $"{GetFullQualification(symbol)}.{symbol.Name}";
+        }
+
         public static string GetFullQualification(this ISymbol symbol)
         {
             Stack<string> names = new Stack<string>();
@@ -181,9 +186,7 @@ namespace Hopper.Meta
             T attribute;
             if (attributeData.AttributeConstructor != null && attributeData.ConstructorArguments.Length > 0)
             {
-                System.Console.WriteLine("Here-------------------------------------------");
-                attribute = (T)Activator.CreateInstance(typeof(T), BindingFlags.Public, null,
-                    attributeData.ConstructorArguments.Select(a => a.Value).ToArray());
+                attribute = (T)Activator.CreateInstance(typeof(T), attributeData.ConstructorArguments.Select(a => a.Value).ToArray());
             }
             else
             {
