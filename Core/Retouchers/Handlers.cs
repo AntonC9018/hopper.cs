@@ -28,6 +28,17 @@ namespace Hopper.Core
             return chain.Contains(handler);
         }
 
+        public bool TryHookTo(Entity entity)
+        {
+            var chain = chainPath.Chain(entity);
+            if (chain.Contains(handler))
+            {
+                return false;
+            }
+            chain.Add(handler);
+            return true;
+        }
+
         public void UnhookFrom(Entity entity)
         {
             var chain = chainPath.Chain(entity);
@@ -37,6 +48,7 @@ namespace Hopper.Core
 
     public interface IHookable
     {
+        bool TryHookTo(Entity entity);
         void HookTo(Entity entity);
         void UnhookFrom(Entity entity);
         bool IsHookedTo(Entity entity);
@@ -87,7 +99,7 @@ namespace Hopper.Core
             }
         }
 
-        public bool TryAddTo(Entity entity)
+        public bool TryHookTo(Entity entity)
         {
             var chain = chainPath.Chain(entity);
             if (chain.Contains(handlers[0]))
@@ -124,6 +136,15 @@ namespace Hopper.Core
         public bool IsHookedTo(Entity entity)
         {
             return hookables.First().IsHookedTo(entity);
+        }
+
+        public bool TryHookTo(Entity entity)
+        {
+            foreach (var h in hookables)
+            {
+                h.TryHookTo(entity);
+            }
+            return true;
         }
 
         public void UnhookFrom(Entity entity)

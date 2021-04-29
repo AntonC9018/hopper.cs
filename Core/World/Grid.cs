@@ -15,6 +15,16 @@ namespace Hopper.Core
 
         public CellMovementTriggerGrid EnterTriggerGrid; 
         public CellMovementTriggerGrid LeaveTriggerGrid; 
+        public CellMovementTriggerGrid EnterPermanentTriggerGrid;
+        public CellMovementTriggerGrid LeavePermanentTriggerGrid;
+
+        private void InitGrids()
+        {
+            EnterTriggerGrid.Init();
+            LeaveTriggerGrid.Init();
+            EnterPermanentTriggerGrid.Init();
+            LeavePermanentTriggerGrid.Init();
+        }
 
         public GridManager(int width, int height)
         {
@@ -26,15 +36,13 @@ namespace Hopper.Core
                     m_grid[j, i] = new Cell();
                 }
             }
-            EnterTriggerGrid.Init();
-            LeaveTriggerGrid.Init();
+            InitGrids();
         }
 
         public GridManager(Cell[,] grid)
         {
             m_grid = grid;
-            EnterTriggerGrid.Init();
-            LeaveTriggerGrid.Init();
+            InitGrids();
         }
 
         public bool IsOutOfBounds(IntVector2 pos)
@@ -54,6 +62,7 @@ namespace Hopper.Core
 
         public bool TryRemove(Transform transform)
         {
+            // huh?
             return IsInBounds(transform.position)
                 && GetCellAt(transform.position).Remove(transform);
         }
@@ -81,7 +90,7 @@ namespace Hopper.Core
 
             var cell = GetCellAt(transform.position);
             cell.Add(transform);
-            EnterTriggerGrid.Trigger(transform);
+            TriggerEnter(transform);
         }
 
         /*
@@ -213,6 +222,18 @@ namespace Hopper.Core
         {
             EnterTriggerGrid.Reset();
             LeaveTriggerGrid.Reset();
+        }
+
+        public void TriggerEnter(Transform transform)
+        {
+            EnterTriggerGrid.Trigger(transform);
+            EnterPermanentTriggerGrid.Trigger(transform);
+        }
+
+        public void TriggerLeave(Transform transform)
+        {
+            LeaveTriggerGrid.Trigger(transform);
+            LeavePermanentTriggerGrid.Trigger(transform);
         }
     }
 }

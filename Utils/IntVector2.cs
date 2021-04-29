@@ -41,6 +41,17 @@ namespace Hopper.Utils.Vector
                 yield return new IntVector2(this.x, this.y + 1);
             }
         }
+        
+        public static IEnumerable<IntVector2> OrthogonallyAdjacentToOrigin
+        {
+            get
+            {
+                yield return new IntVector2( 1,  0);
+                yield return new IntVector2( 0, -1);
+                yield return new IntVector2(-1,  0);
+                yield return new IntVector2( 0,  1);
+            }
+        }
 
         public static IEnumerable<IntVector2> Spiral(int start_x, int start_y, int end_x, int end_y)
         {

@@ -49,14 +49,14 @@ namespace Hopper.Core
             var cell = Grid.GetCellAt(position);
             bool wasRemoved = cell.Remove(this);
             Assert.That(wasRemoved, "Trying to remove an entity which is not in the cell is not allowed");
-            Grid.LeaveTriggerGrid.Trigger(this);
+            Grid.TriggerLeave(this);
         }
 
         public void ResetInGrid()
         {
             var cell = Grid.GetCellAt(position);
             cell.Add(this);
-            Grid.EnterTriggerGrid.Trigger(this);
+            Grid.TriggerEnter(this);
         }
 
         public bool HasBlockRelative(IntVector2 direction, Layer layer)
@@ -112,6 +112,16 @@ namespace Hopper.Core
         public void SubsribeToLeaveEvent(System.Action<CellMovementContext> handler)
         {
             Grid.LeaveTriggerGrid.Subscribe(position, handler);
+        }
+
+        public void SubsribeToPermanenetEnterEvent(System.Action<CellMovementContext> handler)
+        {
+            Grid.EnterPermanentTriggerGrid.Subscribe(position, handler);
+        }
+        
+        public void SubsribeToPermanenetLeaveEvent(System.Action<CellMovementContext> handler)
+        {
+            Grid.LeavePermanentTriggerGrid.Subscribe(position, handler);
         }
     }
 }
