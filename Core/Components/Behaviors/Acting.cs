@@ -85,6 +85,12 @@ namespace Hopper.Core.Components.Basic
             nextAction = null;
         }
 
+        [Alias("IsCurrentOrderFavorable")]
+        public bool IsCurrentOrderFavorable()
+        {
+            return World.Global.state.currentPhase == order;
+        }
+
         public void CalculateNextAction()
         {
             if (nextAction == null && ActionCalculationAlgorithm != null)

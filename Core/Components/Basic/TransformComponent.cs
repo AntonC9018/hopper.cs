@@ -114,12 +114,12 @@ namespace Hopper.Core
             Grid.LeaveTriggerGrid.Subscribe(position, handler);
         }
 
-        public void SubsribeToPermanenetEnterEvent(System.Action<CellMovementContext> handler)
+        public void SubsribeToPermanentEnterEvent(System.Func<CellMovementContext, bool> handler)
         {
             Grid.EnterPermanentTriggerGrid.Subscribe(position, handler);
         }
         
-        public void SubsribeToPermanenetLeaveEvent(System.Action<CellMovementContext> handler)
+        public void SubsribeToPermanentLeaveEvent(System.Func<CellMovementContext, bool> handler)
         {
             Grid.LeavePermanentTriggerGrid.Subscribe(position, handler);
         }

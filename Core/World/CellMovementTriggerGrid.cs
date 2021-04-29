@@ -40,4 +40,39 @@ namespace Hopper.Core
             }
         }
     }
+
+
+    public struct PermanentCellMovementTriggerGrid
+    {
+        private Dictionary<IntVector2, PermanentChain<CellMovementContext>> _triggers;
+
+        public void Init()
+        {
+            _triggers = new Dictionary<IntVector2, PermanentChain<CellMovementContext>>();
+        }
+
+        public void Subscribe(IntVector2 position, System.Func<CellMovementContext, bool> handler)
+        {
+            PermanentChain<CellMovementContext> chain;
+            if (!_triggers.TryGetValue(position, out chain))
+            {
+                chain = new PermanentChain<CellMovementContext>();
+            }
+            chain.Add(handler);
+        }
+
+        public void Trigger(Transform transform)
+        {
+            if (_triggers.TryGetValue(transform.position, out var chain))
+            {
+                var context = new CellMovementContext(transform); 
+                chain.PassAndFilter(context);
+            }
+        }
+
+        public void ClearAll()
+        {
+            _triggers.Clear();
+        }
+    }
 }

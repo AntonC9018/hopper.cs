@@ -16,9 +16,8 @@ namespace Hopper.Core
         // TODO: these are basically useless, because they get wiped off at the end of loop
         public CellMovementTriggerGrid EnterTriggerGrid; 
         public CellMovementTriggerGrid LeaveTriggerGrid; 
-        // TODO: One cannot remove form these, rendering them USELESS
-        public CellMovementTriggerGrid EnterPermanentTriggerGrid;
-        public CellMovementTriggerGrid LeavePermanentTriggerGrid;
+        public PermanentCellMovementTriggerGrid EnterPermanentTriggerGrid;
+        public PermanentCellMovementTriggerGrid LeavePermanentTriggerGrid;
 
         private void InitGrids()
         {

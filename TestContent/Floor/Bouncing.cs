@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Hopper.Core;
 using Hopper.Core.Components;
@@ -13,8 +14,18 @@ namespace Hopper.TestContent.Floor
     public partial class Bouncing : IComponent
     {
         public const Layer _targetedLayer = Layer.REAL;
-        private bool _hasEntityBeenOnTop;
-        private bool _hasBounced;
+        public HashSet<RuntimeIdentifier> _bouncedEntities;
+        public bool _isPressedDown;
+
+        public void InitInWorld(Entity actor)
+        {
+            _bouncedEntities = new HashSet<RuntimeIdentifier>();
+
+            // add the things
+            var transform = actor.GetTransform();
+            transform.SubsribeToPermanentEnterEvent(ctx => Enter(actor, ctx));
+            transform.SubsribeToPermanentLeaveEvent(ctx => Leave(actor, ctx));
+        }
 
         [Alias("Bounce")]
         public bool Activate(Entity actor)
@@ -23,66 +34,90 @@ namespace Hopper.TestContent.Floor
 
             Assert.That(transform.orientation != IntVector2.Zero, "The one pushing must have a direction to have any effect");
 
-            // if anybody has been standing on top since the previous loop, don't bounce
-            // unless the entity gets off of us, which is managed by the leave handler
-            // TODO: this currenlty does not work, since the triggers are refreshed at the end of the same round 
-            // This needs a bit more thought
-            if (_hasEntityBeenOnTop)
+            // otherwise, try to bounce
+            var targetTransform = transform.GetAllUndirectedButSelfFromLayer(_targetedLayer).FirstOrDefault();
+
+            // otherwise, push the thing which is on top of us.
+            if (targetTransform == null || _bouncedEntities.Add(targetTransform.entity.id))
             {
-                StartListening(transform);
                 return true;
             }
 
-            // otherwise, try to bounce
-            var entity = transform.GetAllUndirectedButSelfFromLayer(_targetedLayer).FirstOrDefault();
+            TryPushTarget(transform, targetTransform);
 
-            // if there's nobody to target, watch the cell, since
-            // other traps may push a person onto us.
-            if (entity == null)
+            return true;
+        }
+
+        public static bool Enter(Entity actor, CellMovementContext context)
+        {
+            if (!actor.TryGetBouncing(out var bouncing) || actor.IsDead())
             {
-                StartListening(transform);
+                return false; // Remove this listener
             }
 
-            // otherwise, push the thing which is on top of us.
-            else
+            // TODO: maybe separate the handlers by order to automate this?
+            if (actor.IsCurrentOrderFavorable() && context.transform.layer.HasFlag(_targetedLayer))
             {
-                TryPushTarget(transform, entity);
+                // If the set already contained that element
+                if (!bouncing._bouncedEntities.Add(context.actor.id))
+                {
+                    bouncing._isPressedDown = true;
+                }
+
+                // If the trap is not pressed down, try pushing the entity
+                else if (!bouncing._isPressedDown)
+                {
+                    // This will be unset, if the entity gets pushed 
+                    bouncing._isPressedDown = true;
+                    bouncing.TryPushTarget(actor.GetTransform(), context.transform);
+                }
+
+                // otherwise, an entity has already been on top of us, so do nothing
+            }
+
+
+            return true; // Keep this listener
+        }
+
+        public static bool Leave(Entity actor, CellMovementContext context)
+        {
+            if (!actor.TryGetBouncing(out var bouncing) || actor.IsDead())
+            {
+                return false;
+            }
+
+            if (actor.IsCurrentOrderFavorable()
+                && World.Global.grid.HasNoUndirectedTransformAt(context.initialPosition, _targetedLayer))
+            {
+                bouncing._isPressedDown = false;
             }
 
             return true;
         }
 
-        private void StartListening(Transform actorTransform)
+        [Export(Chain = "Ticking.Do", Dynamic = true)]
+        public void Reset(Entity actor)
         {
-            actorTransform.SubsribeToEnterEvent(ctx => TryPushTarget(actorTransform, ctx.transform));
-            // TODO: same for leave, but that one must stay at least until the next round
+            var transform = actor.GetTransform();
+            _bouncedEntities.Clear();
+            
+            if (transform.GetAllUndirectedButSelfFromLayer(_targetedLayer).Any())
+            {
+                _isPressedDown = true;
+            }
         }
 
         private void TryPushTarget(Transform actor, Transform oneBeingBounced)
         {
-            if (ShouldPush(actor, oneBeingBounced))
-            {
-                // if the entity actually gets pushed, this will be unset
-                _hasEntityBeenOnTop = true;
+            if (!oneBeingBounced.entity.TryGetPushable(out var pushable)) return;
 
-                if (!oneBeingBounced.entity.TryGetPushable(out var pushable)) return;
-
-                // bounce is considered applied even if the check doesn't go through
-                _hasBounced = true;
-
-                actor.entity.GetStats().GetLazy(Push.Index, out var push);
-
-                pushable.Activate(oneBeingBounced.entity, push, actor.orientation);
-            }
+            actor.entity.GetStats().GetLazy(Push.Index, out var push);
+            pushable.Activate(oneBeingBounced.entity, push, actor.orientation);
         }
 
-        private bool ShouldPush(Transform actor, Transform oneBeingBounced)
+        public void DefaltPreset(Entity subject)
         {
-            return !_hasBounced
-                && !_hasEntityBeenOnTop // the previous entity has left
-                && !actor.entity.IsDead()
-                && oneBeingBounced.layer.HasFlag(_targetedLayer)
-                && !oneBeingBounced.entity.IsDirected();
+            ResetHandlerWrapper.HookTo(subject);
         }
     }
 }

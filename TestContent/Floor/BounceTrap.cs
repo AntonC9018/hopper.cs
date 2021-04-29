@@ -17,15 +17,25 @@ namespace Hopper.TestContent.Floor
             Transform.AddTo(subject, Layer.TRAP);
             Faction.AddTo(subject, Faction.Flags.Enemy);
             Acting.AddTo(subject, ctx => BounceAction.ToParticular(), Algos.SimpleAlgo, Order.Trap);
+            Damageable.AddTo(subject, new Health(1));
+            Ticking.AddTo(subject);
+            Bouncing.AddTo(subject);
         }
 
         public static void InitComponents(Entity subject)
         {
             subject.GetActing().DefaultPreset(subject);
+            subject.GetBouncing().DefaltPreset(subject);
         }
 
-        public static void Retouch(Entity subject)
+        public static void Retouch(EntityFactory factory)
         {
+            factory.InitInWorldFunc = InitInWorld;
+        }
+
+        public static void InitInWorld(Entity entityInWorld)
+        {
+            entityInWorld.GetBouncing().InitInWorld(entityInWorld);
         }
     }
 }
