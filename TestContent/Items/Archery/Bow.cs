@@ -31,9 +31,9 @@ namespace Hopper.TestContent
                 pierce = 1,
                 damage = 1
             };
-        public static readonly AnonShooting DefaultShooting = new AnonShooting(
-            new TargetLayers { skip = Layer.WALL, targeted = Layer.REAL }, DefaultArrowAttack, null, true
-        );
+        public static readonly UnbufferedTargetProvider TargetProvider = 
+            new UnbufferedTargetProvider(new StraightPattern(Layer.WALL), Layer.REAL);
+            
         public static ModularItem DefaultItem = CreateDefault();
 
         public static ModularItem CreateDefault()

@@ -21,6 +21,7 @@
         - [Handler update](#handler-update)
         - [Items update](#items-update)
         - [Entity modifiers](#entity-modifiers)
+        - [Bouncing](#bouncing)
 
 <!-- /TOC -->
 
@@ -818,4 +819,38 @@ It has methods for working with that data. In this case, the data is the outer i
 
 The reason a generic index is not used is because you want to pass in parameters, e.g. the hp of the ice cube or the timeout (amount), which is not currenlty exploited by the icecube.
 
-What I'm going to do, though, is I'm going to decrease the cube's health every tick and onece it reaches 0, I'm going to kill it off.
+What I'm going to do, though, is I'm going to decrease the cube's health every tick and once it reaches 0, I'm going to kill it off.
+
+
+### Bouncing
+
+The way bouncing was implemented before is sort of impossible currently:
+1. Each turn, every single trap is activated. If there is an entity on top of the trap, it is pushed. 
+If there is no entity, the trap starts listening for entities incoming over it.
+When an entity comes on top, push it. 
+This is achieved by listening for enter cell events until the end of the loop (currently possible). 
+2. The problem is that the trap has to keep track of whether the entity that remained on top has moved.
+Thing is, if the entity from top ended up on top of the trap, it should not be pushed on the next activation.
+So the idea was to check whether or not the entity has moved off of the trap, and reset the variable that indicates whether the trap should push or not.
+
+Ok, another idea:
+1. Have a permanent enter listener.
+2. Once an enter is triggered, renew the entity that is considered to be on top to the entity that's actually on top.
+3. Do the same thing for the leave event, renewing the entity on top to that entity.
+4. In the enter listener, if it is our turn to move (checked by comparing acting's order with the current order), push the entity instantly.
+5. Do not push the same entity twice (this means a dictionary refreshed at ticking).
+6. At ticking, set the variable that indicates whether there are entities on top to false/true.
+7. At leave, only set that variable to false if there are no entities.
+
+This is kind of complicated but it is the simplest solution to me.
+This, however, requires being able to both add and remove listeners to cell movement triggers.
+I currenlty only have the ability to add those though.
+I think it could be beneficial to keep/remove handlers according to some condition (e.g. remove if the entity is dead or does not have a specific components anymore).
+Let me try and implement that.
+
+
+
+~Ok, one more idea. Do a sort of a system for this:~
+1. ~The system keeps track of all of the bouncing components currently in game.~
+2. ~The system keeps track of a list of entities~
+
