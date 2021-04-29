@@ -3,13 +3,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <RootNamespace>Hopper.Mine</RootNamespace>
+    <StartupObject>Hopper.Mine.Program</StartupObject>
     <AssemblyName>Hopper.Mine</AssemblyName>
     <TargetFramework>net4.8</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Hopper_Core.csproj" />
-    <ProjectReference Include="..\.Tests\Hopper_Tests.csproj" />
     <ProjectReference Include="..\TestContent\Hopper_Test_Content.csproj" />
   </ItemGroup>
 
