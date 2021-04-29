@@ -57,11 +57,11 @@ namespace Hopper.Core
         {
             var action = new UndirectedAction();
 
-            action.function = (entity) =>
+            action.function = (acting) =>
             {
                 foreach (var function in functions)
                 {
-                    if (function(entity))
+                    if (function(acting))
                     {
                         return true;
                     }

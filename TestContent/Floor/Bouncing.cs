@@ -10,21 +10,19 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.TestContent.Floor
 {
-    // TODO: This is incomplete. Needs some thought
     public partial class Bouncing : IComponent
     {
         public const Layer _targetedLayer = Layer.REAL;
         public HashSet<RuntimeIdentifier> _bouncedEntities;
         public bool _isPressedDown;
 
-        public void InitInWorld(Entity actor)
+        public void InitInWorld(Transform transform)
         {
             _bouncedEntities = new HashSet<RuntimeIdentifier>();
 
             // add the things
-            var transform = actor.GetTransform();
-            transform.SubsribeToPermanentEnterEvent(ctx => Enter(actor, ctx));
-            transform.SubsribeToPermanentLeaveEvent(ctx => Leave(actor, ctx));
+            transform.SubsribeToPermanentEnterEvent(ctx => Enter(transform.entity, ctx));
+            transform.SubsribeToPermanentLeaveEvent(ctx => Leave(transform.entity, ctx));
         }
 
         [Alias("Bounce")]

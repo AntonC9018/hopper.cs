@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
-using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;
 
-namespace Hopper.TestContent.Explosion
+namespace Hopper.TestContent
 {
     // [Service]
-    public class Explosion
+    public static class Explosion
     {
         // public static readonly WorldEventPath<IntVector2> EventPath = new WorldEventPath<IntVector2>();
 

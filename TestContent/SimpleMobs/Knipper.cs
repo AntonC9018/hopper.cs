@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Shared.Attributes;
-using Hopper.TestContent.Explosion;
+using Hopper.TestContent;
 
 namespace Hopper.TestContent.SimpleMobs
 {
@@ -9,6 +9,11 @@ namespace Hopper.TestContent.SimpleMobs
     public static class Knipper
     {
         public static EntityFactory Factory;
+
+        public static readonly UndirectedAction DieAndExplodeAction = Action.CreateCompositeUndirected(
+            Action.CreateSimple(acting => acting.actor.TryDie()),
+            Explosion.DefaultExplodeAction(1)
+        ); 
         
         public static void AddComponents(Entity subject)
         {
@@ -40,7 +45,7 @@ namespace Hopper.TestContent.SimpleMobs
                 // 4: die and explode
                 new Step
                 {
-                    action = BombEntity.DieAndExplodeAction,
+                    action = DieAndExplodeAction,
                     algo = Algos.SimpleAlgo
                 }
             };

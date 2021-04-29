@@ -64,6 +64,7 @@ namespace Hopper.Core
             if (entity.TryInitTransform(pos, orientation, out var transform))
             {
                 grid.AddTransformNoEvent(transform);
+                factory.InitInWorld(transform);
             }
 
             if (entity.TryInitActing(out var acting))
@@ -71,7 +72,6 @@ namespace Hopper.Core
                 state.AddActor(acting);
             }
 
-            factory.InitInWorld(entity);
 
             SpawnEntityEvent?.Invoke(entity);
             return entity;

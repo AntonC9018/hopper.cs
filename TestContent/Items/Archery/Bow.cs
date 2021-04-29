@@ -1,110 +1,86 @@
 using Hopper.Core;
+using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
-using Hopper.Core.History;
 using Hopper.Core.Items;
 using Hopper.Core.Stat;
 using Hopper.Core.Targeting;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Hopper.TestContent
 {
-    public class BowComponent : IComponent
+    public partial class BowComponent : IComponent
     {
+        public bool _isCharged;
 
+        public void ToggleCharge(Entity owner)
+        {
+            if (_isCharged)
+            {
+                // 
+            }
+            _isCharged = !_isCharged;
+        }
+
+        public static readonly UnbufferedTargetProvider TargetProvider = 
+            new UnbufferedTargetProvider(new StraightPattern(Layer.WALL), Layer.REAL);
+
+        public static void Attack(Transform ownerTransform, IntVector2 direction)
+        {
+            // 1. get the attack (for now, get it from the owner
+            ownerTransform.entity.GetStats().GetLazy(Core.Stat.Attack.Index, out var attack);
+            // 2. get the targets
+            foreach (var context in TargetProvider.GetTargets(ownerTransform.position, direction))
+            {
+                context.transform.entity.TryBeAttacked(null, attack, direction);
+            }
+
+            if (ownerTransform.entity.TryGetRangedWeapon(out var weapon))
+            {
+                weapon.GetBowComponent()._isCharged = false;
+            }
+        }
+
+        public static DirectedAction AttackAction = Action.CreateSimple((acting, direction) => 
+            Attack(acting.actor.GetTransform(), direction));
+
+        public static UndirectedAction RechargeAction = Action.CreateSimple(acting => 
+            {
+                if (acting.actor.TryGetRangedWeapon(out var weapon))
+                {
+                    weapon.GetBowComponent().ToggleCharge(acting.actor);
+                }
+            });
     }
 
 
     [EntityType]
     public static class Bow
     {
+        [Slot("RangedWeapon")] public static Slot Slot = new Slot(true);
         public static Attack.Source ArrowSource = new Attack.Source();
-        public static readonly ISlot<IItemContainer<IItem>> Slot = Hopper.Core.Items.BasicSlots.RangeWeapon;
-        public static readonly UpdateCode ToggledChargingUpdate = new UpdateCode("toggled_charging");
-        public static readonly Attack DefaultArrowAttack =
-            new Attack
-            {
-                sourceId = ArrowSource.Id,
-                power = 1,
-                pierce = 1,
-                damage = 1
-            };
-        public static readonly UnbufferedTargetProvider TargetProvider = 
-            new UnbufferedTargetProvider(new StraightPattern(Layer.WALL), Layer.REAL);
-            
-        public static ModularItem DefaultItem = CreateDefault();
+        
+        public static UndirectedAction GetChargeAction(Entity item, Entity owner) => BowComponent.RechargeAction;
 
-        public static ModularItem CreateDefault()
+        public static EntityFactory Factory;
+
+        public static void AddComponents(Entity subject)
         {
-            return new ModularItem(new ItemMetadata("Default_Bow"), Slot, CreateModule(DefaultShooting));
+            ItemBase.AddComponents(subject);
+            Equippable.AddTo(subject, null);
+            SlotComponent.AddTo(subject, Slot.Id);
+            BowComponent.AddTo(subject);
+            ItemActivation.AddTo(subject, GetChargeAction);
         }
 
-        // use this function to get a module for your item
-        public static TinkerModule CreateModule(INormalShooting shooting)
+        public static void InitComponents(Entity subject)
         {
-            var bow = new Bow(shooting);
-            return new TinkerModule(bow.m_shootTinker);
+            ItemBase.InitComponents(subject);
         }
 
-        public readonly Tinker<BowTinkerData> m_shootTinker;
-        public readonly UndirectedAction m_chargeAction;
-        public readonly DirectedAction m_shootAction;
-        public readonly INormalShooting m_shooting;
-
-        public Bow(INormalShooting shooting)
+        public static void Retouch(Entity subject)
         {
-            m_shootTinker = new Tinker<BowTinkerData>(
-                new ChainDefBuilder()
-                    .AddHandler_ToAllVectorInputs(SetShootAction)
-                    .AddDef(Controllable.Chains[InputMapping.Weapon_1])
-                    .AddHandler(SetChargeHandler)
-                    .End().ToStatic()
-            );
-            m_shooting = shooting;
-            m_chargeAction = Action.CreateSimple(ToggleCharging);
-            m_shootAction = Action.CreateSimple(Shoot, Predict);
-        }
-
-        private void Shoot(Entity entity, IntVector2 direction)
-        {
-            var store = m_shootTinker.GetStore(entity);
-            if (store.numCharges > 0)
-            {
-                store.numCharges--;
-                m_shooting.Shoot(entity, direction);
-            }
-        }
-
-        private IEnumerable<IntVector2> Predict(Entity entity, IntVector2 direction)
-        {
-            if (m_shootTinker.GetStore(entity).numCharges > 0)
-            {
-                return m_shooting.Predict(entity, direction);
-            }
-            return Enumerable.Empty<IntVector2>();
-        }
-
-        private void ToggleCharging(Entity entity)
-        {
-            var store = m_shootTinker.GetStore(entity);
-            store.numCharges = 1 - store.numCharges;
-            entity.History.Add(entity, ToggledChargingUpdate);
-        }
-
-        private void SetChargeHandler(Controllable.Event ev)
-        {
-            ev.action = m_chargeAction;
-        }
-
-        private void SetShootAction(Controllable.Event ev)
-        {
-            var store = m_shootTinker.GetStore(ev);
-            if (store.numCharges > 0)
-            {
-                ev.action = m_shootAction;
-            }
+            ItemBase.Retouch(subject);
         }
     }
 }

@@ -43,11 +43,6 @@ namespace Hopper.Core.Stat
         Now, that I've setup code generation, creating classes for each of the stats is going to
         be made trivially easy. 
     */
-    public struct StatWrapper<T>
-    {
-        Index<T> Index;
-        System.Action<T> Default;
-    }
 
     public interface IStat 
     {

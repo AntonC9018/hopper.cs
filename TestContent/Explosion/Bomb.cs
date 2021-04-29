@@ -6,7 +6,7 @@ using Hopper.Shared.Attributes;
 using Hopper.TestContent.SimpleMobs;
 using Hopper.Utils.Vector;
 
-namespace Hopper.TestContent.Explosion
+namespace Hopper.TestContent
 {
     public partial class WillExplodeEntityModifier : IComponent
     {

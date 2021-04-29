@@ -8,7 +8,7 @@ namespace Hopper.Core.Mods
 
         public ModLoader()
         {
-            modInits.Add(Main.Init);
+            modInits = new List<System.Action>();
         }
 
         public void Add(System.Action modInit)

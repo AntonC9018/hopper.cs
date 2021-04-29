@@ -84,7 +84,7 @@ namespace Hopper.Core.Components.Basic
         {
             var inventory = entity.GetInventory();
             if (inventory.TryGetFromSlot(slotId, out var item) 
-                && item.TryGetAction(entity, out var action))
+                && item.TryGetItemAction(entity, out var action))
             {
                 return action;
             }

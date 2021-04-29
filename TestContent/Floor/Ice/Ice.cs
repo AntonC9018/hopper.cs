@@ -1,26 +1,35 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.Stat;
+using Hopper.Shared.Attributes;
 
 namespace Hopper.TestContent.Floor
 {
-    public class IceFloor : Entity
+    [EntityType]
+    public static class IceFloor
     {
-        public override Layer Layer => Layer.FLOOR;
-        public static EntityFactory<IceFloor> Factory = CreateFactory(Slide.Status);
+        public static EntityFactory Factory;
 
-        public static EntityFactory<IceFloor> CreateFactory(SlideStatus slideStatus)
+        public static void AddComponents(Entity subject)
         {
-            return new EntityFactory<IceFloor>()
-                .AddBehavior(Attackable.DefaultPreset) // bombs can destroy it
-                .AddBehavior(Sliding.Preset(slideStatus));
+            Transform.AddTo(subject, Layer.REAL);
+            Faction.AddTo(subject, Faction.Flags.Enemy);
+            Damageable.AddTo(subject, new Health(1));
+            SlipperyComponent.AddTo(subject);
         }
 
-        public void Melt()
+        public static void InitComponents(Entity subject)
         {
-            Die();
-            var water = World.SpawnEntity(Water.Factory, m_pos);
-            water.Behaviors.Get<Acting>().CalculateNextAction();
-            water.Behaviors.Get<Acting>().Activate();
+        }
+
+        public static void Retouch(EntityFactory factory)
+        {
+            factory.InitInWorldFunc = InitInWorld;
+        }
+
+        public static void InitInWorld(Transform transform)
+        {
+            transform.entity.GetSlipperyComponent().InitInWorld(transform);
         }
     }
 }

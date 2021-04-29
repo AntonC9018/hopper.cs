@@ -8,7 +8,7 @@ namespace Hopper.Core
     {
         public Identifier id;
         public Entity subject;
-        public System.Action<Entity> InitInWorldFunc;
+        public System.Action<Transform> InitInWorldFunc;
 
         public EntityFactory()
         {
@@ -42,9 +42,9 @@ namespace Hopper.Core
             return entity;
         }
 
-        public void InitInWorld(Entity entityInWorld)
+        public void InitInWorld(Transform transform)
         {
-            if (InitInWorldFunc != null) InitInWorldFunc(entityInWorld);
+            if (InitInWorldFunc != null) InitInWorldFunc(transform);
         }
         
         public static implicit operator Entity(EntityFactory factory) => factory.subject;

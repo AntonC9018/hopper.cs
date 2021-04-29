@@ -33,9 +33,9 @@ namespace Hopper.TestContent.Floor
             factory.InitInWorldFunc = InitInWorld;
         }
 
-        public static void InitInWorld(Entity entityInWorld)
+        public static void InitInWorld(Transform transform)
         {
-            entityInWorld.GetBouncing().InitInWorld(entityInWorld);
+            transform.entity.GetBouncing().InitInWorld(transform);
         }
     }
 }
