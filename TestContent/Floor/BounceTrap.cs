@@ -1,0 +1,31 @@
+using Hopper.Core;
+using Hopper.Core.Components.Basic;
+using Hopper.Core.Stat;
+using Hopper.Shared.Attributes;
+
+namespace Hopper.TestContent.Floor
+{
+    [EntityType]
+    public static class BounceTrap
+    {
+        public static EntityFactory Factory;
+        public static readonly UndirectedAction BounceAction = Action.CreateSimple(acting => acting.actor.Bounce());
+
+        public static void AddComponents(Entity subject)
+        {
+            Stats.AddTo(subject, Registry.Global._defaultStats);
+            Transform.AddTo(subject, Layer.TRAP);
+            Faction.AddTo(subject, Faction.Flags.Enemy);
+            Acting.AddTo(subject, ctx => BounceAction.ToParticular(), Algos.SimpleAlgo, Order.Trap);
+        }
+
+        public static void InitComponents(Entity subject)
+        {
+            subject.GetActing().DefaultPreset(subject);
+        }
+
+        public static void Retouch(Entity subject)
+        {
+        }
+    }
+}

@@ -7,6 +7,7 @@ using Hopper.TestContent;
 
 namespace Hopper.TestContent.Floor
 {
+    // TODO: implement fully
     // Another way of implementing this is substituting another action for the vector action
     // The way I'm doing it here is too specific and also involves boilerplate 
     public partial class StuckInWaterEntityModifier : IComponent
@@ -22,17 +23,26 @@ namespace Hopper.TestContent.Floor
             return false;
         }
 
-        [Export(Chain = "Attacking.Do", Dynamic = true)]
+        [Export(Chain = "Attacking.Do", Priority = PriorityRank.High, Dynamic = true)]
         public bool PreventActionAndDecreaseAmount_Attacking(Entity actor) 
             => PreventActionAndDecreaseAmount(actor);
 
-        [Export(Chain = "Digging.Do", Dynamic = true)]
+        [Export(Chain = "Digging.Do", Priority = PriorityRank.High, Dynamic = true)]
         public bool PreventActionAndDecreaseAmount_Digging(Entity actor) 
             => PreventActionAndDecreaseAmount(actor);
 
-        [Export(Chain = "Displaceable.Do", Dynamic = true)]
+        [Export(Chain = "Displaceable.Do", Priority = PriorityRank.High, Dynamic = true)]
         public bool PreventActionAndDecreaseAmount_Displaceable(Entity actor) 
             => PreventActionAndDecreaseAmount(actor);
+
+        
+        // public static void RemoveOnLeave(Transform subject)
+        // {
+        //     if (subject.entity.TryGetStuckInWaterEntityModifier(out var modifier))
+        //     {
+
+        //     }
+        // } 
 
         public void Preset(Entity subject)
         {
@@ -62,7 +72,7 @@ namespace Hopper.TestContent.Floor
         }
     }
 
-    [EntityType]
+    // [EntityType]
     public static class Water
     {
         public static EntityFactory Factory;
@@ -72,7 +82,7 @@ namespace Hopper.TestContent.Floor
             Stats.AddTo(subject, Registry.Global._defaultStats);
             Transform.AddTo(subject, Layer.REAL);
             Faction.AddTo(subject, Faction.Flags.Environment);
-            
+
         }
 
         public static void InitComponents(Entity subject)
@@ -81,31 +91,6 @@ namespace Hopper.TestContent.Floor
 
         public static void Retouch(Entity subject)
         {
-        }
-    }
-
-        private void ListenCell()
-        {
-            this.GetCell().EnterEvent += ApplyStuck;
-            this.GetCell().LeaveEvent += RemoveStuck;
-            DieEvent += DieHandler;
-        }
-
-        private void ApplyStuck(Entity entity)
-        {
-            if (entity.Layer.IsOfLayer(m_targetedLayer))
-            {
-                Stuck.Status.TryApplyAuto(this, entity);
-            }
-        }
-
-        private void RemoveStuck(Entity entity)
-        {
-            var status = Stuck.Status;
-            if (status.IsApplied(entity))
-            {
-                status.m_tinker.GetStore(entity).amount = 0;
-            }
         }
     }
 }
