@@ -1,6 +1,5 @@
 bin
 obj
 *.meta
-Mine
 
 T4/*.dll

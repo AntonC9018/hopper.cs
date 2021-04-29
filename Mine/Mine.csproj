@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Hopper.Mine</RootNamespace>
+    <AssemblyName>Hopper.Mine</AssemblyName>
+    <TargetFramework>net4.8</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Hopper_Core.csproj" />
+    <ProjectReference Include="..\.Tests\Hopper_Tests.csproj" />
+    <ProjectReference Include="..\TestContent\Hopper_Test_Content.csproj" />
+  </ItemGroup>
+
+</Project>

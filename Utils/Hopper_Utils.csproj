@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net4.8</TargetFramework>
+    <AssemblyName>Hopper.Utils</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
