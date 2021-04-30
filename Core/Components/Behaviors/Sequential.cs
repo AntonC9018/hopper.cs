@@ -1,6 +1,4 @@
-    using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
+using System.Collections.Generic;
 using Hopper.Utils.Vector;
 using Hopper.Utils;
 using Hopper.Shared.Attributes;

@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Utils\Hopper_Utils.csproj" />
-    <ProjectReference Include="..\Shared\Hopper_Shared.csproj" />
+    <ProjectReference Include="..\Utils\Hopper.Utils.csproj" />
+    <ProjectReference Include="..\Shared\Hopper.Shared.csproj" />
   </ItemGroup>
 
 </Project>

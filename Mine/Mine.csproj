@@ -9,8 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Hopper_Core.csproj" />
-    <ProjectReference Include="..\TestContent\Hopper_Test_Content.csproj" />
+    <ProjectReference Include="..\Core\Hopper.Core.csproj" />
   </ItemGroup>
 
 </Project>
