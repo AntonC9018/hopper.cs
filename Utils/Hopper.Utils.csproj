@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net4.8</TargetFramework>
+    <TargetFrameworks>net4.8;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>Hopper.Utils</AssemblyName>
   </PropertyGroup>
 
