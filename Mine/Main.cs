@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Reflection;
 using System.Text;
 
@@ -9,8 +8,6 @@ namespace Hopper.Mine
     {
         public static void Main(string[] args)
         {
-            System.Console.WriteLine("Hello");
-
             Assembly lib = typeof(Hopper.Core.Action).Assembly;
             Type[] types;
             try
