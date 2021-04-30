@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Hopper.Meta.Stats;
 using Microsoft.Build.Locator;
 
 namespace Hopper.Meta
@@ -11,9 +10,9 @@ namespace Hopper.Meta
             MSBuildLocator.RegisterDefaults();
             var generator = new Generator();
             await generator.Start(new string[] { 
-                "../Core/Hopper_Core.csproj", 
-                "../TestContent/Hopper_Test_Content.csproj" 
-                });
+                "../Core/Hopper.Core.csproj", 
+                "../TestContent/Hopper.TestContent.csproj" 
+            });
         }
     }
 }

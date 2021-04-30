@@ -14,7 +14,7 @@ namespace Hopper.Meta
 
     public class Generator
     {
-        const string sharedProjectPath = @"../Shared/Hopper_Shared.csproj";
+        const string sharedProjectPath = @"../Shared/Hopper.Shared.csproj";
 
         public MSBuildWorkspace msWorkspace;
         public ProjectContext context;
