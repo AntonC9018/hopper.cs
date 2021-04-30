@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Hopper.Mine</RootNamespace>
     <StartupObject>Hopper.Mine.Program</StartupObject>
     <AssemblyName>Hopper.Mine</AssemblyName>
     <TargetFramework>net4.8</TargetFramework>

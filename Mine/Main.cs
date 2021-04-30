@@ -1,6 +1,7 @@
-using Hopper.Core;
-using Hopper.Core.Components.Basic;
-using Hopper.Core.Mods;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
 
 namespace Hopper.Mine
 {
@@ -9,7 +10,36 @@ namespace Hopper.Mine
         public static void Main(string[] args)
         {
             System.Console.WriteLine("Hello");
-            Hopper.Core.Main.Init();
+
+            try
+            {
+                Assembly lib = typeof(Hopper.Core.Action).Assembly;
+                foreach (Type type in lib.GetTypes())
+                {
+                    Console.WriteLine(type.FullName);
+                }
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Exception exSub in ex.LoaderExceptions)
+                {
+                    sb.AppendLine(exSub.Message);
+                    FileNotFoundException exFileNotFound = exSub as FileNotFoundException;
+                    if (exFileNotFound != null)
+                    {                
+                        if(!string.IsNullOrEmpty(exFileNotFound.FusionLog))
+                        {
+                            sb.AppendLine("Fusion Log:");
+                            sb.AppendLine(exFileNotFound.FusionLog);
+                        }
+                    }
+                    sb.AppendLine();
+                }
+                string errorMessage = sb.ToString();
+
+                Console.WriteLine(errorMessage);
+            }
         }
     }
 }

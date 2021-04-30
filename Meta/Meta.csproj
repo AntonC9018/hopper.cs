@@ -3,7 +3,6 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net4.8</TargetFramework>
-        <RootNamespace>Hopper.Meta</RootNamespace>
         <StartupObject>Hopper.Meta.Program</StartupObject>
     </PropertyGroup>
 
