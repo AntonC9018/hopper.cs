@@ -11,13 +11,11 @@ namespace Hopper.Mine
         {
             System.Console.WriteLine("Hello");
 
+            Assembly lib = typeof(Hopper.Core.Action).Assembly;
+            Type[] types;
             try
             {
-                Assembly lib = typeof(Hopper.Core.Stat.Attack).Assembly;
-                foreach (Type type in lib.GetTypes())
-                {
-                    Console.WriteLine(type.FullName);
-                }
+                types = lib.GetTypes();
             }
             catch (ReflectionTypeLoadException ex)
             {
@@ -26,6 +24,13 @@ namespace Hopper.Mine
                 {
                     Console.WriteLine(exSub.Message);
                 }
+                types = ex.Types;
+            }
+            
+            foreach (Type type in types)
+            {
+                if (type != null)
+                    Console.WriteLine(type.FullName);
             }
         }
     }
