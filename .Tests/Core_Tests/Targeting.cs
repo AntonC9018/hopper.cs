@@ -93,7 +93,7 @@ namespace Hopper.Tests
 
             wall.GetTransform().RemoveFromGrid();
 
-            // The entity that can only be attacked whil next to it, should not be attacked
+            // The entity that can only be attacked while next to it, should not be attacked
             // even if the weapon reaches from 2 spaces away, assuming the default map.
             entity.GetAttackable()._attackness = Attackness.CAN_BE_ATTACKED_IF_NEXT_TO;
             context = provider.GetTargets(null, new IntVector2(0, 2), new IntVector2(0, -1));
@@ -102,6 +102,19 @@ namespace Hopper.Tests
             // If it is next to the position, the attack should go through
             context = provider.GetTargets(null, new IntVector2(0, 1), new IntVector2(0, -1));
             Assert.AreSame(context.targetContexts.Single().transform, entity.GetTransform());
+        }
+
+        [Test]
+        public void StraightUnbuffered()
+        {
+            var pattern = new StraightPattern(stopSearchLayer : Layer.WALL);
+            var provider = new UnbufferedTargetProvider(pattern, Layer.REAL);
+            var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 0));
+            var target = provider.GetTargets(new IntVector2(3, 0), new IntVector2(-1, 0)).Single();
+            Assert.AreSame(target.transform, entity.GetTransform());
+            var wall = World.Global.SpawnEntity(wallFactory, new IntVector2(1, 0));
+            int count = provider.GetTargets(new IntVector2(3, 0), new IntVector2(-1, 0)).Count();
+            Assert.AreEqual(count, 0);
         }
     }
 }
