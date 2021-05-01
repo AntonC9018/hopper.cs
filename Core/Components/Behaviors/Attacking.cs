@@ -72,7 +72,7 @@ namespace Hopper.Core.Components.Basic
                 ctx.targetingContext == null
                 && ctx.actor.TryGetInventory(out var inventory)
                 && inventory.TryGetWeapon(out var weapon)
-                && weapon.TryGetWeaponTargetProvider(out var provider))
+                && weapon.TryGetBufferedAttackTargetProvider(out var provider))
             {
                 ctx.targetingContext = provider.GetTargets(ctx.actor, ctx.direction);
             }
@@ -128,7 +128,7 @@ namespace Hopper.Core.Components.Basic
             }
             else if (actor.TryGetInventory(out var inventory)
                 && inventory.TryGetWeapon(out var weapon)
-                && weapon.TryGetWeaponTargetProvider(out var provider))
+                && weapon.TryGetBufferedAttackTargetProvider(out var provider))
             {
                 var pos = actor.GetTransform().position;
 
