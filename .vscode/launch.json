@@ -8,7 +8,7 @@
             "name": "My test",
             "type": "clr",
             "request": "launch",
-            "preLaunchTask": "BuildMine",
+            "preLaunchTask": "build Mine",
             "program": "${workspaceFolder}/build/bin/Debug/net4.8/Hopper.Mine.exe",
             "args": [],
             "cwd": "${workspaceFolder}/Mine",
@@ -17,6 +17,23 @@
         },
         {
             "name": "My test 2",
+            "type": "clr",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
+        },
+        {
+            "name": "Generate Code",
+            "type": "clr",
+            "request": "launch",
+            "preLaunchTask": "build Meta",
+            "program": "${workspaceFolder}/build/bin/Debug/net4.8/Hopper.Meta.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/Meta",
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Generate Code attach",
             "type": "clr",
             "request": "attach",
             "processId": "${command:pickProcess}"
