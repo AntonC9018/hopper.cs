@@ -21,6 +21,7 @@ namespace Hopper.Core.Targeting
             this.attackerPosition = attackerPosition;
             this.attackDirection = attackDirection;
             this.targetedLayer = targetedLayer;
+            this.blockLayer = blockLayer;
         }
     }
 
@@ -52,13 +53,13 @@ namespace Hopper.Core.Targeting
 
         public AttackTargetContext(IntVector2 position, IntVector2 direction, int pieceIndex = 0) : base(position, direction)
         {
-            this.attackness = Attackness.NEVER;
+            this.attackness = 0;
             this.pieceIndex = pieceIndex;
         }
 
         public AttackTargetContext(Transform transform) : base(transform)
         {
-            this.attackness = Attackness.NEVER;
+            this.attackness = 0;
             this.pieceIndex = 0;
         }
     }

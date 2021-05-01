@@ -16,4 +16,12 @@ namespace Hopper.Core.Targeting
         SKIP = CAN_BE_ATTACKED,             // can be attacked, no block
         CAN_BE_ATTACKED_IF_NEXT_TO = CAN_BE_ATTACKED | BY_DEFAULT | IS_BLOCK | IF_NEXT_TO
     }
+
+    public static class AttacknessExtensions
+    {
+        public static bool AreEitherSet(this Attackness attackness, Attackness flags)
+        {
+            return (attackness & flags) != 0;
+        }
+    }
 }

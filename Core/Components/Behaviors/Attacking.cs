@@ -87,7 +87,7 @@ namespace Hopper.Core.Components.Basic
         {
             if (ctx.targetingContext == null)
             {
-                ctx.targetingContext = WeaponTargetProvider.Simple.GetTargets(ctx.actor, ctx.direction);
+                ctx.targetingContext = BufferedAttackTargetProvider.Simple.GetTargets(ctx.actor, ctx.direction);
             }
         }
 

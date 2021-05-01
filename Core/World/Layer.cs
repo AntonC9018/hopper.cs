@@ -41,5 +41,10 @@ namespace Hopper.Core
 
             return i;
         }
+
+        public static bool AreEitherSet(this Layer layer, Layer flags)
+        {
+            return (layer & flags) != 0;
+        }
     }
 }

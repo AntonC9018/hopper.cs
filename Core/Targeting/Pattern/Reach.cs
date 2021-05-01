@@ -4,18 +4,18 @@ namespace Hopper.Core.Targeting
 {
     public struct Reach
     {
-        public int[] values;
-        public bool reachesAll => values == null;
+        public int[] indices;
+        public bool reachesAll => indices == null;
 
         public Reach(params int[] values)
         {
-            this.values = values;
+            this.indices = values;
         }
 
         public Reach(bool alwaysReach)
         {
             Assert.That(alwaysReach);
-            this.values = null;
+            this.indices = null;
         }
     }
 }

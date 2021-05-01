@@ -163,12 +163,12 @@ namespace Hopper.Core
 
             if (IsInBounds(position))
             {
-                var cell = GetCellAt(-direction + position);
+                var cell = GetCellAt(position);
 
                 for (int i = cell.Count - 1; i >= 0; i--)
                 {
                     var t = cell[i];
-                    if (t.layer.HasFlag(layer))
+                    if (t.layer.AreEitherSet(layer))
                     {
                         if (t.entity.IsDirected() && t.orientation != -direction)
                         {
