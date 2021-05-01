@@ -3,12 +3,14 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <StartupObject>Hopper.Mine.Program</StartupObject>
+    <Name>Mine</Name>
     <AssemblyName>Hopper.Mine</AssemblyName>
     <TargetFrameworks>net4.8;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Hopper.Core.csproj" />
+    <ProjectReference Include="..\TestContent\Hopper.TestContent.csproj" />
   </ItemGroup>
 
 </Project>

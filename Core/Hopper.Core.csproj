@@ -4,6 +4,8 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>net4.8;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>Hopper.Core</AssemblyName>
+    <Name>Core</Name>
+    <BaseOutputPath>../build/bin</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

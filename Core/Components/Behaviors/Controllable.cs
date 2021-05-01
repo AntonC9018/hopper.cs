@@ -106,6 +106,7 @@ namespace Hopper.Core.Components.Basic
         public static Dictionary<InputMapping, ChainPath<Chain<Context>>> Paths;
         static Controllable()
         {
+            Paths = new Dictionary<InputMapping, ChainPath<Chain<Context>>>();
             // set up all chain paths for the input mappings
             // set up all templates
             foreach (InputMapping name in InputMapping.Members)

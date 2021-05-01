@@ -10,7 +10,7 @@ namespace Hopper.Core
         public new void Add(Transform transform) 
         {
             Assert.That(!Contains(transform), "Cannot add a transform twice");
-            Add(transform);
+            base.Add(transform);
         }
 
         public bool TryGetAnyFromLayer(Layer layer, out Transform transform)
@@ -21,12 +21,12 @@ namespace Hopper.Core
 
         public Transform GetAnyFromLayer(Layer layer)
         {
-            return this.FindLast(t => t.layer.HasFlag(layer));
+            return this.FindLast(t => layer.HasFlag(t.layer));
         }
 
         public IEnumerable<Transform> GetAllFromLayer(Layer layer)
         {
-            return this.Where(t => t.layer.HasFlag(layer));
+            return this.Where(t => layer.HasFlag(t.layer));
         }
 
         public IEnumerable<Transform> GetAllDirectedFromLayer(IntVector2 direction, Layer layer)
@@ -34,7 +34,7 @@ namespace Hopper.Core
             for (int i = Count - 1; i >= 0; i--)
             {
                 var t = this[i];
-                if (t.entity.IsDirected() && t.layer.HasFlag(layer) && t.orientation == direction)
+                if (t.entity.IsDirected() && layer.HasFlag(t.layer) && t.orientation == direction)
                 {
                     yield return t;
                 }
@@ -49,7 +49,7 @@ namespace Hopper.Core
         public Transform GetUndirectedFromLayer(Layer layer)
         {
             return this
-                .FindLast(t => t.layer.HasFlag(layer) && t.entity.IsDirected() == false);
+                .FindLast(t => layer.HasFlag(t.layer) && t.entity.IsDirected() == false);
         }
 
         // this one looks for the fitting barriers
@@ -63,7 +63,7 @@ namespace Hopper.Core
             var dir = direction;
             foreach (var t in this)
             {
-                if (t.entity.IsDirected() && t.layer.HasFlag(layer))
+                if (t.entity.IsDirected() && layer.HasFlag(t.layer))
                 {
                     // block diagonal movement if corner barriers are present
                     if (t.orientation.x == dir.x)

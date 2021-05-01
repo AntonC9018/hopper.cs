@@ -106,7 +106,7 @@ namespace Hopper.Core.Components.Basic
         /// </summary>
         public void DefaultPreset()
         {
-            _CheckChain.Add(SetResistanceHandler, ResistSourceHandler, ArmorHandler);
+            _CheckChain.AddMany(SetResistanceHandler, ResistSourceHandler, ArmorHandler);
             _DoChain   .Add(TakeHitHandler);
         }
     }

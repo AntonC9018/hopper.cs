@@ -1,4 +1,4 @@
-        public static Index<<#= component.ClassName #>> Index;
+        public static Index<<#= component.ClassName #>> Index = new Index<<#= component.ClassName #>>();
 
         public static void InitIndex()
         {

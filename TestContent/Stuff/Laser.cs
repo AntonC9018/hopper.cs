@@ -12,18 +12,18 @@ namespace Hopper.TestContent
     public static class Laser
     {
         [IdentifyingStat] public static Attack.Source AttackSource = 
-            new Attack.Source { Default = Attack.Source.Resistance.Default };
+            new Attack.Source(Default : Attack.Source.Resistance.Default);
         [IdentifyingStat] public static Push.Source PushSource =            
-            new Push.Source { Default = Push.Source.Resistance.Default };
+            new Push.Source(Default : Push.Source.Resistance.Default);
 
-        private static Attack DefaultAttack => new Attack
+        private static Attack DefaultAttack = new Attack
         (
             power  : 1,
             source : AttackSource.Index,
             damage : 2,
             pierce : 5
         );
-        private static Push DefaultPush => new Push
+        private static Push DefaultPush = new Push
         (
             source   : PushSource.Index,
             power    : 1,

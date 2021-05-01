@@ -14,7 +14,7 @@ namespace Hopper.Utils.Chains
         {
         }
 
-        public void Add(params Handler<Context>[] handlers)
+        public void AddMany(params Handler<Context>[] handlers)
         {
             foreach (var handler in handlers)
                 Add(handler);

@@ -19,6 +19,7 @@ namespace Hopper.Core
             if (!_triggers.TryGetValue(position, out chain))
             {
                 chain = new LinearChain<CellMovementContext>();
+                _triggers[position] = chain;
             }
             chain.Add(handler);
         }
@@ -57,6 +58,7 @@ namespace Hopper.Core
             if (!_triggers.TryGetValue(position, out chain))
             {
                 chain = new PermanentChain<CellMovementContext>();
+                _triggers[position] = chain;
             }
             chain.Add(handler);
         }

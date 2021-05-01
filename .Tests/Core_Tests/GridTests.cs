@@ -102,7 +102,7 @@ namespace Hopper.Tests
         }
 
         [Test]
-        public void CellMovementPermanenetListenersWorkCorrectly()
+        public void CellMovementPermanentListenersWorkCorrectly()
         {
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 0));
             var transform = entity.GetTransform();
@@ -223,16 +223,23 @@ namespace Hopper.Tests
             transform.RemoveFromGrid();
             directionalBlockTransform.RemoveFromGrid();
 
-            dir = IntVector2.Up;
-
             directionalBlockTransform.position += IntVector2.Down;
             directionalBlockTransform.orientation = IntVector2.Up;
 
             directionalBlockTransform.ResetInGrid();
 
             // 4
+            dir = IntVector2.Up;
+            Assert.True(Grid.HasBlockAt(pos, dir, Layer.WALL));
+
+            dir = IntVector2.Down;
             Assert.False(Grid.HasBlockAt(pos, dir, Layer.WALL));
+
             pos += IntVector2.Down;
+            dir = IntVector2.Up;
+            Assert.False(Grid.HasBlockAt(pos, dir, Layer.WALL));
+            
+            dir = IntVector2.Down;
             Assert.True(Grid.HasBlockAt(pos, dir, Layer.WALL));
         }
 

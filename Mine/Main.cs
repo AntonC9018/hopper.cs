@@ -1,6 +1,8 @@
-using System;
-using System.Reflection;
-using System.Text;
+using Hopper.Core;
+using Hopper.TestContent;
+using Hopper.TestContent.SimpleMobs;
+using Hopper.Utils;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Mine
 {
@@ -8,27 +10,8 @@ namespace Hopper.Mine
     {
         public static void Main(string[] args)
         {
-            Assembly lib = typeof(Hopper.Core.Action).Assembly;
-            Type[] types;
-            try
-            {
-                types = lib.GetTypes();
-            }
-            catch (ReflectionTypeLoadException ex)
-            {
-                StringBuilder sb = new StringBuilder();
-                foreach (Exception exSub in ex.LoaderExceptions)
-                {
-                    Console.WriteLine(exSub.Message);
-                }
-                types = ex.Types;
-            }
-            
-            foreach (Type type in types)
-            {
-                if (type != null)
-                    Console.WriteLine(type.FullName);
-            }
+            Hopper.Core.Main.Init();
+            Hopper.TestContent.Main.Init();
         }
     }
 }

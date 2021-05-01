@@ -21,6 +21,7 @@ namespace Hopper.TestContent.SimpleMobs
             Pushable.AddTo(subject);
             Damageable.AddTo(subject, new Health(1));
             Transform.AddTo(subject, Layer.REAL);
+            Ticking.AddTo(subject);
         }
 
         public static void InitComponents(Entity subject)
@@ -29,6 +30,7 @@ namespace Hopper.TestContent.SimpleMobs
             subject.GetAttackable().DefaultPreset();
             subject.GetPushable().DefaultPreset();
             subject.GetDamageable().DefaultPreset();
+            subject.GetTicking().DefaultPreset();
         }
     }
 }

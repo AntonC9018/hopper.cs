@@ -1,5 +1,6 @@
 bin
 obj
 *.meta
+build
 
-T4/*.dll
+TestResult.xml

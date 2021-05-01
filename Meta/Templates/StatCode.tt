@@ -20,7 +20,7 @@ public struct <#= stat.Name #> : IStat
     );
 
 <# if (!stat.IsIdentified) { #>
-    public static Index<<#= stat.Name #>> Index;
+    public static Index<<#= stat.Name #>> Index = new Index<<#= stat.Name #>>();
 <# } #>
     public static <#= stat.Name #> Default() => new <#= stat.Name #>
     (
@@ -31,6 +31,12 @@ public struct <#= stat.Name #> : IStat
     public Index<<#= stat.identifiedType.Name #>> Index;
 
     public System.Func<<#= stat.identifiedType.Name #>> Default;
+
+    public <#= stat.Name #>(System.Func<<#= stat.identifiedType.Name #>> Default)
+    {
+        this.Default = Default;
+        this.Index = new Index<<#= stat.identifiedType.Name #>>();
+    }
 
 <# } #>
     public <#= stat.Name #> Copy() => this;
@@ -52,18 +58,18 @@ public struct <#= stat.Name #> : IStat
         var identifyingTypeName = identifyingType == stat ? identifyingType.Name : identifyingType.QualifiedName;
         var identifiedTypeName = identifiedType == stat.identifiedType ? identifiedType.Name : identifiedType.QualifiedName; #>
     public static <#= identifyingTypeName #> <#= field.name #> = new <#= identifyingTypeName #>
-    {
+    (
 <#  if (field.metadata.fields.Count > 0) 
     { #>
-        Default = () => new <#= identifiedTypeName #>
+        Default : () => new <#= identifiedTypeName #>
         (
             <#= field.metadata.FieldCommaJoin(f => $"{f.name} : {f.defaultValue}") #>
         )
 <#  }
     else
     { #>
-        Default = <#= identifiedTypeName #>.Default
+        Default : <#= identifiedTypeName #>.Default
 <#  }#>
-    };
+    );
 <#  } #> 
 }

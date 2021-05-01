@@ -23,6 +23,7 @@ namespace Hopper.TestContent.Projectiles
             ProjectileComponent.AddTo(subject, Layer.REAL | Layer.WALL | Layer.PROJECTILE);
             Attackable.AddTo(subject, Attackness.CAN_BE_ATTACKED);
             Damageable.AddTo(subject, new Health(1));
+            Ticking.AddTo(subject);
             Acting.AddTo(
                 subject, 
                 entity => ProjectileAction.ToDirectedParticular(entity.GetTransform().orientation),
@@ -37,6 +38,7 @@ namespace Hopper.TestContent.Projectiles
             subject.GetAttackable().DefaultPreset();
             subject.GetActing().DefaultPreset(subject);
             subject.GetDamageable().DefaultPreset();
+            subject.GetTicking().DefaultPreset();
         }
 
         public static void Retouch(Entity subject) {}

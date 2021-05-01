@@ -2,7 +2,7 @@ using System;
 
 namespace Hopper.Utils.Chains
 {
-    public class Handler<Context>
+    public class Handler<Context> : IComparable<Handler<Context>>
     {
         public int priority;
         public Action<Context> handler;
@@ -20,6 +20,11 @@ namespace Hopper.Utils.Chains
         public override int GetHashCode()
         {
             return priority;
+        }
+
+        public int CompareTo(Handler<Context> other)
+        {
+            return priority - other.priority;
         }
 
         public static bool operator==(Handler<Context> ctx1, Handler<Context> ctx2)

@@ -61,7 +61,7 @@ namespace Hopper.Core.Components.Basic
         public void DefaultPreset()
         {
             _CheckChain.Add(ConvertFromMoveHandler);
-            _DoChain.Add(DisplaceRemoveHandler, DisplaceAddBackHandler);
+            _DoChain.AddMany(DisplaceRemoveHandler, DisplaceAddBackHandler);
         }
 
         // Check { ConvertFromMove }

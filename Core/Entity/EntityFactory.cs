@@ -12,6 +12,7 @@ namespace Hopper.Core
 
         public EntityFactory()
         {
+            subject = new Entity();
             subject.components = new Dictionary<Identifier, IComponent>();
         }
 

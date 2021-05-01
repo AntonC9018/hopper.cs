@@ -144,14 +144,14 @@ namespace Hopper.Core.Components.Basic
         // Do    { ApplyAttack, ApplyPush, UpdateHistory }
         public void InventoryPreset()
         {
-            _CheckChain.Add(SetTargetsHandler, SetStatsHandler);
-            _DoChain.Add(ApplyAttacksHandler, ApplyPushesHandler);            
+            _CheckChain.AddMany(SetTargetsHandler, SetStatsHandler);
+            _DoChain.AddMany(ApplyAttacksHandler, ApplyPushesHandler);            
         }
 
         public void NoInventoryPreset()
         {
-            _CheckChain.Add(SetTargetsHandler, SetStatsHandler);
-            _DoChain.Add(ApplyAttacksHandler, ApplyPushesHandler);            
+            _CheckChain.AddMany(SetTargetsHandler, SetStatsHandler);
+            _DoChain.AddMany(ApplyAttacksHandler, ApplyPushesHandler);            
         }
 
         public void AutoPreset(Entity entity)
