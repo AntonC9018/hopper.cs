@@ -38,7 +38,7 @@ namespace Hopper.Core.Predictions
                         var action = (ParticularDirectedAction)acting.nextAction;
                         foreach (var direction in acting.GetPossibleDirections())
                         {
-                            foreach (var pos in action.Predict(acting, direction))
+                            foreach (var pos in action.Predict(acting.actor, direction))
                             {
                                 set.Add(pos);
                             }
@@ -47,7 +47,7 @@ namespace Hopper.Core.Predictions
                     else
                     {
                         var action = (ParticularUndirectedAction)acting.nextAction;
-                        foreach (var pos in action.Predict(acting))
+                        foreach (var pos in action.Predict(acting.actor))
                         {
                             set.Add(pos);
                         }

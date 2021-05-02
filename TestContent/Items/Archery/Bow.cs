@@ -41,14 +41,14 @@ namespace Hopper.TestContent
             }
         }
 
-        public static DirectedAction AttackAction = Action.CreateSimple((acting, direction) => 
-            Attack(acting.actor.GetTransform(), direction));
+        public static DirectedAction AttackAction = Action.CreateSimple((actor, direction) => 
+            Attack(actor.GetTransform(), direction));
 
-        public static UndirectedAction RechargeAction = Action.CreateSimple(acting => 
+        public static UndirectedAction RechargeAction = Action.CreateSimple(actor => 
             {
-                if (acting.actor.TryGetRangedWeapon(out var weapon))
+                if (actor.TryGetRangedWeapon(out var weapon))
                 {
-                    weapon.GetBowComponent().ToggleCharge(acting.actor);
+                    weapon.GetBowComponent().ToggleCharge(actor);
                 }
             });
     }

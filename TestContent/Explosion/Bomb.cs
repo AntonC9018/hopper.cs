@@ -55,16 +55,16 @@ namespace Hopper.TestContent
             World.Global.SpawnEntity(BombEntity.Factory, position, orientation);
         }
 
-        public static void PlantFunction(Acting acting, IntVector2 direction)
+        public static void PlantFunction(Entity actor, IntVector2 direction)
         {
-            if (acting.actor.TryGetBomb(out var bomb))
+            if (actor.TryGetBomb(out var bomb))
             {
                 var countable = bomb.GetCountable();
                 if (countable.count > 0)
                 {
                     countable.count--;
                     
-                    var transform = acting.actor.GetTransform();
+                    var transform = actor.GetTransform();
                     if (transform.HasBlockRelative(direction))
                     {
                         Place(transform.position, direction);

@@ -11,7 +11,7 @@ namespace Hopper.TestContent.SimpleMobs
         public static EntityFactory Factory;
 
         public static readonly UndirectedAction DieAndExplodeAction = Action.CreateCompositeUndirected(
-            Action.CreateSimple(acting => acting.actor.TryDie()),
+            Action.CreateSimple(actor => actor.TryDie()),
             Explosion.DefaultExplodeAction(1)
         ); 
         

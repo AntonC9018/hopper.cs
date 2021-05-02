@@ -6,7 +6,7 @@ namespace Hopper.Core
     {
         public static void SimpleAlgo(Acting.Context ctx)
         {
-            ctx.success = ctx.action.Do(ctx.acting);
+            ctx.success = ctx.action.Do(ctx.actor);
         }
 
     }

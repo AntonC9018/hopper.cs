@@ -20,16 +20,16 @@ namespace Hopper.Core
             action.predict = predict;
         }
 
-        public override bool Do(Acting acting)
+        public override bool Do(Entity actor)
         {
-            return action.function(acting);
+            return action.function(actor);
         }
 
-        public IEnumerable<IntVector2> Predict(Acting acting)
+        public IEnumerable<IntVector2> Predict(Entity actor)
         {
             if (action.predict != null)
             {
-                return action.predict(acting);
+                return action.predict(actor);
             }
             return Enumerable.Empty<IntVector2>();
         }

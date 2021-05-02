@@ -8,10 +8,10 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
-    public delegate IEnumerable<IntVector2> DirectedPredict(Acting acting, IntVector2 direction);
-    public delegate IEnumerable<IntVector2> UndirectedPredict(Acting acting);
-    public delegate bool DirectedDo(Acting acting, IntVector2 direction);
-    public delegate bool UndirectedDo(Acting acting);
+    public delegate IEnumerable<IntVector2> DirectedPredict(Entity actor, IntVector2 direction);
+    public delegate IEnumerable<IntVector2> UndirectedPredict(Entity actor);
+    public delegate bool DirectedDo(Entity actor, IntVector2 direction);
+    public delegate bool UndirectedDo(Entity actor);
 
     public abstract class Action
     {
@@ -115,9 +115,9 @@ namespace Hopper.Core
         {
             return new DirectedAction
             {
-                function = (acting, direction) => 
+                function = (actor, direction) => 
                 { 
-                    if (acting.actor.TryGetTransform(out var transform)) 
+                    if (actor.TryGetTransform(out var transform)) 
                     {
                         function(transform.position, direction); 
                         return true; 
@@ -128,11 +128,11 @@ namespace Hopper.Core
             };
         }
 
-        public static DirectedAction CreateSimple(System.Action<Acting, IntVector2> function, DirectedPredict predict = null)
+        public static DirectedAction CreateSimple(System.Action<Entity, IntVector2> function, DirectedPredict predict = null)
         {
             return new DirectedAction
             {
-                function = (e, d) => { function(e, d); return true; },
+                function = (actor, d) => { function(actor, d); return true; },
                 predict = predict
             };
         }
@@ -146,7 +146,7 @@ namespace Hopper.Core
             };
         }
 
-        public static UndirectedAction CreateSimple(System.Action<Acting> function, UndirectedPredict predict = null)
+        public static UndirectedAction CreateSimple(System.Action<Entity> function, UndirectedPredict predict = null)
         {
             return new UndirectedAction
             {
@@ -188,11 +188,11 @@ namespace Hopper.Core
             where T : IComponent, IStandartActivateable
         {
             var action = new DirectedAction();
-            action.function = (acting, d) => Activate(index, acting, d);
+            action.function = (entity, d) => Activate(index, entity, d);
 
             if (typeof(IBehaviorPredictable).IsAssignableFrom(typeof(T)))
             {
-                action.predict = (acting, d) => PredictVia(index, acting, d);
+                action.predict = (entity, d) => PredictVia(index, entity, d);
             }
 
             return action;
@@ -218,11 +218,11 @@ namespace Hopper.Core
         {
             public DirectedPredict[] predicts;
 
-            public IEnumerable<IntVector2> PredictAll(Acting acting, IntVector2 direction)
+            public IEnumerable<IntVector2> PredictAll(Entity actor, IntVector2 direction)
             {
                 foreach (var predict in predicts)
                 {
-                    foreach (var vec in predict(acting, direction))
+                    foreach (var vec in predict(actor, direction))
                     {
                         yield return vec;
                     }
@@ -234,11 +234,11 @@ namespace Hopper.Core
         {
             public UndirectedPredict[] predicts;
 
-            public IEnumerable<IntVector2> PredictAll(Acting acting)
+            public IEnumerable<IntVector2> PredictAll(Entity actor)
             {
                 foreach (var predict in predicts)
                 {
-                    foreach (var vec in predict(acting))
+                    foreach (var vec in predict(actor))
                     {
                         yield return vec;
                     }
@@ -246,18 +246,18 @@ namespace Hopper.Core
             }
         }
 
-        private static bool Activate<T>(Index<T> index, Acting acting, IntVector2 direction)
+        private static bool Activate<T>(Index<T> index, Entity actor, IntVector2 direction)
             where T : IComponent, IStandartActivateable
         {
-            Assert.That(acting.actor.HasComponent(index), "Cannot execute action if the target behavior is missing");
-            return acting.actor.GetComponent(index).Activate(acting.actor, direction);
+            Assert.That(actor.HasComponent(index), "Cannot execute action if the target behavior is missing");
+            return actor.GetComponent(index).Activate(actor, direction);
         }
 
-        private static IEnumerable<IntVector2> PredictVia<T>(Index<T> index, Acting acting, IntVector2 direction)
+        private static IEnumerable<IntVector2> PredictVia<T>(Index<T> index, Entity actor, IntVector2 direction)
             where T : IComponent, IStandartActivateable
         {
-            Assert.That(acting.actor.HasComponent(index), "Cannot predict if the target behavior is missing");
-            return ((IBehaviorPredictable)acting.actor.GetComponent(index)).Predict(acting, direction);
+            Assert.That(actor.HasComponent(index), "Cannot predict if the target behavior is missing");
+            return ((IBehaviorPredictable)actor.GetComponent(index)).Predict(actor, direction);
         }
     }
 }

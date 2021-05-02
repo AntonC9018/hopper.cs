@@ -119,9 +119,8 @@ namespace Hopper.Core.Components.Basic
         /// <summary>
         /// Returns the positions that would be attacked if the behavior's activate were to be called. 
         /// </summary>
-        public IEnumerable<IntVector2> Predict(Acting acting, IntVector2 direction)
+        public IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction)
         {
-            Entity actor = acting.actor;
             if (_DoChain.Contains(SetTargetsRightBesideHandler))
             {
                 yield return actor.GetTransform().position + direction;

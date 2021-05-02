@@ -49,11 +49,11 @@ namespace Hopper.TestContent
 
         // TODO: Code generation for these adaptors
         // TODO: The predictions should work with target contexts?
-        public static IEnumerable<IntVector2> Predict(Acting acting, IntVector2 direction)
+        public static IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction)
         {
             return DefaultShooting.GetTargets(
                     // crap like this is not ok
-                    acting.actor.GetTransform().position, 
+                    actor.GetTransform().position, 
                     direction)
                 .Select(t => t.position);
         }

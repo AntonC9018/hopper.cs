@@ -6,9 +6,9 @@ namespace Hopper.Core
 {
     public static partial class Algos
     {
-        static bool AskMove(Acting acting, IntVector2 direction)
+        static bool AskMove(Entity actor, IntVector2 direction)
         {
-            var transform = acting.actor.GetTransform();
+            var transform = actor.GetTransform();
             var targetTransforms = World.Global.grid.GetAllFromLayer(transform.position, direction, Layer.REAL);
             bool success = false;
             foreach (var targetTransform in targetTransforms)
@@ -23,17 +23,17 @@ namespace Hopper.Core
             return success;
         }
 
-        static bool Iterate(Acting acting, ParticularDirectedAction action)
+        static bool Iterate(Entity actor, ParticularDirectedAction action)
         {
-            bool success = action.Do(acting);
+            bool success = action.Do(actor);
 
             if (!success)
             {
-                bool otherEntitySuccess = AskMove(acting, action.direction);
+                bool otherEntitySuccess = AskMove(actor, action.direction);
 
                 if (otherEntitySuccess)
                 {
-                    return Iterate(acting, action);
+                    return Iterate(actor, action);
                 }
             }
 
@@ -44,7 +44,7 @@ namespace Hopper.Core
         {
             if (ctx.action is ParticularUndirectedAction)
             {
-                ctx.action.Do(ctx.acting);
+                ctx.action.Do(ctx.actor);
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace Hopper.Core
             foreach (var dir in dirs)
             {
                 action.direction = dir;
-                if (Iterate(ctx.acting, action))
+                if (Iterate(ctx.actor, action))
                 {
                     ctx.success = true;
                     return;

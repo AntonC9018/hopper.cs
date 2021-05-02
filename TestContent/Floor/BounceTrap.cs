@@ -9,7 +9,7 @@ namespace Hopper.TestContent.Floor
     public static class BounceTrap
     {
         public static EntityFactory Factory;
-        public static readonly UndirectedAction BounceAction = Action.CreateSimple(acting => acting.actor.Bounce());
+        public static readonly UndirectedAction BounceAction = Action.CreateSimple(actor => actor.Bounce());
 
         public static void AddComponents(Entity subject)
         {

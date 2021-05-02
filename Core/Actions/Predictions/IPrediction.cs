@@ -9,6 +9,6 @@ namespace Hopper.Core.Predictions
     // }
     public interface IBehaviorPredictable
     {
-        IEnumerable<IntVector2> Predict(Acting acting, IntVector2 direction);
+        IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction);
     }
 }
