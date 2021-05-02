@@ -218,6 +218,22 @@ namespace Hopper.Meta
                     Encoding.UTF8);
             }
 
+            var flagEnums = context.GetFlagEnums();
+
+            {
+                var printer = new FlagsCode();
+
+                foreach (var flag in flagEnums)
+                {
+                    printer.flag = flag;
+
+                    File.WriteAllText(
+                        $"{context._paths.FlagsAutogenFolder}/{flag.ClassName}.cs",
+                        printer.TransformText(),
+                        Encoding.UTF8);
+                }
+            }
+
             var entityTypes = context.GetEntityTypes();
             var methodClassInstances = context.GetMethodClassInstances();
             var fieldsRequiringInit = context.GetFieldsRequiringInit();

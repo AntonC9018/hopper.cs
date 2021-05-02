@@ -8,12 +8,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Hopper.Meta
 {
 
-    abstract public class ClassSymbolWrapperBase
+    abstract public class TypeSymbolWrapperBase
     {
         public INamedTypeSymbol symbol;
         public IEnumerable<UsingDirectiveSyntax> usings;
 
-        public ClassSymbolWrapperBase(INamedTypeSymbol symbol)
+        public TypeSymbolWrapperBase(INamedTypeSymbol symbol)
         {
             this.symbol = symbol;
         }

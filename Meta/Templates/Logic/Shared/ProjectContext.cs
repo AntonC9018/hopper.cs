@@ -190,6 +190,8 @@ namespace Hopper.Meta
             }
         }
 
+
+
         public IEnumerable<FieldSymbolWrapper> GetMethodClassInstances() =>
             GetStaticFieldsWithAttibute(RelevantSymbols.instanceExportAttribute);
 
@@ -198,5 +200,17 @@ namespace Hopper.Meta
 
         public IEnumerable<FieldSymbolWrapper> GetStaticIdentifyingStatFields() =>
             GetStaticFieldsWithAttibute(RelevantSymbols.identifyingStatAttribute);
+
+        public IEnumerable<FlagEnumSymbolWrapper> GetFlagEnums()
+        {
+            foreach (var type in GetNotNestedTypes())
+            {
+                if (type.HasAttribute(RelevantSymbols.flagsAttribute))
+                {
+                    var wrapper = new FlagEnumSymbolWrapper(type);
+                    if (wrapper.InitWithErrorHandling(this)) yield return wrapper;
+                }
+            }
+        }
     }
 }

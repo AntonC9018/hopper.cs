@@ -168,7 +168,7 @@ namespace Hopper.Core
                 for (int i = cell.Count - 1; i >= 0; i--)
                 {
                     var t = cell[i];
-                    if (t.layer.AreEitherSet(layer))
+                    if (t.layer.HasEitherFlag(layer))
                     {
                         if (t.entity.IsDirected() && t.orientation != -direction)
                         {

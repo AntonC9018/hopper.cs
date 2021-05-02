@@ -1,6 +1,5 @@
 using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
-using static Hopper.Core.Faction;
 
 namespace Hopper.Core
 {

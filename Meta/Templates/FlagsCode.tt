@@ -1,0 +1,20 @@
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="Meta" #>
+<#@ include file="Templates/Snippets/autogen_notice.txt" #>
+<#@ include file="Templates/Snippets/GenericUsings.txt" #>
+
+namespace <#= flag.Namespace #>
+{ 
+    public static class <#= flag.ClassName #>FlagsExtensions
+    {
+        public static bool HasEitherFlag(this <#= flag.ClassName #> flag1, <#= flag.ClassName #> flag2)
+        {
+            return (flag1 & flag2) != 0;
+        }
+
+        public static bool HasNeitherFlag(this <#= flag.ClassName #> flag1, <#= flag.ClassName #> flag2)
+        {
+            return (flag1 & flag2) == 0;
+        }
+    }
+}

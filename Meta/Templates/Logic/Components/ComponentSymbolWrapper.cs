@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Hopper.Meta
 {
-    public class ComponentSymbolWrapper : ClassSymbolWrapperBase
+    public class ComponentSymbolWrapper : TypeSymbolWrapperBase
     {   
         public ExportedMethodSymbolWrapper[] exportedMethods;
         public HashSet<IFieldSymbol> flaggedFields;

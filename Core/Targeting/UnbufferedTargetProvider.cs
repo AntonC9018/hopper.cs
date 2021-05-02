@@ -43,7 +43,7 @@ namespace Hopper.Core.Targeting
 
         public bool WhetherMayAffect(Layer targetLayer, Faction targetFaction)
         {
-            return _targetedFaction.AreEitherSet(targetFaction) && _targetedLayer.AreEitherSet(targetLayer);
+            return _targetedFaction.AreEitherSet(targetFaction) && _targetedLayer.HasEitherFlag(targetLayer);
         }
 
         /// <summary>

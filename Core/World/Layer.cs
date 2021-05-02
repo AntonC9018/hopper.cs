@@ -1,8 +1,10 @@
+using Hopper.Shared.Attributes;
+
 namespace Hopper.Core
 {
 
     // This indicates the order in which actions are executed
-    public enum Layer
+    [Flags] public enum Layer
     {
         REAL = 0b_0000_0001,
         MISC = 0b_0000_0010,
@@ -40,11 +42,6 @@ namespace Hopper.Core
                 i++;
 
             return i;
-        }
-
-        public static bool AreEitherSet(this Layer layer, Layer flags)
-        {
-            return (layer & flags) != 0;
         }
     }
 }

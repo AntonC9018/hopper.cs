@@ -30,6 +30,7 @@ namespace Hopper.Meta
             CreateOrEmptyDirectory(HandlersAutogenFolder);
             CreateOrEmptyDirectory(TagsAutogenFolder);
             CreateOrEmptyDirectory(StatAutogenFolder);
+            CreateOrEmptyDirectory(FlagsAutogenFolder);
 
             if (!File.Exists(GitignorePath))
             {
@@ -47,6 +48,7 @@ namespace Hopper.Meta
         public string StatAutogenFolder => $@"{AutogenFolder}/Stats";
         public string GitignorePath => $@"{AutogenFolder}/.gitignore";
         public string SlotExtensionsPath => $@"{AutogenFolder}/SlotExtensions.cs";
+        public string FlagsAutogenFolder => $@"{AutogenFolder}/Flags";
     }
 
 }
