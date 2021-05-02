@@ -83,7 +83,7 @@ namespace Hopper.Core.Components.Basic
         public Action ConvertSlotIdToAction(Entity entity, Identifier slotId)
         {
             var inventory = entity.GetInventory();
-            if (inventory.TryGetFromSlot(slotId, out var item) 
+            if (inventory.TryGetItemFromSlot(slotId, out var item) 
                 && item.TryGetItemAction(entity, out var action))
             {
                 return action;

@@ -27,7 +27,7 @@ namespace Hopper.Core.Items
         // TODO: the slots should be injects?
         // TODO: a new attribute for copying the items on injection?
         // TODO: no, better add an initialization function for the entity type.
-        public void Init()
+        public void InitInWorld()
         {
             _slots          = new Dictionary<Identifier, Identifier>();
             _generalStorage = new Dictionary<Identifier, Entity>();
@@ -68,7 +68,7 @@ namespace Hopper.Core.Items
             _generalStorage[item.typeId] = item; 
         }
 
-        public bool TryGetFromSlot(Identifier slotId, out Entity entity)
+        public bool TryGetItemFromSlot(Identifier slotId, out Entity entity)
         {
             if (_slots.TryGetValue(slotId, out var itemId))
             {
@@ -78,12 +78,17 @@ namespace Hopper.Core.Items
             return false;
         }
 
+        public Entity GetItemFromSlot(Identifier slotId)
+        {
+            return _generalStorage[_slots[slotId]];
+        }
+
         public List<Entity> GetExcess() => _excess;
         public void ClearExcess() => _excess.Clear();
 
         public void Equip(Entity item)
         {
-            Assert.That(!_generalStorage.ContainsKey(item.typeId));
+            Assert.That(!_generalStorage.ContainsKey(item.typeId), "Item of the same id cannot be equipped more than once");
             _generalStorage.Add(item.typeId, item);
         }
 

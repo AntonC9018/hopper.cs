@@ -23,7 +23,7 @@ namespace Hopper.TestContent.SimpleMobs
                 new Step
                 {
                     successFunction = IsPlayerClose(fail : 1, success : 2),
-                    action = Action.CreateFromActivateable(Moving.Index),
+                    action = Action.FromActivateable(Moving.Index),
                     movs = Movs.Basic,
                     algo = Algos.EnemyAlgo
                 },

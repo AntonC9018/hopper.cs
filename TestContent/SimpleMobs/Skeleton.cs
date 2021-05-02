@@ -13,8 +13,8 @@ namespace Hopper.TestContent.SimpleMobs
         public static void AddComponents(Entity subject)
         {
             var attackMoveAction = Action.CreateCompositeDirected(
-                Action.CreateFromActivateable(Attacking.Index),
-                Action.CreateFromActivateable(Moving.Index)
+                Action.FromActivateable(Attacking.Index),
+                Action.FromActivateable(Moving.Index)
             );
             SequentialMobBase.AddComponents(subject,
                 Algos.EnemyAlgo, 

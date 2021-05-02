@@ -51,10 +51,10 @@ namespace Hopper.TestContent.Boss
         public static EntityFactory Factory;
         
         private static readonly DirectedAction AttackMoveAction = Action.CreateCompositeDirected(
-            Action.CreateFromActivateable(Attacking.Index),
-            Action.CreateFromActivateable(Moving.Index)
+            Action.FromActivateable(Attacking.Index),
+            Action.FromActivateable(Moving.Index)
         );
-        private static readonly DirectedAction SpawnAction = Action.CreateFromActivateable(TestBossComponent.Index);
+        private static readonly DirectedAction SpawnAction = Action.FromActivateable(TestBossComponent.Index);
         private static readonly Step[] Steps = new[]
         {
             new Step
@@ -102,8 +102,8 @@ namespace Hopper.TestContent.Boss
         public static EntityFactory Factory;
 
         private static readonly DirectedAction AttackMoveAction = Action.CreateCompositeDirected(
-            Action.CreateFromActivateable(Attacking.Index),
-            Action.CreateFromActivateable(Moving.Index)
+            Action.FromActivateable(Attacking.Index),
+            Action.FromActivateable(Moving.Index)
         );
 
         private static readonly Step[] Steps = new[]

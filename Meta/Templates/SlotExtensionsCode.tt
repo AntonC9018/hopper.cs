@@ -24,7 +24,7 @@ namespace <#= Namespace #>
 
         public static bool TryGet<#= slot.SlotName #>(this Inventory inventory, out Entity item)
         {
-            return inventory.TryGetFromSlot(<#= slot.FullyQualifiedName #>.Id, out item);
+            return inventory.TryGetItemFromSlot(<#= slot.FullyQualifiedName #>.Id, out item);
         }
         
 <#      } 

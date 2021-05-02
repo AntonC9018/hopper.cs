@@ -12,7 +12,7 @@ namespace Hopper.TestContent.Projectiles
         public static EntityFactory Factory;
         
         public static DirectedAction ProjectileAction =>
-            Action.CreateFromActivateable(ProjectileComponent.Index);
+            Action.FromActivateable(ProjectileComponent.Index);
 
         public static void AddComponents(Entity subject)
         {

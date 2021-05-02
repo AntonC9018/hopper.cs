@@ -18,12 +18,16 @@ namespace Hopper.Core.Items
                 if (currentlyEquippedItemOfTheSameType.TryGetCountable(out var countable))
                 {
                     countable.AbsorbItem(actor);
+                    return;
                 }
-                else
+
+                // The item may be replaced by itself if it is assigned a slot.
+                // In that case, the logic should not be run, since it must be identical
+                if (actor.TryGetSlotComponent(out var _slotComponent))
                 {
-                    Assert.That(false);
+                    inventory.ReplaceForSlot(_slotComponent.slotId, actor);
+                    return;
                 }
-                return;
             }
 
             if (actor.TryGetSlotComponent(out var slotComponent))

@@ -9,7 +9,7 @@ namespace Hopper.Core.Retouchers
         [Export(Chain = "Displaceable.Do", Dynamic = true)]
         private static void OnDisplace(Inventory inventory, Transform transform)
         {
-            foreach (var itemTransform in transform.GetCell())
+            foreach (var itemTransform in transform.GetCell().ToArray())
             {
                 itemTransform.entity.TryBeEquipped(transform.entity, inventory);
             }

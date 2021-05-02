@@ -184,7 +184,7 @@ namespace Hopper.Core
             return action;
         }
 
-        public static DirectedAction CreateFromActivateable<T>(Index<T> index)
+        public static DirectedAction FromActivateable<T>(Index<T> index)
             where T : IComponent, IStandartActivateable
         {
             var action = new DirectedAction();

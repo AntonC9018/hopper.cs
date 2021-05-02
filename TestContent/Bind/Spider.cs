@@ -10,8 +10,8 @@ namespace Hopper.TestContent.Bind
     {
         public static EntityFactory Factory;
         
-        private static readonly DirectedAction BindAction = Action.CreateFromActivateable(Binding.Index);
-        private static readonly DirectedAction MoveAction = Action.CreateFromActivateable(Moving.Index);
+        private static readonly DirectedAction BindAction = Action.FromActivateable(Binding.Index);
+        private static readonly DirectedAction MoveAction = Action.FromActivateable(Moving.Index);
         private static readonly DirectedAction BindMoveAction = Action.CreateJoinedDirected(BindAction, MoveAction);
 
         private static readonly Step[] Steps = new Step[]
