@@ -12,10 +12,10 @@ namespace Hopper.Core
 
         public static void AddComponents(Entity subject)
         {
-            Attackable.AddTo(subject, Attackness.IS_BLOCK | Attackness.MAYBE);
+            Attackable.AddTo(subject, Attackness.MAYBE);
             Damageable.AddTo(subject, new Health(1));
 
-            Faction   .AddTo(subject, Faction.Flags.Environment);
+            FactionComponent.AddTo(subject, Faction.Environment);
             Transform .AddTo(subject, Layer.WALL);
             Stats     .AddTo(subject, Registry.Global._defaultStats);
 

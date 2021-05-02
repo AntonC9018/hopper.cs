@@ -34,7 +34,7 @@ namespace Hopper.TestContent
         private static readonly StraightPattern DefaultPattern = new StraightPattern(Layer.WALL);
 
         private static readonly UnbufferedTargetProvider DefaultShooting 
-            = new UnbufferedTargetProvider(DefaultPattern, Layer.REAL);
+            = new UnbufferedTargetProvider(DefaultPattern, Layer.REAL, Faction.Any);
 
         public static void Shoot(IntVector2 position, IntVector2 direction)
         {
@@ -47,17 +47,7 @@ namespace Hopper.TestContent
             }
         }
 
-        // TODO: Code generation for these adaptors
-        // TODO: The predictions should work with target contexts?
-        public static IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction)
-        {
-            return DefaultShooting.GetTargets(
-                    // crap like this is not ok
-                    actor.GetTransform().position, 
-                    direction)
-                .Select(t => t.position);
-        }
-
-        public static readonly DirectedAction ShootAction = Action.CreateSimple(Shoot, Predict);
+        public static readonly DirectedAction ShootAction = 
+            Action.CreateSimple(Shoot, DefaultShooting.PredictPositionsBy);
     }
 }

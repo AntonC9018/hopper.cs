@@ -13,7 +13,7 @@ namespace Hopper.TestContent
         public static EntityFactory Factory;
 
         public static readonly Action GhostAction = GhostAction = 
-            Action.CreateCompositeDirected(
+            Action.ComposeDirected(
                 Action.FromActivateable(Attacking.Index),
                 Action.FromActivateable(Moving.Index));
         private const Layer TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.ITEM;

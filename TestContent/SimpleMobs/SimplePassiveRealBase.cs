@@ -13,7 +13,7 @@ namespace Hopper.TestContent.SimpleMobs
 
         public static void AddComponents(Entity subject)
         {
-            Faction.AddTo(subject, Faction.Flags.Environment);
+            FactionComponent.AddTo(subject, Faction.Environment);
             Displaceable.AddTo(subject, ExtendedLayer.BLOCK);
             Attackable.AddTo(subject, Attackness.ALWAYS);
             // TODO: Be able to manipulate stats in a simple way.

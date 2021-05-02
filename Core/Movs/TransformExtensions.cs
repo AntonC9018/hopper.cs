@@ -9,8 +9,8 @@ namespace Hopper.Core
 
             // TODO: optimize such queries
             foreach (var entity in Registry.Global._entities.map.Values)
-            if (entity.TryGetFaction(out var f) 
-                && f.faction.HasFlag(Faction.Flags.Player)
+            if (entity.TryGetFactionComponent(out var f) 
+                && f.faction.HasFlag(Faction.Player)
                 && entity.TryGetTransform(out var playerTransform))
             {
                 float curDist = (transform.position - playerTransform.position).SqMag;

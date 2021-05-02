@@ -2,6 +2,7 @@ using System.Linq;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Predictions;
+using Hopper.Core.Targeting;
 using Hopper.TestContent;
 using Hopper.TestContent.SimpleMobs;
 using Hopper.Utils.Vector;
@@ -22,7 +23,7 @@ namespace Hopper.Tests
         public void Setup()
         {
             World.Global = new World(3, 3);
-            predictor = new Predictor(World.Global, Faction.Flags.Player);
+            predictor = new Predictor(World.Global, Faction.Player);
         }
 
         [Test]
@@ -39,7 +40,7 @@ namespace Hopper.Tests
             var acting = skeleton.GetActing();
             acting.CalculateNextAction();
 
-            // Assert.True(acting.NextAction.(typeof(BehaviorAction<Attacking>)), "Will attack");
+            Assert.NotNull(acting.nextAction, "Will attack");
 
             var player = World.Global.SpawnEntity(Player.Factory, new IntVector2(1, 0));
 
@@ -61,35 +62,29 @@ namespace Hopper.Tests
         public void ExplosionPredictionWorks()
         {
             var entity = World.Global.SpawnEntity(Dummy.Factory, new IntVector2(1, 1));
-            var predictions = Explosion.DefaultExplodeAction(1).predict(entity.GetActing()).ToArray();
+            var predictions = Explosion.DefaultExplodeAction(1).predict(entity).ToArray();
             Assert.AreEqual(9, predictions.Length, "Would explode 9 cells");
         }
 
         [Test]
-        public void ShootingPredictionWorks()
+        public void PatternPredictionWorks()
         {
-            var shooting = new AnonShooting(
-                new TargetLayers
-                {
-                    targeted = Layer.REAL,
-                    skip = Layer.WALL
-                }, new Attack(), new Push(), false
-            );
+            var pattern  = new StraightPattern(Layer.WALL);
+            var provider = new UnbufferedTargetProvider(pattern, Layer.REAL, Faction.Any); 
 
             // Generating predictions relative to this point
-            var spot = new Core.Targeting.Dummy(new IntVector2(0, 1), world);
 
-            var positions = shooting.Predict(spot, IntVector2.Right);
+            var positions = provider.PredictPositionsFor(IntVector2.Zero, IntVector2.Right, Layer.REAL, Faction.Player);
 
             Assert.AreEqual(2, positions.Count());
 
-            var wall = world.SpawnEntity(new EntityFactory<Wall>(), new IntVector2(1, 1));
-            positions = shooting.Predict(spot, IntVector2.Right);
+            var wall = World.Global.SpawnEntity(Wall.Factory, new IntVector2(1, 0));
+            positions = provider.PredictPositionsFor(IntVector2.Zero, IntVector2.Right, Layer.REAL, Faction.Player);
 
             Assert.AreEqual(0, positions.Count());
 
-            wall.ResetPosInGrid(new IntVector2(2, 1));
-            positions = shooting.Predict(spot, IntVector2.Right);
+            wall.GetTransform().ResetPositionInGrid(new IntVector2(2, 0));
+            positions = provider.PredictPositionsFor(IntVector2.Zero, IntVector2.Right, Layer.REAL, Faction.Player);
 
             Assert.AreEqual(1, positions.Count());
         }

@@ -108,7 +108,7 @@ namespace Hopper.Tests
         public void StraightUnbuffered()
         {
             var pattern = new StraightPattern(stopSearchLayer : Layer.WALL);
-            var provider = new UnbufferedTargetProvider(pattern, Layer.REAL);
+            var provider = new UnbufferedTargetProvider(pattern, Layer.REAL, Faction.Any);
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 0));
             var target = provider.GetTargets(new IntVector2(3, 0), new IntVector2(-1, 0)).Single();
             Assert.AreSame(target.transform, entity.GetTransform());

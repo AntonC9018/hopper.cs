@@ -32,7 +32,7 @@ namespace Hopper.Core
             Displaceable.AddTo(subject, ExtendedLayer.BLOCK);
             Ticking.AddTo(subject);
 
-            Faction.AddTo(subject, Faction.Flags.Player);
+            FactionComponent.AddTo(subject, Faction.Player);
             Transform.AddTo(subject, Layer.REAL);
             Inventory.AddTo(subject);
 

@@ -16,7 +16,7 @@ namespace Hopper.TestContent
         {
             Stats.AddTo(subject, Registry.Global._defaultStats);
             Transform.AddTo(subject, Layer.REAL);
-            Faction.AddTo(subject, Faction.Flags.Enemy);
+            FactionComponent.AddTo(subject, Faction.Enemy);
             History.AddTo(subject);
             
             Acting    .AddTo(subject, Sequential.CalculateAction, Algorithm, Order.Entity);

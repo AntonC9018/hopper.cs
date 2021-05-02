@@ -12,7 +12,7 @@ namespace Hopper.TestContent.SimpleMobs
 
         public static void AddComponents(Entity subject)
         {
-            var attackMoveAction = Action.CreateCompositeDirected(
+            var attackMoveAction = Action.ComposeDirected(
                 Action.FromActivateable(Attacking.Index),
                 Action.FromActivateable(Moving.Index)
             );

@@ -18,7 +18,7 @@ namespace Hopper.TestContent.Projectiles
         {
             Stats.AddTo(subject, Registry.Global._defaultStats);
             Transform.AddTo(subject, Layer.PROJECTILE);
-            Faction.AddTo(subject, Faction.Flags.Environment);
+            FactionComponent.AddTo(subject, Faction.Environment);
             Displaceable.AddTo(subject, 0);
             ProjectileComponent.AddTo(subject, Layer.REAL | Layer.WALL | Layer.PROJECTILE);
             Attackable.AddTo(subject, Attackness.CAN_BE_ATTACKED);

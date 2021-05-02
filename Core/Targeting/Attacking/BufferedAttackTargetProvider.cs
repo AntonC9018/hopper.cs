@@ -92,10 +92,10 @@ namespace Hopper.Core.Targeting
                     // Try getting the blocks first, since those block the posibillity 
                     // of attacking the entity at all.
                     World.Global.grid.TryGetTransformFromLayer(
-                        ctx.position, ctx.direction, blockLayer, out ctx.transform)
+                        ctx.position, ctx.direction, blockLayer, out ctx.normal.transform)
                     // Try getting actual targets next
                     || World.Global.grid.TryGetTransformFromLayer(
-                        ctx.position, ctx.direction, targetedLayer, out ctx.transform))
+                        ctx.position, ctx.direction, targetedLayer, out ctx.normal.transform))
 
                         // Get its attackable afterwards
                         // ? Although this is probably not relevant for the walls.
@@ -118,7 +118,7 @@ namespace Hopper.Core.Targeting
             if (
                 World.Global.grid.HasNoTransformAt(context.position, context.direction, skipLayer)
                 && World.Global.grid.TryGetTransformFromLayer(
-                    context.position, context.direction, targetedLayer, out context.transform)
+                    context.position, context.direction, targetedLayer, out context.normal.transform)
                 && context.transform.entity.TryGetAttackable(out var attackable))
             {
                 context.attackness = attackable._attackness;

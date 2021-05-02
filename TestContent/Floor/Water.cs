@@ -81,7 +81,7 @@ namespace Hopper.TestContent.Floor
         {
             Stats.AddTo(subject, Registry.Global._defaultStats);
             Transform.AddTo(subject, Layer.REAL);
-            Faction.AddTo(subject, Faction.Flags.Environment);
+            FactionComponent.AddTo(subject, Faction.Environment);
 
         }
 

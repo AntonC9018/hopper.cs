@@ -7,9 +7,9 @@ namespace Hopper.Core.Predictions
     public class Predictor
     {
         public World world;
-        public Faction.Flags targetedFaction;
+        public Faction targetedFaction;
 
-        public Predictor(World world, Faction.Flags targetedFaction)
+        public Predictor(World world, Faction targetedFaction)
         {
             this.world = world;
             this.targetedFaction = targetedFaction;
@@ -21,7 +21,7 @@ namespace Hopper.Core.Predictions
             foreach (var actings in world.state.actings)
             foreach (var acting in actings)
             {
-                if (!acting.actor.TryCheckFaction(targetedFaction, out bool result) && result)
+                if (!acting.actor.TryCheckFaction(~targetedFaction, out bool result) && result)
                 {
                     if (acting.nextAction == null)
                     {

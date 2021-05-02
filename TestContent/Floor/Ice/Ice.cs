@@ -13,7 +13,7 @@ namespace Hopper.TestContent.Floor
         public static void AddComponents(Entity subject)
         {
             Transform.AddTo(subject, Layer.REAL);
-            Faction.AddTo(subject, Faction.Flags.Enemy);
+            FactionComponent.AddTo(subject, Faction.Enemy);
             Damageable.AddTo(subject, new Health(1));
             SlipperyComponent.AddTo(subject);
         }

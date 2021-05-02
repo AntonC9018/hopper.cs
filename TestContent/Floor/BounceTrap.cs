@@ -15,7 +15,7 @@ namespace Hopper.TestContent.Floor
         {
             Stats.AddTo(subject, Registry.Global._defaultStats);
             Transform.AddTo(subject, Layer.TRAP);
-            Faction.AddTo(subject, Faction.Flags.Enemy);
+            FactionComponent.AddTo(subject, Faction.Enemy);
             Acting.AddTo(subject, ctx => BounceAction.ToParticular(), Algos.SimpleAlgo, Order.Trap);
             Damageable.AddTo(subject, new Health(1));
             Ticking.AddTo(subject);

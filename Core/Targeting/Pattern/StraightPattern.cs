@@ -12,14 +12,14 @@ namespace Hopper.Core.Targeting
             _stopSearchLayer = stopSearchLayer;
         }
 
-        public IEnumerable<TargetContext> MakeContexts(IntVector2 position, IntVector2 direction)
+        public IEnumerable<PositionAndDirection> GetPositionsAndDirections(IntVector2 position, IntVector2 direction)
         {
             position += direction;
 
             while (World.Global.grid.IsInBounds(position) 
                 && World.Global.grid.HasNoTransformAt(position, direction, _stopSearchLayer))
             {
-                yield return new TargetContext(position, direction);
+                yield return new PositionAndDirection(position, direction);
                 position += direction;
             }
         }

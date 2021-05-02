@@ -50,7 +50,7 @@ namespace Hopper.TestContent.Boss
     {
         public static EntityFactory Factory;
         
-        private static readonly DirectedAction AttackMoveAction = Action.CreateCompositeDirected(
+        private static readonly DirectedAction AttackMoveAction = Action.ComposeDirected(
             Action.FromActivateable(Attacking.Index),
             Action.FromActivateable(Moving.Index)
         );
@@ -101,7 +101,7 @@ namespace Hopper.TestContent.Boss
     {
         public static EntityFactory Factory;
 
-        private static readonly DirectedAction AttackMoveAction = Action.CreateCompositeDirected(
+        private static readonly DirectedAction AttackMoveAction = Action.ComposeDirected(
             Action.FromActivateable(Attacking.Index),
             Action.FromActivateable(Moving.Index)
         );

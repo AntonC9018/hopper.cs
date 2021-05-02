@@ -17,7 +17,7 @@ namespace Hopper.Core
     {
         public abstract ParticularAction ToParticular();
 
-        public static DirectedAction CreateCompositeDirected(params DirectedAction[] actions)
+        public static DirectedAction ComposeDirected(params DirectedAction[] actions)
         {
             var functions = (from action in actions select action.function).ToArray();
             var predicts = (from action in actions where action.predict != null select action.predict).ToArray();
