@@ -15,25 +15,14 @@ namespace Hopper.Core
         Any = ~0 // 0xFFFFFFFF or -1
     }
 
-    // TODO: Generate automatically for flags! 
-    public static class FactionExtensions
-    {
-        public static bool AreEitherSet(this Faction attackness, Faction flags)
-        {
-            return (attackness & flags) != 0;
-        }
-    }
-
     public partial class FactionComponent : IComponent
     {
-        
         [Inject] public Faction faction;
-
 
         [Alias("IsPlayer")]
         public bool IsPlayer() => faction.HasFlag(Faction.Player);
 
         [Alias("CheckFaction")]
-        public bool CheckFaction(Faction flags) => faction.AreEitherSet(flags); 
+        public bool CheckFaction(Faction flags) => faction.HasEitherFlag(flags); 
     }
 }

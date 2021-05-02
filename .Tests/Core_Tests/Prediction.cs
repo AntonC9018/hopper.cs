@@ -12,8 +12,6 @@ namespace Hopper.Tests
 {
     public class Prediction_Tests
     {
-        public Predictor predictor;
-
         public Prediction_Tests()
         {
             InitScript.Init();
@@ -23,13 +21,13 @@ namespace Hopper.Tests
         public void Setup()
         {
             World.Global = new World(3, 3);
-            predictor = new Predictor(World.Global, Faction.Player);
         }
 
         [Test]
         public void WithoutEnemies_ThereAreNoBadCells()
         {
             var player = World.Global.SpawnEntity(Player.Factory, new IntVector2(0, 0));
+            var predictor = new Predictor(World.Global, Layer.REAL, Faction.Player);
             Assert.Zero(predictor.GetBadPositions().Count());
         }
 
@@ -43,7 +41,8 @@ namespace Hopper.Tests
             Assert.NotNull(acting.nextAction, "Will attack");
 
             var player = World.Global.SpawnEntity(Player.Factory, new IntVector2(1, 0));
-
+            var predictor = new Predictor(World.Global, Layer.REAL, Faction.Player);
+            
             // Just in case, assert that the faction works correctly
             Assert.True(player.IsPlayer(), "IsPlayer says we are player");
 
@@ -62,7 +61,8 @@ namespace Hopper.Tests
         public void ExplosionPredictionWorks()
         {
             var entity = World.Global.SpawnEntity(Dummy.Factory, new IntVector2(1, 1));
-            var predictions = Explosion.DefaultExplodeAction(1).predict(entity).ToArray();
+            var info = new PredictionTargetInfo(Layer.Any, Faction.Any);
+            var predictions = Explosion.DefaultExplodeAction(1).predict(entity, info).ToArray();
             Assert.AreEqual(9, predictions.Length, "Would explode 9 cells");
         }
 
@@ -73,18 +73,19 @@ namespace Hopper.Tests
             var provider = new UnbufferedTargetProvider(pattern, Layer.REAL, Faction.Any); 
 
             // Generating predictions relative to this point
+            var info = new PredictionTargetInfo(Layer.REAL, Faction.Player);
 
-            var positions = provider.PredictPositionsFor(IntVector2.Zero, IntVector2.Right, Layer.REAL, Faction.Player);
+            var positions = provider.PredictPositions(IntVector2.Zero, IntVector2.Right, info);
 
             Assert.AreEqual(2, positions.Count());
 
             var wall = World.Global.SpawnEntity(Wall.Factory, new IntVector2(1, 0));
-            positions = provider.PredictPositionsFor(IntVector2.Zero, IntVector2.Right, Layer.REAL, Faction.Player);
+            positions = provider.PredictPositions(IntVector2.Zero, IntVector2.Right, info);
 
             Assert.AreEqual(0, positions.Count());
 
             wall.GetTransform().ResetPositionInGrid(new IntVector2(2, 0));
-            positions = provider.PredictPositionsFor(IntVector2.Zero, IntVector2.Right, Layer.REAL, Faction.Player);
+            positions = provider.PredictPositions(IntVector2.Zero, IntVector2.Right, info);
 
             Assert.AreEqual(1, positions.Count());
         }

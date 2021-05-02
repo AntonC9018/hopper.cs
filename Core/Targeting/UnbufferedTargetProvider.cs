@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hopper.Core.Components;
+using Hopper.Core.Predictions;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
 using static Hopper.Core.Faction;
@@ -43,7 +44,7 @@ namespace Hopper.Core.Targeting
 
         public bool WhetherMayAffect(Layer targetLayer, Faction targetFaction)
         {
-            return _targetedFaction.AreEitherSet(targetFaction) && _targetedLayer.HasEitherFlag(targetLayer);
+            return _targetedFaction.HasEitherFlag(targetFaction) && _targetedLayer.HasEitherFlag(targetLayer);
         }
 
         /// <summary>
@@ -53,10 +54,10 @@ namespace Hopper.Core.Targeting
         /// If the target provider may never target the given layer / faction,
         /// this returns an empty enumerable.
         /// </summary>
-        public IEnumerable<IntVector2> PredictPositionsFor(
-            IntVector2 position, IntVector2 direction, Layer targetLayer, Faction targetFaction)
+        public IEnumerable<IntVector2> PredictPositions(
+            IntVector2 position, IntVector2 direction, PredictionTargetInfo info)
         {
-            return PredictPositionsAndDirectionsFor(position, direction, targetLayer, targetFaction).Select(pd => pd.position);
+            return PredictPositionsAndDirections(position, direction, info).Select(pd => pd.position);
         }
 
         /// <summary>
@@ -66,10 +67,10 @@ namespace Hopper.Core.Targeting
         /// If the target provider may never target the given layer / faction,
         /// this returns an empty enumerable.
         /// </summary>
-        public IEnumerable<PositionAndDirection> PredictPositionsAndDirectionsFor(
-            IntVector2 position, IntVector2 direction, Layer targetLayer, Faction targetFaction)
+        public IEnumerable<PositionAndDirection> PredictPositionsAndDirections(
+            IntVector2 position, IntVector2 direction, PredictionTargetInfo info)
         {
-            if (WhetherMayAffect(targetLayer, targetFaction))
+            if (WhetherMayAffect(info.layer, info.faction))
             {
                 return _pattern.GetPositionsAndDirections(position, direction);
             }
@@ -107,24 +108,16 @@ namespace Hopper.Core.Targeting
         /// This function returns the positions that would be targeted by the given
         /// entity if the GetTargets() function were to be evaluated at their position.
         /// </summary>
-        public IEnumerable<IntVector2> PredictPositionsBy(Entity actor, IntVector2 direction)
+        public IEnumerable<IntVector2> PredictPositionsBy(
+            Entity actor, IntVector2 direction, PredictionTargetInfo info)
         {
-            return PredictPositions(actor.GetTransform().position, direction);
+            return PredictPositions(actor.GetTransform().position, direction, info);
         }
 
-        public IEnumerable<IntVector2> PredictPositions(IntVector2 position, IntVector2 direction)
+        public IEnumerable<PositionAndDirection> PredictPositionsAndDirectionsBy(
+            Entity actor, IntVector2 direction, PredictionTargetInfo info)
         {
-            return _pattern.GetPositionsAndDirections(position, direction).Select(pd => pd.position);
-        }
-
-        public IEnumerable<PositionAndDirection> PredictPositionsAndDirectionsBy(Entity actor, IntVector2 direction)
-        {
-            return PredictPositionsAndDirections(actor.GetTransform().position, direction);
-        }
-
-        public IEnumerable<PositionAndDirection> PredictPositionsAndDirections(IntVector2 position, IntVector2 direction)
-        {
-            return _pattern.GetPositionsAndDirections(position, direction);
+            return PredictPositionsAndDirections(actor.GetTransform().position, direction, info);
         }
     }
 }

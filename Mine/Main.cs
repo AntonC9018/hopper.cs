@@ -26,8 +26,8 @@ namespace Hopper.Mine
             var acting = skeleton.GetActing();
             acting.CalculateNextAction();
 
-            var predictor = new Predictor(World.Global, Faction.Player);
             var player = World.Global.SpawnEntity(Player.Factory, new IntVector2(1, 0));
+            var predictor = new Predictor(World.Global, Layer.REAL, Faction.Player);
             var predictedPositions = predictor.GetBadPositions();
         }
     }

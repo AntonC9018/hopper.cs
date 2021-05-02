@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using Hopper.Core.Components.Basic;
-using Hopper.Core.History;
-using Hopper.Utils;
 
 namespace Hopper.Core
 {

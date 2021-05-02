@@ -43,8 +43,8 @@ namespace Hopper.TestContent
         // TODO: Add a parameter for exposion attack stat
         public static UndirectedAction DefaultExplodeAction(int radius) =>
             Action.CreateSimple(
-                actor => Explosion.Explode(actor.GetTransform().position, radius),
-                actor => PredictExplodePositions(actor.GetTransform(), radius)
+                actor         => Explosion.Explode(actor.GetTransform().position, radius),
+                (actor, info) => PredictExplodePositions(actor.GetTransform(), radius)
             );
 
         /// <summary>

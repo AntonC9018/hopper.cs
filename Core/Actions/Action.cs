@@ -8,8 +8,8 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
-    public delegate IEnumerable<IntVector2> DirectedPredict(Entity actor, IntVector2 direction);
-    public delegate IEnumerable<IntVector2> UndirectedPredict(Entity actor);
+    public delegate IEnumerable<IntVector2> DirectedPredict(Entity actor, IntVector2 direction,  PredictionTargetInfo info);
+    public delegate IEnumerable<IntVector2> UndirectedPredict(Entity actor, PredictionTargetInfo info);
     public delegate bool DirectedDo(Entity actor, IntVector2 direction);
     public delegate bool UndirectedDo(Entity actor);
 
@@ -192,7 +192,7 @@ namespace Hopper.Core
 
             if (typeof(IBehaviorPredictable).IsAssignableFrom(typeof(T)))
             {
-                action.predict = (entity, d) => PredictVia(index, entity, d);
+                action.predict = (entity, direction, info) => PredictVia(index, entity, direction, info);
             }
 
             return action;
@@ -218,11 +218,11 @@ namespace Hopper.Core
         {
             public DirectedPredict[] predicts;
 
-            public IEnumerable<IntVector2> PredictAll(Entity actor, IntVector2 direction)
+            public IEnumerable<IntVector2> PredictAll(Entity actor, IntVector2 direction,  PredictionTargetInfo info)
             {
                 foreach (var predict in predicts)
                 {
-                    foreach (var vec in predict(actor, direction))
+                    foreach (var vec in predict(actor, direction, info))
                     {
                         yield return vec;
                     }
@@ -234,11 +234,11 @@ namespace Hopper.Core
         {
             public UndirectedPredict[] predicts;
 
-            public IEnumerable<IntVector2> PredictAll(Entity actor)
+            public IEnumerable<IntVector2> PredictAll(Entity actor, PredictionTargetInfo info)
             {
                 foreach (var predict in predicts)
                 {
-                    foreach (var vec in predict(actor))
+                    foreach (var vec in predict(actor, info))
                     {
                         yield return vec;
                     }
@@ -253,11 +253,11 @@ namespace Hopper.Core
             return actor.GetComponent(index).Activate(actor, direction);
         }
 
-        private static IEnumerable<IntVector2> PredictVia<T>(Index<T> index, Entity actor, IntVector2 direction)
+        private static IEnumerable<IntVector2> PredictVia<T>(Index<T> index, Entity actor, IntVector2 direction, PredictionTargetInfo info)
             where T : IComponent, IStandartActivateable
         {
             Assert.That(actor.HasComponent(index), "Cannot predict if the target behavior is missing");
-            return ((IBehaviorPredictable)actor.GetComponent(index)).Predict(actor, direction);
+            return ((IBehaviorPredictable)actor.GetComponent(index)).Predict(actor, direction, info);
         }
     }
 }

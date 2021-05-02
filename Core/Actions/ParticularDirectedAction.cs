@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.Predictions;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core
@@ -20,11 +21,11 @@ namespace Hopper.Core
             return action.function(actor, direction);
         }
 
-        public IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction)
+        public IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction,  PredictionTargetInfo info)
         {
             if (action.predict != null)
             {
-                return action.predict(actor, direction);
+                return action.predict(actor, direction, info);
             }
             return Enumerable.Empty<IntVector2>();
         }

@@ -14,6 +14,7 @@ namespace Hopper.Core
         FLOOR = 0b_0010_0000,
         TRAP = 0b_0100_0000,
         DROPPED = 0b_1000_0000,
+        Any = ~0
     }
 
     public static class ExtendedLayer

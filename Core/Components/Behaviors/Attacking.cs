@@ -66,7 +66,7 @@ namespace Hopper.Core.Components.Basic
         /// This is one of the default handlers of the CHECK chain.
         /// It finds targets using the target provider of the currently equipped weapon, if the entity has an inventory.
         /// </summary>
-        [Export(Priority = PriorityRank.Low)] public static void SetTargets(Context ctx)
+        [Export(Priority = PriorityRank.Low)] public static void SetTargetsFromInventory(Context ctx)
         {
             if (
                 ctx.targetingContext == null
@@ -118,10 +118,11 @@ namespace Hopper.Core.Components.Basic
 
         /// <summary>
         /// Returns the positions that would be attacked if the behavior's activate were to be called. 
+        /// TODO: use the info on layers and the faction to return better estimations
         /// </summary>
-        public IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction)
+        public IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction, PredictionTargetInfo info)
         {
-            if (_DoChain.Contains(SetTargetsRightBesideHandler))
+            if (_CheckChain.Contains(SetTargetsRightBesideHandler))
             {
                 yield return actor.GetTransform().position + direction;
             }
@@ -143,13 +144,13 @@ namespace Hopper.Core.Components.Basic
         // Do    { ApplyAttack, ApplyPush, UpdateHistory }
         public void InventoryPreset()
         {
-            _CheckChain.AddMany(SetTargetsHandler, SetStatsHandler);
+            _CheckChain.AddMany(SetStatsHandler, SetTargetsFromInventoryHandler);
             _DoChain.AddMany(ApplyAttacksHandler, ApplyPushesHandler);            
         }
 
         public void NoInventoryPreset()
         {
-            _CheckChain.AddMany(SetTargetsHandler, SetStatsHandler);
+            _CheckChain.AddMany(SetStatsHandler, SetTargetsRightBesideHandler);
             _DoChain.AddMany(ApplyAttacksHandler, ApplyPushesHandler);            
         }
 
