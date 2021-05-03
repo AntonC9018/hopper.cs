@@ -16,25 +16,25 @@ namespace Hopper.Core.Items
         public int GetCost() => weight;
     }
     
-    public class LootSubTable : Dictionary<Identifier, LootTableItem>
+    public class LootTable : Dictionary<Identifier, LootTableItem>
     {
         public int sum;
 
-        public LootSubTable(Dictionary<Identifier, LootTableItem> items) : base(items)
+        public LootTable(Dictionary<Identifier, LootTableItem> items) : base(items)
         {
             this.sum = Values.Sum(it => it.GetCost());
         }
 
-        public LootSubTable(LootSubTable other) : base(other)
+        public LootTable(LootTable other) : base(other)
         {
             this.sum = other.sum;
         }
 
-        public LootSubTable()
+        public LootTable()
         {
         }
 
-        public LootSubTable(int capacity) : base(capacity)
+        public LootTable(int capacity) : base(capacity)
         {
         }
 
@@ -83,44 +83,23 @@ namespace Hopper.Core.Items
         }
     }
 
-    public interface IPool
+    public class LootTablesWrapper : Dictionary<Identifier, LootTable>, IPool
     {
-        Identifier DrawFrom(Identifier poolId);
-    }
-
-    public class LootTable : IPool
-    {
-        public LootTable templatePool;
-        public Dictionary<Identifier, LootSubTable> subTables;
         public System.Random rng; // let's have just one rng for now
 
-        public LootTable(LootTable templatePool)
+        public LootTablesWrapper(LootTablesWrapper templatePool) : base(templatePool)
         {
-            this.templatePool = templatePool;
-
-            this.subTables = new Dictionary<Identifier, LootSubTable>(templatePool.subTables.Count);
-            foreach (var kvp in templatePool.subTables)
-                this.subTables[kvp.Key] = new LootSubTable(kvp.Value);
-
             this.rng = new System.Random(1);
         }
 
-        public LootTable()
+        public LootTablesWrapper() : base()
         {
-            this.rng = null;
-            this.templatePool = null;
-
-            this.subTables = new Dictionary<Identifier, LootSubTable>();
-        }
-
-        public void Add(Identifier poolId, LootSubTable subTable)
-        {
-            subTables[poolId] = subTable;
+            this.rng = new System.Random(1);
         }
 
         public Identifier DrawFrom(Identifier poolId)
         {
-            var pool = subTables[poolId];
+            var pool = this[poolId];
             var roll = rng.NextDouble();
             return pool.Draw(roll);
         }

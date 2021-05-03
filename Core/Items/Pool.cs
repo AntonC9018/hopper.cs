@@ -4,6 +4,11 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Items
 {
+    public interface IPool
+    {
+        Identifier DrawFrom(Identifier poolId);
+    }
+
     // I have decided to do a really simple less than pool based on tables.
     // The deck pool which I had before is wacky.
     // There is another, more advanced option that I could think of, based on binary trees.
@@ -102,45 +107,36 @@ namespace Hopper.Core.Items
         }
     }
     
-    public class Pool : IPool
+    public class Pool : Dictionary<Identifier, SubPool>, IPool
     {
         public Pool templatePool;
-        public Dictionary<Identifier, SubPool> subPools;
         public System.Random rng; // let's have just one rng for now
         
         public Pool(Pool templatePool)
         {
             this.templatePool = templatePool;
 
-            this.subPools = new Dictionary<Identifier, SubPool>(templatePool.subPools.Count);
-            foreach (var kvp in templatePool.subPools) 
-                this.subPools[kvp.Key] = new SubPool(kvp.Value);
+            foreach (var kvp in templatePool) 
+                this[kvp.Key] = new SubPool(kvp.Value);
 
             this.rng = new System.Random(1);
         }
 
-        public Pool()
+        public Pool() : base()
         {
             this.rng = null;
             this.templatePool = null;
-            
-            this.subPools = new Dictionary<Identifier, SubPool>();
-        }
-
-        public void Add(Identifier poolId, SubPool subpool)
-        {
-            subPools[poolId] = subpool;
         }
 
         public Identifier DrawFrom(Identifier poolId)
         {
-            var pool   = subPools[poolId];
+            var pool   = this[poolId];
             var roll   = rng.NextDouble();
             var itemId = pool.Draw(roll);
 
-            foreach (var subpool in subPools.Values)
+            foreach (var subpool in Values)
             {
-                subpool.AdjustAmount(itemId, 1);
+                subpool.AdjustAmount(itemId, -1);
             }
 
             MaybeRefresh();
@@ -151,13 +147,13 @@ namespace Hopper.Core.Items
         // Refreshes subpools at most once
         public void MaybeRefresh()
         {
-            foreach (var kvp in subPools)
+            foreach (var kvp in this)
             {
                 if (kvp.Value.IsExhausted())
                 {
-                    var reference = templatePool.subPools[kvp.Key];
+                    var reference = templatePool[kvp.Key];
 
-                    foreach (var subpool in subPools.Values)
+                    foreach (var subpool in Values)
                     foreach (var item    in reference)
                     {
                         subpool.AdjustAmount(item.Key, item.Value.amount);
