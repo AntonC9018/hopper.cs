@@ -87,6 +87,7 @@ namespace Hopper.Core.Items
         public Identifier Draw(double roll)
         {
             Assert.That(!IsExhausted(), "Cannot draw from an empty or exhausted pool.");
+            Assert.That(roll >= 0 && roll < 1, "Roll must be bound between 0 and 1");
 
             int rolledSum = (int)(sum * roll) + 1;
             

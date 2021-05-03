@@ -67,6 +67,9 @@ namespace Hopper.Core.Items
 
         public Identifier Draw(double roll)
         {
+            Assert.That(!IsEmpty(), "Cannot draw from an empty pool.");
+            Assert.That(roll >= 0 && roll < 1, "Roll must be bound between 0 and 1");
+
             int rolledSum = (int)(sum * roll) + 1;
             
             foreach (var kvp in this)
@@ -76,7 +79,7 @@ namespace Hopper.Core.Items
                 if (rolledSum <= 0) return kvp.Key;
             }
 
-            throw new System.Exception("The pool has been exhausted");
+            return default;
         }
     }
 
