@@ -156,10 +156,10 @@ namespace Hopper.Utils.Vector
         public IntVector2 Round()
         {
             return new IntVector2
-            {
-                x = (int)Math.Round(x),
-                y = (int)Math.Round(y)
-            };
+            (
+                x : (int)Math.Round(x),
+                y : (int)Math.Round(y)
+            );
         }
 
         public static explicit operator IntVector2(Vector2 v)

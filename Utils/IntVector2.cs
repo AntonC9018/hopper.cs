@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Hopper.Utils.Vector
 {
-    public struct IntVector2 : IEquatable<IntVector2>
+    public readonly struct IntVector2 : IEquatable<IntVector2>
     {
-        public int x;
-        public int y;
+        public readonly int x;
+        public readonly int y;
 
         public static readonly IntVector2 Zero = new IntVector2(0, 0);
         public static readonly IntVector2 Right = new IntVector2(1, 0);
@@ -101,47 +101,27 @@ namespace Hopper.Utils.Vector
 
         public static IntVector2 operator +(IntVector2 a, IntVector2 b)
         {
-            return new IntVector2
-            {
-                x = a.x + b.x,
-                y = a.y + b.y
-            };
+            return new IntVector2(a.x + b.x, a.y + b.y);
         }
 
         public static IntVector2 operator -(IntVector2 a, IntVector2 b)
         {
-            return new IntVector2
-            {
-                x = a.x - b.x,
-                y = a.y - b.y
-            };
+            return new IntVector2(a.x - b.x, a.y - b.y);
         }
 
         public static IntVector2 operator -(IntVector2 a)
         {
-            return new IntVector2
-            {
-                x = -a.x,
-                y = -a.y
-            };
+            return new IntVector2(-a.x, -a.y);
         }
 
         public static IntVector2 operator *(IntVector2 a, int c)
         {
-            return new IntVector2
-            {
-                x = a.x * c,
-                y = a.y * c
-            };
+            return new IntVector2(a.x * c, a.y * c);
         }
 
         public static IntVector2 operator /(IntVector2 a, int c)
         {
-            return new IntVector2
-            {
-                x = a.x / c,
-                y = a.y / c
-            };
+            return new IntVector2(a.x / c, a.y /c);
         }
 
         public override bool Equals(object obj)
@@ -172,11 +152,10 @@ namespace Hopper.Utils.Vector
 
         public IntVector2 MatMul(IntVector2 i_hat, IntVector2 j_hat)
         {
-            return new IntVector2
-            {
-                x = i_hat.x * x + j_hat.x * y,
-                y = i_hat.y * x + j_hat.y * y
-            };
+            return new IntVector2(
+                i_hat.x * x + j_hat.x * y,
+                i_hat.y * x + j_hat.y * y
+            );
         }
 
         public int SqMag => x * x + y * y;
@@ -192,15 +171,15 @@ namespace Hopper.Utils.Vector
         {
             return MatMul(
                 new IntVector2
-                {
-                    x = (int)Math.Cos(angle_in_rads),
-                    y = (int)Math.Sin(angle_in_rads)
-                },
+                (
+                    x : (int)Math.Cos(angle_in_rads),
+                    y : (int)Math.Sin(angle_in_rads)
+                ),
                 new IntVector2
-                {
-                    x = -(int)Math.Sin(angle_in_rads),
-                    y = (int)Math.Cos(angle_in_rads)
-                }
+                (
+                    x : -(int)Math.Sin(angle_in_rads),
+                    y : (int)Math.Cos(angle_in_rads)
+                )
             );
         }
 
@@ -208,41 +187,33 @@ namespace Hopper.Utils.Vector
         {
             return MatMul(
                 new IntVector2
-                {
-                    x = (int)Math.Round(Math.Cos(angle_in_rads)),
-                    y = (int)Math.Round(Math.Sin(angle_in_rads))
-                },
+                (
+                    x : (int)Math.Round(Math.Cos(angle_in_rads)),
+                    y : (int)Math.Round(Math.Sin(angle_in_rads))
+                ),
                 new IntVector2
-                {
-                    x = -(int)Math.Round(Math.Sin(angle_in_rads)),
-                    y = (int)Math.Round(Math.Cos(angle_in_rads))
-                }
+                (
+                    x : -(int)Math.Round(Math.Sin(angle_in_rads)),
+                    y : (int)Math.Round(Math.Cos(angle_in_rads))
+                )
             );
         }
 
         public IntVector2 RotateHalfPi()
         {
             return MatMul(
-                new IntVector2
-                {
-                    x = 0,
-                    y = 1
-                },
-                new IntVector2
-                {
-                    x = -1,
-                    y = 0
-                }
+                new IntVector2(0, 1),
+                new IntVector2(-1, 0)
             );
         }
 
         public IntVector2 Sign()
         {
             return new IntVector2
-            {
-                x = x == 0 ? 0 : (x > 0 ? 1 : -1),
-                y = y == 0 ? 0 : (y > 0 ? 1 : -1)
-            };
+            (
+                x : x == 0 ? 0 : (x > 0 ? 1 : -1),
+                y : y == 0 ? 0 : (y > 0 ? 1 : -1)
+            );
         }
 
         public override string ToString()
@@ -255,11 +226,7 @@ namespace Hopper.Utils.Vector
 
         public IntVector2 HadamardProduct(IntVector2 vector2)
         {
-            return new IntVector2
-            {
-                x = x * vector2.x,
-                y = y * vector2.y
-            };
+            return new IntVector2(x * vector2.x, y * vector2.y);
         }
 
         public int ComponentSum()
@@ -270,10 +237,10 @@ namespace Hopper.Utils.Vector
         public IntVector2 Abs()
         {
             return new IntVector2
-            {
-                x = x > 0 ? x : -x,
-                y = y > 0 ? y : -y
-            };
+            (
+                x : x > 0 ? x : -x,
+                y : y > 0 ? y : -y
+            );
         }
 
         public bool Equals(IntVector2 other)

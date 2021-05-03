@@ -1,9 +1,9 @@
 namespace Hopper.Core.Predictions
 {
-    public struct PredictionTargetInfo
+    public readonly struct PredictionTargetInfo
     {
-        public Layer layer;
-        public Faction faction;
+        public readonly Layer layer;
+        public readonly Faction faction;
 
         public PredictionTargetInfo(Layer layer, Faction faction)
         {

@@ -1,6 +1,9 @@
 #define MAIN_WILL_BE_DELETED
 #if !MAIN_WILL_BE_DELETED
 
+// This is old code and it is not going to work with the current version.
+// See tests for examples.
+
 using System.Collections.Generic;
 using Hopper.Utils.Vector;
 using Hopper.Core;

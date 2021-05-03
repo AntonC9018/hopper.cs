@@ -68,11 +68,11 @@ namespace Hopper.Core
                     // block diagonal movement if corner barriers are present
                     if (t.orientation.x == dir.x)
                     {
-                        dir.x = 0;
+                        dir = new IntVector2(0, dir.y);
                     }
                     if (t.orientation.y == dir.y)
                     {
-                        dir.y = 0;
+                        dir = new IntVector2(dir.x, 0);
                     }
                     if (dir == IntVector2.Zero)
                     {
