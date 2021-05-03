@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using Hopper.Core.Items;
 using Hopper.Core;
 using System.Collections.Generic;
 

@@ -32,10 +32,16 @@ namespace Hopper.TestContent.Bind
         }
 
         // No disaplacements
-        [Export(Chain = "Displaceable.Check", Dynamic = true)]
+        [Export(Chain = "Moving.Do", Priority = PriorityRank.High, Dynamic = true)]
         public bool StopDisplacement()
         {
-            return !guest.IsDead();
+            // continue if the guest is dead
+            // return guest.IsDead();
+            // This literally does not even matter, because if the guest did die,
+            // this handler will not be here. I guess the only concern are other events,
+            // but those cannot happen without leaving the current cell
+            // This means we are free to just return false here.
+            return false;
         }
 
         // TODO: apply attacks of type explosion to the guest instead
@@ -52,7 +58,7 @@ namespace Hopper.TestContent.Bind
         // The hookable that defines the exact effect applying 
         // this type of bind will have on the target entity.
         [Inject] public Layer targetedLayer;
-        public IHookable hookable;
+        [Inject] public IHookable hookable;
         public Transform host;
 
         public bool Activate(Entity actor, IntVector2 direction)
@@ -67,11 +73,13 @@ namespace Hopper.TestContent.Bind
             }
             var transform = actor.GetTransform();
             var targets = transform.GetAllUndirectedButSelfFromLayerRelative(targetedLayer, direction);
-
+            
             foreach (var t in targets)
             {
                 if (TryApplyTo(transform, t))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -87,7 +95,7 @@ namespace Hopper.TestContent.Bind
 
             actor.entity.GetStats().GetLazy(Stat.Bind.Index, out var stat);
 
-            if (Stat.Bind.Source.CheckResistance(target.entity, stat.power))
+            if (!Stat.Bind.Source.CheckResistance(target.entity, stat.power))
             {
                 ApplyTo(actor, target);
             }
@@ -97,21 +105,28 @@ namespace Hopper.TestContent.Bind
 
         public void ApplyTo(Transform actor, Transform target)
         {
-            var modifier = new BoundEntityModifier(actor.entity);
+            BoundEntityModifier.AddTo(target.entity, actor.entity);
 
             // Now the exact effect is defined by the injects, so we can just hook it.
-            hookable.HookTo(target.entity);
+            hookable.TryHookTo(target.entity);
 
             // We're not done though. If the binding entity dies, the hookable needs to be removed.
             // The host also needs to be restored in the grid.
-            GuestDiedCallbackHandlerWrapper.HookTo(actor.entity);
+            GuestDiedCallbackHandlerWrapper.TryHookTo(actor.entity);
+
+            // TODO: store these data for the viewmodel somehow
+            host = target;
+            actor.RemoveFromGrid();
+            actor.position = target.position;
         }
 
         [Export(Chain = "Damageable.Death", Dynamic = true)]
         public void GuestDiedCallback()
         {
-            host.ResetInGrid();
-            hookable.UnhookFrom(host.entity);
+            // The spider is the one who's not in the grid
+            // host.ResetInGrid();
+            hookable.TryUnhookFrom(host.entity);
+            host.entity.TryRemoveComponent(BoundEntityModifier.Index);
         }
 
         public void HostDiedCallback(Entity actor)

@@ -1,13 +1,11 @@
 <# foreach (var chain in behavior.chains) { #>
-        public Chain<Context> _<#= chain.Name #>Chain;
+        public readonly Chain<Context> _<#= chain.Name #>Chain;
 
         /// <summary>
         /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity / entity factory.
         /// </summary>
-        public static readonly ChainPath<Chain<Context>> <#= chain.Name #>Path = new ChainPath<Chain<Context>>
-        { 
-            Chain = (Entity entity) => entity.GetComponent(Index)._<#= chain.Name #>Chain
-        };
+        public static readonly ChainPath<Chain<Context>> <#= chain.Name #>Path = new ChainPath<Chain<Context>>(
+            (Entity entity) => entity.TryGetComponent(Index, out var component) ? component._<#= chain.Name #>Chain : null);
 
 <# if (chain.ShouldGenerateParamsMethod) { #>
         public bool <#= chain.Name #>(<#= behavior.context.Params() #>)

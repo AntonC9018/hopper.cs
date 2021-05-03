@@ -38,7 +38,7 @@ namespace Hopper.TestContent.Bind
         public static void AddComponents(Entity subject)
         {
             SequentialMobBase.AddComponents(subject, Algos.EnemyAlgo, Steps);
-            Binding.AddTo(subject, Layer.REAL);
+            Binding.AddTo(subject, Layer.REAL, BoundEntityModifier.DefaultHookable);
         }
 
         public static void InitComponents(Entity subject)

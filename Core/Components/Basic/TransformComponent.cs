@@ -52,6 +52,11 @@ namespace Hopper.Core
             Grid.TriggerLeave(this);
         }
 
+        public void TryRemoveFromGridWithoutEvent()
+        {
+            Grid.GetCellAt(position).Remove(this);
+        }
+
         public void ResetInGrid()
         {
             var cell = Grid.GetCellAt(position);
@@ -91,7 +96,7 @@ namespace Hopper.Core
 
         public IEnumerable<Transform> GetAllUndirectedButSelfFromLayerRelative(Layer layer, IntVector2 direction)
         {
-            return GetCell().GetAllUndirectedFromLayer(layer).Where(t => t != this);
+            return GetCellRelative(direction).GetAllUndirectedFromLayer(layer).Where(t => t != this);
         }
         
         public IntVector2 GetRelativePosition(IntVector2 offset)
@@ -102,6 +107,11 @@ namespace Hopper.Core
         public Cell GetCell()
         {
             return Grid.GetCellAt(position);
+        }
+
+        public Cell GetCellRelative(IntVector2 direction)
+        {
+            return Grid.GetCellAt(position + direction);
         }
 
         public void SubsribeToEnterEvent(System.Action<CellMovementContext> handler)

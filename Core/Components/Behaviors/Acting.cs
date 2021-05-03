@@ -18,9 +18,9 @@ namespace Hopper.Core.Components.Basic
 
         [Flags] public Flags _flags;
 
-        [Inject] public System.Func<Entity, ParticularAction> ActionCalculationAlgorithm;
-        [Inject] public System.Action<Context> ActionExecutionAlgorithm;
-        [Inject] public Order order;
+        [Inject] public readonly System.Func<Entity, ParticularAction> ActionCalculationAlgorithm;
+        [Inject] public readonly System.Action<Context> ActionExecutionAlgorithm;
+        [Inject] public readonly Order order;
         public ParticularAction nextAction;
         public Entity actor;
 

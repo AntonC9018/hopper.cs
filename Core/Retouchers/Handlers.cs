@@ -18,40 +18,43 @@ namespace Hopper.Core
 
         public void HookTo(Entity entity)
         {
-            var chain = chainPath.Chain(entity);
-            chain.Add(handler);
+            chainPath.Chain(entity).Add(handler);
         }
 
         public bool IsHookedTo(Entity entity)
         {
-            var chain = chainPath.Chain(entity);
-            return chain.Contains(handler);
+            return chainPath.TryGetChain(entity, out var chain) && chain.Contains(handler);
         }
 
-        public bool TryHookTo(Entity entity)
+        public void TryHookTo(Entity entity)
         {
-            var chain = chainPath.Chain(entity);
-            if (chain.Contains(handler))
+            if (chainPath.TryGetChain(entity, out var chain) && !chain.Contains(handler))
             {
-                return false;
+                chain.Add(handler);
             }
-            chain.Add(handler);
-            return true;
         }
 
         public void UnhookFrom(Entity entity)
         {
-            var chain = chainPath.Chain(entity);
-            chain.Remove(handler);
+            chainPath.Chain(entity).Remove(handler);
+        }
+        
+        public void TryUnhookFrom(Entity entity)
+        {
+            if (chainPath.TryGetChain(entity, out var chain))
+            {
+                chain.Remove(handler);
+            }
         }
     }
 
     public interface IHookable
     {
-        bool TryHookTo(Entity entity);
+        void TryHookTo(Entity entity);
         void HookTo(Entity entity);
         void UnhookFrom(Entity entity);
         bool IsHookedTo(Entity entity);
+        void TryUnhookFrom(Entity entity);
     }
 
     public static class Handlers
@@ -85,8 +88,8 @@ namespace Hopper.Core
 
         public bool IsHookedTo(Entity entity)
         {
-            var chain = chainPath.Chain(entity);
-            return chain.Contains(handlers[0]);
+            return chainPath.TryGetChain(entity, out var chain) 
+                && chain.Contains(handlers[0]);
         }
 
         public void UnhookFrom(Entity entity)
@@ -99,18 +102,28 @@ namespace Hopper.Core
             }
         }
 
-        public bool TryHookTo(Entity entity)
+        public void TryHookTo(Entity entity)
         {
-            var chain = chainPath.Chain(entity);
-            if (chain.Contains(handlers[0]))
+            if (!chainPath.TryGetChain(entity, out var chain) 
+                || chain.Contains(handlers[0]))
             {
-                return false;
+                return;
             }
             foreach (var handler in handlers)
             {
                 chain.Add(handler);
             }
-            return true;
+        }
+
+        public void TryUnhookFrom(Entity entity)
+        {
+            if (chainPath.TryGetChain(entity, out var chain))
+            {
+                foreach (var handler in handlers)
+                {
+                    chain.Remove(handler);
+                }
+            }
         }
     }
 
@@ -138,13 +151,20 @@ namespace Hopper.Core
             return hookables.First().IsHookedTo(entity);
         }
 
-        public bool TryHookTo(Entity entity)
+        public void TryHookTo(Entity entity)
         {
             foreach (var h in hookables)
             {
                 h.TryHookTo(entity);
             }
-            return true;
+        }
+
+        public void TryUnhookFrom(Entity entity)
+        {
+            foreach (var h in hookables)
+            {
+                h.TryUnhookFrom(entity);
+            }
         }
 
         public void UnhookFrom(Entity entity)

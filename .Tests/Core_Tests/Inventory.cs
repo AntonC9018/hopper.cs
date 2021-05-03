@@ -4,7 +4,6 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Core.Retouchers;
 using Hopper.Core.Stat;
-using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
 

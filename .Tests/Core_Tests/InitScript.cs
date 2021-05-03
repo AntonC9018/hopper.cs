@@ -11,6 +11,7 @@ namespace Hopper.Tests
 
         public static void Init()
         { 
+            if (modLoader != null) return;
             modLoader = new ModLoader();
             modLoader.Add(Core.Main.Init);
             modLoader.Add(TestContent.Main.Init);

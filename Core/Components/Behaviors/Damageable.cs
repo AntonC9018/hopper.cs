@@ -21,6 +21,7 @@ namespace Hopper.Core.Components.Basic
         {
             health.amount = 0;
             Death(actor);
+            actor.GetTransform().TryRemoveFromGridWithoutEvent();
         }
 
         [Alias("BeDamaged")] 

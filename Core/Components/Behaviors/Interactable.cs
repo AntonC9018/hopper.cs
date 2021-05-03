@@ -18,7 +18,7 @@ namespace Hopper.Core.Components.Basic
         // @Incomplete while generating the contents randomly, use throwaway pools while deserializing
         // since the content is going to overwritten afterwards while populating the object.
         // maybe include a flag to prevent that. OR use a more simplistic strategy for serialization.
-        [Inject] public IContent m_content;
+        [Inject] public readonly IContent m_content;
 
         // public void Init(IContentSpec spec)
         // {

@@ -111,10 +111,8 @@ namespace Hopper.Core.Components.Basic
             // set up all templates
             foreach (InputMapping name in InputMapping.Members)
             {
-                Paths[name] = new ChainPath<Chain<Context>>
-                {
-                    Chain = (Entity entity) => entity.GetComponent(Index)._chains[name] 
-                };
+                Paths[name] = new ChainPath<Chain<Context>>(
+                    (Entity entity) => entity.TryGetComponent(Index, out var component) ? component._chains[name] : null);
             }
         }
     }
