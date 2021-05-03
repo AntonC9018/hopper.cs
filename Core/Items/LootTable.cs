@@ -16,30 +16,35 @@ namespace Hopper.Core.Items
         public int GetCost() => weight;
     }
     
-    public class LootSubTable
+    public class LootSubTable : Dictionary<Identifier, LootTableItem>
     {
-        public Dictionary<Identifier, LootTableItem> items;
         public int sum;
 
-        public LootSubTable(Dictionary<Identifier, LootTableItem> items)
+        public LootSubTable(Dictionary<Identifier, LootTableItem> items) : base(items)
         {
-            this.items = items;
-            this.sum = this.items.Values.Sum(it => it.GetCost());
+            this.sum = Values.Sum(it => it.GetCost());
         }
 
-        public LootSubTable(LootSubTable other)
+        public LootSubTable(LootSubTable other) : base(other)
         {
-            this.items = new Dictionary<Identifier, LootTableItem>(other.items);
             this.sum = other.sum;
+        }
+
+        public LootSubTable()
+        {
+        }
+
+        public LootSubTable(int capacity) : base(capacity)
+        {
         }
 
         public void AdjustWeight(Identifier itemIdentifier, int weight)
         {
-            if (items.TryGetValue(itemIdentifier, out var item))
+            if (TryGetValue(itemIdentifier, out var item))
             {
                 item.weight += weight;
                 sum += weight;
-                items[itemIdentifier] = item;
+                this[itemIdentifier] = item;
             }
         }
 
@@ -48,11 +53,11 @@ namespace Hopper.Core.Items
             Add(identifier, new LootTableItem(weight));
         }
 
-        public void Add(Identifier identifier, LootTableItem item)
+        public new void Add(Identifier identifier, LootTableItem item)
         {
-            Assert.That(!items.ContainsKey(identifier), "Cannot add the same item multiple times");
+            Assert.That(!ContainsKey(identifier), "Cannot add the same item multiple times");
             sum += item.GetCost();
-            items[identifier] = item;
+            this[identifier] = item;
         }
 
         public bool IsEmpty()
@@ -62,9 +67,9 @@ namespace Hopper.Core.Items
 
         public Identifier Draw(double roll)
         {
-            int rolledSum = (int)(sum * roll);
+            int rolledSum = (int)(sum * roll) + 1;
             
-            foreach (var kvp in items)
+            foreach (var kvp in this)
             {
                 rolledSum -= kvp.Value.GetCost();
 

@@ -25,40 +25,45 @@ namespace Hopper.Core.Items
         public int GetCost() => amount * weight;
     }
     
-    public class SubPool
+    public class SubPool : Dictionary<Identifier, PoolItem>
     {
-        public Dictionary<Identifier, PoolItem> items;
         public int sum;
 
-        public SubPool(Dictionary<Identifier, PoolItem> items)
+        public SubPool(Dictionary<Identifier, PoolItem> items) : base(items)
         {
-            this.items = items;
-            this.sum = this.items.Values.Sum(it => it.GetCost());
+            this.sum = Values.Sum(it => it.GetCost());
         }
 
-        public SubPool(SubPool other)
+        public SubPool(SubPool other) : base(other)
         {
-            this.items = new Dictionary<Identifier, PoolItem>(other.items);
             this.sum = other.sum;
+        }
+
+        public SubPool(int capacity) : base(capacity)
+        {
+        }
+
+        public SubPool()
+        {
         }
 
         public void AdjustAmount(Identifier itemIdentifier, int amount)
         {
-            if (items.TryGetValue(itemIdentifier, out var item))
+            if (TryGetValue(itemIdentifier, out var item))
             {
                 item.amount += amount;
                 this.sum += amount * item.weight;
-                items[itemIdentifier] = item;
+                this[itemIdentifier] = item;
             }
         }
 
         public void AdjustWeight(Identifier itemIdentifier, int weight)
         {
-            if (items.TryGetValue(itemIdentifier, out var item))
+            if (TryGetValue(itemIdentifier, out var item))
             {
                 item.weight += weight;
                 sum += item.amount * weight;
-                items[itemIdentifier] = item;
+                this[itemIdentifier] = item;
             }
         }
 
@@ -67,11 +72,11 @@ namespace Hopper.Core.Items
             Add(identifier, new PoolItem(amount, weight));
         }
 
-        public void Add(Identifier identifier, PoolItem item)
+        public new void Add(Identifier identifier, PoolItem item)
         {
-            Assert.That(!items.ContainsKey(identifier), "Cannot add the same item multiple times");
+            Assert.That(!ContainsKey(identifier), "Cannot add the same item multiple times");
             sum += item.GetCost();
-            items[identifier] = item;
+            this[identifier] = item;
         }
 
         public bool IsExhausted()
@@ -81,16 +86,18 @@ namespace Hopper.Core.Items
 
         public Identifier Draw(double roll)
         {
-            int rolledSum = (int)(sum * roll);
+            Assert.That(!IsExhausted(), "Cannot draw from an empty or exhausted pool.");
+
+            int rolledSum = (int)(sum * roll) + 1;
             
-            foreach (var kvp in items)
+            foreach (var kvp in this)
             {
                 rolledSum -= kvp.Value.GetCost();
 
                 if (rolledSum <= 0) return kvp.Key;
             }
 
-            throw new System.Exception("The pool has been exhausted");
+            return default;
         }
     }
     
@@ -150,7 +157,7 @@ namespace Hopper.Core.Items
                     var reference = templatePool.subPools[kvp.Key];
 
                     foreach (var subpool in subPools.Values)
-                    foreach (var item    in reference.items)
+                    foreach (var item    in reference)
                     {
                         subpool.AdjustAmount(item.Key, item.Value.amount);
                     }

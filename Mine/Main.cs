@@ -18,17 +18,21 @@ namespace Hopper.Mine
         {
             Hopper.Core.Main.Init();
             Hopper.TestContent.Main.Init();
+            var id_foo = new Identifier(0, 1);
+            var id_bar = new Identifier(0, 2);
 
-    
-            World.Global = new World(3, 3);
+            var subpool = new SubPool{
+                { id_foo, 1, 1 }, 
+                { id_bar, 1, 1 }
+            };
 
-            var skeleton = World.Global.SpawnEntity(Skeleton.Factory, new IntVector2(1, 1));
-            var acting = skeleton.GetActing();
-            acting.CalculateNextAction();
-
-            var player = World.Global.SpawnEntity(Player.Factory, new IntVector2(1, 0));
-            var predictor = new Predictor(World.Global, Layer.REAL, Faction.Player);
-            var predictedPositions = predictor.GetBadPositions();
+            // Now, we cannot predict in which order the items got placed in the
+            // dictionary, since the dictionary is not sorted.
+            // So lets just test that the items were both taken out
+            var id  = subpool.Draw(0.1);
+            subpool.AdjustAmount(id, -1);
+            var id1 = subpool.Draw(0.1);
+            subpool.AdjustAmount(id1, -1);
         }
     }
 }
