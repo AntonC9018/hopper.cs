@@ -33,7 +33,7 @@ namespace Hopper.Core.Items
         public SubPool(Dictionary<Identifier, PoolItem> items)
         {
             this.items = items;
-            this.sum = this.items.Values.Sum(it => it.amount * it.weight);
+            this.sum = this.items.Values.Sum(it => it.GetCost());
         }
 
         public SubPool(SubPool other)
@@ -94,7 +94,7 @@ namespace Hopper.Core.Items
         }
     }
     
-    public class Pool
+    public class Pool : IPool
     {
         public Pool templatePool;
         public Dictionary<Identifier, SubPool> subPools;

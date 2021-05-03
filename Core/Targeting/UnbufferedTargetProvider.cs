@@ -4,7 +4,6 @@ using Hopper.Core.Components;
 using Hopper.Core.Predictions;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
-using static Hopper.Core.Faction;
 
 namespace Hopper.Core.Targeting
 {
