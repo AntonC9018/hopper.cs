@@ -48,7 +48,7 @@ namespace Hopper.Core.Items
         {
         }
 
-        public SubPool()
+        public SubPool() : base()
         {
         }
 

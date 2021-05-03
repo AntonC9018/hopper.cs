@@ -30,7 +30,7 @@ namespace Hopper.Core.Items
             this.sum = other.sum;
         }
 
-        public LootTable()
+        public LootTable() : base()
         {
         }
 
