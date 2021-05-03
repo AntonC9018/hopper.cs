@@ -67,7 +67,7 @@ namespace Hopper.Tests
         }
 
         [Test]
-        public void PatternPredictionWorks()
+        public void ProviderPredictionWorks()
         {
             var pattern  = new StraightPattern(Layer.WALL);
             var provider = new UnbufferedTargetProvider(pattern, Layer.REAL, Faction.Any); 
