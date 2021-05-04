@@ -16,7 +16,7 @@ namespace Hopper.TestContent.Floor
 
 
         // When the entity is pushed, this direction should also be adjusted.
-        [Export(Chain = "Pushable.Do", Priority = PriorityRank.High, Dynamic = true)]
+        [Export(Chain = "Pushable.Do", Priority = PriorityRank.Highest, Dynamic = true)]
         public void AdjustDirectionOfSlidingAfterPush(IntVector2 direction)
         {
             directionOfSliding = direction;
@@ -40,11 +40,6 @@ namespace Hopper.TestContent.Floor
         [Export(Chain = "Acting.Check", Dynamic = true)]
         public void SlideInstead(ref CompiledAction action)
         {
-            // TODO:
-            // The problem with this is that the action does not fail in this case.
-            // So the answer is in overriding the action.
-            // direction = directionOfSliding;
-            // figured out a way to combine particular (compiled) actions?
             action = Action.Then(action._storedAction).Compile(directionOfSliding);
         }
 
