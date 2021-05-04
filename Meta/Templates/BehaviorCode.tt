@@ -9,6 +9,8 @@ namespace <#= behavior.Namespace #>
     {
 <#@ include file="Templates/Snippets/ComponentIndex.txt" #>
 
+<#@ include file="Templates/Snippets/ComponentAction.txt" #>
+
 <#@ include file="Templates/Snippets/BehaviorConstructors.txt" #>
 
 <#@ include file="Templates/Snippets/ComponentAddingCopying.txt" #>
@@ -16,10 +18,6 @@ namespace <#= behavior.Namespace #>
 <#@ include file="Templates/Snippets/BehaviorChains.txt" #>
 
 <#@ include file="Templates/Snippets/HandlerFromExportedMethods.txt" #>
-
-<# /*foreach (var preset in presets) {*/ #>
-        /* TODO: presets */
-<# /*}*/ // end foreach #>
     }
 
     public static class <#= behavior.ClassName #>EntityExtensions

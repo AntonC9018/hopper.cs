@@ -10,9 +10,7 @@ namespace Hopper.TestContent
     {
         public static EntityFactory Factory;
 
-        public static readonly CompositeAction GhostAction = Compose(
-            FromPredictableActivateable(Attacking.Index),
-            FromActivateable(Moving.Index));
+        public static readonly CompositeAction GhostAction = Compose(Attacking.Action, Moving.Action);
         private const Layer TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.ITEM;
 
 

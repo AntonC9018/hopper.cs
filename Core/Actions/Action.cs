@@ -199,6 +199,11 @@ namespace Hopper.Core
     {
         Identifier GetIdOfActivateable();
     }
+    
+    public interface IStandartActivateable
+    {
+        bool Activate(Entity entity, IntVector2 direction);
+    }
 
     public class ActivatingAction<T> : IAction, IActivatingAction where T : IStandartActivateable, IComponent 
     {

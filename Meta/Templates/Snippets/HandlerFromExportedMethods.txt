@@ -19,3 +19,4 @@
             <#= method.Name #>Handler.priority = Registry.Global.NextPriority(PriorityRank.<#= method.Priority #>);
 <#  } #>
         }
+        

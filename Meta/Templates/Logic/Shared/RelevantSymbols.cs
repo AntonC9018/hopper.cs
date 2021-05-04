@@ -30,6 +30,8 @@ namespace Hopper.Meta
 
         public static INamedTypeSymbol boolType;
         public static INamedTypeSymbol voidType;
+        public static INamedTypeSymbol istandartActivateable;
+        public static INamedTypeSymbol ipredictable;
 
         public static void TryInitializeSingleton(Compilation compilation)
         {
@@ -54,6 +56,8 @@ namespace Hopper.Meta
         {
             entity = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Entity");
             icopyable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Utils.ICopyable");
+            istandartActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IStandartActivateable");
+            ipredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IPredictable");
             icomponent      = GetComponentSymbol(compilation, "IComponent");
             ibehavior       = GetComponentSymbol(compilation, "IBehavior");
             itag            = GetComponentSymbol(compilation, "ITag");

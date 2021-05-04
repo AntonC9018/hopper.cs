@@ -13,15 +13,11 @@ namespace Hopper.TestContent.SimpleMobs
 
         public static void AddComponents(Entity subject)
         {
-            var attackMoveAction = Compose(
-                FromPredictableActivateable(Attacking.Index),
-                FromActivateable(Moving.Index)
-            );
             SequentialMobBase.AddComponents(subject,
                 Algos.EnemyAlgo, 
                 new Step
                 {
-                    action = attackMoveAction,
+                    action = Compose(Attacking.Action, Moving.Action),
                     movs = Movs.Basic
                 },
                 new Step()

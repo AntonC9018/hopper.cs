@@ -10,9 +10,6 @@ namespace Hopper.TestContent.Projectiles
     public static class NormalProjectile
     {
         public static EntityFactory Factory;
-        
-        public static ActivatingAction<ProjectileComponent> ProjectileAction =
-            Action.FromActivateable(ProjectileComponent.Index);
 
         public static void AddComponents(Entity subject)
         {
@@ -26,7 +23,7 @@ namespace Hopper.TestContent.Projectiles
             Ticking.AddTo(subject);
             Acting.AddTo(
                 subject, 
-                entity => ProjectileAction.Compile(entity.GetTransform().orientation),
+                entity => ProjectileComponent.Action.Compile(entity.GetTransform().orientation),
                 Algos.SimpleAlgo,
                 Order.Projectile);
         }

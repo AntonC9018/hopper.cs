@@ -74,7 +74,7 @@ namespace Hopper.Tests
             Assert.False(inventory.ContainsItem(item.typeId));
 
             // Move onto the item
-            var moveAction = Action.FromActivateable(Moving.Index).Compile(new IntVector2(-1, 0));
+            var moveAction = Moving.Action.Compile(new IntVector2(-1, 0));
             var acting = entity.GetActing();
             acting.nextAction = moveAction;
             acting.Activate();

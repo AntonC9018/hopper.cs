@@ -51,11 +51,8 @@ namespace Hopper.TestContent.Boss
     {
         public static EntityFactory Factory;
         
-        private static readonly CompositeAction AttackMoveAction = Compose(
-            FromPredictableActivateable(Attacking.Index),
-            FromActivateable(Moving.Index)
-        );
-        private static readonly ActivatingAction<TestBossComponent> SpawnAction = FromActivateable(TestBossComponent.Index);
+        private static readonly CompositeAction AttackMoveAction = Compose(Attacking.Action, Moving.Action);
+
         private static readonly Step[] Steps = new[]
         {
             new Step
@@ -74,7 +71,7 @@ namespace Hopper.TestContent.Boss
             },
             new Step
             {
-                action = SpawnAction,
+                action = TestBossComponent.Action, // spawn action
                 movs = Movs.Basic
             },
         };
@@ -102,10 +99,7 @@ namespace Hopper.TestContent.Boss
     {
         public static EntityFactory Factory;
 
-        private static readonly CompositeAction AttackMoveAction = Compose(
-            FromPredictableActivateable(Attacking.Index),
-            FromActivateable(Moving.Index)
-        );
+        private static readonly CompositeAction AttackMoveAction = Compose(Attacking.Action, Moving.Action);
 
         private static readonly Step[] Steps = new[]
         {

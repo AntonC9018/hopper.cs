@@ -23,7 +23,6 @@ namespace Hopper.TestContent.Floor
         }
 
         // A slide instead action that always fails.
-        public static readonly IAction SlideInsteadAction = Action.FromActivateable(Index); 
         public static readonly Push DefaultPush = new Push
         (
             distance : 1,
@@ -46,7 +45,7 @@ namespace Hopper.TestContent.Floor
             // So the answer is in overriding the action.
             // direction = directionOfSliding;
             // figured out a way to combine particular (compiled) actions?
-            action = SlideInsteadAction.Then(action._storedAction).Compile(directionOfSliding);
+            action = Action.Then(action._storedAction).Compile(directionOfSliding);
         }
 
         // When displaced into something that is not slippery, stop sliding.

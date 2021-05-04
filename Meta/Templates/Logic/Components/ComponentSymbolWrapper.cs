@@ -68,5 +68,9 @@ namespace Hopper.Meta
             ctor => !ctor.IsStatic
                 && ctor.Arity == 1 
                 && SymbolEqualityComparer.Default.Equals(ctor.Parameters.Single(), symbol));
+        
+        public bool IsStandartActivateable => symbol.AllInterfaces.Contains(RelevantSymbols.istandartActivateable);
+
+        public bool IsPredictable => symbol.AllInterfaces.Contains(RelevantSymbols.ipredictable);
     }
 }

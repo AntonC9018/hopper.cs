@@ -11,9 +11,7 @@ namespace Hopper.TestContent.Bind
     {
         public static EntityFactory Factory;
         
-        private static readonly ActivatingAction<Binding> BindAction = FromActivateable(Binding.Index);
-        private static readonly ActivatingAction<Moving> MoveAction = FromActivateable(Moving.Index);
-        private static readonly JoinedAction BindMoveAction = Join(BindAction, MoveAction);
+        private static readonly JoinedAction BindMoveAction = Join(Binding.Action, Moving.Action);
 
         private static readonly Step[] Steps = new Step[]
         {

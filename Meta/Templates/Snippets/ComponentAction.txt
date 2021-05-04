@@ -1,0 +1,14 @@
+<#  if (component.IsStandartActivateable) 
+    { 
+        if (component.IsPredictable) 
+        {
+    #>
+        public static readonly ActivatingPredictableAction<<#= component.ClassName #>> Action = 
+            Hopper.Core.Action.FromPredictableActivateable(Index);
+<#      }
+        else
+        { #>
+        public static readonly ActivatingAction<<#= component.ClassName #>> Action = 
+            Hopper.Core.Action.FromActivateable(Index);
+<#      }
+    } #>
