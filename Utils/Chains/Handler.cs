@@ -12,6 +12,12 @@ namespace Hopper.Utils.Chains
             this.handler = handler;
         }
 
+        public Handler(int priority, Action<Context> handler)
+        {
+            this.priority = priority;
+            this.handler = handler;
+        }
+
         public override bool Equals(object obj)
         {
             return base.Equals(obj);

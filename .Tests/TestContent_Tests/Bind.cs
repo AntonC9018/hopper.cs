@@ -87,7 +87,6 @@ namespace Hopper.Tests.Test_Content
 
             // If the entity dies, the bound modifier will be removed
             entity.Die();
-
             Assert.False(spider.IsCurrentlyBinding());
             Assert.AreSame(spider, spider.GetTransform().GetCell().Single().entity);
         }
