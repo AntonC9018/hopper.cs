@@ -39,9 +39,16 @@ namespace Hopper.Core
 
         public void ResetPositionInGrid(IntVector2 newPos)
         {
-            RemoveFromGrid();
+            var direction = (newPos - position).Sign();
+            RemoveFromGrid(direction);
             position = newPos;
-            ResetInGrid();
+            ResetInGrid(direction);
+        }
+
+        public void RemoveFromGrid(IntVector2 direction)
+        {
+            RemoveFromGrid();
+            Grid.TriggerLeave(this, direction);
         }
 
         public void RemoveFromGrid()
@@ -49,19 +56,25 @@ namespace Hopper.Core
             var cell = Grid.GetCellAt(position);
             bool wasRemoved = cell.Remove(this);
             Assert.That(wasRemoved, "Trying to remove an entity which is not in the cell is not allowed");
-            Grid.TriggerLeave(this);
         }
+
 
         public void TryRemoveFromGridWithoutEvent()
         {
             Grid.GetCellAt(position).Remove(this);
         }
 
+        public void ResetInGrid(IntVector2 direction)
+        {
+            ResetInGrid();
+            Grid.TriggerEnter(this, direction);
+        }
+
         public void ResetInGrid()
         {
             var cell = Grid.GetCellAt(position);
+            Assert.That(!cell.Contains(this), "Already in the cell, cannot add itself twice");
             cell.Add(this);
-            Grid.TriggerEnter(this);
         }
 
         public bool HasBlockRelative(IntVector2 direction, Layer layer)

@@ -85,15 +85,6 @@ namespace Hopper.Core
             GetCellAt(transform.position).Add(transform);
         }
 
-        public void AddTransform(Transform transform)
-        {
-            Assert.That(IsInBounds(transform.position));
-
-            var cell = GetCellAt(transform.position);
-            cell.Add(transform);
-            TriggerEnter(transform);
-        }
-
         /*
                             ______________
             We are given   |              |
@@ -225,16 +216,16 @@ namespace Hopper.Core
             LeaveTriggerGrid.Reset();
         }
 
-        public void TriggerEnter(Transform transform)
+        public void TriggerEnter(Transform transform, IntVector2 direction)
         {
-            EnterTriggerGrid.Trigger(transform);
-            EnterPermanentTriggerGrid.Trigger(transform);
+            EnterTriggerGrid.Trigger(transform, direction);
+            EnterPermanentTriggerGrid.Trigger(transform, direction);
         }
 
-        public void TriggerLeave(Transform transform)
+        public void TriggerLeave(Transform transform, IntVector2 direction)
         {
-            LeaveTriggerGrid.Trigger(transform);
-            LeavePermanentTriggerGrid.Trigger(transform);
+            LeaveTriggerGrid.Trigger(transform, direction);
+            LeavePermanentTriggerGrid.Trigger(transform, direction);
         }
     }
 }

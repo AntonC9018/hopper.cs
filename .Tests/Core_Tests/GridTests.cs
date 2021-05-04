@@ -82,22 +82,24 @@ namespace Hopper.Tests
             transform.SubsribeToEnterEvent(ctx => otherTransform = ctx.transform); 
             transform.SubsribeToLeaveEvent(ctx => otherTransform = ctx.transform); 
 
-            transform.RemoveFromGrid();
+            // Now it requires a direction argument to call the triggers
+            // If given no direction, it just removes the entity from the grid silently. 
+            transform.RemoveFromGrid(IntVector2.Zero);
             Assert.AreSame(transform, otherTransform);
             
             otherTransform = null;
 
-            transform.ResetInGrid();
+            transform.ResetInGrid(IntVector2.Zero);
             Assert.AreSame(transform, otherTransform);
 
             otherTransform = null;
 
             Grid.ResetCellTriggers();
 
-            transform.RemoveFromGrid();
+            transform.RemoveFromGrid(IntVector2.Zero);
             Assert.Null(otherTransform);
 
-            transform.ResetInGrid();
+            transform.ResetInGrid(IntVector2.Zero);
             Assert.Null(otherTransform);
         }
 
@@ -112,25 +114,25 @@ namespace Hopper.Tests
             transform.SubsribeToPermanentEnterEvent(ctx => { otherTransform = ctx.transform; return keep; }); 
             transform.SubsribeToPermanentLeaveEvent(ctx => { otherTransform = ctx.transform; return keep; }); 
 
-            transform.RemoveFromGrid();
+            transform.RemoveFromGrid(IntVector2.Zero);
             Assert.AreSame(transform, otherTransform);
             
             otherTransform = null;
 
-            transform.ResetInGrid();
+            transform.ResetInGrid(IntVector2.Zero);
             Assert.AreSame(transform, otherTransform);
 
             keep = false;
 
-            transform.RemoveFromGrid();
-            transform.ResetInGrid();
+            transform.RemoveFromGrid(IntVector2.Zero);
+            transform.ResetInGrid(IntVector2.Zero);
 
             otherTransform = null;
 
-            transform.RemoveFromGrid();
+            transform.RemoveFromGrid(IntVector2.Zero);
             Assert.Null(otherTransform);
 
-            transform.ResetInGrid();
+            transform.ResetInGrid(IntVector2.Zero);
             Assert.Null(otherTransform);
         }
 

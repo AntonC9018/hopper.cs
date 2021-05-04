@@ -24,6 +24,8 @@ namespace Hopper.Tests.Test_Content
             Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK).DefaultPreset();
             Moving.AddTo(entityFactory).DefaultPreset();
             Pushable.AddTo(entityFactory).DefaultPreset();
+            Acting.AddTo(entityFactory, null, Algos.SimpleAlgo, Order.Entity).DefaultPreset(entityFactory);
+            entityFactory.InitInWorldFunc += t => t.entity.GetStats().Init();
         }
 
         [Test]
@@ -41,12 +43,27 @@ namespace Hopper.Tests.Test_Content
         public void Test_Linear_Slide()
         {
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 1));
-            entity.Move(IntVector2.Right);
-            World.Global.Loop(); // first one just applies the status effect, they do not slide on first turn
-            World.Global.Loop(); // e__ -> _e_
-            World.Global.Loop(); // _e_ -> __e
-            World.Global.Loop(); // __e -> ___e
-            Assert.AreEqual(_iceFloors.Last().GetTransform().position + IntVector2.Right, entity.GetTransform().position);
+            entity.Move(IntVector2.Right); // 1, 1
+            // Once the entity stepped on ice, it gets the effect (entity modifier)
+            Assert.True(entity.HasSlidingEntityModifier());
+
+            // Trying to move is not going to help
+            // The move itself is allowed, though. The action itself is replaced.
+            // Right now any action gets replaced, but, in theory, it is easy to tweak.
+            var acting = entity.GetActing();
+            acting.nextAction = Moving.Action.Compile(IntVector2.Up); 
+            // Make sure the action actually fails.
+            Assert.False(acting.Activate()); // 2, 1
+            // Make sure the position has changed
+            Assert.AreEqual(new IntVector2(2, 1), entity.GetTransform().position);
+            Assert.True(entity.HasSlidingEntityModifier());
+            
+            // Let's slide again
+            Assert.False(acting.Activate()); // 3, 1
+            Assert.AreEqual(new IntVector2(3, 1), entity.GetTransform().position);
+
+            // Now that we're past the last ice floor, the modifier must remove itself.
+            Assert.False(entity.HasSlidingEntityModifier());
         }
 
         [Test]

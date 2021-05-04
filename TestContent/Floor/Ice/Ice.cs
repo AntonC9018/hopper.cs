@@ -24,7 +24,7 @@ namespace Hopper.TestContent.Floor
 
         public static void Retouch(EntityFactory factory)
         {
-            factory.InitInWorldFunc = InitInWorld;
+            factory.InitInWorldFunc += InitInWorld;
         }
 
         public static void InitInWorld(Transform transform)

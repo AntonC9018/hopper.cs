@@ -1,4 +1,5 @@
 using Hopper.Core.Components;
+using Hopper.Utils;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +29,7 @@ namespace Hopper.Core
         
         public void RemoveComponent<T>(Index<T> index) where T : IComponent
         {
+            Assert.That(components.ContainsKey(index.Id), $"Cannot remove a non-existent component {index}.");
             components.Remove(index.Id);
         }
 
@@ -38,11 +40,13 @@ namespace Hopper.Core
         
         public void AddComponent<T>(Index<T> index, T component) where T : IComponent
         {
+            Assert.That(!components.ContainsKey(index.Id), $"Cannot add {index} twice.");
             components.Add(index.Id, component);
         }
 
         public T GetComponent<T>(Index<T> index) where T : IComponent
         {
+            Assert.That(components.ContainsKey(index.Id), $"{index} not found among entities' components.");
             return (T)components[index.Id];
         }
 

@@ -16,7 +16,7 @@ namespace Hopper.TestContent.Floor
 
 
         // When the entity is pushed, this direction should also be adjusted.
-        [Export(Chain = "Pushable.Do", Dynamic = true)]
+        [Export(Chain = "Pushable.Do", Priority = PriorityRank.High, Dynamic = true)]
         public void AdjustDirectionOfSlidingAfterPush(IntVector2 direction)
         {
             directionOfSliding = direction;
@@ -33,7 +33,7 @@ namespace Hopper.TestContent.Floor
 
         public bool Activate(Entity actor, IntVector2 direction)
         {
-            return actor.TryBePushed(DefaultPush, direction) == false;
+            return !actor.TryBePushed(DefaultPush, direction);
         }
 
         // If the entity tries to move (on its own), slide instead

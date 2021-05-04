@@ -24,7 +24,7 @@ namespace Hopper.TestContent.Floor
             // TODO: check stats
             if (context.transform.layer.HasFlag(TargetedLayer) && context.HasNotMoved())
             {
-                SlidingEntityModifier.TryApplyTo(context.transform.entity, context.transform.orientation);
+                SlidingEntityModifier.TryApplyTo(context.transform.entity, context.direction);
             }
 
             return true;

@@ -47,15 +47,16 @@ namespace Hopper.Core.Components.Basic
             }
         }
 
-        [Export] public static void DisplaceRemove(Transform transform, IntVector2 newPos)
+        [Export] public static void DisplaceRemove(
+            Transform transform, IntVector2 newPos, IntVector2 direction)
         {
-            transform.RemoveFromGrid();
+            transform.RemoveFromGrid(direction);
             transform.position = newPos;
         }
 
-        [Export] public static void DisplaceAddBack(Transform transform)
+        [Export] public static void DisplaceAddBack(Transform transform, IntVector2 direction)
         {
-            transform.ResetInGrid();
+            transform.ResetInGrid(direction);
         }
 
         public void DefaultPreset()

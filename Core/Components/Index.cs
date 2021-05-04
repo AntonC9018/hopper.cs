@@ -16,7 +16,7 @@ namespace Hopper.Core.Components
 
         public override string ToString()
         {
-            return Id.ToString();
+            return $"Index<{typeof(T).Name}>({Id.ToString()})";
         }
 
         public static bool operator ==(Index<T> index1, Index<T> index2)

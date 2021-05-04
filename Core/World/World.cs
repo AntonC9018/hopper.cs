@@ -72,7 +72,6 @@ namespace Hopper.Core
                 state.AddActor(acting);
             }
 
-
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }

@@ -24,11 +24,11 @@ namespace Hopper.Core
             chain.Add(handler);
         }
 
-        public void Trigger(Transform transform)
+        public void Trigger(Transform transform, IntVector2 direction)
         {
             if (_triggers.TryGetValue(transform.position, out var chain))
             {
-                var context = new CellMovementContext(transform); 
+                var context = new CellMovementContext(transform, direction); 
                 chain.PassWithoutStop(context);
             }
         }
@@ -63,11 +63,11 @@ namespace Hopper.Core
             chain.Add(handler);
         }
 
-        public void Trigger(Transform transform)
+        public void Trigger(Transform transform, IntVector2 direction)
         {
             if (_triggers.TryGetValue(transform.position, out var chain))
             {
-                var context = new CellMovementContext(transform); 
+                var context = new CellMovementContext(transform, direction); 
                 chain.PassAndFilter(context);
             }
         }
