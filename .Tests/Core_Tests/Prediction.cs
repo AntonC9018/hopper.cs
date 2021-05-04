@@ -62,7 +62,7 @@ namespace Hopper.Tests
         {
             var entity = World.Global.SpawnEntity(Dummy.Factory, new IntVector2(1, 1));
             var info = new PredictionTargetInfo(Layer.Any, Faction.Any);
-            var predictions = Explosion.DefaultExplodeAction(1).predict(entity, info).ToArray();
+            var predictions = Explosion.DefaultExplodeAction(1).Predict(entity, info).ToArray();
             Assert.AreEqual(9, predictions.Length, "Would explode 9 cells");
         }
 

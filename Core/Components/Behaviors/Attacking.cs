@@ -11,7 +11,7 @@ using System;
 namespace Hopper.Core.Components.Basic
 {
     [AutoActivation("Attack")]
-    public partial class Attacking : IBehavior, IStandartActivateable, IBehaviorPredictable
+    public partial class Attacking : IBehavior, IStandartActivateable, IPredictable
     {
         public class Context : StandartContext
         {

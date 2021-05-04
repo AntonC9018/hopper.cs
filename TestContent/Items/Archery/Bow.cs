@@ -6,6 +6,7 @@ using Hopper.Core.Stat;
 using Hopper.Core.Targeting;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
+using static Hopper.Core.Action;
 
 namespace Hopper.TestContent
 {
@@ -41,16 +42,17 @@ namespace Hopper.TestContent
             }
         }
 
-        public static DirectedAction AttackAction = Action.CreateSimple((actor, direction) => 
-            Attack(actor.GetTransform(), direction));
+        public static SimpleAction AttackAction = Simple(
+            Adapt((actor, direction) => Attack(actor.GetTransform(), direction)));
 
-        public static UndirectedAction RechargeAction = Action.CreateSimple(actor => 
+        public static SimpleUndirectedAction RechargeAction = Simple(
+            Adapt(actor => 
             {
                 if (actor.TryGetRangedWeapon(out var weapon))
                 {
                     weapon.GetBowComponent().ToggleCharge(actor);
                 }
-            });
+            }));
     }
 
 
@@ -60,7 +62,7 @@ namespace Hopper.TestContent
         [Slot("RangedWeapon")] public static Slot Slot = new Slot(true);
         public static Attack.Source ArrowSource = new Attack.Source();
         
-        public static UndirectedAction GetChargeAction(Entity item, Entity owner) => BowComponent.RechargeAction;
+        public static SimpleUndirectedAction GetChargeAction(Entity item, Entity owner) => BowComponent.RechargeAction;
 
         public static EntityFactory Factory;
 

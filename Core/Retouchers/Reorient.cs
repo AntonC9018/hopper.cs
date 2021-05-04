@@ -15,10 +15,10 @@ namespace Hopper.Core.Retouchers
         }
 
         [Export(Chain = "Acting.Success", Dynamic = true)]
-        private static void OnActionSuccess(ParticularAction action, Transform transform)
+        private static void OnActionSuccess(CompiledAction action, Transform transform)
         {
-            if (action is ParticularDirectedAction directedAction)
-                transform.orientation = directedAction.direction;
+            if (action.direction != IntVector2.Zero)
+                transform.orientation = action.direction;
         }
 
         [Export(Chain = "Acting.Success", Dynamic = true)]

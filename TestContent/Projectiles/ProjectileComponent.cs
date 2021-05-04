@@ -77,7 +77,7 @@ namespace Hopper.TestContent.Projectiles
         {
             if (!projectile.IsDead() 
                 && !context.actor.IsDead() 
-                && context.transform.layer.HasFlag(projectile.GetProjectileComponent().targetedLayer))
+                && context.transform.layer.HasEitherFlag(projectile.GetProjectileComponent().targetedLayer))
             {
                 projectile.GetStats().Get(Attack.Index, out var attack);
 

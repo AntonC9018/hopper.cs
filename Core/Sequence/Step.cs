@@ -21,7 +21,7 @@ namespace Hopper.Core
         public System.Func<Acting, Result> successFunction = null;
         public int repeat = 1;
 
-        public Action action = null;
+        public IAction action = null;
         public System.Action<Acting> enterFunction = null;
         public System.Action<Acting> exitFunction = null;
         public MovsFunc movs = null;

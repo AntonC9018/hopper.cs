@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Shared.Attributes;
-using Hopper.TestContent;
+using static Hopper.Core.Action;
 
 namespace Hopper.TestContent.SimpleMobs
 {
@@ -10,8 +10,8 @@ namespace Hopper.TestContent.SimpleMobs
     {
         public static EntityFactory Factory;
 
-        public static readonly UndirectedAction DieAndExplodeAction = Action.CreateCompositeUndirected(
-            Action.CreateSimple(actor => actor.TryDie()),
+        public static readonly JoinedAction DieAndExplodeAction = Join(
+            Simple(actor => actor.TryDie()),
             Explosion.DefaultExplodeAction(1)
         ); 
         

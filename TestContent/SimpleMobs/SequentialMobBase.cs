@@ -42,8 +42,9 @@ namespace Hopper.TestContent
             subject.GetDisplaceable().DefaultPreset();
         }
 
-        public static void Retouch(Entity subject)
+        public static void Retouch(EntityFactory factory)
         {
+            factory.InitInWorldFunc += t => t.entity.GetStats().Init();
         }
     }
 }

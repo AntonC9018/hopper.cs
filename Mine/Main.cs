@@ -45,7 +45,6 @@ namespace Hopper.Mine
 
             spider.GetBinding().Activate(spider, new IntVector2(-1, -1));
             entity.Die();
-
         }
     }
 }

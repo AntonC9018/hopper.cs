@@ -5,6 +5,7 @@ using Hopper.Core.Items;
 using Hopper.Shared.Attributes;
 using Hopper.TestContent.SimpleMobs;
 using Hopper.Utils.Vector;
+using static Hopper.Core.Action;
 
 namespace Hopper.TestContent
 {
@@ -48,7 +49,7 @@ namespace Hopper.TestContent
         public static EntityFactory Factory;
         [Slot("Bomb")] public static Slot Slot = new Slot(false);
 
-        public static DirectedAction PlaceAction = Action.CreateSimple(PlantFunction);
+        public static SimpleAction PlaceAction = Simple(Adapt(PlantFunction));
 
         public static void Place(IntVector2 position, IntVector2 orientation)
         {
@@ -77,7 +78,7 @@ namespace Hopper.TestContent
             }
         }
 
-        public static Action GetAction(Entity actor, Entity owner)
+        public static SimpleAction GetAction(Entity actor, Entity owner)
         {
             if (actor.TryGetBomb(out var bomb))
             {

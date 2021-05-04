@@ -11,7 +11,7 @@ namespace Hopper.TestContent.Projectiles
     {
         public static EntityFactory Factory;
         
-        public static DirectedAction ProjectileAction =>
+        public static ActivatingAction<ProjectileComponent> ProjectileAction =
             Action.FromActivateable(ProjectileComponent.Index);
 
         public static void AddComponents(Entity subject)
@@ -26,7 +26,7 @@ namespace Hopper.TestContent.Projectiles
             Ticking.AddTo(subject);
             Acting.AddTo(
                 subject, 
-                entity => ProjectileAction.ToDirectedParticular(entity.GetTransform().orientation),
+                entity => ProjectileAction.Compile(entity.GetTransform().orientation),
                 Algos.SimpleAlgo,
                 Order.Projectile);
         }

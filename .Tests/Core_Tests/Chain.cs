@@ -23,6 +23,8 @@ namespace Hopper.Tests
         {
             var assigner = new PriorityAssigner();
             assigner.Init();
+
+            // Handlers with lesser priority values are executed first
             Assert.Less(assigner.Next(PriorityRank.High), assigner.Next(PriorityRank.Medium));
 
             var pr1 = assigner.Next(PriorityRank.Medium);

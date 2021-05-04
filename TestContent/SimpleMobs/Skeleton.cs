@@ -2,6 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Retouchers;
 using Hopper.Shared.Attributes;
+using static Hopper.Core.Action;
 
 namespace Hopper.TestContent.SimpleMobs
 {
@@ -12,9 +13,9 @@ namespace Hopper.TestContent.SimpleMobs
 
         public static void AddComponents(Entity subject)
         {
-            var attackMoveAction = Action.ComposeDirected(
-                Action.FromActivateable(Attacking.Index),
-                Action.FromActivateable(Moving.Index)
+            var attackMoveAction = Compose(
+                FromPredictableActivateable(Attacking.Index),
+                FromActivateable(Moving.Index)
             );
             SequentialMobBase.AddComponents(subject,
                 Algos.EnemyAlgo, 

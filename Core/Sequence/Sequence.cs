@@ -1,6 +1,7 @@
 using System.Runtime.Serialization;
 using Hopper.Core.Components.Basic;
 using Hopper.Utils;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core
 {
@@ -19,11 +20,11 @@ namespace Hopper.Core
         private int currentStepIndex;
         private int currentRepeatCount;
 
-        public ParticularAction CurrentAction
+        public CompiledAction CurrentAction
         {
             get
             {
-                return m_steps[currentStepIndex].action?.ToParticular();
+                return m_steps[currentStepIndex].action?.Compile(IntVector2.Zero);
             }
         }
 

@@ -43,24 +43,16 @@ namespace Hopper.Core.Components.Basic
     {
         public class Context : ActorContext
         {
-            public Action action = null;
+            public IAction action = null;
             public IntVector2 direction;
 
-            public ParticularAction ToParticular()
+            public CompiledAction Compile()
             {
-                if (action == null)
-                {
-                    return null;
-                }
-                if (action is DirectedAction)
-                {
-                    return ((DirectedAction)action).ToDirectedParticular(direction);
-                }
-                return action.ToParticular();
+                return new CompiledAction(action, direction);
             }
         }
 
-        [Inject] public Action defaultAction;
+        [Inject] public IAction defaultAction;
         public Dictionary<InputMapping, Chain<Context>> _chains;
 
 
@@ -68,11 +60,11 @@ namespace Hopper.Core.Components.Basic
         /// Gets the next action from the currently bound item slot, 
         /// then does a guard pass over a chain dedicated to that slot.
         /// </summary>
-        public ParticularAction ConvertInputToAction(Entity entity, InputMapping input)
+        public CompiledAction ConvertInputToAction(Entity entity, InputMapping input)
         {
             var ev = new Context { actor = entity };
             _chains[input].Pass(ev);
-            return ev.ToParticular();
+            return ev.Compile();
         }
 
 
@@ -80,7 +72,7 @@ namespace Hopper.Core.Components.Basic
         /// Gets the next action from the currently bound item slot, 
         /// then does a guard pass over a chain dedicated to that slot.
         /// </summary>
-        public Action ConvertSlotIdToAction(Entity entity, Identifier slotId)
+        public IAction ConvertSlotIdToAction(Entity entity, Identifier slotId)
         {
             var inventory = entity.GetInventory();
             if (inventory.TryGetItemFromSlot(slotId, out var item) 
@@ -91,7 +83,7 @@ namespace Hopper.Core.Components.Basic
             return null;
         }
 
-        public ParticularAction ConvertVectorToAction(Entity entity, IntVector2 direction)
+        public CompiledAction ConvertVectorToAction(Entity entity, IntVector2 direction)
         {
             var ev = new Context
             {
@@ -100,7 +92,7 @@ namespace Hopper.Core.Components.Basic
                 direction = direction
             };
             _chains[InputMapping.Vector].Pass(ev);
-            return ev.ToParticular();
+            return ev.Compile();
         }
 
         public static Dictionary<InputMapping, ChainPath<Chain<Context>>> Paths;

@@ -14,7 +14,6 @@ namespace Hopper.Tests.Test_Content
     {
         public readonly EntityFactory entityFactory;
         public readonly EntityFactory bindingFactory;
-        public readonly DirectedAction move_action;
 
         public Bind_Tests()
         {

@@ -2,15 +2,18 @@ using System.Linq;
 using Hopper.Core;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
+using Hopper.TestContent.Stat;
 using Hopper.Utils.Vector;
 
 namespace Hopper.TestContent.Floor
 {
 
-    public partial class SlidingEntityModifier : IComponent
+    public partial class SlidingEntityModifier : IComponent, IStandartActivateable
     {
         [Inject] public IntVector2 directionOfSliding; 
+
 
         // When the entity is pushed, this direction should also be adjusted.
         [Export(Chain = "Pushable.Do", Dynamic = true)]
@@ -19,11 +22,31 @@ namespace Hopper.TestContent.Floor
             directionOfSliding = direction;
         }
 
-        // If the entity tries to move (on its own), slide instead
-        [Export(Chain = "Moving.Do", Dynamic = true)]
-        public void SlideInstead(ref IntVector2 direction)
+        // A slide instead action that always fails.
+        public static readonly IAction SlideInsteadAction = Action.FromActivateable(Index); 
+        public static readonly Push DefaultPush = new Push
+        (
+            distance : 1,
+            pierce   : 1,
+            power    : 1,
+            source   : Slide.PushSource.Index
+        );
+
+        public bool Activate(Entity actor, IntVector2 direction)
         {
-            direction = directionOfSliding;
+            return actor.TryBePushed(DefaultPush, direction) == false;
+        }
+
+        // If the entity tries to move (on its own), slide instead
+        [Export(Chain = "Acting.Check", Dynamic = true)]
+        public void SlideInstead(ref CompiledAction action)
+        {
+            // TODO:
+            // The problem with this is that the action does not fail in this case.
+            // So the answer is in overriding the action.
+            // direction = directionOfSliding;
+            // figured out a way to combine particular (compiled) actions?
+            action = SlideInsteadAction.Then(action._storedAction).Compile(directionOfSliding);
         }
 
         // When displaced into something that is not slippery, stop sliding.
@@ -52,7 +75,7 @@ namespace Hopper.TestContent.Floor
 
         public static void Unset(Entity actor)
         {
-            group.UnhookFrom(actor);
+            group.TryUnhookFrom(actor);
         }
 
         public static void RemoveFrom(Entity actor)

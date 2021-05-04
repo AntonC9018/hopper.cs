@@ -23,9 +23,9 @@ namespace Hopper.Core
             return success;
         }
 
-        static bool Iterate(Entity actor, ParticularDirectedAction action)
+        static bool Iterate(Entity actor, CompiledAction action)
         {
-            bool success = action.Do(actor);
+            bool success = action.DoAction(actor);
 
             if (!success)
             {
@@ -42,13 +42,13 @@ namespace Hopper.Core
 
         public static void EnemyAlgo(Acting.Context ctx)
         {
-            if (ctx.action is ParticularUndirectedAction)
+            if (ctx.action._storedAction is IUndirectedAction undirected)
             {
-                ctx.action.Do(ctx.actor);
+                undirected.DoAction(ctx.actor);
                 return;
             }
 
-            var action = (ParticularDirectedAction)ctx.action;
+            var action = ctx.action;
 
             var dirs = ctx.actor.GetSequential().GetMovs(ctx.actor);
 

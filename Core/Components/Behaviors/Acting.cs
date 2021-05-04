@@ -2,6 +2,7 @@ using Hopper.Utils.Vector;
 using System.Collections.Generic;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Chains;
+using Hopper.Utils;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -18,19 +19,21 @@ namespace Hopper.Core.Components.Basic
 
         [Flags] public Flags _flags;
 
-        [Inject] public readonly System.Func<Entity, ParticularAction> ActionCalculationAlgorithm;
+        [Inject] public readonly System.Func<Entity, CompiledAction> ActionCalculationAlgorithm;
         [Inject] public readonly System.Action<Context> ActionExecutionAlgorithm;
         [Inject] public readonly Order order;
-        public ParticularAction nextAction;
+        public CompiledAction nextAction;
+        public IntVector2 selectedDirection;
         public Entity actor;
 
         public class Context : ContextBase
         {
             public Entity actor => acting.actor;
             [Omit] public Acting acting;
-            [Omit] public ParticularAction action;
+            [Omit] public CompiledAction action;
             [Omit] public bool success = false;
         }
+
 
         [Alias("InitActing")]
         public Acting Init(Entity actor)
@@ -47,12 +50,15 @@ namespace Hopper.Core.Components.Basic
                 action = nextAction
             };
 
-            if (nextAction == null)
-            {
-                _flags = Flags.DidAction | Flags.ActionSucceeded;
-                TraverseSuccess(ctx);
-                return true;
-            }
+            Assert.That(nextAction != null);
+
+            // TODO: this should not be allowed.
+            // if (nextAction == null)
+            // {
+            //     _flags = Flags.DidAction | Flags.ActionSucceeded;
+            //     TraverseSuccess(ctx);
+            //     return true;
+            // }
 
             _flags |= Flags.DoingAction;
 
@@ -123,7 +129,7 @@ namespace Hopper.Core.Components.Basic
                 }
                 else
                 {
-                    yield return ((ParticularDirectedAction)nextAction).direction;
+                    yield return ((CompiledAction)nextAction).direction;
                 }
             }
             yield break;

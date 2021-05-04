@@ -2,6 +2,7 @@ using System.Runtime.Serialization;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Shared.Attributes;
+using static Hopper.Core.Action;
 
 namespace Hopper.TestContent.Bind
 {
@@ -10,9 +11,9 @@ namespace Hopper.TestContent.Bind
     {
         public static EntityFactory Factory;
         
-        private static readonly DirectedAction BindAction = Action.FromActivateable(Binding.Index);
-        private static readonly DirectedAction MoveAction = Action.FromActivateable(Moving.Index);
-        private static readonly DirectedAction BindMoveAction = Action.CreateJoinedDirected(BindAction, MoveAction);
+        private static readonly ActivatingAction<Binding> BindAction = FromActivateable(Binding.Index);
+        private static readonly ActivatingAction<Moving> MoveAction = FromActivateable(Moving.Index);
+        private static readonly JoinedAction BindMoveAction = Join(BindAction, MoveAction);
 
         private static readonly Step[] Steps = new Step[]
         {
@@ -47,9 +48,9 @@ namespace Hopper.TestContent.Bind
             subject.GetBinding().DefaultPreset();
         }
 
-        public static void Retouch(Entity subject)
+        public static void Retouch(EntityFactory factory)
         {
-            SequentialMobBase.Retouch(subject);
+            SequentialMobBase.Retouch(factory);
         }
     }
 }

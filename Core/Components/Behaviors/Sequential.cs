@@ -8,7 +8,7 @@ namespace Hopper.Core.Components.Basic
     public partial class Sequential : IComponent
     {
         [Inject] public Sequence sequence;
-        public ParticularAction CurrentAction => sequence.CurrentAction;
+        public CompiledAction CurrentAction => sequence.CurrentAction;
 
         // Tick.Chain.ChainPath(m_entity.Behaviors).AddHandler(
         //         e => sequence.TickAction(m_entity)
@@ -26,7 +26,7 @@ namespace Hopper.Core.Components.Basic
             sequence.CurrentStep.algo(ctx);
         }
 
-        public static ParticularAction CalculateAction(Entity entity) 
+        public static CompiledAction CalculateAction(Entity entity) 
             => entity.GetSequential().CurrentAction;
     }
 }

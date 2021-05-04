@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.Predictions;
 using Hopper.Core.Stat;
 using Hopper.Core.Targeting;
 using Hopper.Shared.Attributes;
@@ -36,18 +37,43 @@ namespace Hopper.TestContent
         private static readonly UnbufferedTargetProvider DefaultShooting 
             = new UnbufferedTargetProvider(DefaultPattern, Layer.REAL, Faction.Any);
 
-        public static void Shoot(IntVector2 position, IntVector2 direction)
+        public static readonly TargetProviderAction ShootAction 
+            = new TargetProviderAction(DefaultShooting, DefaultAttack, DefaultPush);
+    }
+
+    public class TargetProviderAction : IAction, IPredictable
+    {
+        public UnbufferedTargetProvider _provider;
+        public Attack _attack;
+        public Push _push;
+
+        public TargetProviderAction(UnbufferedTargetProvider provider, Attack attack, Push push)
         {
-            var targets = DefaultShooting.GetTargets(position, direction);
+            _provider = provider;
+            _attack = attack;
+            _push = push;
+        }
+
+        public void Shoot(IntVector2 position, IntVector2 direction)
+        {
+            var targets = _provider.GetTargets(position, direction);
 
             foreach (var target in targets)
             {
-                target.transform.entity.TryBeAttacked(null, DefaultAttack, direction);
-                target.transform.entity.TryBePushed(DefaultPush, direction);
+                target.transform.entity.TryBeAttacked(null, _attack, direction);
+                target.transform.entity.TryBePushed(_push, direction);
             }
         }
 
-        public static readonly DirectedAction ShootAction = 
-            Action.CreateSimple(Shoot, DefaultShooting.PredictPositionsBy);
+        public IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction, PredictionTargetInfo info)
+        {
+            return _provider.PredictPositionsBy(actor, direction, info);
+        }
+
+        public bool DoAction(Entity actor, IntVector2 direction)
+        {
+            Shoot(actor.GetTransform().position, direction);
+            return true;
+        }
     }
 }

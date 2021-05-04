@@ -4,6 +4,7 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Retouchers;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
+using static Hopper.Core.Action;
 
 namespace Hopper.TestContent.Boss
 {
@@ -50,11 +51,11 @@ namespace Hopper.TestContent.Boss
     {
         public static EntityFactory Factory;
         
-        private static readonly DirectedAction AttackMoveAction = Action.ComposeDirected(
-            Action.FromActivateable(Attacking.Index),
-            Action.FromActivateable(Moving.Index)
+        private static readonly CompositeAction AttackMoveAction = Compose(
+            FromPredictableActivateable(Attacking.Index),
+            FromActivateable(Moving.Index)
         );
-        private static readonly DirectedAction SpawnAction = Action.FromActivateable(TestBossComponent.Index);
+        private static readonly ActivatingAction<TestBossComponent> SpawnAction = FromActivateable(TestBossComponent.Index);
         private static readonly Step[] Steps = new[]
         {
             new Step
@@ -89,9 +90,9 @@ namespace Hopper.TestContent.Boss
             SequentialMobBase.InitComponents(subject);
         }
 
-        public static void Retouch(Entity subject)
+        public static void Retouch(EntityFactory factory)
         {
-            SequentialMobBase.Retouch(subject);
+            SequentialMobBase.Retouch(factory);
         }
     }
 
@@ -101,9 +102,9 @@ namespace Hopper.TestContent.Boss
     {
         public static EntityFactory Factory;
 
-        private static readonly DirectedAction AttackMoveAction = Action.ComposeDirected(
-            Action.FromActivateable(Attacking.Index),
-            Action.FromActivateable(Moving.Index)
+        private static readonly CompositeAction AttackMoveAction = Compose(
+            FromPredictableActivateable(Attacking.Index),
+            FromActivateable(Moving.Index)
         );
 
         private static readonly Step[] Steps = new[]
@@ -138,9 +139,9 @@ namespace Hopper.TestContent.Boss
             SequentialMobBase.InitComponents(subject);
         }
 
-        public static void Retouch(Entity subject)
+        public static void Retouch(EntityFactory factory)
         {
-            SequentialMobBase.Retouch(subject);
+            SequentialMobBase.Retouch(factory);
         }
     }
 }

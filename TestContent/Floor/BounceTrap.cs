@@ -2,6 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
+using static Hopper.Core.Action;
 
 namespace Hopper.TestContent.Floor
 {
@@ -9,14 +10,14 @@ namespace Hopper.TestContent.Floor
     public static class BounceTrap
     {
         public static EntityFactory Factory;
-        public static readonly UndirectedAction BounceAction = Action.CreateSimple(actor => actor.Bounce());
+        public static readonly SimpleUndirectedAction BounceAction = Simple(actor => actor.Bounce());
 
         public static void AddComponents(Entity subject)
         {
             Stats.AddTo(subject, Registry.Global._defaultStats);
             Transform.AddTo(subject, Layer.TRAP);
             FactionComponent.AddTo(subject, Faction.Enemy);
-            Acting.AddTo(subject, ctx => BounceAction.ToParticular(), Algos.SimpleAlgo, Order.Trap);
+            Acting.AddTo(subject, ctx => BounceAction.Compile(), Algos.SimpleAlgo, Order.Trap);
             Damageable.AddTo(subject, new Health(1));
             Ticking.AddTo(subject);
             Bouncing.AddTo(subject);

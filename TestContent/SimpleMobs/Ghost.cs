@@ -1,9 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
-using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
-using Hopper.Core.Targeting;
-using Hopper.Core.Items;
+using static Hopper.Core.Action;
 
 namespace Hopper.TestContent
 {
@@ -12,10 +10,9 @@ namespace Hopper.TestContent
     {
         public static EntityFactory Factory;
 
-        public static readonly Action GhostAction = GhostAction = 
-            Action.ComposeDirected(
-                Action.FromActivateable(Attacking.Index),
-                Action.FromActivateable(Moving.Index));
+        public static readonly CompositeAction GhostAction = Compose(
+            FromPredictableActivateable(Attacking.Index),
+            FromActivateable(Moving.Index));
         private const Layer TeleportedLayer = Layer.REAL | Layer.DROPPED | Layer.ITEM;
 
 
