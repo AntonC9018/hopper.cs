@@ -27,13 +27,13 @@ namespace Hopper.Core.Retouchers
         [Export(Chain = "Attacking.Check", Priority = PriorityRank.Low, Dynamic = true)]
         private static bool SkipNoPlayer(Attacking.Context ctx)
         {
-            return ctx.targetingContext.targetContexts.Any(t => t.transform.entity.IsPlayer());
+            return ctx.targetingContext.targetContexts.Any(t => t.transform != null && t.transform.entity.IsPlayer());
         }
 
         [Export(Chain = "Attacking.Check", Priority = PriorityRank.Low, Dynamic = true)]
         private static bool SkipSelf(Attacking.Context ctx)
         {
-            return ctx.targetingContext.targetContexts.Any(t => t.transform.entity == ctx.actor);
+            return ctx.targetingContext.targetContexts.Any(t => t.transform != null && t.transform.entity == ctx.actor);
         }
     }
 }

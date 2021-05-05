@@ -29,11 +29,12 @@ namespace Hopper.TestContent.SimpleMobs
             SequentialMobBase.InitComponents(subject);
         }
 
-        public static void Retouch(Entity subject)
+        public static void Retouch(EntityFactory factory)
         {
-            Skip.SkipNoPlayerHandlerWrapper.HookTo(subject);
-            Skip.SkipBlockedHandlerWrapper.HookTo(subject);
-            Reorient.OnActionSuccessHandlerWrapper.HookTo(subject);
+            SequentialMobBase.Retouch(factory);
+            Skip.SkipNoPlayerHandlerWrapper.HookTo(factory);
+            Skip.SkipBlockedHandlerWrapper.HookTo(factory);
+            Reorient.OnActionSuccessHandlerWrapper.HookTo(factory);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Hopper.Core
         public GridManager grid;
         public WorldStateManager state;
 
-        public static readonly int NumPhases = System.Enum.GetValues(typeof(Order)).Length;
+        public static readonly int NumOrders = System.Enum.GetValues(typeof(Order)).Length;
         public static readonly int NumLayers = System.Enum.GetValues(typeof(Layer)).Length;
 
         // For now, do this for the sake of tests and debugging

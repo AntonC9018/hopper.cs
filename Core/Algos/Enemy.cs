@@ -14,7 +14,7 @@ namespace Hopper.Core
             foreach (var targetTransform in targetTransforms)
             {
                 if (targetTransform.entity.TryGetActing(out var otherActing)
-                    && !otherActing._flags.HasFlag(Acting.Flags.DidAction|Acting.Flags.DoingAction))
+                    && !otherActing._flags.HasEitherFlag(ActingState.DidAction|ActingState.DoingAction))
                 {
                     otherActing.Activate();
                     success = true;
@@ -48,8 +48,6 @@ namespace Hopper.Core
                 return;
             }
 
-            var action = ctx.action;
-
             var dirs = ctx.actor.GetSequential().GetMovs(ctx.actor);
 
             // if movs if null, consider the action succeeding all the time
@@ -61,8 +59,8 @@ namespace Hopper.Core
 
             foreach (var dir in dirs)
             {
-                action = action.WithDirection(dir);
-                if (Iterate(ctx.actor, in action))
+                ctx.action = ctx.action.WithDirection(dir);
+                if (Iterate(ctx.actor, in ctx.action))
                 {
                     ctx.success = true;
                     return;

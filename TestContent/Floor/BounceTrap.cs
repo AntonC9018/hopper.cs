@@ -27,16 +27,18 @@ namespace Hopper.TestContent.Floor
         {
             subject.GetActing().DefaultPreset(subject);
             subject.GetBouncing().DefaltPreset(subject);
+            subject.GetTicking().DefaultPreset();
         }
 
         public static void Retouch(EntityFactory factory)
         {
-            factory.InitInWorldFunc = InitInWorld;
+            factory.InitInWorldFunc += InitInWorld;
         }
 
         public static void InitInWorld(Transform transform)
         {
             transform.entity.GetBouncing().InitInWorld(transform);
+            transform.entity.GetStats().Init();
         }
     }
 }

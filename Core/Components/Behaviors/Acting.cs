@@ -6,18 +6,18 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Components.Basic
 {
+    [Flags] public enum ActingState 
+    {
+        DidAction = 0b_001,
+        DoingAction = 0b_010,
+        ActionSucceeded = 0b_100
+    };
+    
     [Chains("Do", "Check", "Success", "Fail")]
     [NoActivation]
     public partial class Acting : IBehavior
     {
-        [Flags] public enum Flags 
-        {
-            DidAction = 0b_001,
-            DoingAction = 0b_010,
-            ActionSucceeded = 0b_100
-        };
-
-        [Flags] public Flags _flags;
+        [Flags] public ActingState _flags;
 
         [Inject] public readonly System.Func<Entity, CompiledAction> ActionCalculationAlgorithm;
         [Inject] public readonly System.Action<Context> ActionExecutionAlgorithm;
@@ -50,14 +50,14 @@ namespace Hopper.Core.Components.Basic
                 action = nextAction
             };
 
-            _flags |= Flags.DoingAction;
+            _flags |= ActingState.DoingAction;
 
             if (TraverseCheck(ctx))
             {
                 // Let's move it here for now
                 if (!ctx.action.HasAction())
                 {
-                    _flags = Flags.DidAction | Flags.ActionSucceeded;
+                    _flags = ActingState.DidAction | ActingState.ActionSucceeded;
                     TraverseSuccess(ctx);
                     return true;
                 }
@@ -68,16 +68,16 @@ namespace Hopper.Core.Components.Basic
 
             ctx.propagate = true;
 
-            if (ctx.success) _flags |=  Flags.ActionSucceeded;
-            else             _flags &= ~Flags.ActionSucceeded;
+            if (ctx.success) _flags |=  ActingState.ActionSucceeded;
+            else             _flags &= ~ActingState.ActionSucceeded;
 
             if (ctx.success)
                 TraverseSuccess(ctx);
             else
                 TraverseFail(ctx);
 
-            _flags |=  Flags.DidAction;
-            _flags &= ~Flags.DoingAction;
+            _flags |=  ActingState.DidAction;
+            _flags &= ~ActingState.DoingAction;
 
             return ctx.success;
         }

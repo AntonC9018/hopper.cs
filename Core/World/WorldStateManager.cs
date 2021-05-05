@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Hopper.Core.Components.Basic;
 using Hopper.Utils;
@@ -19,11 +20,11 @@ namespace Hopper.Core
         public Order currentPhase = Order.Player;
         private int m_currentTimeFrame = 0;
         public int NextTimeFrame() => m_currentTimeFrame++;
-        private int[] m_updateCountPhaseLimits = new int[World.NumPhases];
+        private int[] m_updateCountPhaseLimits = new int[World.NumOrders + 1];
 
         public WorldStateManager()
         {
-            actings = new DoubleList<Acting>[World.NumPhases];
+            actings = new DoubleList<Acting>[World.NumOrders];
 
             for (int i = 0; i < actings.Length; i++)
             {
@@ -49,7 +50,6 @@ namespace Hopper.Core
 
             ResetPhase();
             ActivatePlayers();
-            AdvancePhase();
             CalculateActionOnEntities();
             ActivateOthers();
             TickAll();
@@ -62,7 +62,7 @@ namespace Hopper.Core
         private void Activate(Acting acting)
         {
             if (acting.actor.IsDead()) return;
-            if (!acting._flags.HasFlag(Acting.Flags.DidAction))
+            if (!acting._flags.HasFlag(ActingState.DidAction))
             {
                 acting.Activate();
             }
@@ -70,11 +70,9 @@ namespace Hopper.Core
 
         private void CalculateActionOnEntities()
         {
-            for (int i = (int)Order.Player + 1; i < actings.Length; i++)
-            {
-                foreach (var acting in actings[i])
-                    acting.CalculateNextAction();
-            }
+            foreach (var _actings in actings)
+            foreach (var acting in _actings)
+                acting.CalculateNextAction();
         }
 
         private void ActivatePlayers()
@@ -83,6 +81,7 @@ namespace Hopper.Core
             {
                 Activate(acting);
             }
+            AdvancePhase();
         }
 
         private void ActivateOthers()
@@ -113,13 +112,13 @@ namespace Hopper.Core
         private void FilterDead()
         {
             BeforeFilterEvent?.Invoke();
-            for (int i = 0; i < actings.Length; i++)
+            foreach (var _actings in actings)
             {
-                foreach (var acting in actings[i].StartFiltering())
+                foreach (var acting in _actings.StartFiltering())
                 {
                     if (acting.actor.IsDead())
                     {
-                        actings[i].AddToSecondaryBuffer(acting);
+                        _actings.AddToSecondaryBuffer(acting);
                     }
                 }
             }
@@ -140,6 +139,7 @@ namespace Hopper.Core
 
         private void EndPhase()
         {
+            Assert.That((int)currentPhase < m_updateCountPhaseLimits.Length, $"{Enum.GetName(typeof(Order), currentPhase)}({(int)currentPhase}) is outside the phase range");
             m_updateCountPhaseLimits[(int)currentPhase] = m_currentTimeFrame;
             EndOfPhaseEvent?.Invoke(currentPhase);
         }

@@ -207,6 +207,10 @@ namespace Hopper.Utils.Vector
             );
         }
 
+        /// <summary>
+        /// Returns a new vector, where each component is the sign of the corresponding component.
+        /// E.g. (0, 5) -> (0, 1);  (-1, -9) -> (-1, -1)
+        /// </summary>
         public IntVector2 Sign()
         {
             return new IntVector2

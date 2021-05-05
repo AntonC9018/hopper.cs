@@ -54,7 +54,7 @@ namespace Hopper.Core
 
         public CompiledAction WithDirection(IntVector2 newDirection)
         {
-            return new CompiledAction(_storedAction, direction);
+            return new CompiledAction(_storedAction, newDirection);
         }
 
         public bool DoAction(Entity actor)

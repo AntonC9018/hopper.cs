@@ -23,7 +23,7 @@ namespace Hopper.Utils
 
         public IEnumerable<T> StartFiltering()
         {
-            Assert.Equals(_isIterating, $"Cannot initialize another enumerator while iteratin over double list of {typeof(T).Name}");
+            Assert.Equals(_isIterating, $"Cannot initialize another filter while iterating over double list of {typeof(T).Name}");
             _secondaryBuffer.Clear();
             _isIterating = true;
             foreach (var item in _primaryBuffer)

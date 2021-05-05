@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
@@ -25,14 +26,22 @@ namespace Hopper.Mine
             World.Global = new World(3, 3);
             var world = World.Global;
 
-            var skeleton = World.Global.SpawnEntity(Skeleton.Factory, new IntVector2(1, 1));
-            var acting = skeleton.GetActing();
-            acting.CalculateNextAction();
+            var entityFactory = new EntityFactory();
+            Transform.AddTo(entityFactory, Layer.REAL);
+            Stats.AddTo(entityFactory, Registry.Global._defaultStats);
+            Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK).DefaultPreset();
+            Pushable.AddTo(entityFactory).DefaultPreset();
+            entityFactory.InitInWorldFunc += t => t.entity.GetStats().Init();
 
-            var player = World.Global.SpawnEntity(Player.Factory, new IntVector2(1, 0));
-            var predictor = new Predictor(World.Global, Layer.REAL, Faction.Player);
-            var predictedPositions = predictor.GetBadPositions();
-            predictedPositions = predictor.GetBadPositions();
+            var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 1));
+            var trap1 = World.Global.SpawnEntity(BounceTrap.Factory, new IntVector2(1, 1), new IntVector2(1, 0));
+            World.Global.Loop();
+
+            var trap2 = World.Global.SpawnEntity(BounceTrap.Factory, new IntVector2(2, 1), new IntVector2(1, 0));
+            entity.GetTransform().ResetPositionInGrid(new IntVector2(0, 1));
+World.Global.Loop();
+            entity.Displace(new IntVector2(1, 0), Move.Default());
+            World.Global.Loop();
         }
     }
 }

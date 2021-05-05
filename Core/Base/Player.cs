@@ -41,7 +41,6 @@ namespace Hopper.Core
 
             // TODO: rename the namespaces
             Stats.AddTo(subject, Registry.Global._defaultStats);
-            History.History.AddTo(subject);
         }
 
         public static void InitComponents(Entity subject)
@@ -63,12 +62,13 @@ namespace Hopper.Core
             // subject.TryGetHistory()?.
         }
 
-        public static void Retouch(Entity subject)
+        public static void Retouch(EntityFactory factory)
         {
-            Skip.SkipEmptyAttackHandlerWrapper.HookTo(subject);
-            Skip.SkipEmptyAttackHandlerWrapper.HookTo(subject);
-            Equip.OnDisplaceHandlerWrapper.HookTo(subject);
-            Reorient.OnActionSuccessHandlerWrapper.HookTo(subject);
+            Skip.SkipEmptyAttackHandlerWrapper.HookTo(factory);
+            Skip.SkipEmptyAttackHandlerWrapper.HookTo(factory);
+            Equip.OnDisplaceHandlerWrapper.HookTo(factory);
+            Reorient.OnActionSuccessHandlerWrapper.HookTo(factory);
+            factory.InitInWorldFunc = t => t.entity.GetStats().Init();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Hopper.Core
                 return relativeStepIndexFail;
             }
 
-            if (acting._flags.HasFlag(Acting.Flags.ActionSucceeded))
+            if (acting._flags.HasFlag(ActingState.ActionSucceeded))
             {
                 return relativeStepIndexSuccess;
             }

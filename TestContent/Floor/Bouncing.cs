@@ -36,7 +36,7 @@ namespace Hopper.TestContent.Floor
             var targetTransform = transform.GetAllUndirectedButSelfFromLayer(_targetedLayer).FirstOrDefault();
 
             // otherwise, push the thing which is on top of us.
-            if (targetTransform == null || _bouncedEntities.Add(targetTransform.entity.id))
+            if (targetTransform == null || !_bouncedEntities.Add(targetTransform.entity.id))
             {
                 return true;
             }
