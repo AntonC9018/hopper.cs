@@ -22,9 +22,10 @@ namespace Hopper.TestContent.Floor
             }
 
             // TODO: check stats
-            if (context.transform.layer.HasFlag(TargetedLayer) && context.HasNotMoved())
+            if (context.transform.layer.HasEitherFlag(TargetedLayer) && context.HasNotMoved())
             {
-                SlidingEntityModifier.TryApplyTo(context.transform.entity, context.direction);
+                SlidingEntityModifier.TryApplyTo(context.transform, context.direction);
+                return false;
             }
 
             return true;

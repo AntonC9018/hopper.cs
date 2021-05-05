@@ -19,7 +19,7 @@ namespace Hopper.Core
 
     public static class ExtendedLayer
     {
-        public static Layer BLOCK = Layer.REAL | Layer.WALL | Layer.MISC;
+        public static Layer BLOCK = Layer.REAL | Layer.WALL;
     }
 
     public static class LayerExtensions

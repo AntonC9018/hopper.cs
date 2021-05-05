@@ -115,7 +115,9 @@ namespace Hopper.Meta
                     var activationMethods = symbol.GetMembers()
                         .OfType<IMethodSymbol>()
                         .Where(m => m.Name == "Activate")
-                        .Where(m => m.ParameterTypesEqual(context.notOmitted));
+                        .Where(m => m.ParameterTypesEqual(context.notOmitted) 
+                            || (m.Parameters.FirstOrDefault()?.Type == RelevantSymbols.entity 
+                                && m.Parameters.Skip(1).TypeSequenceEqual(context.notOmitted)));
 
                     if (activationMethods.Count() == 0)
                     {

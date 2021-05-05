@@ -3,6 +3,7 @@ using Hopper.Shared.Attributes;
 using System;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Hopper.Meta
 {
@@ -103,7 +104,7 @@ namespace Hopper.Meta
             // If we're inside any component, get that component from the entity and call ourselves.
             if (symbol.ContainingType.HasInterface(RelevantSymbols.icomponent))
             {
-                return $"ctx.actor.GetComponent({symbol.ContainingType.Name}.Index).";
+                return $"ctx.{Context.ActorName}.GetComponent({symbol.ContainingType.Name}.Index).";
             }
 
             // If we're in a context class, just call ourselves directly
@@ -133,8 +134,13 @@ namespace Hopper.Meta
 
             foreach (var s in symbol.Parameters)
             {
+                // TODO: allow get properties
+                if (s.Name == Context.ActorName)
+                {
+                    sb_call.Append($"ctx.{Context.ActorName}, ");
+                }
                 // If the parameter is of Context type
-                if (SymbolEqualityComparer.Default.Equals(s.Type, Context.symbol))
+                else if (SymbolEqualityComparer.Default.Equals(s.Type, Context.symbol))
                 {
                     // The parameters need not be appended, since the handlers take ctx by default.
                     sb_call.Append("ctx, ");

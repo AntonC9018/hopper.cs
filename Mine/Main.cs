@@ -8,6 +8,7 @@ using Hopper.Core.Stat;
 using Hopper.Core.Targeting;
 using Hopper.TestContent;
 using Hopper.TestContent.Bind;
+using Hopper.TestContent.Floor;
 using Hopper.TestContent.SimpleMobs;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
@@ -24,27 +25,29 @@ namespace Hopper.Mine
             var entityFactory = new EntityFactory();
             Transform.AddTo(entityFactory, Layer.REAL);
             Stats.AddTo(entityFactory, Registry.Global._defaultStats);
-            Attackable.AddTo(entityFactory, Attackness.ALWAYS).DefaultPreset();
-            Damageable.AddTo(entityFactory, new Health(1)).DefaultPreset();
-            Displaceable.AddTo(entityFactory, Layer.WALL | Layer.REAL).DefaultPreset();
+            Ticking.AddTo(entityFactory).DefaultPreset();
+            Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK).DefaultPreset();
             Moving.AddTo(entityFactory).DefaultPreset();
-            entityFactory.InitInWorldFunc = e => e.entity.GetStats().Init();
+            Pushable.AddTo(entityFactory).DefaultPreset();
+            Acting.AddTo(entityFactory, null, Algos.SimpleAlgo, Order.Entity).DefaultPreset(entityFactory);
+            entityFactory.InitInWorldFunc += t => t.entity.GetStats().Init();
 
-            var bindingFactory = new EntityFactory();
-            Transform.AddTo(bindingFactory, Layer.REAL);
-            Stats.AddTo(bindingFactory, Registry.Global._defaultStats);
-            Binding.AddTo(bindingFactory, Layer.REAL, BoundEntityModifier.DefaultHookable).DefaultPreset();
-            Damageable.AddTo(bindingFactory, new Health(1)).DefaultPreset();
-            Attackable.AddTo(bindingFactory, Attackness.ALWAYS).DefaultPreset();
-            bindingFactory.InitInWorldFunc = e => e.entity.GetStats().Init();
+            var world = new World(4, 4);
+            World.Global = world;
+            var _iceFloors = new Entity[3];
+            for (int i = 0; i < 3; i++)
+            {
+                _iceFloors[i] = World.Global.SpawnEntity(IceFloor.Factory, new IntVector2(i, 1));
+            }
 
-            World.Global = new World(3, 3);
+            var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 1));
+            entity.Move(IntVector2.Right);
 
-            var spider = World.Global.SpawnEntity(bindingFactory, new IntVector2(1, 1));
-            var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 0));
-
-            spider.GetBinding().Activate(spider, new IntVector2(-1, -1));
-            entity.Die();
+            var acting = entity.GetActing();
+            acting.nextAction = Moving.Action.Compile(IntVector2.Up);
+            acting.Activate();
+            acting.Activate();
+            acting.Activate();
         }
     }
 }

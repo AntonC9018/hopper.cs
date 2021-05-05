@@ -1,11 +1,7 @@
-using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Editing;
-using System.Text;
+using System;
 
 namespace Hopper.Meta
 {
@@ -26,53 +22,62 @@ namespace Hopper.Meta
         public Dictionary<string, IFieldSymbol> fieldsHashed;
         public HashSet<string> omitted;
         public List<IFieldSymbol> notOmitted;
-
+        public string ActorName;
 
         public void HashFields()
         {
             fieldsHashed = new Dictionary<string, IFieldSymbol>();
             omitted = new HashSet<string>();
             notOmitted = new List<IFieldSymbol>();
+
+            if (symbol.GetMembers().OfType<IPropertySymbol>().Any(p => p.Name == "actor"))
             {
-                var stack = new Stack<INamedTypeSymbol>();
+                ActorName = "actor";
+            }
 
+            foreach (var s in symbol.GetTypeHierarchy())
+            foreach (var field in s.GetInstanceFields())
+            {
+                fieldsHashed.Add(field.Name, field);
+
+                if (field.Name == "actor")
                 {
-                    var s = symbol;
-                    do
-                    {
-                        stack.Push(s);
-                        s = s.BaseType;
-                    }
-                    while (s != null); 
+                    ActorName = "actor";
+                    omitted.Add(field.Name);
                 }
-
-                foreach (var s in stack)
+                else if (field.HasAttribute(RelevantSymbols.omitAttribute) || field.Name == "propagate")
                 {
-                    foreach (var field in s
-                        .GetMembers().OfType<IFieldSymbol>()
-                        .Where(f => !f.IsStatic && !f.IsConst))
+                    omitted.Add(field.Name);
+                }
+                else
+                {
+                    if (ActorName == null && field.Type == RelevantSymbols.entity)
                     {
-                        fieldsHashed.Add(field.Name, field);
-
-                        if (field.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.omitAttribute)) || field.HasConstantValue || field.Name == "propagate")
-                        {
-                            omitted.Add(field.Name);
-                        }
-                        else
-                        {
-                            notOmitted.Add(field);
-                        }
+                        ActorName = field.Name;
+                    }
+                    else
+                    {
+                        notOmitted.Add(field);
                     }
                 }
+            }
+
+            if (ActorName == null) 
+            {
+                throw new GeneratorException("The context class must contain a field of type \"Entity\", representing the entity, or a property with name \"actor\"");
             }
         }
 
         public bool ContainsEntity(string name) => fieldsHashed.TryGetValue(name, out var t) 
-            && SymbolEqualityComparer.Default.Equals(t, RelevantSymbols.entity);
+            && SymbolEqualityComparer.Default.Equals(t, RelevantSymbols.entity)
+            || name == ActorName;
         public bool ContainsFieldWithNameAndType(string name, ITypeSymbol type) 
         {
-            return fieldsHashed.TryGetValue(name, out var t) && 
-                SymbolEqualityComparer.Default.Equals(type, t.Type);
+            if (fieldsHashed.TryGetValue(name, out var fieldSymbol))
+            {
+                return SymbolEqualityComparer.Default.Equals(fieldSymbol.Type, type);
+            }
+            return false;
         }
         public bool ShouldBeOmitted(string name) => omitted.Contains(name);
 
@@ -82,11 +87,22 @@ namespace Hopper.Meta
 
 
         /* Things mainly called in the template */
-        public string ParamsWithActor() => notOmitted.ParamsWithActor();
-        public string Params() => notOmitted.Params();
-        public IEnumerable<string> ParamNames() => notOmitted.ParamNames();
-        public string JoinedParamNames() => notOmitted.JoinedParamNames();
-        public IEnumerable<string> ParamTypeNames() => notOmitted.ParamTypeNames();
-        public string JoinedParamTypeNames() => notOmitted.JoinedParamTypeNames();
+        public string JoinedParamsWithActor() => String.Join(", ", ParamsWithActor());
+        public IEnumerable<string> ParamsWithActor()
+        {
+            yield return $"Entity {ActorName}";
+            foreach (var p in ParamNamesWithTypes()) yield return p;
+        }
+        public IEnumerable<string> ParamNamesWithTypes() => notOmitted.Select(f => $"{f.Type.TypeToText()} {f.Name}");
+        public IEnumerable<string> ParamNames() => notOmitted.Select(f => f.Name);
+        
+        public IEnumerable<string> ParamNamesWithActor() 
+        {
+            yield return ActorName;
+            foreach (var p in ParamNames()) yield return p;
+        }
+        public string JoinedParamNamesWithActor() => String.Join(", ", ParamNamesWithActor());
+
+        public string JoinedParamTypeNames() => notOmitted.CommaJoin(f => f.Type.Name);
     }
 }

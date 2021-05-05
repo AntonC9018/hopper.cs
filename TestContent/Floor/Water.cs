@@ -31,7 +31,7 @@ namespace Hopper.TestContent.Floor
         public bool PreventActionAndDecreaseAmount_Digging(Entity actor) 
             => PreventActionAndDecreaseAmount(actor);
 
-        [Export(Chain = "Displaceable.Do", Priority = PriorityRank.High, Dynamic = true)]
+        [Export(Chain = "Displaceable.BeforeRemove", Priority = PriorityRank.High, Dynamic = true)]
         public bool PreventActionAndDecreaseAmount_Displaceable(Entity actor) 
             => PreventActionAndDecreaseAmount(actor);
 

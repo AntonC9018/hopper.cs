@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hopper.Core.Components.Basic;
+using Hopper.Utils;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Predictions
@@ -22,22 +23,21 @@ namespace Hopper.Core.Predictions
             foreach (var actings in world.state.actings)
             foreach (var acting in actings)
             {
-                if (acting.nextAction == null)
+                if (!acting.nextAction.HasAction())
                 {
                     acting.CalculateNextAction();
                 }
-                if (acting.nextAction == null)
-                {
-                    continue;
-                }
 
                 // TODO: Add support for good/bad predicted positions (currenlty, all are processed as one thing)
-                // TODO: require a layer as well as a faction, like I'm doing in the target provider
                 if (acting.nextAction._storedAction is IPredictable action)
-                foreach (var direction in acting.GetPossibleDirections())
-                foreach (var pos in action.Predict(acting.actor, direction, predictionInfo))
+                if (action is IUndirectedPredictable undirectedPredictable)
                 {
-                    set.Add(pos);
+                    set.AddRange(undirectedPredictable.Predict(acting.actor, predictionInfo));
+                }
+                else
+                {
+                    foreach (var direction in acting.GetPossibleDirections())
+                        set.AddRange(action.Predict(acting.actor, direction, predictionInfo));
                 }
             }
             return set;

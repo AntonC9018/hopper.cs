@@ -28,7 +28,7 @@ namespace Hopper.Tests.Test_Content
             entityFactory.InitInWorldFunc += t => t.entity.GetStats().Init();
         }
 
-        [Test]
+        [SetUp]
         public void Setup()
         {
             World.Global = new World(4, 4);
@@ -42,6 +42,12 @@ namespace Hopper.Tests.Test_Content
         [Test]
         public void Test_Linear_Slide()
         {
+            //
+            // _ _ _ _        _ _ _ _ 
+            // i i i _        e i i _         i are ice floor
+            // _ _ _ _    ->  _ _ _ _         e is the entity spawned on top of ice
+            // _ _ _ _        _ _ _ _ 
+            //
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 1));
             entity.Move(IntVector2.Right); // 1, 1
             // Once the entity stepped on ice, it gets the effect (entity modifier)
@@ -67,45 +73,59 @@ namespace Hopper.Tests.Test_Content
         }
 
         [Test]
-        public void Test_1()
+        public void BeingPushed_WhileSliding()
         {
-            // PushPlayer(new IntVector2(1, 0));
+            // Let's add some ice below to set things up
+            // _ _ _ _        _ _ _ _ 
+            // i i i _        i i i _         i are ice floor
+            // _ _ _ _    ->  i _ _ _         e is the entity
+            // _ _ _ _        e _ _ _ 
+            //
+            var ice1 = World.Global.SpawnEntity(IceFloor.Factory, new IntVector2(0, 2));
+            var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 3));
+            
+            // We let the entity move up
+            entity.Move(IntVector2.Up);
 
-            // Assert.AreEqual(new IntVector2(1, 1), player.Pos);
+            // As a result, it gets the sliding modifier
+            Assert.AreEqual(new IntVector2(0, 2), entity.GetTransform().position);
+            Assert.True(entity.HasSlidingEntityModifier());
 
-            // world.Loop();
+            // If we then push it to the right, it gets pushed successfully and loses the effect
+            entity.BePushed(Push.Default(), IntVector2.Right);
+            Assert.False(entity.HasSlidingEntityModifier());
 
-            // // the sliding does not affect the actual position directly. 
-            // // It simply applies a status effect.
-            // Assert.AreEqual(new IntVector2(1, 1), player.Pos);
-            // Assert.That(Slide.Status.IsApplied(player));
+            // Now we take the entity back to the initial position
+            // Moving back to the left should not apply the effect since there is nowhere to slide
+            entity.Move(IntVector2.Left); 
+            Assert.False(entity.HasSlidingEntityModifier());
 
-            // // Voluntary moving gets prevented by changing the default action
-            // var calculatedAction = player.Behaviors.Get<Controllable>()
-            //     .ConvertVectorToAction(new IntVector2(0, 1));
-            // Assert.IsNull(calculatedAction);
+            entity.Move(IntVector2.Down);
+            Assert.False(entity.HasSlidingEntityModifier());
 
-            // world.Loop();
-            // Assert.AreEqual(new IntVector2(2, 1), player.Pos);
+            // Now we move up again
+            entity.Move(IntVector2.Up);
+            Assert.True(entity.HasSlidingEntityModifier());
 
-            // // However, if the player gets pushed, then they should slide it that direction
-            // // that is, the player's displacement is in the direction that they stepped onto the 
-            // // ice floor with. If the player gets pushed, so does this variable, reflecting
-            // // the new direction.
-            // // This time the player does get displaced after having been pushed, since the sliding
-            // // has been already applied before the push. 
-            // var ice_floor_below = world.SpawnEntity(IceFloor.Factory, new IntVector2(2, 2));
-            // PushPlayer(new IntVector2(0, 1));
+            // This time we skip an action.
+            // The action is null but it will be modified by the effect.
+            entity.GetActing().Activate();
+            Assert.AreEqual(new IntVector2(0, 1), entity.GetTransform().position);
+            Assert.True(entity.HasSlidingEntityModifier());
 
-            // var x = (SlideData)player.Tinkers.GetStore(Slide.Status.m_tinker);
+            // Now we get pushed to the right
+            // The effect is still applied, but the direction of sliding is different
+            entity.BePushed(Push.Default(), IntVector2.Right);
+            Assert.AreEqual(new IntVector2(1, 1), entity.GetTransform().position);
+            Assert.True(entity.HasSlidingEntityModifier());
+            Assert.AreEqual(IntVector2.Right, entity.GetSlidingEntityModifier().directionOfSliding);
 
-            // Assert.AreEqual(new IntVector2(2, 2), player.Pos);
-            // Assert.AreEqual(new IntVector2(0, 1), x.currentDirection);
-            // Assert.That(Slide.Status.IsApplied(player));
-
-            // world.Loop();
-
-            // Assert.AreEqual(new IntVector2(2, 3), player.Pos);
+            // Say we try moving up through the acting now, but we should keep moving right
+            var acting = entity.GetActing();
+            acting.nextAction = Moving.Action.Compile(IntVector2.Up);
+            acting.Activate();
+            Assert.AreEqual(new IntVector2(2, 1), entity.GetTransform().position);
+            Assert.True(entity.HasSlidingEntityModifier());
         }
     }
 

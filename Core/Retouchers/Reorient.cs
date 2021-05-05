@@ -7,7 +7,7 @@ namespace Hopper.Core.Retouchers
     public static partial class Reorient
     {
 
-        [Export(Chain = "Displaceable.Do", Dynamic = true)]
+        [Export(Chain = "Displaceable.Check", Dynamic = true)]
         private static void OnDisplace(IntVector2 direction, Transform transform)
         {
             if (direction != IntVector2.Zero) 

@@ -40,10 +40,11 @@ namespace Hopper.Core
         IEnumerable<IntVector2> Predict(Entity actor, PredictionTargetInfo info);
     }
 
-    public class CompiledAction
+    // TODO: should this be a readonly struct? probably
+    public readonly struct CompiledAction
     {
-        public IAction _storedAction;
-        public IntVector2 direction;
+        public readonly IAction _storedAction;
+        public readonly IntVector2 direction;
 
         public CompiledAction(IAction storedAction, IntVector2 direction)
         {
@@ -51,11 +52,21 @@ namespace Hopper.Core
             this.direction = direction;
         }
 
+        public CompiledAction WithDirection(IntVector2 newDirection)
+        {
+            return new CompiledAction(_storedAction, direction);
+        }
+
         public bool DoAction(Entity actor)
         {
             if (_storedAction != null)
                 return _storedAction.DoAction(actor, direction);
             return true;
+        }
+
+        public bool HasAction()
+        {
+            return _storedAction != null;
         }
 
         public IAction GetStoredAction()
@@ -241,6 +252,7 @@ namespace Hopper.Core
 
         public ConditionalAction(IAction If, IAction Then)
         {
+            Assert.That(If != null, "The conditional must not be null");
             IfAction = If;
             ThenAction = Then;
         }
@@ -249,6 +261,7 @@ namespace Hopper.Core
         {
             if (IfAction.DoAction(actor, direction))
             {
+                if (ThenAction == null) return false;
                 return ThenAction.DoAction(actor, direction);
             }
             return false;
@@ -295,7 +308,6 @@ namespace Hopper.Core
         public static SimplePredictableUndirectedAction Simple(UndirectedDo DoFunc, UndirectedPredict PredictFunc) 
             => new SimplePredictableUndirectedAction(PredictFunc, DoFunc);
 
-        public static ConditionalAction Then(this IAction If, IAction Then) 
-            => new ConditionalAction(If, Then);
+        public static ConditionalAction Then(this IAction If, IAction Then) => new ConditionalAction(If, Then);
     }
 }

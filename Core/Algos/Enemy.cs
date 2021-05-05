@@ -23,7 +23,7 @@ namespace Hopper.Core
             return success;
         }
 
-        static bool Iterate(Entity actor, CompiledAction action)
+        static bool Iterate(Entity actor, in CompiledAction action)
         {
             bool success = action.DoAction(actor);
 
@@ -61,8 +61,8 @@ namespace Hopper.Core
 
             foreach (var dir in dirs)
             {
-                action.direction = dir;
-                if (Iterate(ctx.actor, action))
+                action = action.WithDirection(dir);
+                if (Iterate(ctx.actor, in action))
                 {
                     ctx.success = true;
                     return;

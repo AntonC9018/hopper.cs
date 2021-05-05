@@ -206,7 +206,7 @@ namespace Hopper.Core
                 return cell.GetUndirectedFromLayer(layer) != null;
             }
 
-            return false;
+            return true;
         }
 
         // TODO: is it worth it to clear them entirely?

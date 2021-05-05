@@ -11,8 +11,6 @@ namespace Hopper.Core.Components.Basic
         {
         }
 
-        // TODO: void return types of activation should be autointerpreted as true?
-        //       or allow void return types.
         public bool Activate(Entity actor)
         {
             var ctx = new Context { actor = actor };

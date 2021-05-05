@@ -24,7 +24,8 @@ namespace Hopper.Core
         {
             get
             {
-                return m_steps[currentStepIndex].action?.Compile(IntVector2.Zero);
+                // This will work even if the action is null (it is an extension method)
+                return m_steps[currentStepIndex].action.Compile(IntVector2.Zero);
             }
         }
 

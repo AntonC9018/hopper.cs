@@ -1,4 +1,5 @@
-<# foreach (var chain in behavior.chains) { #>
+<#  foreach (var chain in behavior.chains) 
+    { #>
         public readonly Chain<Context> _<#= chain.Name #>Chain;
 
         /// <summary>
@@ -7,42 +8,52 @@
         public static readonly ChainPath<Chain<Context>> <#= chain.Name #>Path = new ChainPath<Chain<Context>>(
             (Entity entity) => entity.TryGetComponent(Index, out var component) ? component._<#= chain.Name #>Chain : null);
 
-<# if (chain.ShouldGenerateParamsMethod) { #>
-        public bool <#= chain.Name #>(<#= behavior.context.Params() #>)
+<#      if (chain.ShouldGenerateParamsMethod) 
+        { 
+/* I am going to not allow these anymore, since they are pretty much useless and too chaotic */ #>
+        /*  
+        public bool <#= chain.Name #>(<#= behavior.context.ParamNamesWithTypes() #>)
         {
             Context ctx = new Context
             {
-<# foreach (var name in behavior.context.ParamNames()) { #>
+<#          foreach (var name in behavior.context.ParamNames()) 
+            { #>
                 <#= name #> = <#= name #>,
-<# } #>
+<#          } #>
             };
             return Traverse<#= chain.Name #>(ctx);
         }
+        */
 
-<# } // end if #>
-<# if (chain.ShouldGenerateTraverseMethod) { #>
+<#      } #>
+<#      if (chain.ShouldGenerateTraverseMethod) 
+        { #>
         public bool Traverse<#= chain.Name #>(Context ctx)
         {
             _<#= chain.Name #>Chain.Pass(ctx);
             return ctx.propagate;
         }
 
-<# } // end if #>
-<# } // end foreach#>
-<# if (behavior.ShouldGenerateActivation) { #>
-        public bool Activate(<#= behavior.context.Params() #>)
+<#      }
+    }
+    if (behavior.ShouldGenerateActivation) 
+    { #>
+        public bool Activate(<#= behavior.context.JoinedParamsWithActor() #>)
         {
             Context ctx = new Context
             {
-<# foreach (var name in behavior.context.ParamNames()) { #>
+<#      foreach (var name in behavior.context.ParamNames()) 
+        { #>
                 <#= name #> = <#= name #>,
-<# } #>
+<#      } #>
             };
             return _CheckDo(ctx);
         }
 
-<# } // end if #>
-<# if (behavior.ShouldGenerateCheckDo) { #>
+<#  }
+    // This one is useful though, plus it's private 
+    if (behavior.ShouldGenerateCheckDo) 
+    { #>
         private bool _CheckDo(Context ctx)
         {
             if (TraverseCheck(ctx)) 

@@ -50,20 +50,18 @@ namespace Hopper.Core.Components.Basic
                 action = nextAction
             };
 
-            Assert.That(nextAction != null);
-
-            // TODO: this should not be allowed.
-            // if (nextAction == null)
-            // {
-            //     _flags = Flags.DidAction | Flags.ActionSucceeded;
-            //     TraverseSuccess(ctx);
-            //     return true;
-            // }
-
             _flags |= Flags.DoingAction;
 
             if (TraverseCheck(ctx))
             {
+                // Let's move it here for now
+                if (!nextAction.HasAction())
+                {
+                    _flags = Flags.DidAction | Flags.ActionSucceeded;
+                    TraverseSuccess(ctx);
+                    return true;
+                }
+
                 ctx.success = true;
                 ActionExecutionAlgorithm(ctx);
             }
@@ -88,7 +86,7 @@ namespace Hopper.Core.Components.Basic
         public void ResetAction()
         {
             _flags = 0;
-            nextAction = null;
+            nextAction = new CompiledAction();
         }
 
         [Alias("IsCurrentOrderFavorable")]
@@ -99,7 +97,7 @@ namespace Hopper.Core.Components.Basic
 
         public void CalculateNextAction()
         {
-            if (nextAction == null && ActionCalculationAlgorithm != null)
+            if (nextAction.HasAction() && ActionCalculationAlgorithm != null)
             {
                 nextAction = ActionCalculationAlgorithm(actor);
             }
@@ -114,7 +112,7 @@ namespace Hopper.Core.Components.Basic
         {
             // This will have to be patched, if any other multidirectional algos appear
             // that depend on something else than the movs function.
-            if (nextAction != null)
+            if (nextAction.HasAction())
             {
                 if (actor.TryGetSequential(out var sequential))
                 {
@@ -132,7 +130,6 @@ namespace Hopper.Core.Components.Basic
                     yield return ((CompiledAction)nextAction).direction;
                 }
             }
-            yield break;
         }
     }
 }

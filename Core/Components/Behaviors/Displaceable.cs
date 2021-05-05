@@ -1,71 +1,95 @@
-using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
-using System.Runtime.Serialization;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
-using System;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
-    // Withe the PassToContext feature, this will work correclty with an autoactivation
-    [AutoActivation("Displace")]
+    // TODO: Add option for generating linear chains instead of normal chains
+    [ActivationAlias("Displace")]
+    [Chains("Check", "BeforeRemove", "BeforeReset", "After")]
     public partial class Displaceable : IBehavior
     {
-        public class Context : StandartContext
+        public class Context : ContextBase
         {
+            public IntVector2 direction;
             public Move move;
-            [Omit] public IntVector2 newPos;
+            public Entity actor => transform.entity;
+            [Omit] public Transform transform;
+            [Omit] public IntVector2 newPosition;
             [Omit] public Layer blockLayer;
+
+            public void SetNewPosition()
+            {
+                int i = 1;
+
+                var transform = actor.GetTransform();
+
+                do
+                {
+                    if (transform.HasBlockRelative(direction * i, blockLayer))
+                        break;
+                    i++;
+                } while (i < move.power);
+                i--;
+
+                newPosition = transform.GetRelativePosition(direction * i);
+
+                // @Incomplete in this case you should probably add the bump to the history and stop
+                // also this should be done in the do chain
+                // the thing is that 0 movement messes up some systems of the game
+                // e.g. listeners on cell's enter and leave events. 
+                if (newPosition == transform.position)
+                {
+                    propagate = false;
+                }
+            }
+
+            public void RemoveFromGrid()
+            {
+                transform.RemoveFromGrid(direction);
+                transform.position = newPosition;
+            }
+
+            public void ResetInGrid()
+            {
+                transform.ResetInGrid(direction);
+            }
         }
 
         /* [PassToContext] */ [Inject] public Layer blockLayer;
 
-
-        [Export] public static void ConvertFromMove(Context ctx)
+        // TODO: To support sized entities, a lot has to be done here
+        public bool Activate(Entity actor, IntVector2 direction, Move move)
         {
-            int i = 1;
-
-            var transform = ctx.actor.GetTransform();
-
-            do
+            var ctx = new Context
             {
-                if (transform.HasBlockRelative(ctx.direction * i, ctx.blockLayer))
-                    break;
-                i++;
-            } while (i < ctx.move.power);
-            i--;
+                move = move,
+                blockLayer = blockLayer,
+                transform = actor.GetTransform(),
+                direction = direction
+            };
 
-            ctx.newPos = transform.GetRelativePosition(ctx.direction * i);
+            ctx.SetNewPosition();
 
-            // @Incomplete in this case you should probably add the bump to the history and stop
-            // also this should be done in the do chain
-            // the thing is that 0 movement messes up some systmes of the game
-            // e.g. listeners on cell's enter and leave events. 
-            if (ctx.newPos == transform.position)
+            if (!TraverseCheck(ctx))
             {
-                ctx.propagate = false;
+                return false;
             }
-        }
 
-        [Export] public static void DisplaceRemove(
-            Transform transform, IntVector2 newPos, IntVector2 direction)
-        {
-            transform.RemoveFromGrid(direction);
-            transform.position = newPos;
-        }
+            if (TraverseBeforeRemove(ctx))
+            {
+                ctx.RemoveFromGrid();
+                TraverseBeforeReset(ctx);
+                ctx.ResetInGrid();
+                TraverseAfter(ctx);
+            }
 
-        [Export] public static void DisplaceAddBack(Transform transform, IntVector2 direction)
-        {
-            transform.ResetInGrid(direction);
+            return true;
         }
 
         public void DefaultPreset()
         {
-            _CheckChain.Add(ConvertFromMoveHandler);
-            _DoChain.AddMany(DisplaceRemoveHandler, DisplaceAddBackHandler);
         }
-
-        // Check { ConvertFromMove }
-        // Do    { DisplaceRemove, UpdateHistory, DisplaceAddBack }
     }
 }

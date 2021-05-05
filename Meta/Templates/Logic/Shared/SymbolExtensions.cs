@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -103,15 +104,18 @@ namespace Hopper.Meta
             }
         }
 
-        public static string ParamsWithActor(this IEnumerable<IFieldSymbol> fields)
+        public static string ParamsWithoutActor(this IEnumerable<IFieldSymbol> fields)
         {
-            var first = fields.FirstOrDefault();
-            if (first != null)
+            if (!fields.Any())
             {
-                if (SymbolEqualityComparer.Default.Equals(first.Type, RelevantSymbols.entity))
-                    return Params(fields);
-                else
-                    return $"Entity actor, {Params(fields)}";
+                return "";
+            }
+
+            var first = fields.FirstOrDefault();
+
+            if (first.Name == "actor" && first.Type == RelevantSymbols.entity)
+            {
+                return ", " + "{Params(fields.Skip(1))}";
             }
             return "Entity actor";
         }
@@ -130,15 +134,10 @@ namespace Hopper.Meta
             return "Entity actor";
         }
 
-        public static string Params(this IEnumerable<IFieldSymbol> fields)
-        {
-            return String.Join(", ", fields.Select(p => $"{((ITypeSymbol)p.Type).TypeToText()} {p.Name}"));
-        }
-        
 
         public static string Params(this IEnumerable<IParameterSymbol> parameters)
         {
-            return String.Join(", ", parameters.Select(p => $"{((ITypeSymbol)p.Type).TypeToText()} {p.Name}"));
+            return String.Join(", ", parameters.Select(p => $"{p.Type.TypeToText()} {p.Name}"));
         }
 
         public static IEnumerable<string> ParamNames(this IEnumerable<IFieldSymbol> fields)
@@ -225,6 +224,12 @@ namespace Hopper.Meta
                 fields.Select(field => field.Type), SymbolEqualityComparer.Default);
         }
 
+        public static bool TypeSequenceEqual(this IEnumerable<IParameterSymbol> parameters, IEnumerable<IFieldSymbol> fields)
+        {
+            return parameters.Select(m1 => m1.Type).SequenceEqual(
+                fields.Select(field => field.Type), SymbolEqualityComparer.Default);
+        }
+
         public static bool ParameterTypesEqual(this IMethodSymbol method, IEnumerable<InjectedFieldSymbolWrapper> fields)
         {
             return method.Parameters.Select(m1 => m1.Type).SequenceEqual(
@@ -301,6 +306,30 @@ namespace Hopper.Meta
                 }
             }
             return false;
+        }
+
+        public static IEnumerable<INamedTypeSymbol> GetTypeHierarchyReverse(this INamedTypeSymbol symbol)
+        {
+            while (symbol != null) 
+            {
+                yield return symbol;
+                symbol = symbol.BaseType;
+            }
+        }
+
+        public static IEnumerable<INamedTypeSymbol> GetTypeHierarchy(this INamedTypeSymbol symbol)
+        {
+            return GetTypeHierarchyReverse(symbol).Reverse();
+        }
+
+        public static IEnumerable<IFieldSymbol> GetInstanceFields(this INamedTypeSymbol symbol)
+        {
+            return symbol.GetMembers().OfType<IFieldSymbol>().Where(f => !f.IsStatic && !f.IsConst);
+        }
+
+        public static string CommaJoin<T>(this IEnumerable<T> things, System.Func<T, string> func)
+        {
+            return System.String.Join(", ", things.Select(func));
         }
     }
 }

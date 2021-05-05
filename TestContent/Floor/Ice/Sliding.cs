@@ -45,16 +45,14 @@ namespace Hopper.TestContent.Floor
 
         // When displaced into something that is not slippery, stop sliding.
         // Also, stop sliding if slid into a wall.
-        [Export(Chain = "Displaceable.Do", Priority = PriorityRank.Low, Dynamic = true)]
-        public static void MaybeStopSliding(Displaceable.Context ctx)
+        [Export(Chain = "Displaceable.After", Priority = PriorityRank.Lowest, Dynamic = true)]
+        public static void MaybeStopSliding(Transform transform, IntVector2 direction)
         {
-            var transform = ctx.actor.GetTransform();
-
             // If none of the floor is slippery or the next thing is a block
             if (!transform.GetAllButSelfFromLayer(Layer.FLOOR).Any(t => t.entity.HasSlipperyComponent())
-                || transform.HasBlockRelative(ctx.direction, ExtendedLayer.BLOCK))
+                || transform.HasBlockRelative(direction, ExtendedLayer.BLOCK))
             {
-                RemoveFrom(ctx.actor);
+                RemoveFrom(transform.entity);
             }
         }
 
@@ -78,9 +76,14 @@ namespace Hopper.TestContent.Floor
             actor.RemoveComponent(Index);
         }
 
-        public static void TryApplyTo(Entity actor, IntVector2 directionOfSliding)
+        public static void TryApplyTo(Transform transform, IntVector2 directionOfSliding)
         {
-            if (!actor.HasSlidingEntityModifier() && directionOfSliding != IntVector2.Zero)
+            var actor = transform.entity;
+
+            if (!actor.HasSlidingEntityModifier() 
+                && directionOfSliding != IntVector2.Zero
+                // No walls ahead
+                && !transform.HasBlockRelative(directionOfSliding, ExtendedLayer.BLOCK))
             {
                 SlidingEntityModifier.AddTo(actor, directionOfSliding);
                 Preset(actor);

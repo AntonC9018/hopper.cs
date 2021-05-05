@@ -78,6 +78,7 @@ namespace Hopper.Tests
             var acting = entity.GetActing();
             acting.nextAction = moveAction;
             acting.Activate();
+            Assert.AreEqual(new IntVector2(0, 0), entity.GetTransform().position);
             Assert.True(inventory.ContainsItem(item.typeId));
             
             inventory.Remove(item.typeId);

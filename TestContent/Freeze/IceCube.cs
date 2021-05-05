@@ -30,7 +30,7 @@ namespace Hopper.TestContent.Freezing
         {
         }
 
-        [Export(Chain = "Displaceable.Do", Dynamic = true)]
+        [Export(Chain = "Displaceable.After", Dynamic = true)]
         public static void DisplaceCaptured(IceCubeComponent iceCubeComponent, Transform transform)
         {
             iceCubeComponent.captured.GetTransform().position = transform.position;
