@@ -6,6 +6,7 @@
         /// </summary>
         public static <#= component.ClassName #> Get<#= component.ClassName #>(this Entity entity)
         {
+            Assert.False(entity is null, $"Trying to get {<#= component.ClassName #>.Index} with a null entity");
             return entity.GetComponent(<#= component.ClassName #>.Index);
         }
 
@@ -16,6 +17,7 @@
         /// </summary>
         public static bool <#= component.HasAlias #><#= component.ClassName #>(this Entity entity)
         {
+            Assert.False(entity is null, $"Trying to check existance of {<#= component.ClassName #>.Index} with a null entity");
             return entity.HasComponent(<#= component.ClassName #>.Index);
         }
         
@@ -26,6 +28,7 @@
         /// </summary>
         public static <#= component.ClassName #> TryGet<#= component.ClassName #>(this Entity entity)
         {
+            Assert.False(entity is null, $"Trying to get {<#= component.ClassName #>.Index} with a null entity");
             return entity.TryGetComponent(<#= component.ClassName #>.Index);
         }
 
@@ -37,6 +40,7 @@
         /// </summary>
         public static bool TryGet<#= component.ClassName #>(this Entity entity, out <#= component.Calling #>)
         {
+            Assert.False(entity is null, $"Trying to get {<#= component.ClassName #>.Index} with a null entity");
             <#= component.TypeText #> = entity.TryGetComponent(<#= component.ClassName #>.Index);
             return <#= component.TypeText #> != null;
         }

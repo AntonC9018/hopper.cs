@@ -1,3 +1,4 @@
+@echo off
 cd .Tests
 call dotnet build
 cd ..

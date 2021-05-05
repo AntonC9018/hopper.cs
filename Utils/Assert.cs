@@ -23,6 +23,15 @@ namespace Hopper.Utils
         }
 
         [Conditional("DEBUG")]
+        public static void False(bool expression, string message = "")
+        {
+            if (expression)
+            {
+                throw new Exception(message);
+            }
+        }
+
+        [Conditional("DEBUG")]
         public static void AreEqual<T>(T expected, T actual, string message = "")
             where T : IEquatable<T>
         {

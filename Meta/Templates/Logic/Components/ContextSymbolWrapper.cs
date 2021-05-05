@@ -23,6 +23,7 @@ namespace Hopper.Meta
         public HashSet<string> omitted;
         public List<IFieldSymbol> notOmitted;
         public string ActorName;
+        public bool IsActorAField => fieldsHashed.ContainsKey(ActorName);
 
         public void HashFields()
         {

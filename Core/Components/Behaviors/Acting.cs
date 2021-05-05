@@ -55,7 +55,7 @@ namespace Hopper.Core.Components.Basic
             if (TraverseCheck(ctx))
             {
                 // Let's move it here for now
-                if (!nextAction.HasAction())
+                if (!ctx.action.HasAction())
                 {
                     _flags = Flags.DidAction | Flags.ActionSucceeded;
                     TraverseSuccess(ctx);
@@ -97,7 +97,7 @@ namespace Hopper.Core.Components.Basic
 
         public void CalculateNextAction()
         {
-            if (nextAction.HasAction() && ActionCalculationAlgorithm != null)
+            if (!nextAction.HasAction() && ActionCalculationAlgorithm != null)
             {
                 nextAction = ActionCalculationAlgorithm(actor);
             }

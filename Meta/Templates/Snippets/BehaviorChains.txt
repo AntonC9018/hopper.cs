@@ -42,7 +42,11 @@
         {
             Context ctx = new Context
             {
-<#      foreach (var name in behavior.context.ParamNames()) 
+<#      if (behavior.context.IsActorAField)
+        { #>
+                <#= behavior.context.ActorName #> = <#= behavior.context.ActorName #>,
+<#      }
+        foreach (var name in behavior.context.ParamNames()) 
         { #>
                 <#= name #> = <#= name #>,
 <#      } #>

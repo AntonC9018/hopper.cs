@@ -92,19 +92,23 @@ namespace Hopper.Tests.Test_Content
             Assert.True(entity.HasSlidingEntityModifier());
 
             // If we then push it to the right, it gets pushed successfully and loses the effect
-            entity.BePushed(Push.Default(), IntVector2.Right);
+            entity.BePushed(Push.Default(), IntVector2.Right); // < 1, 2 >
+            Assert.AreEqual(new IntVector2(1, 2), entity.GetTransform().position);
             Assert.False(entity.HasSlidingEntityModifier());
 
             // Now we take the entity back to the initial position
             // Moving back to the left should not apply the effect since there is nowhere to slide
-            entity.Move(IntVector2.Left); 
+            entity.Move(IntVector2.Left); // < 0, 2 >
+            Assert.AreEqual(new IntVector2(0, 2), entity.GetTransform().position);
             Assert.False(entity.HasSlidingEntityModifier());
 
-            entity.Move(IntVector2.Down);
+            entity.Move(IntVector2.Down); // < 0, 3 >
+            Assert.AreEqual(new IntVector2(0, 3), entity.GetTransform().position);
             Assert.False(entity.HasSlidingEntityModifier());
 
             // Now we move up again
-            entity.Move(IntVector2.Up);
+            entity.Move(IntVector2.Up);   // < 0, 2 >
+            Assert.AreEqual(new IntVector2(0, 2), entity.GetTransform().position);
             Assert.True(entity.HasSlidingEntityModifier());
 
             // This time we skip an action.

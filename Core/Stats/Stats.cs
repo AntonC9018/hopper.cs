@@ -3,6 +3,7 @@ using Hopper.Utils.FS;
 using System.Collections.Generic;
 using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
+using Hopper.Utils;
 
 namespace Hopper.Core.Stat
 {
@@ -85,12 +86,13 @@ namespace Hopper.Core.Stat
 
         public ref T GetRaw<T>(Index<T> index) where T : struct, IStat
         {
+            Assert.That(store.ContainsKey(index.Id), $"{index} stat not found in the dictionary");
             return ref ((Holder<T>)store[index.Id]).item;
         }
 
         public void Get<T>(Index<T> index, out T stat) where T : struct, IStat
         {
-            // TODO: chain iteration
+            Assert.That(store.ContainsKey(index.Id), $"{index} stat not found in the dictionary");
             stat = ((Holder<T>)store[index.Id]).item;
         }
 

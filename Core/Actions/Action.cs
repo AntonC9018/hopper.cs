@@ -66,7 +66,7 @@ namespace Hopper.Core
 
         public bool HasAction()
         {
-            return _storedAction != null;
+            return !(_storedAction is null);
         }
 
         public IAction GetStoredAction()
