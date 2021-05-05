@@ -1,11 +1,14 @@
-using System.Collections.Generic;
+using System.Linq;
 using Hopper.Core.Components.Basic;
+using Hopper.Utils;
 
 namespace Hopper.Core
 {
+
     public class WorldStateManager
     {
-        public List<Acting>[] actings;
+        public readonly DoubleList<Acting>[] actings;
+        public DoubleList<Ticking> tickings;
 
         public event System.Action StartOfLoopEvent;
         public event System.Action EndOfLoopEvent;
@@ -20,17 +23,24 @@ namespace Hopper.Core
 
         public WorldStateManager()
         {
-            actings = new List<Acting>[World.NumPhases];
+            actings = new DoubleList<Acting>[World.NumPhases];
 
             for (int i = 0; i < actings.Length; i++)
             {
-                actings[i] = new List<Acting>();
+                actings[i] = new DoubleList<Acting>();
             }
+
+            tickings = new DoubleList<Ticking>();
         }
 
         public void AddActor(Acting acting)
         {
-            actings[(int)acting.order].Add(acting);
+            actings[(int)acting.order].AddMaybeWhileIterating(acting);
+        }
+
+        public void AddTicking(Ticking ticking)
+        {
+            tickings.AddMaybeWhileIterating(ticking);
         }
 
         public void Loop()
@@ -69,57 +79,51 @@ namespace Hopper.Core
 
         private void ActivatePlayers()
         {
-            for (int i = 0; i < actings[0].Count; i++)
+            foreach (var acting in actings[0])
             {
-                Activate(actings[0][i]);
+                Activate(acting);
             }
         }
 
         private void ActivateOthers()
         {
             // skip the player, which is at 0.
-            for (int i = (int)Order.Player + 1; i < actings.Length; i++)
+            foreach (var _actings in actings.Skip(1))
             {
-                for (int j = 0; j < actings[i].Count - 1; j--)
-                    Activate(actings[i][j]);
+                foreach (var acting in _actings)
+                {
+                    Activate(acting);
+                }
                 AdvancePhase();
             }
         }
 
         private void TickAll()
         {
-            foreach (var @as in actings)
+            foreach (var ticking in tickings.StartFiltering())
             {
-                foreach (var acting in @as)
-                    // TODO: tickings should be either stored in another list
-                    //       and point to the entities too, or we should iterate directly
-                    //       on the entities.
-                    acting.actor.Tick();
+                if (!ticking.actor.IsDead())
+                {
+                    ticking.Activate();
+                    tickings.AddToSecondaryBuffer(ticking);
+                }
             }
         }
 
-        // TODO: filter the registry too? 
-        // TODO: filter the ticking list too.
-        // TODO: double buffer.
         private void FilterDead()
         {
             BeforeFilterEvent?.Invoke();
             for (int i = 0; i < actings.Length; i++)
             {
-                var newActing = new List<Acting>();
-                foreach (var acting in actings[i])
+                foreach (var acting in actings[i].StartFiltering())
                 {
                     if (acting.actor.IsDead())
                     {
-                        Registry.Global.UnregisterRuntimeEntity(acting.actor);
-                    }
-                    else
-                    {
-                        newActing.Add(acting);
+                        actings[i].AddToSecondaryBuffer(acting);
                     }
                 }
-                actings[i] = newActing;
             }
+            // TODO: Filter the registry too
         }
 
         private void ResetPhase()
@@ -138,34 +142,6 @@ namespace Hopper.Core
         {
             m_updateCountPhaseLimits[(int)currentPhase] = m_currentTimeFrame;
             EndOfPhaseEvent?.Invoke(currentPhase);
-        }
-
-        public void OncePhaseStarts(Order phase, System.Action callback)
-        {
-            System.Action<Order> handler = null;
-            handler = (p) =>
-            {
-                if (p == phase)
-                {
-                    callback();
-                    StartOfPhaseEvent -= handler;
-                }
-            };
-            StartOfPhaseEvent += handler;
-        }
-
-        public void OncePhaseEnds(Order phase, System.Action callback)
-        {
-            System.Action<Order> handler = null;
-            handler = (p) =>
-            {
-                if (p == phase)
-                {
-                    callback();
-                    EndOfPhaseEvent -= handler;
-                }
-            };
-            EndOfPhaseEvent += handler;
         }
     }
 }

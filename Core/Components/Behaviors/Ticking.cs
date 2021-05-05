@@ -1,17 +1,23 @@
-using System;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Components.Basic
 {
     [Chains("Do")]
-    [ActivationAlias("Tick")]
+    [NoActivation]
     public partial class Ticking : IBehavior
     {
+        public Entity actor;
+
         public class Context : ActorContext
         {
         }
 
-        public bool Activate(Entity actor)
+        public void InitInWorld(Entity actor)
+        {
+            this.actor = actor;
+        }
+
+        public bool Activate()
         {
             var ctx = new Context { actor = actor };
             TraverseDo(ctx);

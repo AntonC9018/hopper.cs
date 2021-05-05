@@ -72,6 +72,12 @@ namespace Hopper.Core
                 state.AddActor(acting);
             }
 
+            if (entity.TryGetTicking(out var ticking))
+            {
+                ticking.InitInWorld(entity);
+                state.AddTicking(ticking);
+            }
+
             SpawnEntityEvent?.Invoke(entity);
             return entity;
         }

@@ -2,7 +2,6 @@ using NUnit.Framework;
 using Hopper.Core;
 using Hopper.Utils.Vector;
 using System.Linq;
-using Hopper.Core.History;
 using Hopper.Core.Stat;
 using Hopper.TestContent.Bind;
 using Hopper.Core.Components.Basic;
