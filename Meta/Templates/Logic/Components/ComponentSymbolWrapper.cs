@@ -12,6 +12,7 @@ namespace Hopper.Meta
         public HashSet<IFieldSymbol> flaggedFields;
         public AliasMethodSymbolWrapper[] aliasMethods;
         public InjectedFieldSymbolWrapper[] injectedFields;
+        public bool HasInitInWorldMethod;
 
         public ComponentSymbolWrapper(INamedTypeSymbol symbol) : base(symbol)
         {
@@ -27,6 +28,9 @@ namespace Hopper.Meta
             flaggedFields = GetFlaggedFields();
             aliasMethods = GetAliasMethods(projectContext.globalAliases);
             injectedFields = GetInjectedFields().ToArray();
+
+            HasInitInWorldMethod = symbol.GetMethods().Any(
+                m => !m.IsStatic && m.Name == "InitInWorld");
         }
 
         public override void AfterInit(ProjectContext projectContext)
@@ -70,7 +74,8 @@ namespace Hopper.Meta
                 && SymbolEqualityComparer.Default.Equals(ctor.Parameters.Single(), symbol));
         
         public bool IsStandartActivateable => symbol.AllInterfaces.Contains(RelevantSymbols.istandartActivateable);
-
         public bool IsPredictable => symbol.AllInterfaces.Contains(RelevantSymbols.ipredictable);
+        public bool IsUndirectedActivateable => symbol.AllInterfaces.Contains(RelevantSymbols.iundirectedActivateable);
+        public bool IsUndirectedPredictable => symbol.AllInterfaces.Contains(RelevantSymbols.iundirectedPredictable);
     }
 }

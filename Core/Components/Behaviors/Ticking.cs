@@ -12,7 +12,7 @@ namespace Hopper.Core.Components.Basic
         {
         }
 
-        public void InitInWorld(Entity actor)
+        public void Init(Entity actor)
         {
             this.actor = actor;
         }

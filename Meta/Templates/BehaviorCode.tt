@@ -11,6 +11,8 @@ namespace <#= behavior.Namespace #>
 
 <#@ include file="Templates/Snippets/ComponentAction.txt" #>
 
+<#@ include file="Templates/Snippets/ComponentInitInWorldFunc.txt" #>
+
 <#@ include file="Templates/Snippets/BehaviorConstructors.txt" #>
 
 <#@ include file="Templates/Snippets/ComponentAddingCopying.txt" #>

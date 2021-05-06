@@ -18,6 +18,15 @@ namespace Hopper.Core
         
         public static bool WhetherActivates(this IAction action, Identifier activateableId)
             => (action as IActivatingAction)?.GetIdOfActivateable() == activateableId;
+        
+        public static bool ActivatesEither(this IAction action, params Identifier[] activateableIds)
+        {
+            if (action is IActivatingAction activating)
+            {
+                return activateableIds.Contains(activating.GetIdOfActivateable());
+            }
+            return false;
+        }
     }
 
     public interface IAction
@@ -55,6 +64,11 @@ namespace Hopper.Core
         public CompiledAction WithDirection(IntVector2 newDirection)
         {
             return new CompiledAction(_storedAction, newDirection);
+        }
+
+        public CompiledAction WithAction(IAction newAction)
+        {
+            return new CompiledAction(newAction, direction);
         }
 
         public bool DoAction(Entity actor)
@@ -216,6 +230,11 @@ namespace Hopper.Core
         bool Activate(Entity entity, IntVector2 direction);
     }
 
+    public interface IUndirectedActivateable
+    {
+        bool Activate(Entity entity);
+    }
+
     public class ActivatingAction<T> : IAction, IActivatingAction where T : IStandartActivateable, IComponent 
     {
         public Index<T> activateableId;
@@ -233,15 +252,47 @@ namespace Hopper.Core
         public Identifier GetIdOfActivateable() => activateableId.Id;
     }
 
-    public class ActivatingPredictableAction<T> : ActivatingAction<T>, IPredictable where T : IStandartActivateable, IComponent, IPredictable
+    public class UndirectedActivatingAction<T> : IUndirectedAction, IActivatingAction where T : IUndirectedActivateable, IComponent 
     {
-        public ActivatingPredictableAction(Index<T> activateableId) : base(activateableId)
+        public Index<T> activateableId;
+
+        public UndirectedActivatingAction(Index<T> activateableId)
+        {
+            this.activateableId = activateableId;
+        }
+
+        public bool DoAction(Entity actor)
+        {
+            return actor.GetComponent(activateableId).Activate(actor);
+        }
+
+        public Identifier GetIdOfActivateable() => activateableId.Id;
+        bool IAction.DoAction(Entity actor, IntVector2 direction) => DoAction(actor);
+    }
+
+    public class PredictableActivatingAction<T> : ActivatingAction<T>, IPredictable where T : IStandartActivateable, IComponent, IPredictable
+    {
+        public PredictableActivatingAction(Index<T> activateableId) : base(activateableId)
         {
         }
 
         public IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction, PredictionTargetInfo info)
         {
             return actor.GetComponent(activateableId).Predict(actor, direction, info);
+        }
+    }
+
+    public class UndirectedPredictableActivatingAction<T> : UndirectedActivatingAction<T>, IPredictable where T : IUndirectedActivateable, IComponent, IUndirectedPredictable
+    {
+        public UndirectedPredictableActivatingAction(Index<T> activateableId) : base(activateableId)
+        {
+        }
+
+        public IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction, PredictionTargetInfo info) => Predict(actor, info);
+
+        public IEnumerable<IntVector2> Predict(Entity actor, PredictionTargetInfo info)
+        {
+            return actor.GetComponent(activateableId).Predict(actor, info);
         }
     }
 
@@ -276,13 +327,24 @@ namespace Hopper.Core
     // using static Hopper.Core.Action;
     public static class Action
     {
-        public static ActivatingPredictableAction<T> FromPredictableActivateable<T>(Index<T> index) 
+        public static PredictableActivatingAction<T> FromPredictableActivateable<T>(Index<T> index) 
             where T : IStandartActivateable, IComponent, IPredictable 
-            => new ActivatingPredictableAction<T>(index);
+            => new PredictableActivatingAction<T>(index);
 
         public static ActivatingAction<T> FromActivateable<T>(Index<T> index) 
             where T : IStandartActivateable, IComponent 
             => new ActivatingAction<T>(index);
+
+        public static UndirectedActivatingAction<T> FromUndirectedActivateable<T>(Index<T> index) 
+            where T : IUndirectedActivateable, IComponent 
+            => new UndirectedActivatingAction<T>(index);
+
+        /// <summary>
+        /// UPA for short, read either "yu-pee-ay" or "oo-pah"
+        /// </summary>
+        public static UndirectedPredictableActivatingAction<T> FromUndirectedPredictableActivateable<T>(Index<T> index) 
+            where T : IUndirectedActivateable, IComponent, IUndirectedPredictable 
+            => new UndirectedPredictableActivatingAction<T>(index);
 
         public static JoinedAction Join(params IAction[] actions) => new JoinedAction(actions);
         public static CompositeAction Compose(params IAction[] actions) => new CompositeAction(actions);

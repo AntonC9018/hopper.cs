@@ -66,7 +66,7 @@ namespace Hopper.Core.Stat
         [Inject] public Dictionary<Identifier, IStat> defaultStats;
         public Dictionary<Identifier, IHolder> store;
 
-        public void Init()
+        public void InitInWorld(Transform transform)
         {
             store = new Dictionary<Identifier, IHolder>();
         }

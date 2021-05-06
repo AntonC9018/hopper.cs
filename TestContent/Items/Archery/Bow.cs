@@ -10,7 +10,7 @@ using static Hopper.Core.Action;
 
 namespace Hopper.TestContent
 {
-    public partial class BowComponent : IComponent
+    public partial class BowComponent : IComponent, IUndirectedActivateable, IStandartActivateable
     {
         public bool _isCharged;
 
@@ -42,17 +42,21 @@ namespace Hopper.TestContent
             }
         }
 
-        public static SimpleAction AttackAction = Simple(
-            Adapt((actor, direction) => Attack(actor.GetTransform(), direction)));
-
-        public static SimpleUndirectedAction RechargeAction = Simple(
-            Adapt(actor => 
+        bool IUndirectedActivateable.Activate(Entity entity)
+        {
+            if (entity.TryGetRangedWeapon(out var weapon))
             {
-                if (actor.TryGetRangedWeapon(out var weapon))
-                {
-                    weapon.GetBowComponent().ToggleCharge(actor);
-                }
-            }));
+                weapon.GetBowComponent().ToggleCharge(entity);
+                return true;
+            }
+            return false;
+        }
+
+        bool IStandartActivateable.Activate(Entity entity, IntVector2 direction)
+        {
+            Attack(entity.GetTransform(), direction);
+            return true;
+        }
     }
 
 
@@ -62,7 +66,7 @@ namespace Hopper.TestContent
         [Slot("RangedWeapon")] public static Slot Slot = new Slot(true);
         public static Attack.Source ArrowSource = new Attack.Source();
         
-        public static SimpleUndirectedAction GetChargeAction(Entity item, Entity owner) => BowComponent.RechargeAction;
+        public static UndirectedActivatingAction<BowComponent> GetChargeAction(Entity item, Entity owner) => BowComponent.UAction;
 
         public static EntityFactory Factory;
 

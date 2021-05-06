@@ -53,7 +53,7 @@ namespace Hopper.TestContent.Freezing
     {
         public static bool TryApplyTo(Entity target, int power, int hp)
         {
-            if (!Stat.Freeze.Source.CheckResistance(target, power))
+            if (target.CanNotResist(Stat.Freeze.Source, power))
             {
                 return false;
             }

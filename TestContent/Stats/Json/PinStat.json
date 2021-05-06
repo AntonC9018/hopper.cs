@@ -1,5 +1,4 @@
 {
     "$Source": { "@type": "Core.Stat.StatusSource" },
-    "power": 1,
-    "amount": 1
+    "power": 1
 }

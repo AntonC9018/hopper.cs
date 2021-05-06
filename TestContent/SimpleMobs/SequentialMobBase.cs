@@ -44,7 +44,7 @@ namespace Hopper.TestContent
 
         public static void Retouch(EntityFactory factory)
         {
-            factory.InitInWorldFunc += t => t.entity.GetStats().Init();
+            Stats.AddInitTo(factory);
         }
     }
 }

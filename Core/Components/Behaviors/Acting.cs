@@ -42,6 +42,12 @@ namespace Hopper.Core.Components.Basic
             return this;
         }
 
+        public bool ActivateWith(CompiledAction action)
+        {
+            this.nextAction = action;
+            return Activate();
+        }
+
         public bool Activate()
         {
             var ctx = new Context

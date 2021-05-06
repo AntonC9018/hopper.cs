@@ -27,7 +27,7 @@ namespace Hopper.Core.Items
         // TODO: the slots should be injects?
         // TODO: a new attribute for copying the items on injection?
         // TODO: no, better add an initialization function for the entity type.
-        public void InitInWorld()
+        public void InitInWorld(Transform transform = null)
         {
             _slots          = new Dictionary<Identifier, Identifier>();
             _generalStorage = new Dictionary<Identifier, Entity>();

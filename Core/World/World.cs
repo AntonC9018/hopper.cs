@@ -74,7 +74,7 @@ namespace Hopper.Core
 
             if (entity.TryGetTicking(out var ticking))
             {
-                ticking.InitInWorld(entity);
+                ticking.Init(entity);
                 state.AddTicking(ticking);
             }
 

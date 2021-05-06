@@ -4,7 +4,7 @@ namespace Hopper.Core
 {
     public static class StatusSourceExtensions
     {
-        public static bool CheckResistance(this StatusSource source, Entity entityTheStatIsBeingAppliedTo, int powerOfStatOfApplier)
+        public static bool CanResist(this Entity entityTheStatIsBeingAppliedTo, StatusSource source, int powerOfStatOfApplier)
         {
             if (entityTheStatIsBeingAppliedTo.TryGetStats(out var stats))
             {
@@ -15,6 +15,11 @@ namespace Hopper.Core
                 }
             }
             return false;
+        }
+
+        public static bool CanNotResist(this Entity entityTheStatIsBeingAppliedTo, StatusSource source, int powerOfStatOfApplier)
+        {
+            return !CanResist(entityTheStatIsBeingAppliedTo, source, powerOfStatOfApplier);
         }
     }
 }

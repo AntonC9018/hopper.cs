@@ -25,6 +25,11 @@ namespace Hopper.Core
             return transform.position == initialPosition;
         }
 
+        public bool HasMoved()
+        {
+            return transform.position != initialPosition;
+        }
+
         public bool HasNotReoriented()
         {
             return transform.orientation == initialOrientation;

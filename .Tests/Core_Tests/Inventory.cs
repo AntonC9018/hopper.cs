@@ -38,11 +38,8 @@ namespace Hopper.Tests
 
                 // Retouch
                 Equip.OnDisplaceHandlerWrapper.HookTo(entityFactory);
-                entityFactory.InitInWorldFunc = 
-                    t => { 
-                        t.entity.GetInventory().InitInWorld(); 
-                        t.entity.GetStats().Init(); 
-                    };
+                Stats.AddInitTo(entityFactory);
+                Inventory.AddInitTo(entityFactory);
             }
 
             {

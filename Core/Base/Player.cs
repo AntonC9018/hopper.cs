@@ -68,7 +68,7 @@ namespace Hopper.Core
             Skip.SkipEmptyAttackHandlerWrapper.HookTo(factory);
             Equip.OnDisplaceHandlerWrapper.HookTo(factory);
             Reorient.OnActionSuccessHandlerWrapper.HookTo(factory);
-            factory.InitInWorldFunc = t => t.entity.GetStats().Init();
+            Stats.AddInitTo(factory);
         }
     }
 }

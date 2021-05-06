@@ -32,6 +32,8 @@ namespace Hopper.Meta
         public static INamedTypeSymbol voidType;
         public static INamedTypeSymbol istandartActivateable;
         public static INamedTypeSymbol ipredictable;
+        public static INamedTypeSymbol iundirectedActivateable;
+        public static INamedTypeSymbol iundirectedPredictable;
 
         public static void TryInitializeSingleton(Compilation compilation)
         {
@@ -58,6 +60,8 @@ namespace Hopper.Meta
             icopyable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Utils.ICopyable");
             istandartActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IStandartActivateable");
             ipredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IPredictable");
+            iundirectedActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IUndirectedActivateable");
+            iundirectedPredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IUndirectedPredictable");
             icomponent      = GetComponentSymbol(compilation, "IComponent");
             ibehavior       = GetComponentSymbol(compilation, "IBehavior");
             itag            = GetComponentSymbol(compilation, "ITag");

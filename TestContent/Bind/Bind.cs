@@ -95,7 +95,7 @@ namespace Hopper.TestContent.Bind
 
             actor.entity.GetStats().GetLazy(Stat.Bind.Index, out var stat);
 
-            if (!Stat.Bind.Source.CheckResistance(target.entity, stat.power))
+            if (target.entity.CanNotResist(Stat.Bind.Source, stat.power))
             {
                 ApplyTo(actor, target);
             }

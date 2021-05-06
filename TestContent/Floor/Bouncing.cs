@@ -10,7 +10,7 @@ using Hopper.Utils.Vector;
 
 namespace Hopper.TestContent.Floor
 {
-    public partial class Bouncing : IComponent
+    public partial class Bouncing : IComponent, IUndirectedActivateable
     {
         public const Layer _targetedLayer = Layer.REAL;
         public HashSet<RuntimeIdentifier> _bouncedEntities;
@@ -21,8 +21,9 @@ namespace Hopper.TestContent.Floor
             _bouncedEntities = new HashSet<RuntimeIdentifier>();
 
             // add the things
-            transform.SubsribeToPermanentEnterEvent(ctx => Enter(transform.entity, ctx));
-            transform.SubsribeToPermanentLeaveEvent(ctx => Leave(transform.entity, ctx));
+            var entity = transform.entity;
+            transform.SubsribeToPermanentEnterEvent(ctx => Enter(entity, ctx));
+            transform.SubsribeToPermanentLeaveEvent(ctx => Leave(entity, ctx));
         }
 
         [Alias("Bounce")]

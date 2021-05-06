@@ -1,0 +1,9 @@
+<#  if (component.HasInitInWorldMethod) 
+    { #>
+        public static void InitInWorldFunc(Transform transform) =>
+            transform.entity.GetComponent(Index).InitInWorld(transform);
+
+        public static void AddInitTo(EntityFactory factory) =>
+            factory.InitInWorldFunc += InitInWorldFunc;
+            
+<#  } #>

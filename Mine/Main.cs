@@ -31,7 +31,7 @@ namespace Hopper.Mine
             Stats.AddTo(entityFactory, Registry.Global._defaultStats);
             Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK).DefaultPreset();
             Pushable.AddTo(entityFactory).DefaultPreset();
-            entityFactory.InitInWorldFunc += t => t.entity.GetStats().Init();
+            Stats.AddInitTo(entityFactory);
 
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 1));
             var trap1 = World.Global.SpawnEntity(BounceTrap.Factory, new IntVector2(1, 1), new IntVector2(1, 0));

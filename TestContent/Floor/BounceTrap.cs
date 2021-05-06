@@ -10,14 +10,13 @@ namespace Hopper.TestContent.Floor
     public static class BounceTrap
     {
         public static EntityFactory Factory;
-        public static readonly SimpleUndirectedAction BounceAction = Simple(actor => actor.Bounce());
 
         public static void AddComponents(Entity subject)
         {
             Stats.AddTo(subject, Registry.Global._defaultStats);
             Transform.AddTo(subject, Layer.TRAP);
             FactionComponent.AddTo(subject, Faction.Enemy);
-            Acting.AddTo(subject, ctx => BounceAction.Compile(), Algos.SimpleAlgo, Order.Trap);
+            Acting.AddTo(subject, ctx => Bouncing.UAction.Compile(), Algos.SimpleAlgo, Order.Trap);
             Damageable.AddTo(subject, new Health(1));
             Ticking.AddTo(subject);
             Bouncing.AddTo(subject);
@@ -32,13 +31,8 @@ namespace Hopper.TestContent.Floor
 
         public static void Retouch(EntityFactory factory)
         {
-            factory.InitInWorldFunc += InitInWorld;
-        }
-
-        public static void InitInWorld(Transform transform)
-        {
-            transform.entity.GetBouncing().InitInWorld(transform);
-            transform.entity.GetStats().Init();
+            Stats.AddInitTo(factory);
+            Bouncing.AddInitTo(factory);
         }
     }
 }
