@@ -1,8 +1,10 @@
 using Hopper.Core;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Items;
+using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
-using static Hopper.Core.Action;
+using static Hopper.Core.ActingNS.Action;
 
 namespace Hopper.TestContent
 {

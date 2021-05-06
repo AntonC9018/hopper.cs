@@ -6,6 +6,7 @@ using Hopper.Core.Stat;
 using Hopper.TestContent.BindingNS;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Targeting;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.Tests.Test_Content
 {

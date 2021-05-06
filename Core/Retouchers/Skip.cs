@@ -1,5 +1,7 @@
 using System.Linq;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Retouchers

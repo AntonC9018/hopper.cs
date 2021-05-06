@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using Hopper.Core;
 using System.Collections.Generic;
+using Hopper.Core.ActingNS;
 
 namespace Hopper.Tests
 {

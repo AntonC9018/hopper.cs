@@ -1,5 +1,6 @@
 using System.Linq;
 using Hopper.Core;
+using Hopper.Core.WorldNS;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
 

@@ -1,11 +1,14 @@
 using Hopper.Core;
+using Hopper.Core.ActingNS;
+using Hopper.Core.ActingNS;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
-using Hopper.Core.Retouchers;
+using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
 using Hopper.TestContent.LaserNS;
 using Hopper.Utils.Vector;
-using static Hopper.Core.Action;
+using static Hopper.Core.ActingNS.Action;
 
 namespace Hopper.TestContent.Boss
 {

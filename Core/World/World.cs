@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Utils.Vector;
 
-namespace Hopper.Core
+namespace Hopper.Core.WorldNS
 {
     public class World
     {

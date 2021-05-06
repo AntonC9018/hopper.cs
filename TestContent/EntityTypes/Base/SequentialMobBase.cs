@@ -4,6 +4,8 @@ using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 using Hopper.Core.Targeting;
 using Hopper.Core.History;
+using Hopper.Core.WorldNS;
+using Hopper.Core.ActingNS;
 
 namespace Hopper.TestContent
 {

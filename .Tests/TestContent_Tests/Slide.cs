@@ -4,6 +4,8 @@ using Hopper.Core.Stat;
 using Hopper.TestContent.SlidingNS;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
+using Hopper.Core.WorldNS;
+using Hopper.Core.ActingNS;
 
 namespace Hopper.Tests.Test_Content
 {

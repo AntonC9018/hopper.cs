@@ -1,8 +1,9 @@
 using System.Runtime.Serialization;
 using Hopper.Core;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
-using static Hopper.Core.Action;
 
 namespace Hopper.TestContent.BindingNS
 {
@@ -11,7 +12,7 @@ namespace Hopper.TestContent.BindingNS
     {
         public static EntityFactory Factory;
         
-        private static readonly JoinedAction BindMoveAction = Join(Binding.Action, Moving.Action);
+        private static readonly JoinedAction BindMoveAction = Action.Join(Binding.Action, Moving.Action);
 
         private static readonly Step[] Steps = new Step[]
         {

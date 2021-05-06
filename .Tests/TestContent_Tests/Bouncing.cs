@@ -5,6 +5,7 @@ using Hopper.Core.Stat;
 using Hopper.Core.Components.Basic;
 using System.Collections.Generic;
 using Hopper.TestContent.BouncingNS;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.Tests.Test_Content
 {

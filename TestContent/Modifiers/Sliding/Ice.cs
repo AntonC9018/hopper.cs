@@ -1,6 +1,8 @@
 using Hopper.Core;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
+using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.TestContent.SlidingNS

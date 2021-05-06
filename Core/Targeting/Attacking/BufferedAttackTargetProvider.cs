@@ -5,6 +5,7 @@ using System.Linq;
 using Hopper.Utils;
 using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.Core.Targeting
 {

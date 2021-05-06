@@ -1,7 +1,9 @@
 using Hopper.Core;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
-using static Hopper.Core.Action;
+using static Hopper.Core.ActingNS.Action;
 
 namespace Hopper.TestContent
 {

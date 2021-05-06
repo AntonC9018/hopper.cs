@@ -1,6 +1,8 @@
 using Hopper.Core.Components.Basic;
 using Hopper.Utils.Vector;
 using Hopper.Shared.Attributes;
+using Hopper.Core.ActingNS;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.Core.Retouchers
 {

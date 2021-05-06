@@ -3,6 +3,7 @@ using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
 using Hopper.TestContent.SimpleMobs;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.TestContent.FreezingNS
 {

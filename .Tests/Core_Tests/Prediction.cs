@@ -1,8 +1,8 @@
 using System.Linq;
 using Hopper.Core;
-using Hopper.Core.Components.Basic;
-using Hopper.Core.Predictions;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Targeting;
+using Hopper.Core.WorldNS;
 using Hopper.TestContent;
 using Hopper.TestContent.SimpleMobs;
 using Hopper.Utils.Vector;

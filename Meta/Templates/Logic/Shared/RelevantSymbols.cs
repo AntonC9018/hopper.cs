@@ -58,10 +58,10 @@ namespace Hopper.Meta
         {
             entity = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Entity");
             icopyable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Utils.ICopyable");
-            istandartActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IStandartActivateable");
-            ipredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IPredictable");
-            iundirectedActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IUndirectedActivateable");
-            iundirectedPredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.IUndirectedPredictable");
+            istandartActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IStandartActivateable");
+            ipredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IPredictable");
+            iundirectedActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IUndirectedActivateable");
+            iundirectedPredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IUndirectedPredictable");
             icomponent      = GetComponentSymbol(compilation, "IComponent");
             ibehavior       = GetComponentSymbol(compilation, "IBehavior");
             itag            = GetComponentSymbol(compilation, "ITag");

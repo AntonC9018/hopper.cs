@@ -1,3 +1,4 @@
+using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
 
 namespace Hopper.Core.Items

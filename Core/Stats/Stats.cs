@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
 using Hopper.Utils;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.Core.Stat
 {

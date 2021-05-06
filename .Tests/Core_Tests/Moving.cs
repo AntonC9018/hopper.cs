@@ -4,6 +4,7 @@ using Hopper.Utils.Vector;
 using static Hopper.Utils.Vector.IntVector2;
 using Hopper.Core.Stat;
 using Hopper.Core.Components.Basic;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.Tests
 {

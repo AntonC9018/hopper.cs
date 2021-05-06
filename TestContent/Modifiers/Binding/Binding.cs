@@ -5,6 +5,8 @@ using Hopper.Utils.Vector;
 using Hopper.Core.Stat;
 using Hopper.Core.Components.Basic;
 using Hopper.Utils;
+using Hopper.Core.ActingNS;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.TestContent.BindingNS
 {

@@ -1,11 +1,12 @@
 using System;
 using System.Linq;
+using Hopper.Core.ActingNS;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Components.Basic;
 using Hopper.Utils;
 
-namespace Hopper.Core
+namespace Hopper.Core.WorldNS
 {
-
     public class WorldStateManager
     {
         public readonly DoubleList<Acting>[] actings;

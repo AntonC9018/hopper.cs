@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Hopper.Core;
+using Hopper.Core.ActingNS;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
-using Hopper.Core.Predictions;
 using Hopper.Core.Retouchers;
 using Hopper.Core.Stat;
 using Hopper.Core.Targeting;
+using Hopper.Core.WorldNS;
 using Hopper.TestContent;
 using Hopper.TestContent.BindingNS;
 using Hopper.TestContent.PinningNS;

@@ -4,6 +4,7 @@ using Hopper.Core.Items;
 using Hopper.Utils.Vector;
 using Hopper.Shared.Attributes;
 using Hopper.Core.Components;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.TestContent.Items
 {

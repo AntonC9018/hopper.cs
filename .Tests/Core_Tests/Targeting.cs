@@ -4,6 +4,8 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Targeting;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
+using Hopper.Core.WorldNS;
+using Hopper.Core.ActingNS;
 
 namespace Hopper.Tests
 {
