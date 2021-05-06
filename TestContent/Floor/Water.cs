@@ -8,11 +8,13 @@ namespace Hopper.TestContent.Floor
 {
     public partial class PinnedEntityModifier : IComponent, IUndirectedActivateable
     {
+        [Inject] public int amount;
         [Inject] public Entity pinner;
 
-        public bool RemoveIfNotOnPinner(Entity actor)
+        public bool MaybeRemoveImmediately(Entity actor)
         {
-            if (actor.GetTransform().position != pinner.GetTransform().position)
+            if (pinner.IsDead() || 
+                actor.GetTransform().position != pinner.GetTransform().position)
             {
                 RemoveFrom(actor);
                 return true; 
@@ -22,22 +24,14 @@ namespace Hopper.TestContent.Floor
 
         public bool PreventActionAndDamagePinner(Entity actor)
         {
-            if (RemoveIfNotOnPinner(actor))
+            if (MaybeRemoveImmediately(actor))
             {
                 return true;
             }
 
-            var damageable = pinner.GetDamageable();
+            amount--;
 
-            // Do the next action if the health is already at 0
-            if (damageable.IsHealthZero())
-            {
-                RemoveFrom(actor);
-                return true;
-            }
-
-            // If health reaches 0 by taking damage
-            if (damageable.Activate(pinner, 1))
+            if (amount == 0)
             {
                 RemoveFrom(actor);
             }
@@ -57,7 +51,7 @@ namespace Hopper.TestContent.Floor
         [Export(Chain = "Acting.Check", Dynamic = true)]
         public void ResetAction(Entity actor, ref CompiledAction action)
         {
-            if (!RemoveIfNotOnPinner(actor)
+            if (!MaybeRemoveImmediately(actor)
                 && action.GetStoredAction().ActivatesEither(AffectedActions))
             {
                 action = action.WithAction(
@@ -113,7 +107,7 @@ namespace Hopper.TestContent.Floor
 
             if (ctx.actor.CanNotResist(Stat.PinStat.Source, pinStat.power))
             {
-                PinnedEntityModifier.AddTo(ctx.actor, actor);
+                PinnedEntityModifier.AddTo(ctx.actor, pinStat.amount, actor);
                 PinnedEntityModifier.Preset(ctx.actor);
             }
             return true;

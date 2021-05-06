@@ -47,9 +47,9 @@ namespace Hopper.Tests.Test_Content
             entity.GetActing().ActivateWith(Moving.Action.Compile(Right));
 
             Assert.False(entity.HasPinnedEntityModifier());
-            Assert.That(water.IsDead());
+            Assert.False(water.IsDead());
             Assert.AreEqual(Zero + Right, entity.GetTransform().position);
-            Assert.AreEqual(1, entity.GetTransform().GetCell().Count);
+            Assert.AreEqual(2, entity.GetTransform().GetCell().Count);
 
             // No ticking has happened, so nextAction is still set
             entity.GetActing().Activate();
