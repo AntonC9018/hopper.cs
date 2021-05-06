@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hopper.Core.ActingNS;
-using Hopper.Core.ActingNS;
 using Hopper.Core.Components;
 using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
