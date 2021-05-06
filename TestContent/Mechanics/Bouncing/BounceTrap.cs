@@ -2,9 +2,8 @@ using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
-using static Hopper.Core.Action;
 
-namespace Hopper.TestContent.Floor
+namespace Hopper.TestContent.BouncingNS
 {
     [EntityType]
     public static class BounceTrap
@@ -25,7 +24,7 @@ namespace Hopper.TestContent.Floor
         public static void InitComponents(Entity subject)
         {
             subject.GetActing().DefaultPreset(subject);
-            subject.GetBouncing().DefaltPreset(subject);
+            subject.GetBouncing().DefaultPreset(subject);
             subject.GetTicking().DefaultPreset();
         }
 

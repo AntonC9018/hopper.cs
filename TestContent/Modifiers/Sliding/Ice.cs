@@ -3,7 +3,7 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 
-namespace Hopper.TestContent.Floor
+namespace Hopper.TestContent.SlidingNS
 {
     [EntityType]
     public static class IceFloor

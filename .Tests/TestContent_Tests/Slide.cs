@@ -1,8 +1,7 @@
-using System.Linq;
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
-using Hopper.TestContent.Floor;
+using Hopper.TestContent.SlidingNS;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
 

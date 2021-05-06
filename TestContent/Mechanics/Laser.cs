@@ -8,7 +8,7 @@ using Hopper.Core.Targeting;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
 
-namespace Hopper.TestContent
+namespace Hopper.TestContent.LaserNS
 {
     public static class Laser
     {

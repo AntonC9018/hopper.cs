@@ -3,7 +3,7 @@ using Hopper.Core;
 using Hopper.Utils.Vector;
 using System.Linq;
 using Hopper.Core.Stat;
-using Hopper.TestContent.Bind;
+using Hopper.TestContent.BindingNS;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Targeting;
 

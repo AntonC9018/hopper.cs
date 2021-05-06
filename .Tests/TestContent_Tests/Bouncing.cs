@@ -1,13 +1,10 @@
 using NUnit.Framework;
 using Hopper.Core;
 using Hopper.Utils.Vector;
-using System.Linq;
 using Hopper.Core.Stat;
-using Hopper.TestContent.Bind;
 using Hopper.Core.Components.Basic;
-using Hopper.Core.Targeting;
-using Hopper.TestContent.Floor;
 using System.Collections.Generic;
+using Hopper.TestContent.BouncingNS;
 
 namespace Hopper.Tests.Test_Content
 {

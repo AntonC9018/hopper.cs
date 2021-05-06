@@ -1,10 +1,10 @@
 using Hopper.Core;
 using Hopper.Core.Components;
-using Hopper.Core.Components.Basic;
 using Hopper.Shared.Attributes;
 using Hopper.TestContent.SimpleMobs;
+using Hopper.Core.Components.Basic;
 
-namespace Hopper.TestContent.Freezing
+namespace Hopper.TestContent.FreezingNS
 {
     public partial class IceCubeComponent : IComponent
     {

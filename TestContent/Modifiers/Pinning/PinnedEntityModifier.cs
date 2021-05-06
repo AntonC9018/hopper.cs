@@ -1,10 +1,9 @@
 using Hopper.Core;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
-using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 
-namespace Hopper.TestContent.Floor
+namespace Hopper.TestContent.PinningNS
 {
     public partial class PinnedEntityModifier : IComponent, IUndirectedActivateable
     {
@@ -80,63 +79,6 @@ namespace Hopper.TestContent.Floor
         {
             Unset(entity);
             entity.RemoveComponent(Index);
-        }
-    }
-
-    public partial class PinningComponent : IComponent
-    {
-        public void InitInWorld(Transform transform)
-        {
-            var entity = transform.entity;
-            transform.SubsribeToPermanentEnterEvent(ctx => Enter(entity, ctx));
-        }
-
-        public bool Enter(Entity actor, CellMovementContext ctx)
-        {
-            if (!actor.TryGetPinningComponent(out var pinning) || actor.IsDead())
-            {
-                return false; // Remove this listener
-            }
-
-            if (ctx.actor.HasPinnedEntityModifier() || ctx.HasMoved())
-            {
-                return true;
-            }
-
-            actor.GetStats().GetLazy(Stat.PinStat.Index, out var pinStat);
-
-            if (ctx.actor.CanNotResist(Stat.PinStat.Source, pinStat.power))
-            {
-                PinnedEntityModifier.AddTo(ctx.actor, pinStat.amount, actor);
-                PinnedEntityModifier.Preset(ctx.actor);
-            }
-            return true;
-        }
-    }
-
-    [EntityType]
-    public static class Water
-    {
-        public static EntityFactory Factory;
-
-        public static void AddComponents(Entity subject)
-        {
-            Stats.AddTo(subject, Registry.Global._defaultStats);
-            Transform.AddTo(subject, Layer.FLOOR);
-            FactionComponent.AddTo(subject, Faction.Environment);
-            Damageable.AddTo(subject, new Health(1));
-            PinningComponent.AddTo(subject);
-        }
-
-        public static void InitComponents(Entity subject)
-        {
-            subject.GetDamageable().DefaultPreset();
-        }
-
-        public static void Retouch(EntityFactory factory)
-        {
-            Stats.AddInitTo(factory);
-            PinningComponent.AddInitTo(factory);
         }
     }
 }

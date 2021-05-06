@@ -3,6 +3,7 @@ using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Retouchers;
 using Hopper.Shared.Attributes;
+using Hopper.TestContent.LaserNS;
 using Hopper.Utils.Vector;
 using static Hopper.Core.Action;
 

@@ -6,9 +6,8 @@ using Hopper.Core.Stat;
 using Hopper.Core.Targeting;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
-using static Hopper.Core.Action;
 
-namespace Hopper.TestContent
+namespace Hopper.TestContent.Items
 {
     public partial class BowComponent : IComponent, IUndirectedActivateable, IStandartActivateable
     {

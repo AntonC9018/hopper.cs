@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using Hopper.Core;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
 
-namespace Hopper.TestContent.Floor
+namespace Hopper.TestContent.BlockingTrapNS
 {
     // Some ideas:
     // 1. using ticking is kind of dumb for this: checking if the thing died or left each turn, meh

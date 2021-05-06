@@ -7,7 +7,7 @@ using Hopper.Shared.Attributes;
 using Hopper.TestContent.Stat;
 using Hopper.Utils.Vector;
 
-namespace Hopper.TestContent.Floor
+namespace Hopper.TestContent.SlidingNS
 {
 
     public partial class SlidingEntityModifier : IComponent, IStandartActivateable

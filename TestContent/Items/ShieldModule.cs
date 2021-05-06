@@ -2,11 +2,10 @@
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Utils.Vector;
-using Hopper.Utils.Chains;
 using Hopper.Shared.Attributes;
 using Hopper.Core.Components;
 
-namespace Hopper.TestContent
+namespace Hopper.TestContent.Items
 {
     [EntityType(Abstract = true)]
     public static class Shield

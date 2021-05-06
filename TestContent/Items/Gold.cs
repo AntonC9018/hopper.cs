@@ -1,11 +1,9 @@
 using Hopper.Core;
-using Hopper.Core.Components;
-using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Vector;
 
-namespace Hopper.TestContent
+namespace Hopper.TestContent.Items
 {
     [EntityType]
     public static class Gold

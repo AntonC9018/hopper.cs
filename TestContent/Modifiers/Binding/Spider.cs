@@ -4,7 +4,7 @@ using Hopper.Core.Components.Basic;
 using Hopper.Shared.Attributes;
 using static Hopper.Core.Action;
 
-namespace Hopper.TestContent.Bind
+namespace Hopper.TestContent.BindingNS
 {
     [EntityType]
     public static class Spider

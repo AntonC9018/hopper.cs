@@ -1,7 +1,7 @@
 using Hopper.Core;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
-using Hopper.TestContent.Floor;
+using Hopper.TestContent.PinningNS;
 using NUnit.Framework;
 using static Hopper.Utils.Vector.IntVector2;
 

@@ -1,57 +1,13 @@
 using Hopper.Core;
-using Hopper.Utils.Chains;
-using Hopper.Core.Components.Basic;
-using System;
 using Hopper.Shared.Attributes;
-using Hopper.Core.Targeting;
 using Hopper.Core.Components;
 using Hopper.Utils.Vector;
-using System.Linq;
 using Hopper.Core.Stat;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils;
 
-namespace Hopper.TestContent.Bind
+namespace Hopper.TestContent.BindingNS
 {
-    // Added to the host when the guest binds itself
-    public partial class BoundEntityModifier : IComponent
-    {
-        [Inject] public Entity guest;
-
-        // When the time comes to attack, attack that entity instead
-        [Export(Chain = "Attacking.Do", Priority = PriorityRank.High, Dynamic = true)]
-        public void AttackBinder(Attacking.Context context)
-        {
-            context.SetSingleTarget(guest.GetTransform());
-        }
-
-        // When the host dies, free the guest
-        [Export(Chain = "Damageable.Death", Dynamic = true)]
-        public void FreeGuest()
-        {
-            guest.GetBinding().HostDiedCallback(guest);
-        }
-
-        // No disaplacements
-        [Export(Chain = "Moving.Do", Priority = PriorityRank.High, Dynamic = true)]
-        public bool StopDisplacement()
-        {
-            // continue if the guest is dead
-            // return guest.IsDead();
-            // This literally does not even matter, because if the guest did die,
-            // this handler will not be here. I guess the only concern are other events,
-            // but those cannot happen without leaving the current cell
-            // This means we are free to just return false here.
-            return false;
-        }
-
-        // TODO: apply attacks of type explosion to the guest instead
-        public static HandlerGroupsWrapper DefaultHookable = new HandlerGroupsWrapper(
-            AttackBinderHandlerWrapper,
-            FreeGuestHandlerWrapper,
-            StopDisplacementHandlerWrapper
-        );
-    }
-
     // Added to the entity that want to do binding.
     public partial class Binding : IComponent, IStandartActivateable
     {

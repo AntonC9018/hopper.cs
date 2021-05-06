@@ -2,7 +2,7 @@ using Hopper.Core;
 using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 
-namespace Hopper.TestContent.Floor
+namespace Hopper.TestContent.SlidingNS
 {
     // Put on ice or whatever
     public partial class SlipperyComponent : IComponent

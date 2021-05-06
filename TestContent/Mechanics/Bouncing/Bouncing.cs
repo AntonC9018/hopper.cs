@@ -8,7 +8,7 @@ using Hopper.Shared.Attributes;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
 
-namespace Hopper.TestContent.Floor
+namespace Hopper.TestContent.BouncingNS
 {
     public partial class Bouncing : IComponent, IUndirectedActivateable
     {
@@ -113,7 +113,7 @@ namespace Hopper.TestContent.Floor
             pushable.Activate(oneBeingBounced.entity, push, actor.orientation);
         }
 
-        public void DefaltPreset(Entity subject)
+        public void DefaultPreset(Entity subject)
         {
             ResetHandlerWrapper.HookTo(subject);
         }
