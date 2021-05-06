@@ -116,7 +116,7 @@ namespace Hopper.Core
             {
                 foreach (var acting in _actings.StartFiltering())
                 {
-                    if (acting.actor.IsDead())
+                    if (!acting.actor.IsDead())
                     {
                         _actings.AddToSecondaryBuffer(acting);
                     }

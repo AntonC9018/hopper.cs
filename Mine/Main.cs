@@ -35,11 +35,12 @@ namespace Hopper.Mine
 
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 1));
             var trap1 = World.Global.SpawnEntity(BounceTrap.Factory, new IntVector2(1, 1), new IntVector2(1, 0));
+            entity.Displace(new IntVector2(1, 0), Move.Default());
             World.Global.Loop();
 
             var trap2 = World.Global.SpawnEntity(BounceTrap.Factory, new IntVector2(2, 1), new IntVector2(1, 0));
             entity.GetTransform().ResetPositionInGrid(new IntVector2(0, 1));
-World.Global.Loop();
+            World.Global.Loop();
             entity.Displace(new IntVector2(1, 0), Move.Default());
             World.Global.Loop();
         }

@@ -54,7 +54,7 @@ namespace Hopper.TestContent.Floor
             }
 
             // TODO: maybe separate the handlers by order to automate this?
-            if (actor.IsCurrentOrderFavorable() && context.transform.layer.HasFlag(_targetedLayer))
+            if (actor.IsCurrentOrderFavorable() && context.transform.layer.HasEitherFlag(_targetedLayer))
             {
                 // If the set already contained that element
                 if (!bouncing._bouncedEntities.Add(context.actor.id))
@@ -72,7 +72,6 @@ namespace Hopper.TestContent.Floor
 
                 // otherwise, an entity has already been on top of us, so do nothing
             }
-
 
             return true; // Keep this listener
         }
