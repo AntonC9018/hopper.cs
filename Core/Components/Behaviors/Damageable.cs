@@ -20,6 +20,11 @@ namespace Hopper.Core.Components.Basic
         [Alias("Die")] public void Die(Entity actor)
         {
             health.amount = 0;
+            DieLogic(actor);
+        }
+
+        public void DieLogic(Entity actor)
+        {
             TraverseDeath(new Context { actor = actor });
             actor.GetTransform().TryRemoveFromGridWithoutEvent();
         }
@@ -30,7 +35,7 @@ namespace Hopper.Core.Components.Basic
             health.amount -= damage;
             if (health.amount <= 0)
             {
-                TraverseDeath(new Context { actor = actor });
+                DieLogic(actor);
                 return true;
             }
             return false;

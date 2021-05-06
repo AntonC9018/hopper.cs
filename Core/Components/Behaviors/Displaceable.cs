@@ -2,6 +2,7 @@ using Hopper.Utils.Vector;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Chains;
+using Hopper.Utils;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -53,6 +54,7 @@ namespace Hopper.Core.Components.Basic
 
             public void ResetInGrid()
             {
+                Assert.That(transform.position == newPosition, "Cannot be displaced while displacing");
                 transform.ResetInGrid(direction);
             }
         }

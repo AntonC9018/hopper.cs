@@ -37,7 +37,7 @@ namespace Hopper.TestContent.Floor
             }
 
             // If health reaches 0 by taking damage
-            if (damageable.Activate(actor, 1))
+            if (damageable.Activate(pinner, 1))
             {
                 RemoveFrom(actor);
             }
@@ -128,9 +128,10 @@ namespace Hopper.TestContent.Floor
         public static void AddComponents(Entity subject)
         {
             Stats.AddTo(subject, Registry.Global._defaultStats);
-            Transform.AddTo(subject, Layer.REAL);
+            Transform.AddTo(subject, Layer.FLOOR);
             FactionComponent.AddTo(subject, Faction.Environment);
             Damageable.AddTo(subject, new Health(1));
+            PinningComponent.AddTo(subject);
         }
 
         public static void InitComponents(Entity subject)
@@ -141,6 +142,7 @@ namespace Hopper.TestContent.Floor
         public static void Retouch(EntityFactory factory)
         {
             Stats.AddInitTo(factory);
+            PinningComponent.AddInitTo(factory);
         }
     }
 }

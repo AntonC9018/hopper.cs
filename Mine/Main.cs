@@ -13,6 +13,7 @@ using Hopper.TestContent.Floor;
 using Hopper.TestContent.SimpleMobs;
 using Hopper.Utils;
 using Hopper.Utils.Vector;
+using static Hopper.Utils.Vector.IntVector2;
 
 namespace Hopper.Mine
 {
@@ -23,26 +24,28 @@ namespace Hopper.Mine
             Hopper.Core.Main.Init();
             Hopper.TestContent.Main.Init();
 
-            World.Global = new World(3, 3);
-            var world = World.Global;
 
             var entityFactory = new EntityFactory();
             Transform.AddTo(entityFactory, Layer.REAL);
             Stats.AddTo(entityFactory, Registry.Global._defaultStats);
-            Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK).DefaultPreset();
-            Pushable.AddTo(entityFactory).DefaultPreset();
             Stats.AddInitTo(entityFactory);
+            Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK).DefaultPreset();
+            Moving.AddTo(entityFactory).DefaultPreset();
+            Pushable.AddTo(entityFactory).DefaultPreset();
+            Ticking.AddTo(entityFactory);
+            Acting.AddTo(entityFactory, null, Algos.SimpleAlgo, Order.Entity)
+                .DefaultPreset(entityFactory);
 
-            var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 1));
-            var trap1 = World.Global.SpawnEntity(BounceTrap.Factory, new IntVector2(1, 1), new IntVector2(1, 0));
-            entity.Displace(new IntVector2(1, 0), Move.Default());
-            World.Global.Loop();
+            World.Global = new World(3, 3);
+            var world = World.Global;
 
-            var trap2 = World.Global.SpawnEntity(BounceTrap.Factory, new IntVector2(2, 1), new IntVector2(1, 0));
-            entity.GetTransform().ResetPositionInGrid(new IntVector2(0, 1));
-            World.Global.Loop();
-            entity.Displace(new IntVector2(1, 0), Move.Default());
-            World.Global.Loop();
+            var entity = World.Global.SpawnEntity(entityFactory, Zero);
+            var water = World.Global.SpawnEntity(Water.Factory, Zero + Right);
+            entity.Move(Right);
+
+            entity.GetActing().ActivateWith(Moving.Action.Compile(Right));
+            entity.GetActing().Activate();
+
         }
     }
 }

@@ -48,8 +48,8 @@ namespace Hopper.Tests.Test_Content
 
             Assert.False(entity.HasPinnedEntityModifier());
             Assert.That(water.IsDead());
-            Assert.AreEqual(1, entity.GetTransform().GetCell().Count);
             Assert.AreEqual(Zero + Right, entity.GetTransform().position);
+            Assert.AreEqual(1, entity.GetTransform().GetCell().Count);
 
             // No ticking has happened, so nextAction is still set
             entity.GetActing().Activate();
