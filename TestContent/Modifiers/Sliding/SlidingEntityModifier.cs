@@ -8,7 +8,7 @@ using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
 using Hopper.TestContent.Stat;
 using Hopper.Utils.Vector;
-
+using static Hopper.Core.ActingNS.Action;
 
 namespace Hopper.TestContent.SlidingNS
 {
@@ -35,14 +35,14 @@ namespace Hopper.TestContent.SlidingNS
 
         public bool Activate(Entity actor, IntVector2 direction)
         {
-            return !actor.TryBePushed(DefaultPush, direction);
+            return actor.TryBePushed(DefaultPush, direction);
         }
 
         // If the entity tries to move (on its own), slide instead
         [Export(Chain = "Acting.Check", Dynamic = true)]
         public void SlideInstead(ref CompiledAction action)
         {
-            action = Action.Then(action._storedAction).Compile(directionOfSliding);
+            action = Compose(Action, action.GetStoredAction()).Compile(directionOfSliding);
         }
 
         // When displaced into something that is not slippery, stop sliding.

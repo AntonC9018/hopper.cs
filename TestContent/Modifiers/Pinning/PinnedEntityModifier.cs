@@ -4,6 +4,7 @@ using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
+using static Hopper.Core.ActingNS.Action;
 
 namespace Hopper.TestContent.PinningNS
 {
@@ -27,7 +28,7 @@ namespace Hopper.TestContent.PinningNS
         {
             if (MaybeRemoveImmediately(actor))
             {
-                return true;
+                return false;
             }
 
             amount--;
@@ -37,8 +38,9 @@ namespace Hopper.TestContent.PinningNS
                 RemoveFrom(actor);
             }
 
-            // The action fails if the pinner has not already been dead
-            return false;
+            // The action succeeds if the pinner has not already been dead
+            // The action must succeed
+            return true;
         }
 
         bool IUndirectedActivateable.Activate(Entity entity) => PreventActionAndDamagePinner(entity);
@@ -56,8 +58,7 @@ namespace Hopper.TestContent.PinningNS
                 && action.GetStoredAction().ActivatesEither(AffectedActions))
             {
                 action = action.WithAction(
-                    UAction.Then(action.GetStoredAction())
-                );
+                    Compose(UAction, action.GetStoredAction()));
             }
         }
 

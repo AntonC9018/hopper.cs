@@ -59,14 +59,14 @@ namespace Hopper.Tests.Test_Content
             // Right now any action gets replaced, but, in theory, it is easy to tweak.
             var acting = entity.GetActing();
             acting.nextAction = Moving.Action.Compile(IntVector2.Up); 
-            // Make sure the action actually fails.
-            Assert.False(acting.Activate()); // 2, 1
+            // Make sure the action actually ~fails~ succeeds.
+            Assert.True(acting.Activate()); // 2, 1
             // Make sure the position has changed
             Assert.AreEqual(new IntVector2(2, 1), entity.GetTransform().position);
             Assert.True(entity.HasSlidingEntityModifier());
             
             // Let's slide again
-            Assert.False(acting.Activate()); // 3, 1
+            Assert.True(acting.Activate()); // 3, 1
             Assert.AreEqual(new IntVector2(3, 1), entity.GetTransform().position);
 
             // Now that we're past the last ice floor, the modifier must remove itself.

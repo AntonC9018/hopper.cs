@@ -34,6 +34,20 @@ namespace Hopper.Core.ActingNS
             [Omit] public Acting acting;
             [Omit] public CompiledAction action;
             [Omit] public bool success = false;
+
+            public bool HasActionBeenReset => 
+                !ReferenceEquals(action._storedAction, acting.nextAction._storedAction);
+
+            public void SetAction(in IAction action)
+            {
+                this.action = this.action.WithAction(action);
+            }
+
+            // TODO: you once can check the initial action on Acting, so is this really worth it?
+            public void SetAction(in CompiledAction action)
+            {
+                this.action = action;
+            }
         }
 
 
