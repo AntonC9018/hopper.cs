@@ -62,9 +62,25 @@ namespace Hopper.Core.Stat
         }
     }
 
+    public class StatsBuilder : Dictionary<Identifier, IStat>
+    {
+        public StatsBuilder() : base()
+        {
+        }
+
+        public StatsBuilder(IDictionary<Identifier, IStat> dictionary) : base(dictionary)
+        {
+        }
+
+        public void Add<T>(Index<T> index, T stat) where T : IStat
+        {
+            Add(index.Id, stat);
+        }
+    }
+
     public partial class Stats : IComponent
     {
-        [Inject] public Dictionary<Identifier, IStat> defaultStats;
+        [Inject] public StatsBuilder template;
         public Dictionary<Identifier, IHolder> store;
 
         public void InitInWorld(Transform transform)
@@ -76,7 +92,7 @@ namespace Hopper.Core.Stat
         {
             if (!store.ContainsKey(index.Id))
             {   
-                stat = (T) defaultStats[index.Id];
+                stat = (T) template[index.Id];
                 Set(index, in stat);
             }
             else
@@ -108,7 +124,7 @@ namespace Hopper.Core.Stat
         {
             if (!store.ContainsKey(index.Id))
             {   
-                Set(index, (T) defaultStats[index.Id]);
+                Set(index, (T) template[index.Id]);
             }
             return ref GetRaw(index);
         }

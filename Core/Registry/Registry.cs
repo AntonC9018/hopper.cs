@@ -22,7 +22,7 @@ namespace Hopper.Core
         public StaticRegistry<EntityFactory> _entityFactory;
         public IdentifierAssigner _stats;
         public IdentifierAssigner _slots;
-        public Dictionary<Identifier, IStat> _defaultStats;
+        public StatsBuilder _defaultStats;
         public Pools _pools;
         
 
@@ -31,7 +31,7 @@ namespace Hopper.Core
             _priority.Init();
             _entities.Init();
             _entityFactory.Init();
-            _defaultStats = new Dictionary<Identifier, IStat>();
+            _defaultStats = new StatsBuilder();
             _pools.Init();
         }
 
