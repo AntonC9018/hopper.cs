@@ -5,6 +5,7 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
 using Hopper.Core.WorldNS;
 using Hopper.Utils.Vector;
+using static Hopper.Core.ActingNS.Action;
 
 namespace Hopper.TestContent
 {
@@ -13,7 +14,7 @@ namespace Hopper.TestContent
     {
         // public static readonly WorldEventPath<IntVector2> EventPath = new WorldEventPath<IntVector2>();
 
-        private static Attack DefaultAttack =>
+        private static Attack DefaultAttack =
             new Attack
             {
                 damage = 3,
@@ -22,7 +23,7 @@ namespace Hopper.TestContent
                 pierce = 1
             };
 
-        private static Push DefaultPush =>
+        private static Push DefaultPush =
             new Push
             {
                 power = 2,
@@ -44,9 +45,9 @@ namespace Hopper.TestContent
 
         // TODO: Add a parameter for exposion attack stat
         public static SimplePredictableUndirectedAction DefaultExplodeAction(int radius) =>
-            Action.Simple(
-                Action.Adapt((actor) => Explosion.Explode(actor.GetTransform().position, radius)),
-                             (actor, info) => PredictExplodePositions(actor.GetTransform(), radius)
+            Simple(
+                Adapt((actor) => Explosion.Explode(actor.GetTransform().position, radius)),
+                (actor, info) => PredictExplodePositions(actor.GetTransform(), radius)
             );
 
         /// <summary>

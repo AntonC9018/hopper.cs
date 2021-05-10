@@ -60,7 +60,7 @@ namespace Hopper.Core.WorldNS
                 chain = new PermanentChain<CellMovementContext>();
                 _triggers[position] = chain;
             }
-            chain.Add(handler);
+            chain.AddMaybeWhileIterating(handler);
         }
 
         public void Trigger(Transform transform, IntVector2 direction)

@@ -5,7 +5,7 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core
 {
-    public sealed class HandlerWrapper<Context> : IHookable where Context : ContextBase
+    public sealed class HandlerWrapper<Context> : IHookable
     {
         public Handler<Context> handler;
         public ChainPath<Chain<Context>> chainPath;
@@ -59,13 +59,13 @@ namespace Hopper.Core
 
     public static class Handlers
     {
-        public static HandlerGroup<Context> CreateGroup<Context>(ChainPath<Chain<Context>> chainPath, params Handler<Context>[] handlers) where Context : ContextBase
+        public static HandlerGroup<Context> CreateGroup<Context>(ChainPath<Chain<Context>> chainPath, params Handler<Context>[] handlers)
         {
             return new HandlerGroup<Context>(chainPath, handlers);
         }
     }
 
-    public sealed class HandlerGroup<Context> : IHookable where Context : ContextBase
+    public sealed class HandlerGroup<Context> : IHookable
     {
         public Handler<Context>[] handlers;
         public ChainPath<Chain<Context>> chainPath;

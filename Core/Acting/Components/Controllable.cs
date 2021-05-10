@@ -64,7 +64,7 @@ namespace Hopper.Core.ActingNS
         public CompiledAction ConvertInputToAction(Entity entity, InputMapping input)
         {
             var ev = new Context { actor = entity };
-            _chains[input].Pass(ev);
+            _chains[input].PassWithPropagationChecking(ev);
             return ev.Compile();
         }
 
@@ -92,7 +92,7 @@ namespace Hopper.Core.ActingNS
                 action = defaultAction,
                 direction = direction
             };
-            _chains[InputMapping.Vector].Pass(ev);
+            _chains[InputMapping.Vector].PassWithPropagationChecking(ev);
             return ev.Compile();
         }
 

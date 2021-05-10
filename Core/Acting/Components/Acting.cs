@@ -88,7 +88,7 @@ namespace Hopper.Core.ActingNS
                 ActionExecutionAlgorithm(ctx);
             }
 
-            ctx.propagate = true;
+            ctx.Propagate = true;
 
             if (ctx.success) _flags |=  ActingState.ActionSucceeded;
             else             _flags &= ~ActingState.ActionSucceeded;

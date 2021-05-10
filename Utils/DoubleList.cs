@@ -16,6 +16,14 @@ namespace Hopper.Utils
             _isIterating = false;
         }
 
+        public DoubleList(List<T> buffer)
+        {
+            _primaryBuffer = buffer;
+            _secondaryBuffer = new List<T>();
+            _isIterating = false;
+        }
+
+
         public IEnumerator<T> GetEnumerator()
         {
             return (IEnumerator<T>) _primaryBuffer.GetEnumerator();

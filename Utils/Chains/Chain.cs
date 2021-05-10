@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace Hopper.Utils.Chains
 {
-    public sealed class Chain<Context> : SortedSet<Handler<Context>>, ICopyable where Context : ContextBase
+    public sealed class Chain<Context> : SortedSet<Handler<Context>>, ICopyable
     {
         public Chain() : base()
         {
@@ -24,26 +24,6 @@ namespace Hopper.Utils.Chains
         {
             foreach (var handler in this.ToArray())
             {
-                handler.handler(ev);
-            }
-        }
-
-        public void Pass(Context ev)
-        {
-            foreach (var handler in this.ToArray())
-            {
-                if (!ev.propagate)
-                    return;
-                handler.handler(ev);
-            }
-        }
-
-        public void Pass(Context ev, System.Func<Context, bool> stopFunc)
-        {
-            foreach (var handler in this.ToArray())
-            {
-                if (stopFunc(ev))
-                    return;
                 handler.handler(ev);
             }
         }

@@ -1,6 +1,5 @@
 namespace Hopper.Core
 {
-
     public struct Pools
     {
         public PoolRegistry Entity;

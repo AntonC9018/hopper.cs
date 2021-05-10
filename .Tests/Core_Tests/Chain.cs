@@ -69,9 +69,9 @@ namespace Hopper.Tests
             Assert.AreEqual(6, ctx.counter);
 
             // If you were to stop propagation, the value will not be incremented
-            var handler3 = new Handler<Context>(0, _ctx => _ctx.propagate = false);
+            var handler3 = new Handler<Context>(0, _ctx => _ctx.Propagate = false);
             chain.Add(handler3);
-            chain.Pass(ctx);
+            chain.PassWithPropagationChecking(ctx);
             Assert.AreEqual(6, ctx.counter);
 
             // Removing all handlers
@@ -85,12 +85,12 @@ namespace Hopper.Tests
             var handler4 = new Handler<Context>(4, _ctx => chain.Remove(handler5));
             chain.AddMany(handler4, handler5);
 
-            ctx.propagate = true;
-            chain.Pass(ctx);
+            ctx.Propagate = true;
+            chain.PassWithPropagationChecking(ctx);
             Assert.AreEqual(9, ctx.counter);
             
             ctx.counter = 69;
-            chain.Pass(ctx);
+            chain.PassWithPropagationChecking(ctx);
             Assert.AreEqual(69, ctx.counter);
         }
     }

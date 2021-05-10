@@ -2,26 +2,28 @@
 
     - [Some stuff](#some-stuff)
 - [Registry](#registry)
-    - [Update](#update)
-    - [Solution](#solution)
-    - [New stuff, 2021](#new-stuff-2021)
-    - [Newer stuff, April 2021](#newer-stuff-april-2021)
-        - [Component Copying](#component-copying)
-        - [What to do next](#what-to-do-next)
-        - [Registry](#registry-1)
-        - [World](#world)
-        - [Entity type — registry interaction](#entity-type--registry-interaction)
-        - [Stats](#stats)
-        - [Targeting](#targeting)
-        - [Items](#items)
-        - [Statuses](#statuses)
-        - [Fixes](#fixes)
-        - [Shield](#shield)
-        - [Problem with Items](#problem-with-items)
-        - [Handler update](#handler-update)
-        - [Items update](#items-update)
-        - [Entity modifiers](#entity-modifiers)
-        - [Bouncing](#bouncing)
+  - [Update](#update)
+  - [Solution](#solution)
+  - [New stuff, 2021](#new-stuff-2021)
+  - [Newer stuff, April 2021](#newer-stuff-april-2021)
+    - [Component Copying](#component-copying)
+    - [What to do next](#what-to-do-next)
+    - [Registry](#registry-1)
+    - [World](#world)
+    - [Entity type — registry interaction](#entity-type--registry-interaction)
+    - [Stats](#stats)
+    - [Targeting](#targeting)
+    - [Items](#items)
+    - [Statuses](#statuses)
+    - [Fixes](#fixes)
+    - [Shield](#shield)
+    - [Problem with Items](#problem-with-items)
+    - [Handler update](#handler-update)
+    - [Items update](#items-update)
+    - [Entity modifiers](#entity-modifiers)
+    - [Bouncing](#bouncing)
+    - [Managing modifiers](#managing-modifiers)
+    - [Changing the context](#changing-the-context)
 
 <!-- /TOC -->
 
@@ -854,3 +856,24 @@ Let me try and implement that.
 1. ~The system keeps track of all of the bouncing components currently in game.~
 2. ~The system keeps track of a list of entities~
 
+
+### Managing modifiers
+
+So it's cool and all: you can add modifiers by applying components dynamically and calling the preset method.
+
+Now, say we have the sliding modifier. It works on its own. Now we wanted to add a callback for queuing the right animation once the entity slides / the effect of sliding is applied. These are all events that have to be somehow exposed, they depend on the type of entity and why not make it changeable.
+
+So, there is some options.
+
+1. Define a `Slideable` or something component, where you would store that. This is bad because say a mod added new effects, then it would have to add the component of that effect to all of the entity types.
+2. Store the event handlers in a separate component. 
+Say, `MoreChains`. 
+This component would lazy load the chains when they are required, it would allow chain mutation for instances and it would be setuppable, just like stats, on the factory. 
+So to add your custom animation, one would get the chain by its id on the factory and add the handler to it.
+The id's will be available as `Indices<Chain>` as static fields and initialized by the registry.
+
+### Changing the context
+
+I hate the fact that the context is based on a base class. What I would like to do is have a `ShouldPropagate()` method or a `Propagate` property that would contain the logic for whether the propagation should be stopped. This will be optional for a chain, though. Propagation of event with propagation checking enabled will be defined as an extension method over the Chain. This will also be available to other types of chains, like the Linear chain. 
+
+So the plan is to remove `ContextBase` altogether, which shouldn't be that hard.

@@ -15,15 +15,5 @@ namespace Hopper.Utils.Chains
                 handler(ev);
             }
         }
-
-        public void Pass(Context ev, System.Func<Context, bool> stopFunc)
-        {
-            foreach (var handler in this)
-            {
-                if (stopFunc(ev))
-                    return;
-                handler(ev);
-            }
-        }
     }
 }
