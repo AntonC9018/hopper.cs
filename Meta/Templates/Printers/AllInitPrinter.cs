@@ -4,7 +4,7 @@ using Hopper.Meta.Stats;
 
 namespace Hopper.Meta.Template
 {
-    public partial class AllInitCode
+    public partial class AllInitPrinter
     {
         public string Namespace;
         public IEnumerable<ComponentSymbolWrapper> components;

@@ -98,7 +98,7 @@ namespace Hopper.Meta
                 }
                 foreach (var behavior in behaviorWrappers)
                 {
-                    var behaviorPrinter = new BehaviorCode();
+                    var behaviorPrinter = new BehaviorPrinter();
                     behaviorPrinter.behavior = behavior;
 
                     Console.WriteLine($"Generating code for {behavior.Calling}");
@@ -126,7 +126,7 @@ namespace Hopper.Meta
                 }
                 foreach (var component in componentWrappers)
                 {
-                    var componentPrinter = new ComponentCode();
+                    var componentPrinter = new ComponentPrinter();
                     componentPrinter.component = component;
 
                     Console.WriteLine($"Generating code for {component.Calling}");
@@ -154,7 +154,7 @@ namespace Hopper.Meta
                 }
                 foreach (var component in tagWrappers)
                 {
-                    var componentPrinter = new ComponentCode();
+                    var componentPrinter = new ComponentPrinter();
                     componentPrinter.component = component;
 
                     Console.WriteLine($"Generating code for {component.Calling}");
@@ -170,7 +170,7 @@ namespace Hopper.Meta
             {
                 foreach (var methodClass in methodClasses)
                 {
-                    var handlersPrinter = new ChainHandlersCode();
+                    var handlersPrinter = new ChainHandlersPrinter();
                     handlersPrinter.methodClass = methodClass;
 
                     Console.WriteLine($"Generating code for {methodClass.Calling}");
@@ -186,8 +186,8 @@ namespace Hopper.Meta
             var topLevelStatTypes = GetJsonFileNames(context._paths.StatJsonsFolder).Select(
                 fname => StatType.ParseJson(context.statParsingContext, fname));
             {
-                var startPrinter = new StatStartCode();
-                var subPrinter = new StatCode();
+                var startPrinter = new StatStartPrinter();
+                var subPrinter = new StatPrinter();
                 startPrinter.statCodePrinter = subPrinter;
                 startPrinter.Namespace = $"{context.RootNamespaceName}.Stat";
 
@@ -208,7 +208,7 @@ namespace Hopper.Meta
 
             {
                 
-                var printer = new SlotExtensionsCode();
+                var printer = new SlotExtensionsPrinter();
                 printer.Namespace = $"{context.RootNamespaceName}";
                 printer.slots = slots;
 
@@ -221,7 +221,7 @@ namespace Hopper.Meta
             var flagEnums = context.GetFlagEnums();
 
             {
-                var printer = new FlagsCode();
+                var printer = new FlagsPrinter();
 
                 foreach (var flag in flagEnums)
                 {
@@ -243,7 +243,7 @@ namespace Hopper.Meta
                 // They must live in at least the base namespace hopper
                 if (context.RootNamespaceName.Length >= "Hopper".Length)
                 {
-                    var mainPrinter = new AllInitCode()
+                    var mainPrinter = new AllInitPrinter()
                     {
                         components = componentWrappers,
                         behaviors = behaviorWrappers,

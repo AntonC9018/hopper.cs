@@ -3,7 +3,7 @@ using Hopper.Meta;
 
 namespace Hopper.Meta.Template
 {
-    public partial class BehaviorCode
+    public partial class BehaviorPrinter
     {
         public BehaviorSymbolWrapper behavior;
         public BehaviorSymbolWrapper component => behavior;

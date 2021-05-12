@@ -3,7 +3,7 @@ using Hopper.Meta;
 
 namespace Hopper.Meta.Template
 {
-    public partial class ComponentCode
+    public partial class ComponentPrinter
     {
         public ComponentSymbolWrapper component;
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => component.exportedMethods;

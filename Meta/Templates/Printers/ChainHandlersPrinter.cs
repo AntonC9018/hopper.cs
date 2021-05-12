@@ -4,7 +4,7 @@ using Hopper.Meta;
 
 namespace Hopper.Meta.Template
 {
-    public partial class ChainHandlersCode
+    public partial class ChainHandlersPrinter
     {
         public ExportedMethodsClassSymbolWrapper methodClass;
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => 

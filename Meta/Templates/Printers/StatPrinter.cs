@@ -4,14 +4,14 @@ using Hopper.Meta.Stats;
 
 namespace Hopper.Meta.Template
 {
-    public partial class StatCode
+    public partial class StatPrinter
     {
         public StatType stat;
     }
 
-    public partial class StatStartCode
+    public partial class StatStartPrinter
     {
-        public StatCode statCodePrinter;
+        public StatPrinter statCodePrinter;
         public string Namespace;
     }
 }
