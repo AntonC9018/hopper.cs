@@ -18,7 +18,7 @@ namespace Hopper.Meta
         {
         }
 
-        public override void Init(ProjectContext projectContext)
+        public override void Init(GlobalContext projectContext)
         {
             base.Init(projectContext);
             if (symbol.HasAttribute(RelevantSymbols.instanceExportAttribute))
@@ -33,7 +33,7 @@ namespace Hopper.Meta
                 m => !m.IsStatic && m.Name == "InitInWorld");
         }
 
-        public override void AfterInit(ProjectContext projectContext)
+        public override void AfterInit(GlobalContext projectContext)
         {
             if (exportedMethods == null)
                 exportedMethods = GetNonNativeExportedMethods(projectContext).ToArray();

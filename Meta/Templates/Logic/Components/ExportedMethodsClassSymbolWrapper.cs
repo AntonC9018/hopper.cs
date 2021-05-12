@@ -11,7 +11,7 @@ namespace Hopper.Meta
         {
         }
 
-        new public void Init(ProjectContext ctx)
+        new public void Init(GlobalContext ctx)
         {
             exportedMethods = GetNonNativeExportedMethods(ctx).ToArray();
             

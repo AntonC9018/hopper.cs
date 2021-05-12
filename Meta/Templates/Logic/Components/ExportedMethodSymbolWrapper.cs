@@ -28,7 +28,7 @@ namespace Hopper.Meta
             Init(behavior);
         }
 
-        public ExportedMethodSymbolWrapper(ProjectContext projectContext, IMethodSymbol symbol, ExportAttribute exportAttribute)
+        public ExportedMethodSymbolWrapper(GlobalContext projectContext, IMethodSymbol symbol, ExportAttribute exportAttribute)
         {
             this.symbol = symbol;
             this.exportAttribute = exportAttribute;
@@ -40,7 +40,7 @@ namespace Hopper.Meta
             this.referencedBehavior = behavior;
         }
 
-        public void Init(ProjectContext projectContext)
+        public void Init(GlobalContext projectContext)
         {
             var chain = exportAttribute.Chain;
 

@@ -1,6 +1,7 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -148,6 +149,12 @@ namespace Hopper.Meta.Template
         public virtual string TransformText()
         {
             return string.Empty;
+        }
+
+        // TODO: do stream writes
+        public void WriteToFile(string fileName)
+        {
+            File.WriteAllText(fileName, TransformText(), Encoding.UTF8);
         }
 
         public virtual void Initialize() {}

@@ -17,7 +17,7 @@ namespace Hopper.Meta
         const string sharedProjectPath = @"../Shared/Hopper.Shared.csproj";
 
         public MSBuildWorkspace msWorkspace;
-        public ProjectContext context;
+        public GlobalContext context;
 
         public Generator() 
         {
@@ -63,7 +63,7 @@ namespace Hopper.Meta
                 }
             };
 
-            context = new ProjectContext(projectPaths);
+            context = new GlobalContext(projectPaths);
 
             await msWorkspace.OpenProjectAsync(sharedProjectPath);
 
@@ -82,88 +82,50 @@ namespace Hopper.Meta
         {
             await context.Reset(project);
 
+            // Find function
+            // Potential context dependency
+            // Initialization function, after initialization function
+            // File name
+            // Printer initialization
+            // Writing
+
             // TODO: parallelize
-            var behaviorWrappers = new List<BehaviorSymbolWrapper>();
+            var behaviorWrappers = (await context.FindAllBehaviors())
+                .Select(b => new BehaviorSymbolWrapper(b))
+                .InitAndAfterInit(context);
+            
+            var componentWrappers = (await context.FindAllDirectComponents())
+                .Select(c => new ComponentSymbolWrapper(c))
+                .InitAndAfterInit(context);
+
+            var tagWrappers = (await context.FindAllTags())
+                .Select(t => new TagSymbolWrapper(t))
+                .InitAndAfterInit(context);
+        
+
+
+            foreach (var behavior in behaviorWrappers)
             {
-                foreach (var behavior in await context.FindAllBehaviors())
-                {
-                    var wrapped = new BehaviorSymbolWrapper(behavior);
-                    if (wrapped.InitWithErrorHandling(context))
-                        behaviorWrappers.Add(wrapped);
-                }
-                // After init must be called after all of the behaviors have been added to the dictionary
-                foreach (var behavior in behaviorWrappers)
-                {
-                    behavior.AfterInitWithErrorHandling(context);              
-                }
-                foreach (var behavior in behaviorWrappers)
-                {
-                    var behaviorPrinter = new BehaviorPrinter();
-                    behaviorPrinter.behavior = behavior;
+                behavior.WriteGenerationMessage();
 
-                    Console.WriteLine($"Generating code for {behavior.Calling}");
-
-                    File.WriteAllText(
-                        $"{context._paths.BehaviorAutogenFolder}/{behavior.ClassName}.cs",
-                        behaviorPrinter.TransformText(),
-                        Encoding.UTF8);
-                }
+                (new BehaviorPrinter(behavior))
+                    .WriteToFile($"{context._paths.BehaviorAutogenFolder}/{behavior.ClassName}.cs");
             }
 
-            var componentWrappers = new List<ComponentSymbolWrapper>();
+            foreach (var component in componentWrappers)
             {
-                var components = await context.FindAllDirectComponents();
-                
-                foreach (var b in components)
-                {
-                    var wrapped = new ComponentSymbolWrapper(b);
-                    if (wrapped.InitWithErrorHandling(context))
-                        componentWrappers.Add(wrapped);
-                }
-                foreach (var component in componentWrappers)
-                {
-                    component.AfterInitWithErrorHandling(context);               
-                }
-                foreach (var component in componentWrappers)
-                {
-                    var componentPrinter = new ComponentPrinter();
-                    componentPrinter.component = component;
+                component.WriteGenerationMessage();
 
-                    Console.WriteLine($"Generating code for {component.Calling}");
-
-                    File.WriteAllText(
-                        $"{context._paths.ComponentAutogenFolder}/{component.ClassName}.cs",
-                        componentPrinter.TransformText(),
-                        Encoding.UTF8);
-                }
+                (new ComponentPrinter(component))
+                    .WriteToFile($"{context._paths.ComponentAutogenFolder}/{component.ClassName}.cs");
             }
 
-            var tagWrappers = new List<ComponentSymbolWrapper>();
+            foreach (var tag in tagWrappers)
             {
-                var tags = await context.FindAllTags();
-                
-                foreach (var b in tags)
-                {
-                    var wrapped = new TagSymbolWrapper(b);
-                    if (wrapped.InitWithErrorHandling(context))
-                        tagWrappers.Add(wrapped);
-                }
-                foreach (var component in tagWrappers)
-                {
-                    component.AfterInitWithErrorHandling(context);               
-                }
-                foreach (var component in tagWrappers)
-                {
-                    var componentPrinter = new ComponentPrinter();
-                    componentPrinter.component = component;
+                tag.WriteGenerationMessage();
 
-                    Console.WriteLine($"Generating code for {component.Calling}");
-
-                    File.WriteAllText(
-                        $"{context._paths.TagsAutogenFolder}/{component.ClassName}.cs",
-                        componentPrinter.TransformText(),
-                        Encoding.UTF8);
-                }
+                (new ComponentPrinter(tag)).WriteToFile(
+                    $"{context._paths.TagsAutogenFolder}/{tag.ClassName}.cs");
             }
 
             var methodClasses = context.GetExportedMethodClasses();
@@ -212,10 +174,7 @@ namespace Hopper.Meta
                 printer.Namespace = $"{context.RootNamespaceName}";
                 printer.slots = slots;
 
-                File.WriteAllText(
-                    context._paths.SlotExtensionsPath,
-                    printer.TransformText(),
-                    Encoding.UTF8);
+                printer.WriteToFile(context._paths.SlotExtensionsPath);
             }
 
             var flagEnums = context.GetFlagEnums();
@@ -226,11 +185,7 @@ namespace Hopper.Meta
                 foreach (var flag in flagEnums)
                 {
                     printer.flag = flag;
-
-                    File.WriteAllText(
-                        $"{context._paths.FlagsAutogenFolder}/{flag.ClassName}.cs",
-                        printer.TransformText(),
-                        Encoding.UTF8);
+                    printer.WriteToFile($"{context._paths.FlagsAutogenFolder}/{flag.ClassName}.cs");
                 }
             }
 

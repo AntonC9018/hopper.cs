@@ -5,7 +5,13 @@ namespace Hopper.Meta.Template
 {
     public partial class ComponentPrinter
     {
-        public ComponentSymbolWrapper component;
+        public readonly ComponentSymbolWrapper component;
+
+        public ComponentPrinter(ComponentSymbolWrapper component)
+        {
+            this.component = component;
+        }
+
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => component.exportedMethods;
         public IEnumerable<string> Usings() => component.Usings();
     }

@@ -18,12 +18,12 @@ namespace Hopper.Meta
             this.symbol = symbol;
         }
 
-        public virtual void Init(ProjectContext projectContext)
+        public virtual void Init(GlobalContext projectContext)
         {
             usings = GetUsingSyntax(projectContext._solution);
         }
 
-        public bool InitWithErrorHandling(ProjectContext ctx)
+        public bool InitWithErrorHandling(GlobalContext ctx)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Hopper.Meta
             return true;
         }
 
-        public bool AfterInitWithErrorHandling(ProjectContext ctx)
+        public bool AfterInitWithErrorHandling(GlobalContext ctx)
         {
             try
             {
@@ -65,7 +65,12 @@ namespace Hopper.Meta
             return true;
         }
 
-        public virtual void AfterInit(ProjectContext ctx){}
+        public virtual void AfterInit(GlobalContext ctx){}
+
+        public void WriteGenerationMessage()
+        {
+            Console.WriteLine($"Generating code for {Calling}");
+        }
 
         public IEnumerable<string> Usings()
         {
@@ -109,7 +114,7 @@ namespace Hopper.Meta
             return aliasMethods;
         }
 
-        public IEnumerable<ExportedMethodSymbolWrapper> GetNonNativeExportedMethods(ProjectContext projectContext)
+        public IEnumerable<ExportedMethodSymbolWrapper> GetNonNativeExportedMethods(GlobalContext projectContext)
         {
             foreach (var method in GetMethods())
             {

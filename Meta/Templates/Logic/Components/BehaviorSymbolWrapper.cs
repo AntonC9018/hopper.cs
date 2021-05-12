@@ -23,7 +23,7 @@ namespace Hopper.Meta
         {
         }
 
-        public override void Init(ProjectContext projectContext)
+        public override void Init(GlobalContext projectContext)
         {
             base.Init(projectContext);
 
@@ -146,12 +146,12 @@ namespace Hopper.Meta
 
         // This must be called after all the behaviors have been added to the dictionary
         // Since this could query them for context and chains.
-        public override void AfterInit(ProjectContext projectContext)
+        public override void AfterInit(GlobalContext projectContext)
         {
             exportedMethods = GetAllExportedMethods(projectContext).ToArray();
         }
 
-        private IEnumerable<ExportedMethodSymbolWrapper> GetAllExportedMethods(ProjectContext projectContext)
+        private IEnumerable<ExportedMethodSymbolWrapper> GetAllExportedMethods(GlobalContext projectContext)
         {
             foreach (var method in GetMethods())
             {

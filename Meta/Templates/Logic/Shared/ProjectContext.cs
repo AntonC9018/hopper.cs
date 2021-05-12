@@ -10,7 +10,12 @@ using Hopper.Meta.Stats;
 
 namespace Hopper.Meta
 {
-    public class ProjectContext
+    public class HopperProject
+    {
+
+    }
+
+    public class GlobalContext
     {
         public Solution _solution;
         public Project _project;
@@ -30,7 +35,7 @@ namespace Hopper.Meta
         public ParsingContext statParsingContext;
 
 
-        public ProjectContext(string[] projectPaths)
+        public GlobalContext(string[] projectPaths)
         {
             globalAliases = new HashSet<string>();
             globalComponents = new Dictionary<string, ComponentSymbolWrapper>();

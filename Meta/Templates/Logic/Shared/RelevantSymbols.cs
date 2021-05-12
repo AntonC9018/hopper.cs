@@ -27,7 +27,6 @@ namespace Hopper.Meta
         public static INamedTypeSymbol instanceExportAttribute;
         public static INamedTypeSymbol requiringInitAttribute;
         public static INamedTypeSymbol identifyingStatAttribute;
-
         public static INamedTypeSymbol boolType;
         public static INamedTypeSymbol voidType;
         public static INamedTypeSymbol istandartActivateable;

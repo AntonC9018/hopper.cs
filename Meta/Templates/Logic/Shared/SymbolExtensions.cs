@@ -331,5 +331,13 @@ namespace Hopper.Meta
         {
             return System.String.Join(", ", things.Select(func));
         }
+
+        public static IEnumerable<T> InitAndAfterInit<T>(
+            this IEnumerable<T> guys, GlobalContext context) where T : TypeSymbolWrapperBase
+        {
+            return guys
+                .Where(g => g.InitWithErrorHandling(context))
+                .Where(g => g.AfterInitWithErrorHandling(context));
+        }
     }
 }
