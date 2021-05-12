@@ -2,9 +2,13 @@ using System.Collections.Generic;
 
 namespace Hopper.Utils.Chains
 {
-    public class LinearChain<Context> : List<System.Action<Context>>
+    public class LinearChain<Context> : List<System.Action<Context>>, IChain
     {
-        public LinearChain(int capacity = 1) : base(capacity)
+        public LinearChain() : base()
+        {
+        }
+
+        public LinearChain(IEnumerable<System.Action<Context>> collection) : base(collection)
         {
         }
 
@@ -15,5 +19,8 @@ namespace Hopper.Utils.Chains
                 handler(ev);
             }
         }
+
+        ICopyable ICopyable.Copy() => new LinearChain<Context>(this);
+        public LinearChain<Context> Copy() => new LinearChain<Context>(this);
     }
 }

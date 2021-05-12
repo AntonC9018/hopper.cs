@@ -96,16 +96,16 @@ namespace Hopper.Core.ActingNS
             return ev.Compile();
         }
 
-        public static Dictionary<InputMapping, ChainPath<Chain<Context>>> Paths;
+        public static Dictionary<InputMapping, IPath<Chain<Context>>> Paths;
         static Controllable()
         {
-            Paths = new Dictionary<InputMapping, ChainPath<Chain<Context>>>();
+            Paths = new Dictionary<InputMapping, IPath<Chain<Context>>>();
             // set up all chain paths for the input mappings
             // set up all templates
             foreach (InputMapping name in InputMapping.Members)
             {
-                Paths[name] = new ChainPath<Chain<Context>>(
-                    (Entity entity) => entity.TryGetComponent(Index, out var component) ? component._chains[name] : null);
+                // Paths[name] = new IPath<Chain<Context>>(
+                //     (Entity entity) => entity.TryGetComponent(Index, out var component) ? component._chains[name] : null);
             }
         }
     }

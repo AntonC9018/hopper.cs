@@ -8,9 +8,9 @@ namespace Hopper.Core
     public sealed class HandlerWrapper<Context> : IHookable
     {
         public Handler<Context> handler;
-        public ChainPath<Chain<Context>> chainPath;
+        public IPath<Chain<Context>> chainPath; // TODO: should this be a T?
 
-        public HandlerWrapper(Handler<Context> handler, ChainPath<Chain<Context>> chainPath)
+        public HandlerWrapper(Handler<Context> handler, IPath<Chain<Context>> chainPath)
         {
             this.handler = handler;
             this.chainPath = chainPath;
@@ -18,17 +18,17 @@ namespace Hopper.Core
 
         public void HookTo(Entity entity)
         {
-            chainPath.Chain(entity).Add(handler);
+            chainPath.Follow(entity).Add(handler);
         }
 
         public bool IsHookedTo(Entity entity)
         {
-            return chainPath.TryGetChain(entity, out var chain) && chain.Contains(handler);
+            return chainPath.TryFollow(entity, out var chain) && chain.Contains(handler);
         }
 
         public void TryHookTo(Entity entity)
         {
-            if (chainPath.TryGetChain(entity, out var chain) && !chain.Contains(handler))
+            if (chainPath.TryFollow(entity, out var chain) && !chain.Contains(handler))
             {
                 chain.Add(handler);
             }
@@ -36,12 +36,12 @@ namespace Hopper.Core
 
         public void UnhookFrom(Entity entity)
         {
-            chainPath.Chain(entity).Remove(handler);
+            chainPath.Follow(entity).Remove(handler);
         }
         
         public void TryUnhookFrom(Entity entity)
         {
-            if (chainPath.TryGetChain(entity, out var chain))
+            if (chainPath.TryFollow(entity, out var chain))
             {
                 chain.Remove(handler);
             }
@@ -59,7 +59,7 @@ namespace Hopper.Core
 
     public static class Handlers
     {
-        public static HandlerGroup<Context> CreateGroup<Context>(ChainPath<Chain<Context>> chainPath, params Handler<Context>[] handlers)
+        public static HandlerGroup<Context> CreateGroup<Context>(IPath<Chain<Context>> chainPath, params Handler<Context>[] handlers)
         {
             return new HandlerGroup<Context>(chainPath, handlers);
         }
@@ -68,9 +68,9 @@ namespace Hopper.Core
     public sealed class HandlerGroup<Context> : IHookable
     {
         public Handler<Context>[] handlers;
-        public ChainPath<Chain<Context>> chainPath;
+        public IPath<Chain<Context>> chainPath;
 
-        public HandlerGroup(ChainPath<Chain<Context>> chainPath, params Handler<Context>[] handlers)
+        public HandlerGroup(IPath<Chain<Context>> chainPath, params Handler<Context>[] handlers)
         {
             this.chainPath = chainPath;
             this.handlers = handlers;
@@ -78,7 +78,7 @@ namespace Hopper.Core
 
         public void HookTo(Entity entity)
         {
-            var chain = chainPath.Chain(entity);
+            var chain = chainPath.Follow(entity);
             
             foreach (var handler in handlers)
             {
@@ -88,13 +88,13 @@ namespace Hopper.Core
 
         public bool IsHookedTo(Entity entity)
         {
-            return chainPath.TryGetChain(entity, out var chain) 
+            return chainPath.TryFollow(entity, out var chain) 
                 && chain.Contains(handlers[0]);
         }
 
         public void UnhookFrom(Entity entity)
         {
-            var chain = chainPath.Chain(entity);
+            var chain = chainPath.Follow(entity);
 
             foreach (var handler in handlers)
             {
@@ -104,7 +104,7 @@ namespace Hopper.Core
 
         public void TryHookTo(Entity entity)
         {
-            if (!chainPath.TryGetChain(entity, out var chain) 
+            if (!chainPath.TryFollow(entity, out var chain) 
                 || chain.Contains(handlers[0]))
             {
                 return;
@@ -117,7 +117,7 @@ namespace Hopper.Core
 
         public void TryUnhookFrom(Entity entity)
         {
-            if (chainPath.TryGetChain(entity, out var chain))
+            if (chainPath.TryFollow(entity, out var chain))
             {
                 foreach (var handler in handlers)
                 {

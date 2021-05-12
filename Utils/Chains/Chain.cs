@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace Hopper.Utils.Chains
 {
-    public sealed class Chain<Context> : SortedSet<Handler<Context>>, ICopyable
+    public sealed class Chain<Context> : SortedSet<Handler<Context>>, IChain
     {
         public Chain() : base()
         {

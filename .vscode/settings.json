@@ -1,6 +1,7 @@
-﻿{
+{
     "files.exclude": {
         "**/*.meta": true,
         "*.meta": true
-    }
+    },
+    "python.pythonPath": "D:\\Anaconda\\python.exe"
 }

@@ -1,6 +1,22 @@
+using Hopper.Utils.Chains;
+
 namespace Hopper.Core.Components
 {
-    public readonly struct ChainPath<T>
+    public static class PathExtensions
+    {
+        public static bool TryFollow<T>(this IPath<T> path, Entity entity, out T thing)
+        {
+            thing = path.Follow(entity);
+            return thing != null;
+        }
+    }
+
+    public interface IPath<out T>
+    {
+        T Follow(Entity entity);
+    }
+
+    public readonly struct BehaviorChainPath<T> : IPath<T> where T : IChain
     {
         /// <summary>
         /// Returns the chain if the entity has the behavior with which the chain is associated
@@ -8,17 +24,13 @@ namespace Hopper.Core.Components
         /// </summary>
         public readonly System.Func<Entity, T> Chain;
 
-        public ChainPath(System.Func<Entity, T> GetChainFunction)
+        public BehaviorChainPath(System.Func<Entity, T> GetChainFunction)
         {
             Chain = GetChainFunction;
         }
 
-        public bool TryGetChain(Entity entity, out T chain)
-        {
-            chain = Chain(entity);
-            return chain != null;
-        }
-
         public T FactoryChain(EntityFactory factory) => Chain(factory.subject);
+
+        T IPath<T>.Follow(Entity entity) => Chain(entity);
     }
 }
