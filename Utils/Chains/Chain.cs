@@ -20,7 +20,7 @@ namespace Hopper.Utils.Chains
                 Add(handler);
         }
 
-        public void PassNoCondition(Context ev)
+        public void Pass(Context ev)
         {
             foreach (var handler in this.ToArray())
             {

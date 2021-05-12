@@ -126,7 +126,7 @@ namespace Hopper.Meta
             // If the method returns bool, it is treated toward propagation.
             if (SymbolEqualityComparer.Default.Equals(symbol.ReturnType, RelevantSymbols.boolType))
             {
-                sb_call.Append("ctx.propagate = ");
+                sb_call.Append("ctx.Propagate = ");
             }
 
             sb_call.Append(GetNamePrefixAtCall());

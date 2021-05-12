@@ -49,7 +49,7 @@ namespace Hopper.Tests
 
             // The handler remains after a pass
             // It also gets executed            
-            chain.PassNoCondition(ctx);
+            chain.Pass(ctx);
             Assert.That(chain.Contains(handler));
             Assert.AreEqual(1, ctx.counter);
 
@@ -57,7 +57,7 @@ namespace Hopper.Tests
             // Since it is executed after that, setting the value to 5 
             var handler2 = new Handler<Context>(2, _ctx => _ctx.counter = 5);
             chain.Add(handler2);
-            chain.PassNoCondition(ctx);
+            chain.Pass(ctx);
             Assert.That(chain.Contains(handler2));
             Assert.AreEqual(5, ctx.counter);
 
@@ -65,7 +65,7 @@ namespace Hopper.Tests
             // The previous handler is the only one executing, incrementing the value
             chain.Remove(handler2);
             Assert.False(chain.Contains(handler2));
-            chain.PassNoCondition(ctx);
+            chain.Pass(ctx);
             Assert.AreEqual(6, ctx.counter);
 
             // If you were to stop propagation, the value will not be incremented

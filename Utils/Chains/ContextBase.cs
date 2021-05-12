@@ -7,6 +7,6 @@ namespace Hopper.Utils.Chains
     
     public class ContextBase : IPropagating
     {
-        public bool Propagate { get; set; }= true;
+        public bool Propagate { get; set; } = true;
     }
 }

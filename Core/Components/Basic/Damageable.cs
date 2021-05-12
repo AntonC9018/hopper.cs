@@ -9,7 +9,10 @@ namespace Hopper.Core.Components.Basic
     [NoActivation]
     public partial class Damageable : IBehavior
     {
-        public class Context : ActorContext {}
+        public class Context 
+        {
+            public Entity actor;
+        }
 
         [Inject] public Health health;
 
@@ -26,7 +29,7 @@ namespace Hopper.Core.Components.Basic
 
         public void DieLogic(Entity actor)
         {
-            TraverseDeath(new Context { actor = actor });
+            _DeathChain.Pass(new Context { actor = actor });
             actor.GetTransform().TryRemoveFromGridWithoutEvent();
         }
 

@@ -24,6 +24,7 @@
     - [Bouncing](#bouncing)
     - [Managing modifiers](#managing-modifiers)
     - [Changing the context](#changing-the-context)
+    - [Bug with stats](#bug-with-stats)
 
 <!-- /TOC -->
 
@@ -874,6 +875,15 @@ The id's will be available as `Indices<Chain>` as static fields and initialized 
 
 ### Changing the context
 
-I hate the fact that the context is based on a base class. What I would like to do is have a `ShouldPropagate()` method or a `Propagate` property that would contain the logic for whether the propagation should be stopped. This will be optional for a chain, though. Propagation of event with propagation checking enabled will be defined as an extension method over the Chain. This will also be available to other types of chains, like the Linear chain. 
+I hate the fact that the context is based on a base class. What I would like to do is have a `ShouldPropagate()` method or a `Propagate` property that would contain the logic for whether the propagation should be stopped. This will be optional for a chain, though. Propagation of event with propagation checking enabled will be defined as an extension method over the Chain. This will also be available for other types of chains, like the Linear chain. 
 
 So the plan is to remove `ContextBase` altogether, which shouldn't be that hard.
+
+
+### Bug with stats
+
+Just noticed a potential bug with stats.
+
+Since mods may add new effects which may apply even to entities from other mods which don't know anything about them, they should use default stats associated with that mod.
+
+However, since the stats are initialized 

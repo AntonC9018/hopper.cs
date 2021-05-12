@@ -20,7 +20,7 @@ namespace Hopper.Core.Components.Basic
         public bool Activate()
         {
             var ctx = new Context { actor = actor };
-            TraverseDo(ctx);
+            _DoChain.Pass(ctx);
             return true;
         }
 

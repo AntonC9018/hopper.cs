@@ -74,13 +74,13 @@ namespace Hopper.Core.ActingNS
 
             _flags |= ActingState.DoingAction;
 
-            if (TraverseCheck(ctx))
+            if (_CheckChain.PassWithPropagationChecking(ctx))
             {
                 // Let's move it here for now
                 if (!ctx.action.HasAction())
                 {
                     _flags = ActingState.DidAction | ActingState.ActionSucceeded;
-                    TraverseSuccess(ctx);
+                    _SuccessChain.Pass(ctx);
                     return true;
                 }
 
@@ -94,9 +94,9 @@ namespace Hopper.Core.ActingNS
             else             _flags &= ~ActingState.ActionSucceeded;
 
             if (ctx.success)
-                TraverseSuccess(ctx);
+                _SuccessChain.Pass(ctx);
             else
-                TraverseFail(ctx);
+                _FailChain.Pass(ctx);
 
             _flags |=  ActingState.DidAction;
             _flags &= ~ActingState.DoingAction;

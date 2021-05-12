@@ -75,17 +75,17 @@ namespace Hopper.Core.Components.Basic
 
             ctx.SetNewPosition();
 
-            if (!TraverseCheck(ctx))
+            if (!_CheckChain.PassWithPropagationChecking(ctx))
             {
                 return false;
             }
 
-            if (TraverseBeforeRemove(ctx))
+            if (_BeforeRemoveChain.PassWithPropagationChecking(ctx))
             {
                 ctx.RemoveFromGrid();
-                TraverseBeforeReset(ctx);
+                _BeforeResetChain.Pass(ctx);
                 ctx.ResetInGrid();
-                TraverseAfter(ctx);
+                _AfterChain.Pass(ctx);
             }
 
             return true;
