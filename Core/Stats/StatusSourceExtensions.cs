@@ -8,7 +8,7 @@ namespace Hopper.Core
         {
             if (entityTheStatIsBeingAppliedTo.TryGetStats(out var stats))
             {
-                stats.GetLazy(source.Index, out var resistance);
+                var resistance = stats.GetLazy(source.Index);
                 if (resistance.amount >= powerOfStatOfApplier)
                 {
                     return true;

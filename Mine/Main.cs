@@ -53,6 +53,12 @@ namespace Hopper.Mine
             Stats.AddTo(entityFactory, Registry.Global._defaultStats);
             Stats.AddInitTo(entityFactory);
 
+            var stats = entityFactory.subject.GetStats();
+
+            stats.GetLazy(Attack.Index, out var attack);
+
+            var factory = Player.Factory;
+            Equip.OnDisplaceHandlerWrapper.HookTo(factory);
         }
     }
 }

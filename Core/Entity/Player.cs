@@ -67,7 +67,6 @@ namespace Hopper.Core
         public static void Retouch(EntityFactory factory)
         {
             Skip.SkipEmptyAttackHandlerWrapper.HookTo(factory);
-            Skip.SkipEmptyAttackHandlerWrapper.HookTo(factory);
             Equip.OnDisplaceHandlerWrapper.HookTo(factory);
             Reorient.OnActionSuccessHandlerWrapper.HookTo(factory);
             Stats.AddInitTo(factory);

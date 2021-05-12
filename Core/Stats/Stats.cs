@@ -88,10 +88,19 @@ namespace Hopper.Core.Stat
             store = new Dictionary<Identifier, IHolder>();
         }
 
+        public T GetLazy<T>(Index<T> index) where T : struct, IStat
+        {
+            GetLazy(index, out var stat);
+            return stat;
+        }
+
         public void GetLazy<T>(Index<T> index, out T stat) where T : struct, IStat 
         {
             if (!store.ContainsKey(index.Id))
             {   
+                // TODO: fall back to the registry?
+                Assert.That(template.ContainsKey(index.Id), "The template must have all stats set.");
+
                 stat = (T) template[index.Id];
                 Set(index, in stat);
             }
@@ -111,6 +120,12 @@ namespace Hopper.Core.Stat
         {
             Assert.That(store.ContainsKey(index.Id), $"{index} stat not found in the dictionary");
             stat = ((Holder<T>)store[index.Id]).item;
+        }
+
+        public T Get<T>(Index<T> index) where T : struct, IStat
+        {
+            Assert.That(store.ContainsKey(index.Id), $"{index} stat not found in the dictionary");
+            return ((Holder<T>)store[index.Id]).item;
         }
 
         public ref T Set<T>(Index<T> index, in T stat) where T : struct, IStat
