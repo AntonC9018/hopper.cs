@@ -8,5 +8,11 @@ namespace Hopper.Meta.Template
     {
         public string Namespace;
         public IEnumerable<SlotSymbolWrapper> slots;
+
+        public SlotExtensionsPrinter(string Namespace, IEnumerable<SlotSymbolWrapper> slots)
+        {
+            this.Namespace = Namespace;
+            this.slots = slots;
+        }
     }
 }

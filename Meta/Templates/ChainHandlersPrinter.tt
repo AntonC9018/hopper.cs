@@ -6,7 +6,7 @@ using Hopper.Utils.Chains;
 
 namespace <#= methodClass.Namespace #>
 {
-    public <#= methodClass.Staticity#>partial class <#= methodClass.ClassName #>
+    public <#= methodClass.StaticityString#>partial class <#= methodClass.ClassName #>
     {
 <#@ include file="Templates/Snippets/HandlerFromExportedMethods.txt" #>
 

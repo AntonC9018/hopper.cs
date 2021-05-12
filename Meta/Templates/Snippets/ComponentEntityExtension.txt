@@ -15,7 +15,7 @@
         /// This is a shortcut method.
         /// Check if the entity has the <#= component.Calling #>.
         /// </summary>
-        public static bool <#= component.HasAlias #><#= component.ClassName #>(this Entity entity)
+        public static bool <#= component.AliasOfHas #><#= component.ClassName #>(this Entity entity)
         {
             Assert.False(entity is null, $"Trying to check existance of {<#= component.ClassName #>.Index} with a null entity");
             return entity.HasComponent(<#= component.ClassName #>.Index);

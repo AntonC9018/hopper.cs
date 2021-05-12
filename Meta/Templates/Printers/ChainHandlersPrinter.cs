@@ -7,6 +7,12 @@ namespace Hopper.Meta.Template
     public partial class ChainHandlersPrinter
     {
         public ExportedMethodsClassSymbolWrapper methodClass;
+
+        public ChainHandlersPrinter(ExportedMethodsClassSymbolWrapper methodClass)
+        {
+            this.methodClass = methodClass;
+        }
+
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => 
             methodClass.exportedMethods.Where(m => m.symbol.IsStatic);
 

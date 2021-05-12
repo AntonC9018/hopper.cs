@@ -4,29 +4,29 @@ using Microsoft.CodeAnalysis;
 namespace Hopper.Meta
 {
     // Singleton
-    public static class RelevantSymbols
+    public static partial class RelevantSymbols
     {
         private static bool IsInited;
 
         public static INamedTypeSymbol entity;
         public static INamedTypeSymbol icopyable;
-        public static INamedTypeSymbol icomponent;
-        public static INamedTypeSymbol ibehavior;
-        public static INamedTypeSymbol itag;
-        public static INamedTypeSymbol aliasAttribute;
-        public static INamedTypeSymbol activationAliasAttribute;
-        public static INamedTypeSymbol autoActivationAttribute;
-        public static INamedTypeSymbol noActivationAttribute;
-        public static INamedTypeSymbol chainsAttribute;
-        public static INamedTypeSymbol injectAttribute;
-        public static INamedTypeSymbol flagsAttribute;
-        public static INamedTypeSymbol exportAttribute;
-        public static INamedTypeSymbol omitAttribute;
-        public static INamedTypeSymbol entityTypeAttribute;
-        public static INamedTypeSymbol slotAttribute;
-        public static INamedTypeSymbol instanceExportAttribute;
-        public static INamedTypeSymbol requiringInitAttribute;
-        public static INamedTypeSymbol identifyingStatAttribute;
+        public static INamedTypeSymbol IComponent;
+        public static INamedTypeSymbol IBehavior;
+        public static INamedTypeSymbol ITag;
+        public static AttributeSymbolWrapper<AliasAttribute> aliasAttribute;
+        public static AttributeSymbolWrapper<ActivationAliasAttribute> ActivationAliasAttribute;
+        public static AttributeSymbolWrapper<AutoActivationAttribute> AutoActivationAttribute;
+        public static AttributeSymbolWrapper<NoActivationAttribute> NoActivationAttribute;
+        public static AttributeSymbolWrapper<ChainsAttribute> ChainsAttribute;
+        public static AttributeSymbolWrapper<InjectAttribute> InjectAttribute;
+        public static AttributeSymbolWrapper<FlagsAttribute> FlagsAttribute;
+        public static AttributeSymbolWrapper<ExportAttribute> ExportAttribute;
+        public static AttributeSymbolWrapper<OmitAttribute> omitAttribute;
+        public static AttributeSymbolWrapper<EntityTypeAttribute> EntityTypeAttribute;
+        public static AttributeSymbolWrapper<SlotAttribute> SlotAttribute;
+        public static AttributeSymbolWrapper<InstanceExportAttribute> InstanceExportAttribute;
+        public static AttributeSymbolWrapper<RequiringInitAttribute> RequiringInitAttribute;
+        public static AttributeSymbolWrapper<IdentifyingStatAttribute> IdentifyingStatAttribute;
         public static INamedTypeSymbol boolType;
         public static INamedTypeSymbol voidType;
         public static INamedTypeSymbol istandartActivateable;
@@ -48,11 +48,16 @@ namespace Hopper.Meta
             return (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Components.{name}");
         }
 
-        private static INamedTypeSymbol GetKnownSymbol(Compilation compilation, System.Type t)
+        public static INamedTypeSymbol GetKnownSymbol(Compilation compilation, System.Type t)
         {
             return (INamedTypeSymbol)compilation.GetTypeByMetadataName(t.FullName);
         }
 
+        /// <summary>
+        /// Store all of the symbols used in wrapper logic.
+        /// These include all of the shared attributes as well as some types from Core. 
+        /// This means this function must be called only after the Core project has been loaded.
+        /// </summary>
         private static void Init(Compilation compilation)
         {
             entity = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Entity");
@@ -60,24 +65,24 @@ namespace Hopper.Meta
             istandartActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IStandartActivateable");
             ipredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IPredictable");
             iundirectedActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IUndirectedActivateable");
-            iundirectedPredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IUndirectedPredictable");
-            icomponent      = GetComponentSymbol(compilation, "IComponent");
-            ibehavior       = GetComponentSymbol(compilation, "IBehavior");
-            itag            = GetComponentSymbol(compilation, "ITag");
-            aliasAttribute  = GetKnownSymbol(compilation, typeof(AliasAttribute));
-            chainsAttribute = GetKnownSymbol(compilation, typeof(ChainsAttribute));
-            injectAttribute = GetKnownSymbol(compilation, typeof(InjectAttribute));
-            flagsAttribute  = GetKnownSymbol(compilation, typeof(FlagsAttribute));
-            exportAttribute = GetKnownSymbol(compilation, typeof(ExportAttribute));
-            omitAttribute   = GetKnownSymbol(compilation, typeof(OmitAttribute));
-            activationAliasAttribute = GetKnownSymbol(compilation, typeof(ActivationAliasAttribute));
-            autoActivationAttribute  = GetKnownSymbol(compilation, typeof(AutoActivationAttribute));
-            noActivationAttribute    = GetKnownSymbol(compilation, typeof(NoActivationAttribute));
-            entityTypeAttribute      = GetKnownSymbol(compilation, typeof(EntityTypeAttribute));
-            instanceExportAttribute  = GetKnownSymbol(compilation, typeof(InstanceExportAttribute));
-            requiringInitAttribute   = GetKnownSymbol(compilation, typeof(RequiringInitAttribute));
-            identifyingStatAttribute = GetKnownSymbol(compilation, typeof(IdentifyingStatAttribute));
-            slotAttribute = GetKnownSymbol(compilation, typeof(SlotAttribute));
+            iundirectedPredictable  = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IUndirectedPredictable");
+            IComponent               = GetComponentSymbol(compilation, "IComponent");
+            IBehavior                = GetComponentSymbol(compilation, "IBehavior");
+            ITag                     = GetComponentSymbol(compilation, "ITag");
+            aliasAttribute          .Init(compilation);
+            ActivationAliasAttribute.Init(compilation);
+            AutoActivationAttribute .Init(compilation);
+            NoActivationAttribute   .Init(compilation);
+            ChainsAttribute         .Init(compilation);
+            InjectAttribute         .Init(compilation);
+            FlagsAttribute          .Init(compilation);
+            ExportAttribute         .Init(compilation);
+            omitAttribute           .Init(compilation);
+            EntityTypeAttribute     .Init(compilation);
+            SlotAttribute           .Init(compilation);
+            InstanceExportAttribute .Init(compilation);
+            RequiringInitAttribute  .Init(compilation);
+            IdentifyingStatAttribute.Init(compilation);
             boolType = compilation.GetSpecialType(SpecialType.System_Boolean);
             voidType = compilation.GetSpecialType(SpecialType.System_Void);
         }

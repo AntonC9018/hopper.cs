@@ -20,8 +20,7 @@ namespace Hopper.Meta
         public Solution _solution;
         public Project _project;
         public AutogenPaths _paths;
-        public HashSet<Project> projectSet;
-        public Compilation compilation;
+        public Compilation _compilation;
 
         // TODO: This will be annoying to use if two mods defined two components with the same name
         // Even if one mod does not reference the other, duplicate names will cause collision.
@@ -30,7 +29,7 @@ namespace Hopper.Meta
         public Dictionary<string, ComponentSymbolWrapper> globalComponents;
         // Same problem here.
         public HashSet<string> globalAliases;
-        public INamespaceSymbol rootNamespace;
+        public INamespaceSymbol _rootNamespace;
         public string RootNamespaceName => _project.AssemblyName;
         public ParsingContext statParsingContext;
 
@@ -47,18 +46,16 @@ namespace Hopper.Meta
                 _paths.Reset(Path.GetDirectoryName(p));
                 _paths.CreateOrEmpty();
             }
-            
         }
-        
+
         public async Task Reset(Project project)
         {
             _project = project;
             _solution = _project.Solution;
-            projectSet = new HashSet<Project>{project};
-            compilation = await project.GetCompilationAsync();
-            RelevantSymbols.TryInitializeSingleton(compilation);
+            _compilation = await project.GetCompilationAsync();
+            RelevantSymbols.TryInitializeSingleton(_compilation);
             _paths.Reset(Path.GetDirectoryName(project.FilePath));
-            this.rootNamespace = GetRootNamespace();
+            this._rootNamespace = GetRootNamespace();
 
             // Hopper.
             statParsingContext.ResetToRootScope();
@@ -75,7 +72,7 @@ namespace Hopper.Meta
         {
             var paths = _project.AssemblyName.Split('.');
 
-            INamespaceSymbol result = compilation.GlobalNamespace;
+            INamespaceSymbol result = _compilation.GlobalNamespace;
             foreach (var path in paths)
             {
                 result = result.GetNamespaceMembers().Where(ns => ns.Name == path).Single();
@@ -87,26 +84,26 @@ namespace Hopper.Meta
         public async Task<IEnumerable<INamedTypeSymbol>> FindAllDirectComponents()
         {
             return (await SymbolFinder.FindImplementationsAsync(
-                RelevantSymbols.icomponent, _solution, transitive: false, projectSet.ToImmutableHashSet()
-            )).Where(s => s.IsContainedInNamespace(rootNamespace));
+                RelevantSymbols.IComponent, _solution, transitive: false, null
+            )).Where(s => s.IsContainedInNamespace(_rootNamespace));
         }
 
         public async Task<IEnumerable<INamedTypeSymbol>> FindAllTags()
         {
             return (await SymbolFinder.FindImplementationsAsync(
-                RelevantSymbols.itag, _solution, transitive: false, projectSet.ToImmutableHashSet()
-            )).Where(s => s.IsContainedInNamespace(rootNamespace));
+                RelevantSymbols.ITag, _solution, transitive: false, null
+            )).Where(s => s.IsContainedInNamespace(_rootNamespace));
         }
 
         public async Task<IEnumerable<INamedTypeSymbol>> FindAllBehaviors()
         {
             return (await SymbolFinder.FindImplementationsAsync(
-                RelevantSymbols.ibehavior, _solution, transitive: false, projectSet.ToImmutableHashSet()
-            )).Where(s => s.IsContainedInNamespace(rootNamespace));
+                RelevantSymbols.IBehavior, _solution, transitive: false, null
+            )).Where(s => s.IsContainedInNamespace(_rootNamespace));
         }
 
         public IEnumerable<INamedTypeSymbol> GetNotNestedTypes() =>
-            GetNotNestedTypes(rootNamespace);
+            GetNotNestedTypes(_rootNamespace);
 
         public IEnumerable<INamedTypeSymbol> GetNotNestedTypes(INamespaceSymbol @namespace)
         {
@@ -124,11 +121,10 @@ namespace Hopper.Meta
 
             foreach (var typeSymbol in typeSymbols)
             {
-                if (typeSymbol.IsStatic || typeSymbol.HasAttribute(RelevantSymbols.instanceExportAttribute))
+                if (typeSymbol.IsStatic || typeSymbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol))
                 {
                     var classWrapper = new ExportedMethodsClassSymbolWrapper(typeSymbol);
-                    classWrapper.Init(this);
-                    if (classWrapper.ShouldGenerate())
+                    if (classWrapper.TryInit(this))
                     {
                         yield return classWrapper;
                     }
@@ -143,8 +139,8 @@ namespace Hopper.Meta
             foreach (var typeSymbol in typeSymbols)
             {
                 if (typeSymbol.IsStatic 
-                    && typeSymbol.TryGetAttribute(RelevantSymbols.entityTypeAttribute, out var a)
-                    && a.MapToType<EntityTypeAttribute>().Abstract == false)
+                    && typeSymbol.TryGetAttribute(RelevantSymbols.EntityTypeAttribute, out var a)
+                    && a.Abstract == false)
                 {
                     var wrapper = new EntityTypeWrapper(typeSymbol);
                     wrapper.InitWithErrorHandling(this);
@@ -153,7 +149,7 @@ namespace Hopper.Meta
             }
         }
 
-        public IEnumerable<IFieldSymbol> GetAllFields() => GetAllFields(rootNamespace);
+        public IEnumerable<IFieldSymbol> GetAllFields() => GetAllFields(_rootNamespace);
 
         public IEnumerable<IFieldSymbol> GetAllFields(INamespaceOrTypeSymbol symbol)
         {
@@ -188,32 +184,29 @@ namespace Hopper.Meta
         {
             foreach (var field in GetAllFields())
             {
-                if (field.IsStatic && field.TryGetAttribute(RelevantSymbols.slotAttribute, out var attribute))
+                if (field.IsStatic && field.TryGetAttribute(RelevantSymbols.SlotAttribute, out var attribute))
                 {
-                    yield return new SlotSymbolWrapper(field, attribute.MapToType<SlotAttribute>());
+                    yield return new SlotSymbolWrapper(field, attribute);
                 }
             }
         }
 
-
-
         public IEnumerable<FieldSymbolWrapper> GetMethodClassInstances() =>
-            GetStaticFieldsWithAttibute(RelevantSymbols.instanceExportAttribute);
+            GetStaticFieldsWithAttibute(RelevantSymbols.InstanceExportAttribute.symbol);
 
         public IEnumerable<FieldSymbolWrapper> GetFieldsRequiringInit() =>
-            GetStaticFieldsWithAttibute(RelevantSymbols.requiringInitAttribute);
+            GetStaticFieldsWithAttibute(RelevantSymbols.RequiringInitAttribute.symbol);
 
         public IEnumerable<FieldSymbolWrapper> GetStaticIdentifyingStatFields() =>
-            GetStaticFieldsWithAttibute(RelevantSymbols.identifyingStatAttribute);
+            GetStaticFieldsWithAttibute(RelevantSymbols.IdentifyingStatAttribute.symbol);
 
-        public IEnumerable<FlagEnumSymbolWrapper> GetFlagEnums()
+        public IEnumerable<INamedTypeSymbol> GetFlagEnums()
         {
             foreach (var type in GetNotNestedTypes())
             {
-                if (type.HasAttribute(RelevantSymbols.flagsAttribute))
+                if (type.HasAttribute(RelevantSymbols.FlagsAttribute.symbol))
                 {
-                    var wrapper = new FlagEnumSymbolWrapper(type);
-                    if (wrapper.InitWithErrorHandling(this)) yield return wrapper;
+                    yield return type;
                 }
             }
         }

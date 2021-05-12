@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Hopper.Meta
@@ -23,14 +25,14 @@ namespace Hopper.Meta
         public void CreateOrEmpty()
         {
             if (!Directory.Exists(AutogenFolder))
+            {
                 Directory.CreateDirectory(AutogenFolder);
+            }
 
-            CreateOrEmptyDirectory(BehaviorAutogenFolder);
-            CreateOrEmptyDirectory(ComponentAutogenFolder);
-            CreateOrEmptyDirectory(HandlersAutogenFolder);
-            CreateOrEmptyDirectory(TagsAutogenFolder);
-            CreateOrEmptyDirectory(StatAutogenFolder);
-            CreateOrEmptyDirectory(FlagsAutogenFolder);
+            foreach (var subfolder in GetOutputSubFolders())
+            {
+                CreateOrEmptyDirectory(subfolder);
+            }
 
             if (!File.Exists(GitignorePath))
             {
@@ -40,15 +42,35 @@ namespace Hopper.Meta
 
         public string StatJsonsFolder => $@"{projectRoot}/Stats/Json";
         public string AutogenFolder => $@"{projectRoot}/Autogen";
+
         public string BehaviorAutogenFolder => $@"{AutogenFolder}/Behaviors";
         public string ComponentAutogenFolder => $@"{AutogenFolder}/Components";
         public string TagsAutogenFolder => $@"{AutogenFolder}/Tags";
         public string HandlersAutogenFolder => $@"{AutogenFolder}/Handlers";
-        public string MainAutogenFile => $@"{AutogenFolder}/Main.cs";
         public string StatAutogenFolder => $@"{AutogenFolder}/Stats";
+        public string FlagsAutogenFolder => $@"{AutogenFolder}/Flags";
+        
+        // I know this is sort duplicate code
+        public IEnumerable<string> GetOutputSubFolders()
+        {
+            yield return BehaviorAutogenFolder;
+            yield return ComponentAutogenFolder;
+            yield return TagsAutogenFolder;
+            yield return HandlersAutogenFolder;
+            yield return StatAutogenFolder;
+            yield return FlagsAutogenFolder;
+        }
+        
+
+        public string MainAutogenFile => $@"{AutogenFolder}/Main.cs";
         public string GitignorePath => $@"{AutogenFolder}/.gitignore";
         public string SlotExtensionsPath => $@"{AutogenFolder}/SlotExtensions.cs";
-        public string FlagsAutogenFolder => $@"{AutogenFolder}/Flags";
-    }
 
+        public IEnumerable<string> GetFiles()
+        {
+            yield return MainAutogenFile;
+            yield return GitignorePath;
+            yield return SlotExtensionsPath;
+        }
+    }
 }

@@ -11,19 +11,18 @@ namespace Hopper.Meta
         {
         }
 
-        new public void Init(GlobalContext ctx)
+        public bool TryInit(GlobalContext ctx)
         {
             exportedMethods = GetNonNativeExportedMethods(ctx).ToArray();
             
             // If there are no exported methods, this class is unusable anyway
             // and should be either given another symbol, or thrown away.
-            if (exportedMethods.Length > 0)
-                base.Init(ctx);
-        }
+            bool shouldGenerate = exportedMethods.Length > 0;
 
-        public bool ShouldGenerate() 
-        {
-            return exportedMethods.Length > 0;
+            if (shouldGenerate)
+                base.Init(ctx);
+
+            return shouldGenerate;
         }
 
         public override string TypeText => "Static Class";

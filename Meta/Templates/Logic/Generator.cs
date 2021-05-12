@@ -74,7 +74,8 @@ namespace Hopper.Meta
         {
             foreach (var file in Directory.EnumerateFiles(directory))
             {
-                yield return file;
+                if (Path.GetExtension(file).ToLower() == ".json")
+                    yield return file;
             }
         }
 
@@ -102,8 +103,6 @@ namespace Hopper.Meta
                 .Select(t => new TagSymbolWrapper(t))
                 .InitAndAfterInit(context);
         
-
-
             foreach (var behavior in behaviorWrappers)
             {
                 behavior.WriteGenerationMessage();
@@ -132,15 +131,10 @@ namespace Hopper.Meta
             {
                 foreach (var methodClass in methodClasses)
                 {
-                    var handlersPrinter = new ChainHandlersPrinter();
-                    handlersPrinter.methodClass = methodClass;
+                    methodClass.WriteGenerationMessage();
 
-                    Console.WriteLine($"Generating code for {methodClass.Calling}");
-
-                    File.WriteAllText(
-                        $"{context._paths.HandlersAutogenFolder}/{methodClass.ClassName}.cs",
-                        handlersPrinter.TransformText(),
-                        Encoding.UTF8);
+                    (new ChainHandlersPrinter(methodClass))
+                        .WriteToFile($"{context._paths.HandlersAutogenFolder}/{methodClass.ClassName}.cs");
                 }
             }
 
@@ -148,45 +142,32 @@ namespace Hopper.Meta
             var topLevelStatTypes = GetJsonFileNames(context._paths.StatJsonsFolder).Select(
                 fname => StatType.ParseJson(context.statParsingContext, fname));
             {
-                var startPrinter = new StatStartPrinter();
-                var subPrinter = new StatPrinter();
-                startPrinter.statCodePrinter = subPrinter;
-                startPrinter.Namespace = $"{context.RootNamespaceName}.Stat";
+                var startPrinter = new StatStartPrinter(context.RootNamespaceName);
 
                 foreach (var stat in topLevelStatTypes)
                 {
                     Console.WriteLine($"Generating code for stat {stat.Name}");
 
-                    subPrinter.stat = stat;
-
-                    File.WriteAllText(
-                        $@"{context._paths.StatAutogenFolder}/{stat.Name}.cs",
-                        startPrinter.TransformText(),
-                        Encoding.UTF8);
+                    startPrinter.ResetStat(stat);
+                    startPrinter.WriteToFile($@"{context._paths.StatAutogenFolder}/{stat.Name}.cs");
                 }
             }
 
             var slots = context.GetSlots();
 
             {
-                
-                var printer = new SlotExtensionsPrinter();
-                printer.Namespace = $"{context.RootNamespaceName}";
-                printer.slots = slots;
-
-                printer.WriteToFile(context._paths.SlotExtensionsPath);
+                (new SlotExtensionsPrinter(context.RootNamespaceName, slots))
+                    .WriteToFile(context._paths.SlotExtensionsPath);
             }
 
-            var flagEnums = context.GetFlagEnums();
+            var flagEnums = context.GetFlagEnums()
+                .Select(f => new FlagEnumSymbolWrapper(f))
+                .Where(f => f.InitWithErrorHandling(context));
 
+            foreach (var flag in flagEnums)
             {
-                var printer = new FlagsPrinter();
-
-                foreach (var flag in flagEnums)
-                {
-                    printer.flag = flag;
-                    printer.WriteToFile($"{context._paths.FlagsAutogenFolder}/{flag.ClassName}.cs");
-                }
+                (new FlagsPrinter(flag))
+                    .WriteToFile($"{context._paths.FlagsAutogenFolder}/{flag.ClassName}.cs");
             }
 
             var entityTypes = context.GetEntityTypes();
@@ -218,7 +199,7 @@ namespace Hopper.Meta
                 }
                 else
                 {
-                    Console.WriteLine($"The common namespace between components must at least contain 'Hopper' (got '{context.RootNamespaceName})'");
+                    Console.WriteLine($"Unable to generate code for the main init function: The common namespace between the files that participate in code generation must at least contain 'Hopper' (got '{context.RootNamespaceName})'");
                 }
 
             }

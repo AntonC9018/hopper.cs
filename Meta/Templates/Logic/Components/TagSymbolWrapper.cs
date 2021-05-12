@@ -9,6 +9,6 @@ namespace Hopper.Meta
         }
 
         public override string TypeText => "tag";
-        public override string HasAlias => "Is";
+        public override string AliasOfHas => "Is";
     }
 }

@@ -18,8 +18,11 @@ namespace Hopper.Shared.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class ActivationAliasAttribute : Attribute
     {
+        public string Alias;
+
         public ActivationAliasAttribute(string alias)
         {
+            Alias = alias;
         }
     }
 
@@ -36,8 +39,10 @@ namespace Hopper.Shared.Attributes
     [AttributeUsage(AttributeTargets.Method)]
     public class AliasAttribute : Attribute
     {
+        public string Alias;
         public AliasAttribute(string alias)
         {
+            Alias = alias;
         }
     }
 
@@ -61,8 +66,10 @@ namespace Hopper.Shared.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class ChainsAttribute : Attribute
     {
+        public string[] Chains;
         public ChainsAttribute(params string[] chains)
         {
+            Chains = chains;
         }
     }
 

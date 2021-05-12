@@ -200,17 +200,7 @@ namespace Hopper.Meta
 
         public static bool TryGetExportAttribute(this IMethodSymbol method, out ExportAttribute attribute)
         {
-            AttributeData attributeData = method.GetAttributes().FirstOrDefault(a =>
-                SymbolEqualityComparer.Default.Equals(a.AttributeClass, RelevantSymbols.exportAttribute));
-
-            if (attributeData == null)
-            {
-                attribute = null;
-                return false;
-            }
-
-            attribute = attributeData.MapToType<ExportAttribute>();
-            return true;
+            return TryGetAttribute(method, RelevantSymbols.ExportAttribute, out attribute);
         }
         
         public static IEnumerable<IMethodSymbol> GetMethods(this ITypeSymbol symbol)
@@ -256,7 +246,7 @@ namespace Hopper.Meta
             return count == y.Length ? -1 : count;
         }
 
-        public static bool TryGetAttribute(this ISymbol symbol, ISymbol attributeType, out AttributeData attributeData)
+        public static bool TryGetAttributeData(this ISymbol symbol, ISymbol attributeType, out AttributeData attributeData)
         {
             foreach (var a in symbol.GetAttributes())
             {
@@ -267,6 +257,17 @@ namespace Hopper.Meta
                 }
             }
             attributeData = default;
+            return false;
+        }
+
+        public static bool TryGetAttribute<T>(this ISymbol symbol, AttributeSymbolWrapper<T> attributeSymbolWrapper, out T attribute) where T : System.Attribute
+        {
+            if (TryGetAttributeData(symbol, attributeSymbolWrapper.symbol, out var attributeData))
+            {
+                attribute = attributeData.MapToType<T>();
+                return true;
+            }
+            attribute = default;
             return false;
         }
 

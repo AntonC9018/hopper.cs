@@ -102,7 +102,7 @@ namespace Hopper.Meta
             // Else, we're not static.
 
             // If we're inside any component, get that component from the entity and call ourselves.
-            if (symbol.ContainingType.HasInterface(RelevantSymbols.icomponent))
+            if (symbol.ContainingType.HasInterface(RelevantSymbols.IComponent))
             {
                 return $"ctx.{Context.ActorName}.GetComponent({symbol.ContainingType.Name}.Index).";
             }
@@ -167,7 +167,7 @@ namespace Hopper.Meta
                     }
                 }
                 // if it is of a component type, retrieve it from the entity 
-                else if (s.Type.HasInterface(RelevantSymbols.icomponent))
+                else if (s.Type.HasInterface(RelevantSymbols.IComponent))
                 {
                     // if the name contains the name of an entity type field
                     // of the context followed by an underscore, get the component

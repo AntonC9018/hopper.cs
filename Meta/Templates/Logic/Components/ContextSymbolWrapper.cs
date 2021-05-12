@@ -46,7 +46,7 @@ namespace Hopper.Meta
                     ActorName = "actor";
                     omitted.Add(field.Name);
                 }
-                else if (field.HasAttribute(RelevantSymbols.omitAttribute) 
+                else if (field.HasAttribute(RelevantSymbols.omitAttribute.symbol) 
                     || field.IsImplicitlyDeclared)
                 {
                     omitted.Add(field.Name);

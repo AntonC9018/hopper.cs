@@ -90,16 +90,21 @@ namespace Hopper.Meta
             return tree.GetRoot().ChildNodes().OfType<UsingDirectiveSyntax>();
         }
 
+        private IEnumerable<AliasMethodSymbolWrapper> GetAliasMethodsHelper()
+        {
+            foreach (var m in symbol.GetMethods())
+            {
+                if (m.TryGetAttribute(RelevantSymbols.aliasAttribute, out var attr))
+                {
+                    yield return new AliasMethodSymbolWrapper(m, attr.Alias);
+                }
+            }
+        }
+
         public AliasMethodSymbolWrapper[] GetAliasMethods(HashSet<string> globalAliases)
         {
             // Find aliases
-            var aliasMethods = symbol.GetMembers().OfType<IMethodSymbol>()
-                .FilterMap(m =>
-                    m.TryGetAttribute(RelevantSymbols.aliasAttribute, out var alias) 
-                        ? new AliasMethodSymbolWrapper(m, (string)alias.ConstructorArguments.Single().Value)
-                        : null
-                )
-                .ToArray();
+            var aliasMethods = GetAliasMethodsHelper().ToArray();
             
             // Add alias strings to global aliases
             foreach (var aliasMethod in aliasMethods)
@@ -145,12 +150,12 @@ namespace Hopper.Meta
         public abstract string TypeText { get; }
         // The start of the name of the method that checks whether the given component is on the entity
         // Has are the values for behaviors and components, Is is the value for tags.
-        public virtual string HasAlias => "Has";
+        public virtual string AliasOfHas => "Has";
         public string ClassName => symbol.Name;
         public string Namespace => symbol.ContainingNamespace.GetFullName();
         public string FullyQualifiedClassName => $"{Namespace}.{ClassName}";
         public string Calling => $"{ClassName} {TypeText}";
-        public string Staticity => symbol.IsStatic ? "static " : "";
-        public bool IsExportingInstanceMethods => symbol.HasAttribute(RelevantSymbols.instanceExportAttribute);
+        public string StaticityString => symbol.IsStatic ? "static " : "";
+        public bool IsExportingInstanceMethods => symbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol);
     }
 }

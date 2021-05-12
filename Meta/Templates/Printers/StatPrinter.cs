@@ -11,7 +11,18 @@ namespace Hopper.Meta.Template
 
     public partial class StatStartPrinter
     {
-        public StatPrinter statCodePrinter;
+        public StatPrinter statPrinter;
         public string Namespace;
+
+        public StatStartPrinter(string rootNamespace)
+        {
+            this.statPrinter = new StatPrinter();
+            this.Namespace = $"{rootNamespace}.Stat";
+        }
+
+        public void ResetStat(StatType stat)
+        {
+            this.statPrinter.stat = stat;
+        }
     }
 }
