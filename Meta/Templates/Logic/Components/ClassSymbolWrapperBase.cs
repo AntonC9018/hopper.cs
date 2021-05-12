@@ -94,7 +94,7 @@ namespace Hopper.Meta
         {
             foreach (var m in symbol.GetMethods())
             {
-                if (m.TryGetAttribute(RelevantSymbols.aliasAttribute, out var attr))
+                if (m.TryGetAttribute(RelevantSymbols.AliasAttribute, out var attr))
                 {
                     yield return new AliasMethodSymbolWrapper(m, attr.Alias);
                 }

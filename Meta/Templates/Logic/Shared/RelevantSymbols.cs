@@ -13,7 +13,7 @@ namespace Hopper.Meta
         public static INamedTypeSymbol IComponent;
         public static INamedTypeSymbol IBehavior;
         public static INamedTypeSymbol ITag;
-        public static AttributeSymbolWrapper<AliasAttribute> aliasAttribute;
+        public static AttributeSymbolWrapper<AliasAttribute> AliasAttribute;
         public static AttributeSymbolWrapper<ActivationAliasAttribute> ActivationAliasAttribute;
         public static AttributeSymbolWrapper<AutoActivationAttribute> AutoActivationAttribute;
         public static AttributeSymbolWrapper<NoActivationAttribute> NoActivationAttribute;
@@ -21,7 +21,7 @@ namespace Hopper.Meta
         public static AttributeSymbolWrapper<InjectAttribute> InjectAttribute;
         public static AttributeSymbolWrapper<FlagsAttribute> FlagsAttribute;
         public static AttributeSymbolWrapper<ExportAttribute> ExportAttribute;
-        public static AttributeSymbolWrapper<OmitAttribute> omitAttribute;
+        public static AttributeSymbolWrapper<OmitAttribute> OmitAttribute;
         public static AttributeSymbolWrapper<EntityTypeAttribute> EntityTypeAttribute;
         public static AttributeSymbolWrapper<SlotAttribute> SlotAttribute;
         public static AttributeSymbolWrapper<InstanceExportAttribute> InstanceExportAttribute;
@@ -66,10 +66,10 @@ namespace Hopper.Meta
             ipredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IPredictable");
             iundirectedActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IUndirectedActivateable");
             iundirectedPredictable  = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IUndirectedPredictable");
-            IComponent               = GetComponentSymbol(compilation, "IComponent");
-            IBehavior                = GetComponentSymbol(compilation, "IBehavior");
-            ITag                     = GetComponentSymbol(compilation, "ITag");
-            aliasAttribute          .Init(compilation);
+            IComponent               = GetComponentSymbol(compilation, nameof(IComponent));
+            IBehavior                = GetComponentSymbol(compilation, nameof(IBehavior));
+            ITag                     = GetComponentSymbol(compilation, nameof(ITag));
+            AliasAttribute          .Init(compilation);
             ActivationAliasAttribute.Init(compilation);
             AutoActivationAttribute .Init(compilation);
             NoActivationAttribute   .Init(compilation);
@@ -77,7 +77,7 @@ namespace Hopper.Meta
             InjectAttribute         .Init(compilation);
             FlagsAttribute          .Init(compilation);
             ExportAttribute         .Init(compilation);
-            omitAttribute           .Init(compilation);
+            OmitAttribute           .Init(compilation);
             EntityTypeAttribute     .Init(compilation);
             SlotAttribute           .Init(compilation);
             InstanceExportAttribute .Init(compilation);
