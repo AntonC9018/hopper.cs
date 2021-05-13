@@ -93,15 +93,18 @@ namespace Hopper.Meta
             // TODO: parallelize
             var behaviorWrappers = (await context.FindAllBehaviors())
                 .Select(b => new BehaviorSymbolWrapper(b))
-                .InitAndAfterInit(context);
+                .InitAndAfterInit(context)
+                .ToArray();
             
             var componentWrappers = (await context.FindAllDirectComponents())
                 .Select(c => new ComponentSymbolWrapper(c))
-                .InitAndAfterInit(context);
+                .InitAndAfterInit(context)
+                .ToArray();
 
             var tagWrappers = (await context.FindAllTags())
                 .Select(t => new TagSymbolWrapper(t))
-                .InitAndAfterInit(context);
+                .InitAndAfterInit(context)
+                .ToArray();
         
             foreach (var behavior in behaviorWrappers)
             {

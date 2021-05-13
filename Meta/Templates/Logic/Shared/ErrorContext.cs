@@ -68,8 +68,6 @@ namespace Hopper.Meta
             WriteErrorPrefix();
 
             Console.WriteLine(errorText);
-            Console.Write("Happened ");
-            Console.Write(Environment.StackTrace);
         }
     }
 }

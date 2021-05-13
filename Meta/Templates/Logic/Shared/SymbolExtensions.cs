@@ -185,17 +185,70 @@ namespace Hopper.Meta
             T attribute;
             if (attributeData.AttributeConstructor != null && attributeData.ConstructorArguments.Length > 0)
             {
-                attribute = (T)Activator.CreateInstance(typeof(T), attributeData.ConstructorArguments.Select(a => a.Value).ToArray());
+                attribute = (T) Activator.CreateInstance(typeof(T), attributeData.GetActualConstuctorParams().ToArray());
             }
             else
             {
-                attribute = (T)Activator.CreateInstance(typeof(T));
+                attribute = (T) Activator.CreateInstance(typeof(T));
             }
             foreach (var p in attributeData.NamedArguments)
             {
                 typeof(T).GetField(p.Key).SetValue(attribute, p.Value.Value);
             }
             return attribute;
+        }
+
+        public static IEnumerable<object> GetActualConstuctorParams(this AttributeData attributeData)
+        {
+            /*int params_index = attributeData.AttributeConstructor.Parameters.IndexOfFirst(p => p.IsParams);
+            
+            // There is no params parameter or it was passed as an array
+            if (params_index == -1 || params_index == attributeData.ConstructorArguments.Length - 1) 
+            {
+                foreach (var arg in attributeData.ConstructorArguments)
+                {
+                    yield return arg.GetValue();
+                }
+            }
+            // There is a params parameter and it was passed nothing
+            // We cannot know the type of the params array (although we could get it by reflection)
+            else if (params_index >= attributeData.ConstructorArguments.Length)
+            {
+                yield return null;
+            }
+            else
+            {
+                for (int i = 0; i < params_index; i++)
+                {
+                    yield return attributeData.ConstructorArguments[i].GetValue();
+                }
+
+                yield return attributeData.ConstructorArguments
+                    .Skip(params_index).Select(arg => arg.GetValue()).ToArray();
+            }
+            */
+            foreach (var arg in attributeData.ConstructorArguments)
+            {
+                if (arg.Kind == TypedConstantKind.Array)
+                {
+                    yield return arg.Values.Select(a => a.Value).OfType<string>().ToArray();
+                }
+                else
+                {
+                    yield return arg.Value;
+                }
+            }
+        } 
+
+        public static int IndexOfFirst<T>(this IEnumerable<T> e, Predicate<T> predicate)
+        {
+            int i = 0;
+            foreach (var el in e)
+            {
+                if (predicate(el)) return i;
+                i++;
+            }
+            return -1;
         }
 
         public static bool TryGetExportAttribute(this IMethodSymbol method, out ExportAttribute attribute)

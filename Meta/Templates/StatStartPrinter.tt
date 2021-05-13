@@ -7,5 +7,5 @@ using Hopper.Core.Components;
 
 namespace <#= Namespace #>
 { 
-<#= statCodePrinter.TransformText() #>
+<#  WriteWithIndent(statPrinter.TransformText()); #>
 }

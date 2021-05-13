@@ -26,37 +26,21 @@ namespace Hopper.Meta
 
         public bool InitWithErrorHandling(GenerationEnvironment env)
         {
-            try
-            {
-                Init(env);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"An error occured while processing {Identity}, exported from {symbol.Locations.First()}:");
-                Console.WriteLine(e.Message);
-                Console.WriteLine("");
-                return false;
-            }
-            return true;
+            env.errorContext.PushThing(this);
+            bool result = Init(env);
+            env.errorContext.PopThing();
+            return result;
         }
 
         public bool AfterInitWithErrorHandling(GenerationEnvironment env)
         {
-            try
-            {
-                AfterInit(env);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"An error occured while processing {Identity}, exported from {symbol.Locations.First()}:");
-                Console.WriteLine(e.Message);
-                Console.WriteLine("");
-                return false;
-            }
-            return true;
+            env.errorContext.PushThing(this);
+            bool result = AfterInit(env);
+            env.errorContext.PopThing();
+            return result;
         }
 
-        public virtual void AfterInit(GenerationEnvironment env){}
+        public virtual bool AfterInit(GenerationEnvironment env){ return true; }
 
         public void WriteGenerationMessage()
         {
@@ -119,7 +103,7 @@ namespace Hopper.Meta
 
                     if (attribute.Chain != null)
                     {
-                        yield return new ExportedMethodSymbolWrapper(env, method, attribute);
+                        yield return new ExportedMethodSymbolWrapper(method, attribute);
                     }
                     else
                     {

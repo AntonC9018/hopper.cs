@@ -40,11 +40,11 @@ namespace Hopper.Meta
             if (components.ContainsKey(wrapper.ClassName))
             {
                 ReportError($"The behavior {wrapper.ClassName} has been defined twice, which is not allowed.");
-                return true;
+                return false;
             }
 
             components.Add(wrapper.ClassName, wrapper);
-            return false;
+            return true;
         }
 
         public ErrorContext errorContext;

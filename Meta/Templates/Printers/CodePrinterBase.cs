@@ -111,6 +111,13 @@ namespace Hopper.Meta.Template
         {
             GenerationEnvironment.Append(textToAppend);
         }
+
+        public void WriteWithIndent(string text)
+        {
+            PushIndent();
+            WriteLine(text);
+            PopIndent();
+        }
         
         public void Write(string format, params object[] args) 
         {

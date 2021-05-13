@@ -7,6 +7,14 @@ namespace Hopper.Meta.Template
     public partial class StatPrinter
     {
         public StatType stat;
+
+        public StatPrinter(StatType stat)
+        {
+            this.stat = stat;
+        }
+
+        public StatPrinter(){}
+
     }
 
     public partial class StatStartPrinter

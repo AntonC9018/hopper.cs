@@ -39,10 +39,11 @@ namespace Hopper.Meta
             return false;
         }
 
-        public override void AfterInit(GenerationEnvironment projectContext)
+        public override bool AfterInit(GenerationEnvironment projectContext)
         {
             if (exportedMethods == null)
                 exportedMethods = GetNonNativeExportedMethods(projectContext).ToArray();
+            return true;
         }
 
         public IEnumerable<InjectedFieldSymbolWrapper> GetInjectedFields()

@@ -66,10 +66,18 @@ namespace Hopper.Shared.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class ChainsAttribute : Attribute
     {
-        public string[] Chains;
+        public string[] Names;
+
         public ChainsAttribute(params string[] chains)
         {
-            Chains = chains;
+            if (chains.Length == 0)
+            {
+                Names = new string[] { "Check", "Do" };
+            }
+            else
+            {
+                Names = chains;
+            }
         }
     }
 
@@ -111,8 +119,10 @@ namespace Hopper.Shared.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class AutoActivationAttribute : Attribute 
     {
+        public string Alias;
         public AutoActivationAttribute(string alias)
         {
+            Alias = alias;
         }
     }
 

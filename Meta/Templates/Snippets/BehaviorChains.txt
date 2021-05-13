@@ -9,7 +9,7 @@
             (Entity entity) => entity.TryGetComponent(Index, out var component) ? component._<#= chain.Name #>Chain : null);
 
 <#  }
-    if (behavior.ShouldGenerateActivation) 
+    if (behavior.ShouldGenerateAutoActivation) 
     { #>
         public bool Activate(<#= behavior.context.JoinedParamsWithActor() #>)
         {

@@ -29,9 +29,10 @@ namespace Hopper.Meta
         {
             this.symbol = symbol;
             this.exportAttribute = exportAttribute;
+            this.referencedBehavior = behavior;
         }
 
-        public ExportedMethodSymbolWrapper(GenerationEnvironment projectContext, IMethodSymbol symbol, ExportAttribute exportAttribute)
+        public ExportedMethodSymbolWrapper(IMethodSymbol symbol, ExportAttribute exportAttribute)
         {
             this.symbol = symbol;
             this.exportAttribute = exportAttribute;

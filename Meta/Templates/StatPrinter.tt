@@ -2,16 +2,19 @@
 <#@ assembly name="Meta" #>
 public struct <#= stat.Name #> : IStat
 {
-<# if (!stat.IsIdentifying) { #>
-<# foreach (var field in stat.fields) {  #>
+<#  if (!stat.IsIdentifying) 
+    { #>
+<#      foreach (var field in stat.fields) 
+        {  #>
     public <#= field.metadata.type #> <#= field.name #>; 
-<# } #>
+<#      } #>
     
     public <#= stat.Name #>(<#= stat.JoinedParams #>)
     {
-<# foreach (var field in stat.fields) { #>
+<#      foreach (var field in stat.fields) 
+        { #>
         this.<#= field.name #> = <#= field.name #>;
-<# } #>
+<#      } #>
     }
 
     public <#= stat.Name #> AddWith(<#= stat.Name #> other) => new <#= stat.Name #>
@@ -21,15 +24,19 @@ public struct <#= stat.Name #> : IStat
             : $"{f.name} : other.{f.name}") #>
     );
 
-<# if (!stat.IsIdentified) { #>
+<#      if (!stat.IsIdentified) 
+        { #>
     public static Index<<#= stat.Name #>> Index = new Index<<#= stat.Name #>>();
-<# } #>
+<#      } #>
     public static <#= stat.Name #> Default() => new <#= stat.Name #>
     (
         <#= stat.FieldCommaJoin(f => $"{f.name} : {f.metadata.defaultValue}") #>
     );
 
-<# /* It identifies a type (aka it is a source) */ } else { #>
+<# /* It identifies a type (aka it is a source) */ 
+    } 
+    else 
+    { #>
     public Index<<#= stat.identifiedType.Name #>> Index;
 
     public System.Func<<#= stat.identifiedType.Name #>> Default;
@@ -40,16 +47,14 @@ public struct <#= stat.Name #> : IStat
         this.Index = new Index<<#= stat.identifiedType.Name #>>();
     }
 
-<# } #>
+<#  } #>
     public <#= stat.Name #> Copy() => this;
     
     IStat IStat.Copy() => this;
 
 <#  foreach (var nestedType in stat.nestedTypes) 
     {
-        var printer = new StatCode();
-        printer.stat = nestedType;
-        WriteLine(printer.TransformText());
+        WriteWithIndent((new StatPrinter(nestedType)).TransformText());
     } #>
 <#  /* this is not complete as of now, there are edge cases and the code is not very stable
        but it will work for now. TODO: refactor the hell out of this, it is not ok. */
@@ -61,17 +66,17 @@ public struct <#= stat.Name #> : IStat
         var identifiedTypeName = identifiedType == stat.identifiedType ? identifiedType.Name : identifiedType.QualifiedName; #>
     public static <#= identifyingTypeName #> <#= field.name #> = new <#= identifyingTypeName #>
     (
-<#  if (field.metadata.fields.Count > 0) 
-    { #>
+<#      if (field.metadata.fields.Count > 0) 
+        { #>
         Default : () => new <#= identifiedTypeName #>
         (
             <#= field.metadata.FieldCommaJoin(f => $"{f.name} : {f.defaultValue}") #>
         )
-<#  }
-    else
-    { #>
+<#      }
+        else
+        { #>
         Default : <#= identifiedTypeName #>.Default
-<#  }#>
+<#      }#>
     );
 <#  } #> 
 }
