@@ -15,7 +15,7 @@ namespace Hopper.Meta
 
     }
 
-    public class GlobalContext
+    public class GenerationEnvironment
     {
         public Solution _solution;
         public Project _project;
@@ -26,19 +26,37 @@ namespace Hopper.Meta
         // Even if one mod does not reference the other, duplicate names will cause collision.
         // So this dictionary has to be adjusted based on which assemblies are referenced by the given mod.
         // This problem is a long way away, though, so I'll leave it as it is right now.
-        public Dictionary<string, ComponentSymbolWrapper> globalComponents;
+        public Dictionary<string, ComponentSymbolWrapper> components;
+
         // Same problem here.
-        public HashSet<string> globalAliases;
-        public INamespaceSymbol _rootNamespace;
+        public HashSet<string> aliases;
+
+        private INamespaceSymbol _rootNamespace;
         public string RootNamespaceName => _project.AssemblyName;
         public ParsingContext statParsingContext;
 
-
-        public GlobalContext(string[] projectPaths)
+        public bool TryAddComponent(ComponentSymbolWrapper wrapper)
         {
-            globalAliases = new HashSet<string>();
-            globalComponents = new Dictionary<string, ComponentSymbolWrapper>();
+            if (components.ContainsKey(wrapper.ClassName))
+            {
+                ReportError($"The behavior {wrapper.ClassName} has been defined twice, which is not allowed.");
+                return true;
+            }
+
+            components.Add(wrapper.ClassName, wrapper);
+            return false;
+        }
+
+        public ErrorContext errorContext;
+        public void ReportError(string errorMessage) => errorContext.Report(errorMessage);
+        
+
+        public GenerationEnvironment(string[] projectPaths)
+        {
+            aliases = new HashSet<string>();
+            components = new Dictionary<string, ComponentSymbolWrapper>();
             statParsingContext = new ParsingContext("Hopper");
+            errorContext = new ErrorContext();
 
             _paths = new AutogenPaths();
             foreach (var p in projectPaths)

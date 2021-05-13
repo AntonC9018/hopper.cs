@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Hopper.Meta
 {
-    public sealed class ExportedMethodSymbolWrapper
+    public sealed class ExportedMethodSymbolWrapper : IThing
     {
         public IMethodSymbol symbol;
         public ExportAttribute exportAttribute;
@@ -19,20 +19,22 @@ namespace Hopper.Meta
         public bool IsDynamic => exportAttribute.Dynamic;
         public string Priority => exportAttribute.Priority.ToString();
         public string Chain => exportAttribute.Chain;
+        public string Identity => $"{Name} exported method";
+        public string Location => $"{symbol.Locations.First()}";
+
+        public string AdapterBody;
 
 
         public ExportedMethodSymbolWrapper(BehaviorSymbolWrapper behavior, IMethodSymbol symbol, ExportAttribute exportAttribute)
         {
             this.symbol = symbol;
             this.exportAttribute = exportAttribute;
-            Init(behavior);
         }
 
-        public ExportedMethodSymbolWrapper(GlobalContext projectContext, IMethodSymbol symbol, ExportAttribute exportAttribute)
+        public ExportedMethodSymbolWrapper(GenerationEnvironment projectContext, IMethodSymbol symbol, ExportAttribute exportAttribute)
         {
             this.symbol = symbol;
             this.exportAttribute = exportAttribute;
-            Init(projectContext);
         }
 
         public void Init(BehaviorSymbolWrapper behavior)
@@ -40,7 +42,15 @@ namespace Hopper.Meta
             this.referencedBehavior = behavior;
         }
 
-        public void Init(GlobalContext projectContext)
+        public bool InitWithErrorHandling(GenerationEnvironment env)
+        {
+            env.errorContext.PushThing(this);
+            bool result = Init(env);
+            env.errorContext.PopThing();
+            return result;
+        }
+
+        private bool Init(GenerationEnvironment env)
         {
             var chain = exportAttribute.Chain;
 
@@ -48,18 +58,20 @@ namespace Hopper.Meta
             var indexOfDot = chain.IndexOf('.');
             if (indexOfDot == -1)
             {
-                throw new GeneratorException($"The chain name specified in the export attribute of {Name} method is not valid ({chain}). Expected form \"ComponentName.ChainName\"");
+                env.ReportError($"The chain name specified in the export attribute is not valid ({chain}). Expected form \"ComponentName.ChainName\"");
+                return false;
             }
 
             var componentName = chain.Substring(0, indexOfDot);
             var chainName = chain.Substring(indexOfDot + 1, chain.Length - indexOfDot - 1);
 
-            if (!projectContext.globalComponents.ContainsKey(componentName))
+            if (!env.components.ContainsKey(componentName))
             {
-                throw new GeneratorException($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not exist.");
+                env.ReportError($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not exist.");
+                return false;
             }
 
-            var component = projectContext.globalComponents[componentName];
+            var component = env.components[componentName];
 
             if (component is BehaviorSymbolWrapper behavior)
             {
@@ -69,13 +81,19 @@ namespace Hopper.Meta
                 }
                 else
                 {
-                    throw new GeneratorException($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not define the referenced {chainName} chain.");
+                    env.ReportError($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not define the referenced {chainName} chain.");
+                    return false;
                 }
             }
             else
             {
-                throw new GeneratorException($"The component with the name {componentName} specified in the export attribute of {Name} method is not a behavior.");
+                env.ReportError($"The component with the name {componentName} specified in the export attribute of {Name} method is not a behavior.");
+                return false;
             }
+
+            AdapterBody = GetAdapterBody(env);
+
+            return !(AdapterBody is null);
         }
 
         private string GetNamePrefixAtCall()
@@ -118,7 +136,7 @@ namespace Hopper.Meta
             return "";
         }
 
-        public string AdapterBody()
+        public string GetAdapterBody(GenerationEnvironment env)
         {
             StringBuilder sb_params = new StringBuilder();
             StringBuilder sb_call = new StringBuilder();
@@ -148,6 +166,8 @@ namespace Hopper.Meta
                 // if ctx class has a field of that name and type, reference it directly
                 else if (Context.ContainsFieldWithNameAndType(s.Name, s.Type))
                 {
+                    Console.WriteLine(s.RefKind.ToString());
+
                     if (s.RefKind == RefKind.Out)
                     {
                         sb_call.Append($"out ctx.{s.Name}, ");
@@ -200,10 +220,12 @@ namespace Hopper.Meta
                 {
                     if (SymbolEqualityComparer.Default.Equals(s.Type, RelevantSymbols.entity))
                     {
-                        throw new GeneratorException($"The entity must be named \"actor\", like on the context class");
+                        env.ReportError($"The entity must be named \"actor\", like on the context class");
+                        return null;
                     }
 
-                    throw new GeneratorException($"The name \"{s.Name}\" is invalid. It does not correspond directly to any of the Context fields and the type of the parameter was not a component type");
+                    env.ReportError($"The name \"{s.Name}\" is invalid. It does not correspond directly to any of the Context fields and the type of the parameter was not a component type");
+                    return null;
                 }
             }
 

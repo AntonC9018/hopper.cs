@@ -2,7 +2,7 @@
     { #>
         public void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
         {
-<#= method.AdapterBody() #>
+<#= method.AdapterBody #>
         }
         public Handler<<#= method.ContextName #>> <#= method.Name #>Handler;
 <#      if (method.IsDynamic) 

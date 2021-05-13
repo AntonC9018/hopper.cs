@@ -2,7 +2,7 @@
     { #>
         public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
         {
-<#= method.AdapterBody() #>
+<#= method.AdapterBody #>
         }
         public static Handler<<#= method.ContextName #>> <#= method.Name #>Handler = 
             new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);

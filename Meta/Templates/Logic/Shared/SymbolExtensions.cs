@@ -334,7 +334,7 @@ namespace Hopper.Meta
         }
 
         public static IEnumerable<T> InitAndAfterInit<T>(
-            this IEnumerable<T> guys, GlobalContext context) where T : TypeSymbolWrapperBase
+            this IEnumerable<T> guys, GenerationEnvironment context) where T : TypeSymbolWrapperBase
         {
             return guys
                 .Where(g => g.InitWithErrorHandling(context))

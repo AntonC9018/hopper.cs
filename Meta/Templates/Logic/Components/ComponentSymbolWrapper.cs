@@ -18,22 +18,28 @@ namespace Hopper.Meta
         {
         }
 
-        public override void Init(GlobalContext projectContext)
+        public override bool Init(GenerationEnvironment env)
         {
-            base.Init(projectContext);
             if (symbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol))
             {
-                throw new GeneratorException($"Components must not have the InstanceExportAttribute since its usage is ambiguous for components.");
+                env.ReportError($"Components must not have the InstanceExportAttribute since its usage is ambiguous for components.");
+                return false;
             }
-            flaggedFields = GetFlaggedFields();
-            aliasMethods = GetAliasMethods(projectContext.globalAliases);
-            injectedFields = GetInjectedFields().ToArray();
 
-            HasInitInWorldMethod = symbol.GetMethods().Any(
-                m => !m.IsStatic && m.Name == "InitInWorld");
+            if (base.Init(env))
+            {
+                flaggedFields  = GetFlaggedFields();
+                aliasMethods   = GetAliasMethods(env);
+                injectedFields = GetInjectedFields().ToArray();
+
+                HasInitInWorldMethod = symbol.GetMethods().Any(m => !m.IsStatic && m.Name == "InitInWorld");
+                return true;
+            }
+
+            return false;
         }
 
-        public override void AfterInit(GlobalContext projectContext)
+        public override void AfterInit(GenerationEnvironment projectContext)
         {
             if (exportedMethods == null)
                 exportedMethods = GetNonNativeExportedMethods(projectContext).ToArray();
@@ -68,8 +74,7 @@ namespace Hopper.Meta
                 && !ctor.IsStatic
                 && ctor.ParameterTypesEqual(injectedFields));
         public bool ShouldGenerateCopyConstructor => !symbol.Constructors.Any(
-            ctor => !ctor.IsStatic
-                && ctor.Arity == 1 
+            ctor => ctor.Arity == 1 
                 && SymbolEqualityComparer.Default.Equals(ctor.Parameters.Single(), symbol));
         
         public bool IsStandartActivateable => symbol.AllInterfaces.Contains(RelevantSymbols.istandartActivateable);

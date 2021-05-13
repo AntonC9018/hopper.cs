@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Hopper.Meta
 {
 
-    abstract public class TypeSymbolWrapperBase
+    abstract public class TypeSymbolWrapperBase : IThing
     {
         public INamedTypeSymbol symbol;
         public IEnumerable<UsingDirectiveSyntax> usings;
@@ -18,58 +18,49 @@ namespace Hopper.Meta
             this.symbol = symbol;
         }
 
-        public virtual void Init(GlobalContext projectContext)
+        public virtual bool Init(GenerationEnvironment env)
         {
-            usings = GetUsingSyntax(projectContext._solution);
+            usings = GetUsingSyntax(env._solution);
+            return true;
         }
 
-        public bool InitWithErrorHandling(GlobalContext ctx)
+        public bool InitWithErrorHandling(GenerationEnvironment env)
         {
             try
             {
-                Init(ctx);
-            }
-            catch (GeneratorException e)
-            {
-                Console.WriteLine($"An error occured while processing {Calling}, exported from {symbol.Locations.First()}:");
-                Console.WriteLine(e.Message);
-                Console.WriteLine("");
-                return false;
+                Init(env);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine($"An error occured while processing {Identity}, exported from {symbol.Locations.First()}:");
+                Console.WriteLine(e.Message);
+                Console.WriteLine("");
                 return false;
             }
             return true;
         }
 
-        public bool AfterInitWithErrorHandling(GlobalContext ctx)
+        public bool AfterInitWithErrorHandling(GenerationEnvironment env)
         {
             try
             {
-                AfterInit(ctx);
-            }
-            catch (GeneratorException e)
-            {
-                Console.WriteLine($"An error occured while processing {Calling}, exported from {symbol.Locations.First()}:");
-                Console.WriteLine(e.Message);
-                Console.WriteLine("");
-                return false;
+                AfterInit(env);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine($"An error occured while processing {Identity}, exported from {symbol.Locations.First()}:");
+                Console.WriteLine(e.Message);
+                Console.WriteLine("");
                 return false;
             }
             return true;
         }
 
-        public virtual void AfterInit(GlobalContext ctx){}
+        public virtual void AfterInit(GenerationEnvironment env){}
 
         public void WriteGenerationMessage()
         {
-            Console.WriteLine($"Generating code for {Calling}");
+            Console.WriteLine($"Generating code for {Identity}");
         }
 
         public IEnumerable<string> Usings()
@@ -101,7 +92,7 @@ namespace Hopper.Meta
             }
         }
 
-        public AliasMethodSymbolWrapper[] GetAliasMethods(HashSet<string> globalAliases)
+        public AliasMethodSymbolWrapper[] GetAliasMethods(GenerationEnvironment env)
         {
             // Find aliases
             var aliasMethods = GetAliasMethodsHelper().ToArray();
@@ -109,25 +100,26 @@ namespace Hopper.Meta
             // Add alias strings to global aliases
             foreach (var aliasMethod in aliasMethods)
             {
-                if (globalAliases.Contains(aliasMethod._alias))
+                if (!env.aliases.Add(aliasMethod.Alias))
                 {
-                    throw new GeneratorException($"Aliases must be unique across all types. When processing the {symbol.Name} behavior, found a duplicate alias name: {aliasMethod._alias}");
+                    env.ReportError($"Aliases must be unique across all types. When processing the {symbol.Name} behavior, found a duplicate alias name: {aliasMethod.Alias}");
                 }
-                globalAliases.Add(aliasMethod._alias);
             }
 
             return aliasMethods;
         }
 
-        public IEnumerable<ExportedMethodSymbolWrapper> GetNonNativeExportedMethods(GlobalContext projectContext)
+        public IEnumerable<ExportedMethodSymbolWrapper> GetNonNativeExportedMethods(GenerationEnvironment env)
         {
             foreach (var method in GetMethods())
             {
                 if (method.TryGetExportAttribute(out var attribute))
                 {
+                    env.errorContext.PushThing(method);
+
                     if (attribute.Chain != null)
                     {
-                        yield return new ExportedMethodSymbolWrapper(projectContext, method, attribute);
+                        yield return new ExportedMethodSymbolWrapper(env, method, attribute);
                     }
                     else
                     {
@@ -135,8 +127,9 @@ namespace Hopper.Meta
                         // Report an error if the class is not a behavior.
                         if (!(this is BehaviorSymbolWrapper))
                         {
-                            throw new GeneratorException($"The class {ClassName} marked a method for export but did not specify the chain path. Note: one may omit the chain path only if the method being exported is inside a behavior class.");
+                            env.ReportError($"The class {ClassName} marked a method for export but did not specify the chain path. Note: one may omit the chain path only if the method being exported is inside a behavior class.");
                         }
+                        yield break;
                     }
                 }
             }
@@ -154,7 +147,8 @@ namespace Hopper.Meta
         public string ClassName => symbol.Name;
         public string Namespace => symbol.ContainingNamespace.GetFullName();
         public string FullyQualifiedClassName => $"{Namespace}.{ClassName}";
-        public string Calling => $"{ClassName} {TypeText}";
+        public string Identity => $"{ClassName} {TypeText}";
+        public string Location => $"{symbol.Locations.First()}";
         public string StaticityString => symbol.IsStatic ? "static " : "";
         public bool IsExportingInstanceMethods => symbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol);
     }

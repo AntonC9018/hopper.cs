@@ -17,7 +17,7 @@ namespace Hopper.Meta
         const string sharedProjectPath = @"../Shared/Hopper.Shared.csproj";
 
         public MSBuildWorkspace msWorkspace;
-        public GlobalContext context;
+        public GenerationEnvironment context;
 
         public Generator() 
         {
@@ -63,7 +63,7 @@ namespace Hopper.Meta
                 }
             };
 
-            context = new GlobalContext(projectPaths);
+            context = new GenerationEnvironment(projectPaths);
 
             await msWorkspace.OpenProjectAsync(sharedProjectPath);
 

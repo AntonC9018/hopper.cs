@@ -14,10 +14,7 @@ namespace Hopper.Meta
             this.symbol = symbol;
         }
 
-        public void Init()
-        {
-            HashFields();
-        }
+        public bool Init(GenerationEnvironment env) => TryHashFields(env);
 
         public Dictionary<string, IFieldSymbol> fieldsHashed;
         public HashSet<string> omitted;
@@ -25,7 +22,7 @@ namespace Hopper.Meta
         public string ActorName;
         public bool IsActorAField => fieldsHashed.ContainsKey(ActorName);
 
-        public void HashFields()
+        public bool TryHashFields(GenerationEnvironment env)
         {
             fieldsHashed = new Dictionary<string, IFieldSymbol>();
             omitted = new HashSet<string>();
@@ -66,8 +63,11 @@ namespace Hopper.Meta
 
             if (ActorName == null) 
             {
-                throw new GeneratorException("The context class must contain a field of type \"Entity\", representing the entity, or a property with name \"actor\"");
+                env.ReportError("The context class must contain a field of type \"Entity\", representing the entity, or a property with name \"actor\"");
+                return false;
             }
+
+            return true;
         }
 
         public bool ContainsEntity(string name) => fieldsHashed.TryGetValue(name, out var t) 
