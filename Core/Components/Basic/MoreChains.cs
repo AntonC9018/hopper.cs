@@ -24,7 +24,7 @@ namespace Hopper.Core.Components.Basic
         }
     }
 
-    public class MoreChains : IComponent
+    public partial class MoreChains : IComponent
     {
         [Inject] public readonly ChainsBuilder template;
         public Dictionary<Identifier, ICopyable> store = new Dictionary<Identifier, ICopyable>();

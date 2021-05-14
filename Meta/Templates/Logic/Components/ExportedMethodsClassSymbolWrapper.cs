@@ -14,9 +14,8 @@ namespace Hopper.Meta
         protected override bool Init(GenerationEnvironment env)
         {
             if (!base.Init(env)) return false;
-            
-            exportedMethods = GetNonNativeExportedMethods(env)
-                .Where(m => m.TryInit(env)).ToArray();
+
+            exportedMethods = GetNonNativeExportedMethods(env).ToArray();
 
             // If there are no exported methods, this class is unusable anyway
             // and should be either given another symbol, or thrown away.

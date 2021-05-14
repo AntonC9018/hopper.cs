@@ -87,7 +87,7 @@ namespace Hopper.Meta.Stats
             
             ctx.PopScope();
 
-            return ctx.Flag;
+            return !ctx.Flag;
         }
 
         public static StatType ParseJson(ParsingContext ctx, string inPath)

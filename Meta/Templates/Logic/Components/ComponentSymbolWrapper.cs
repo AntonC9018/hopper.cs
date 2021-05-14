@@ -39,10 +39,10 @@ namespace Hopper.Meta
             return false;
         }
 
-        protected override bool AfterInit(GenerationEnvironment projectContext)
+        protected override bool AfterInit(GenerationEnvironment env)
         {
             if (exportedMethods == null)
-                exportedMethods = GetNonNativeExportedMethods(projectContext).ToArray();
+                exportedMethods = GetNonNativeExportedMethods(env).ToArray();
             return true;
         }
 

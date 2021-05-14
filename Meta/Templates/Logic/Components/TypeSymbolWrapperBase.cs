@@ -94,7 +94,8 @@ namespace Hopper.Meta
 
                     if (attribute.Chain != null)
                     {
-                        yield return new ExportedMethodSymbolWrapper(method, attribute);
+                        var m = new ExportedMethodSymbolWrapper(method, attribute);
+                        if (m.TryInit(env)) yield return m;
                     }
                     else
                     {
