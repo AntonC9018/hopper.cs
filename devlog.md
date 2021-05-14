@@ -926,3 +926,100 @@ public static class Sliding
         
     }
 }
+```
+
+Actually, I want to change how chains are registered.
+
+One would want some chains to be e.g. linear, whereas some of them should work with priorities.
+
+So, just the Chains attribute is not enough.
+
+So instead of using the chains attribute, I propose we write the fields manually and indicate that these are indeed Chains for simplicity.
+
+```C#
+// How it used to be
+[Chains("Hello"/*, ... etc */)]
+public class SomeBehavior
+{
+    // A context used to be required
+    public class Context {}
+
+    /* No more code. The things that are autogened follow */
+    public readonly Chain<Context> _HelloChain;
+    public static readonly BehaviorChainPath<Chain<Context>> HelloPath = 
+        new BehaviorChainPath<Chain<Context>>((entity) => /*whatever*/._HelloChain);
+    
+    // Also, the chains were inited in the constructor.
+}
+
+// Now there is two ways to proceed
+// 1. Shove all events (chains) in the MoreChains component.
+// 2. Split the logic into MoreChains chains and normal chains.
+//
+// I opt for the second one, at least for now, but it's close.
+// It's pretty simple to change later, but not completely trivial.
+
+// Note that AutoActivation does not go away.
+// It's still useful for getting up and running for simpler behaviors and for prototyping.
+// It will work just like before.
+public class SomeBehavior
+{
+    public class Context {} // this one is not required now, unless AutoActivation is used.
+
+    // Define readonly chains manually
+    // Not necessarily public also, since they are accesible only via the path from the outside code.
+    // Also a plus is that the name could be anything.
+    [Chain] /*public*/ private readonly Chain<Context> _HelloChain;
+
+    // Another plus is that you may use something other than context.
+    // Also, note the usage of linear chain.
+    [Chain] /*public*/ private readonly LinearChain<int> _WorldChain;
+
+    // Probably also worth adding a name to the chain attribute
+    // [Chain("World")]
+
+    /* The generated code follows */
+    public static readonly BehaviorChainPath<Chain<Context>> HelloPath /* = whatever ... */;
+    public static readonly BehaviorChainPath<LinearChain<int>> WorldPath /* = whatever ... */;
+
+    // The initialization code too, obviously
+}
+
+// The first option with sticking all of these on MoreChains is not explored, although
+// adding chains to that component is definitely required.
+public static class Demo
+{
+    // If this happens for the MoreChains component, the attribute is applied to indices
+    // This one is inited in an autogened static constructor to avoid boilerplate.
+    [Chain] public static readonly Index<Chain<int>> MyChain;
+
+    // A path is going to be generated automatically
+    // It's not going to be a BehaviorPath anymore, because it is more generic.
+    public static readonly MoreChainsPath<Chain<int>> MyChainPath
+        // Probably do this in the static constructor?
+        = new MoreChainsPath<Chain<int>>(MyChain);
+
+    // It will be given an id in the main init function automatically
+
+    // Now, if one wanted to add chains to this chain, either query it manually
+    public void Thing() => Demo.MyChainPath(entity).Add(SomeHandler);
+
+    // Or use the export attribute, e.g. like this
+    // + signifies MoreChains
+    // Since we now allow something different than just objects as contexts
+    // this will be kind of tough to implement.
+    // Probably we should allow just objects.
+    [Export(Chain = "+Demo.MyChain", Dynamic = true)]
+    public static void SomeStuff(int context)
+    {
+        // Do some stuff with the context
+    }
+
+    // And then add it like this
+    public void Thing()
+    {
+        // This adds the handler from above onto the 
+        /*ClassWhereSomeStuffIsDefined.*/SomeStuffHandlerWrapper.HookTo(entity);
+    }
+}
+```
