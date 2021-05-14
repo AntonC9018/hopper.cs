@@ -18,29 +18,25 @@ namespace Hopper.Meta
             this.symbol = symbol;
         }
 
-        public virtual bool Init(GenerationEnvironment env)
+        protected virtual bool Init(GenerationEnvironment env)
         {
             usings = GetUsingSyntax(env._solution);
             return true;
         }
 
-        public bool InitWithErrorHandling(GenerationEnvironment env)
+        protected virtual bool AfterInit(GenerationEnvironment env) => true;
+
+        public bool TryInit(GenerationEnvironment env)
         {
-            env.errorContext.PushThing(this);
-            bool result = Init(env);
-            env.errorContext.PopThing();
-            return result;
+            return env.DoScoped(this, () => Init(env));
+
         }
 
-        public bool AfterInitWithErrorHandling(GenerationEnvironment env)
+        public bool TryAfterInit(GenerationEnvironment env)
         {
-            env.errorContext.PushThing(this);
-            bool result = AfterInit(env);
-            env.errorContext.PopThing();
-            return result;
+            return env.DoScoped(this, () => AfterInit(env));
         }
 
-        public virtual bool AfterInit(GenerationEnvironment env){ return true; }
 
         public void WriteGenerationMessage()
         {

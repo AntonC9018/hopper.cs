@@ -14,7 +14,7 @@ namespace Hopper.Meta
         public bool TryInit(GenerationEnvironment env)
         {
             exportedMethods = GetNonNativeExportedMethods(env)
-                .Where(m => m.InitWithErrorHandling(env)).ToArray();
+                .Where(m => m.TryInit(env)).ToArray();
 
             // If there are no exported methods, this class is unusable anyway
             // and should be either given another symbol, or thrown away.

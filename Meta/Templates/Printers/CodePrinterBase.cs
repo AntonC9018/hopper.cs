@@ -186,9 +186,9 @@ namespace Hopper.Meta.Template
                 Type type = objectToConvert.GetType();
                 Type iConvertibleType = typeof(IConvertible);
                 
-                if (iConvertibleType.IsAssignableFrom(type)) 
+                if (objectToConvert is IConvertible convertible) 
                 {
-                    return ((IConvertible)(objectToConvert)).ToString(formatProvider);
+                    return convertible.ToString(formatProvider);
                 }
 
                 var methInfo = type.GetMethod("ToString", new Type[] {iConvertibleType});

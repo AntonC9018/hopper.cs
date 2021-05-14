@@ -7,6 +7,7 @@ using System.Linq;
 using Hopper.Shared.Attributes;
 using System.IO;
 using Hopper.Meta.Stats;
+using System;
 
 namespace Hopper.Meta
 {
@@ -19,7 +20,7 @@ namespace Hopper.Meta
     {
         public Solution _solution;
         public Project _project;
-        public AutogenPaths _paths;
+        public AutogenPaths paths;
         public Compilation _compilation;
 
         // TODO: This will be annoying to use if two mods defined two components with the same name
@@ -50,6 +51,13 @@ namespace Hopper.Meta
         public ErrorContext errorContext;
         public void ReportError(string errorMessage) => errorContext.Report(errorMessage);
         
+        public T DoScoped<T>(IThing scopedThing, Func<T> func)
+        {
+            errorContext.PushThing(scopedThing);
+            T result = func();
+            errorContext.PopThing();
+            return result;
+        } 
 
         public GenerationEnvironment(string[] projectPaths)
         {
@@ -58,11 +66,11 @@ namespace Hopper.Meta
             statParsingContext = new ParsingContext("Hopper");
             errorContext = new ErrorContext();
 
-            _paths = new AutogenPaths();
+            paths = new AutogenPaths();
             foreach (var p in projectPaths)
             {
-                _paths.Reset(Path.GetDirectoryName(p));
-                _paths.CreateOrEmpty();
+                paths.Reset(Path.GetDirectoryName(p));
+                paths.CreateOrEmpty();
             }
         }
 
@@ -72,7 +80,7 @@ namespace Hopper.Meta
             _solution = _project.Solution;
             _compilation = await project.GetCompilationAsync();
             RelevantSymbols.TryInitializeSingleton(_compilation);
-            _paths.Reset(Path.GetDirectoryName(project.FilePath));
+            paths.Reset(Path.GetDirectoryName(project.FilePath));
             this._rootNamespace = GetRootNamespace();
 
             // Hopper.
@@ -161,7 +169,7 @@ namespace Hopper.Meta
                     && a.Abstract == false)
                 {
                     var wrapper = new EntityTypeWrapper(typeSymbol);
-                    wrapper.InitWithErrorHandling(this);
+                    wrapper.TryInit(this);
                     yield return wrapper;
                 }
             }

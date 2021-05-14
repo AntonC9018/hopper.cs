@@ -38,18 +38,18 @@ namespace Hopper.Meta
             this.exportAttribute = exportAttribute;
         }
 
-        public void Init(BehaviorSymbolWrapper behavior)
+        private bool InitWithBehavior(GenerationEnvironment env, BehaviorSymbolWrapper behavior)
         {
             this.referencedBehavior = behavior;
+            AdapterBody = GetAdapterBody(env);
+            return !(AdapterBody is null);
         }
 
-        public bool InitWithErrorHandling(GenerationEnvironment env)
-        {
-            env.errorContext.PushThing(this);
-            bool result = Init(env);
-            env.errorContext.PopThing();
-            return result;
-        }
+        public bool TryInit(GenerationEnvironment env, BehaviorSymbolWrapper behavior)
+            => env.DoScoped(this, () => InitWithBehavior(env, behavior));
+
+        public bool TryInit(GenerationEnvironment env)
+            => env.DoScoped(this, () => Init(env));
 
         private bool Init(GenerationEnvironment env)
         {
@@ -76,11 +76,7 @@ namespace Hopper.Meta
 
             if (component is BehaviorSymbolWrapper behavior)
             {
-                if (behavior.chains.Any(ch => ch.Name == chainName))
-                {
-                    this.referencedBehavior = behavior;
-                }
-                else
+                if (!behavior.chains.Any(ch => ch.Name == chainName))
                 {
                     env.ReportError($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not define the referenced {chainName} chain.");
                     return false;
@@ -92,9 +88,7 @@ namespace Hopper.Meta
                 return false;
             }
 
-            AdapterBody = GetAdapterBody(env);
-
-            return !(AdapterBody is null);
+            return InitWithBehavior(env, behavior);
         }
 
         private string GetNamePrefixAtCall()
@@ -167,24 +161,14 @@ namespace Hopper.Meta
                 // if ctx class has a field of that name and type, reference it directly
                 else if (Context.ContainsFieldWithNameAndType(s.Name, s.Type))
                 {
-                    Console.WriteLine(s.RefKind.ToString());
-
-                    if (s.RefKind == RefKind.Out)
-                    {
-                        sb_call.Append($"out ctx.{s.Name}, ");
-                    }
-                    else if (s.RefKind == RefKind.Ref)
-                    {
-                        sb_call.Append($"ref ctx.{s.Name}, ");
-                    }
-                    else if (s.RefKind == RefKind.In)
-                    {
-                        sb_call.Append($"in ctx.{s.Name}, ");
-                    }
-                    else
+                    if (s.RefKind == RefKind.None)
                     {
                         sb_params.AppendLine($"var _{s.Name} = ctx.{s.Name};");
                         sb_call.Append($"_{s.Name}, ");
+                    }
+                    else
+                    {
+                        sb_call.Append($"{s.RefKind.AsKeyword()} ctx.{s.Name}, ");
                     }
                 }
                 // if it is of a component type, retrieve it from the entity 

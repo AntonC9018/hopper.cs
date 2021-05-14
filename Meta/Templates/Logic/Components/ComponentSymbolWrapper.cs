@@ -18,7 +18,7 @@ namespace Hopper.Meta
         {
         }
 
-        public override bool Init(GenerationEnvironment env)
+        protected override bool Init(GenerationEnvironment env)
         {
             if (symbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol))
             {
@@ -39,7 +39,7 @@ namespace Hopper.Meta
             return false;
         }
 
-        public override bool AfterInit(GenerationEnvironment projectContext)
+        protected override bool AfterInit(GenerationEnvironment projectContext)
         {
             if (exportedMethods == null)
                 exportedMethods = GetNonNativeExportedMethods(projectContext).ToArray();

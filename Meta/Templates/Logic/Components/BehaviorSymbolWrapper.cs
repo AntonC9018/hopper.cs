@@ -42,7 +42,7 @@ namespace Hopper.Meta
             return context.Init(env);
         }
 
-        public override bool Init(GenerationEnvironment env)
+        protected override bool Init(GenerationEnvironment env)
         {
             env.errorContext.ClearFlag();
 
@@ -142,7 +142,7 @@ namespace Hopper.Meta
 
         // This must be called after all the behaviors have been added to the dictionary
         // Since this could query them for context and chains.
-        public override bool AfterInit(GenerationEnvironment env)
+        protected override bool AfterInit(GenerationEnvironment env)
         {
             exportedMethods = GetAllExportedMethods(env).ToArray();
             return true;
@@ -161,27 +161,15 @@ namespace Hopper.Meta
                     // Or split by dot at this point.
                     if (attribute.Chain == null)
                     {
-                        yield return new ExportedMethodSymbolWrapper(this, method, attribute);
+                        var m = new ExportedMethodSymbolWrapper(this, method, attribute);
+                        if (m.TryInit(env, this)) yield return m;
                     }
                     else
                     {
                         var m = new ExportedMethodSymbolWrapper(method, attribute);
-                        if (m.InitWithErrorHandling(env)) yield return m;
+                        if (m.TryInit(env)) yield return m;
                     }
                 }
-            }
-        }
-        
-    }
-
-    public static class IEnumerableExtensions
-    {
-        public static IEnumerable<U> FilterMap<T, U>(this IEnumerable<T> sequence, System.Func<T, U> map)
-        {
-            foreach (var element in sequence)
-            {
-                var result = map(element);
-                if (result != null) yield return result;
             }
         }
     }

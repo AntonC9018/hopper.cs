@@ -17,7 +17,7 @@ namespace Hopper.Meta
         const string sharedProjectPath = @"../Shared/Hopper.Shared.csproj";
 
         public MSBuildWorkspace msWorkspace;
-        public GenerationEnvironment context;
+        public GenerationEnvironment env;
 
         public Generator() 
         {
@@ -63,7 +63,7 @@ namespace Hopper.Meta
                 }
             };
 
-            context = new GenerationEnvironment(projectPaths);
+            env = new GenerationEnvironment(projectPaths);
 
             await msWorkspace.OpenProjectAsync(sharedProjectPath);
 
@@ -81,7 +81,7 @@ namespace Hopper.Meta
 
         public async Task Generate(Project project)
         {
-            await context.Reset(project);
+            await env.Reset(project);
 
             // Find function
             // Potential context dependency
@@ -91,19 +91,19 @@ namespace Hopper.Meta
             // Writing
 
             // TODO: parallelize
-            var behaviorWrappers = (await context.FindAllBehaviors())
+            var behaviorWrappers = (await env.FindAllBehaviors())
                 .Select(b => new BehaviorSymbolWrapper(b))
-                .InitAndAfterInit(context)
+                .InitAndAfterInit(env)
                 .ToArray();
             
-            var componentWrappers = (await context.FindAllDirectComponents())
+            var componentWrappers = (await env.FindAllDirectComponents())
                 .Select(c => new ComponentSymbolWrapper(c))
-                .InitAndAfterInit(context)
+                .InitAndAfterInit(env)
                 .ToArray();
 
-            var tagWrappers = (await context.FindAllTags())
+            var tagWrappers = (await env.FindAllTags())
                 .Select(t => new TagSymbolWrapper(t))
-                .InitAndAfterInit(context)
+                .InitAndAfterInit(env)
                 .ToArray();
         
             foreach (var behavior in behaviorWrappers)
@@ -111,7 +111,7 @@ namespace Hopper.Meta
                 behavior.WriteGenerationMessage();
 
                 (new BehaviorPrinter(behavior))
-                    .WriteToFile($"{context._paths.BehaviorAutogenFolder}/{behavior.ClassName}.cs");
+                    .WriteToFile($"{env.paths.BehaviorAutogenFolder}/{behavior.ClassName}.cs");
             }
 
             foreach (var component in componentWrappers)
@@ -119,7 +119,7 @@ namespace Hopper.Meta
                 component.WriteGenerationMessage();
 
                 (new ComponentPrinter(component))
-                    .WriteToFile($"{context._paths.ComponentAutogenFolder}/{component.ClassName}.cs");
+                    .WriteToFile($"{env.paths.ComponentAutogenFolder}/{component.ClassName}.cs");
             }
 
             foreach (var tag in tagWrappers)
@@ -127,60 +127,60 @@ namespace Hopper.Meta
                 tag.WriteGenerationMessage();
 
                 (new ComponentPrinter(tag)).WriteToFile(
-                    $"{context._paths.TagsAutogenFolder}/{tag.ClassName}.cs");
+                    $"{env.paths.TagsAutogenFolder}/{tag.ClassName}.cs");
             }
 
-            var methodClasses = context.GetExportedMethodClasses();
+            var methodClasses = env.GetExportedMethodClasses();
             {
                 foreach (var methodClass in methodClasses)
                 {
                     methodClass.WriteGenerationMessage();
 
                     (new ChainHandlersPrinter(methodClass))
-                        .WriteToFile($"{context._paths.HandlersAutogenFolder}/{methodClass.ClassName}.cs");
+                        .WriteToFile($"{env.paths.HandlersAutogenFolder}/{methodClass.ClassName}.cs");
                 }
             }
 
             
-            var topLevelStatTypes = GetJsonFileNames(context._paths.StatJsonsFolder).Select(
-                fname => StatType.ParseJson(context.statParsingContext, fname));
+            var topLevelStatTypes = GetJsonFileNames(env.paths.StatJsonsFolder).Select(
+                fname => StatType.ParseJson(env.statParsingContext, fname));
             {
-                var startPrinter = new StatStartPrinter(context.RootNamespaceName);
+                var startPrinter = new StatStartPrinter(env.RootNamespaceName);
 
                 foreach (var stat in topLevelStatTypes)
                 {
                     Console.WriteLine($"Generating code for stat {stat.Name}");
 
                     startPrinter.ResetStat(stat);
-                    startPrinter.WriteToFile($@"{context._paths.StatAutogenFolder}/{stat.Name}.cs");
+                    startPrinter.WriteToFile($@"{env.paths.StatAutogenFolder}/{stat.Name}.cs");
                 }
             }
 
-            var slots = context.GetSlots();
+            var slots = env.GetSlots();
 
             {
-                (new SlotExtensionsPrinter(context.RootNamespaceName, slots))
-                    .WriteToFile(context._paths.SlotExtensionsPath);
+                (new SlotExtensionsPrinter(env.RootNamespaceName, slots))
+                    .WriteToFile(env.paths.SlotExtensionsPath);
             }
 
-            var flagEnums = context.GetFlagEnums()
+            var flagEnums = env.GetFlagEnums()
                 .Select(f => new FlagEnumSymbolWrapper(f))
-                .Where(f => f.InitWithErrorHandling(context));
+                .Where(f => f.TryInit(env));
 
             foreach (var flag in flagEnums)
             {
                 (new FlagsPrinter(flag))
-                    .WriteToFile($"{context._paths.FlagsAutogenFolder}/{flag.ClassName}.cs");
+                    .WriteToFile($"{env.paths.FlagsAutogenFolder}/{flag.ClassName}.cs");
             }
 
-            var entityTypes = context.GetEntityTypes();
-            var methodClassInstances = context.GetMethodClassInstances();
-            var fieldsRequiringInit = context.GetFieldsRequiringInit();
-            var staticIndentiyingStatFields = context.GetStaticIdentifyingStatFields();
+            var entityTypes = env.GetEntityTypes();
+            var methodClassInstances = env.GetMethodClassInstances();
+            var fieldsRequiringInit = env.GetFieldsRequiringInit();
+            var staticIndentiyingStatFields = env.GetStaticIdentifyingStatFields();
 
             {
                 // They must live in at least the base namespace hopper
-                if (context.RootNamespaceName.Length >= "Hopper".Length)
+                if (env.RootNamespaceName.Length >= "Hopper".Length)
                 {
                     var mainPrinter = new AllInitPrinter()
                     {
@@ -191,18 +191,18 @@ namespace Hopper.Meta
                         fieldsRequiringInit = fieldsRequiringInit,
                         staticIndentiyingStatFields = staticIndentiyingStatFields,
                         entityTypes = entityTypes,
-                        statRootScope = context.statParsingContext.currentScope,
+                        statRootScope = env.statParsingContext.currentScope,
                         slots = slots,
-                        Namespace = context.RootNamespaceName
+                        Namespace = env.RootNamespaceName
                     };
 
                     Console.WriteLine("Generating code for the main init function");
 
-                    File.WriteAllText(context._paths.MainAutogenFile, mainPrinter.TransformText(), Encoding.UTF8);
+                    File.WriteAllText(env.paths.MainAutogenFile, mainPrinter.TransformText(), Encoding.UTF8);
                 }
                 else
                 {
-                    Console.WriteLine($"Unable to generate code for the main init function: The common namespace between the files that participate in code generation must at least contain 'Hopper' (got '{context.RootNamespaceName})'");
+                    Console.WriteLine($"Unable to generate code for the main init function: The common namespace between the files that participate in code generation must at least contain 'Hopper' (got '{env.RootNamespaceName})'");
                 }
 
             }

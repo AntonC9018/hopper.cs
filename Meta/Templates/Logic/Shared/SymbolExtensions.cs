@@ -389,9 +389,26 @@ namespace Hopper.Meta
         public static IEnumerable<T> InitAndAfterInit<T>(
             this IEnumerable<T> guys, GenerationEnvironment context) where T : TypeSymbolWrapperBase
         {
+            foreach (var g in guys)
+            {
+
+            }
             return guys
-                .Where(g => g.InitWithErrorHandling(context))
-                .Where(g => g.AfterInitWithErrorHandling(context));
+                .Where(g => g.TryInit(context))
+                .ToArray() // all the inits must run first
+                           // this is the reason we have two functions in the first place
+                .Where(g => g.TryAfterInit(context));
         }
+
+        public static string AsKeyword(this RefKind kind)
+        {
+            switch (kind)
+            {
+                case RefKind.In:  return "in";
+                case RefKind.Out: return "out";
+                case RefKind.Ref: return "ref";
+                default: return "";
+            }
+        } 
     }
 }
