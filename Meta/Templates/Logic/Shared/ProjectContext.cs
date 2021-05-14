@@ -18,16 +18,18 @@ namespace Hopper.Meta
 
     public class GenerationEnvironment
     {
-        public Solution _solution;
-        public Project _project;
-        public AutogenPaths paths;
-        public Compilation _compilation;
+        private Project _project;
+        private Compilation _compilation;
+
+        public Solution Solution { get; private set; }
+        public AutogenPaths Paths { get; private set; }
 
         // TODO: This will be annoying to use if two mods defined two components with the same name
         // Even if one mod does not reference the other, duplicate names will cause collision.
         // So this dictionary has to be adjusted based on which assemblies are referenced by the given mod.
         // This problem is a long way away, though, so I'll leave it as it is right now.
         public Dictionary<string, ComponentSymbolWrapper> components;
+        public Dictionary<INamedTypeSymbol, ContextSymbolWrapper> contexts; 
 
         // Same problem here.
         public HashSet<string> aliases;
@@ -45,6 +47,21 @@ namespace Hopper.Meta
             }
 
             components.Add(wrapper.ClassName, wrapper);
+            return true;
+        }
+
+        public bool TryCacheContext(INamedTypeSymbol contextSymbol, out ContextSymbolWrapper context)
+        {
+            context = new ContextSymbolWrapper(contextSymbol);
+            return context.TryInit(this);
+        }
+
+        public bool TryGetContextLazy(INamedTypeSymbol contextSymbol, out ContextSymbolWrapper context)
+        {
+            if (!contexts.TryGetValue(contextSymbol, out context))
+            {
+                return TryCacheContext(contextSymbol, out context);
+            }
             return true;
         }
 
@@ -66,22 +83,22 @@ namespace Hopper.Meta
             statParsingContext = new ParsingContext("Hopper");
             errorContext = new ErrorContext();
 
-            paths = new AutogenPaths();
+            Paths = new AutogenPaths();
             foreach (var p in projectPaths)
             {
-                paths.Reset(Path.GetDirectoryName(p));
-                paths.CreateOrEmpty();
+                Paths.Reset(Path.GetDirectoryName(p));
+                Paths.CreateOrEmpty();
             }
         }
 
         public async Task Reset(Project project)
         {
             _project = project;
-            _solution = _project.Solution;
+            Solution = _project.Solution;
             _compilation = await project.GetCompilationAsync();
             RelevantSymbols.TryInitializeSingleton(_compilation);
-            paths.Reset(Path.GetDirectoryName(project.FilePath));
-            this._rootNamespace = GetRootNamespace();
+            Paths.Reset(Path.GetDirectoryName(project.FilePath));
+            _rootNamespace = GetRootNamespace();
 
             // Hopper.
             statParsingContext.ResetToRootScope();
@@ -110,21 +127,21 @@ namespace Hopper.Meta
         public async Task<IEnumerable<INamedTypeSymbol>> FindAllDirectComponents()
         {
             return (await SymbolFinder.FindImplementationsAsync(
-                RelevantSymbols.IComponent, _solution, transitive: false, null
+                RelevantSymbols.IComponent, Solution, transitive: false, null
             )).Where(s => s.IsContainedInNamespace(_rootNamespace));
         }
 
         public async Task<IEnumerable<INamedTypeSymbol>> FindAllTags()
         {
             return (await SymbolFinder.FindImplementationsAsync(
-                RelevantSymbols.ITag, _solution, transitive: false, null
+                RelevantSymbols.ITag, Solution, transitive: false, null
             )).Where(s => s.IsContainedInNamespace(_rootNamespace));
         }
 
         public async Task<IEnumerable<INamedTypeSymbol>> FindAllBehaviors()
         {
             return (await SymbolFinder.FindImplementationsAsync(
-                RelevantSymbols.IBehavior, _solution, transitive: false, null
+                RelevantSymbols.IBehavior, Solution, transitive: false, null
             )).Where(s => s.IsContainedInNamespace(_rootNamespace));
         }
 
@@ -141,7 +158,7 @@ namespace Hopper.Meta
                 yield return type;
         }
 
-        public IEnumerable<ExportedMethodsClassSymbolWrapper> GetExportedMethodClasses()
+        public IEnumerable<ExportedStuffClassSymbolWrapper> GetExportedMethodClasses()
         {
             var typeSymbols = GetNotNestedTypes();
 
@@ -149,7 +166,7 @@ namespace Hopper.Meta
             {
                 if (typeSymbol.IsStatic || typeSymbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol))
                 {
-                    var classWrapper = new ExportedMethodsClassSymbolWrapper(typeSymbol);
+                    var classWrapper = new ExportedStuffClassSymbolWrapper(typeSymbol);
                     if (classWrapper.TryInit(this))
                     {
                         yield return classWrapper;

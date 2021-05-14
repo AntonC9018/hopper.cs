@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace Hopper.Utils.Chains
 {
-    public sealed class Chain<Context> : SortedSet<Handler<Context>>, IChain
+    public sealed class Chain<Context> : SortedSet<Handler<Context>>, IChain<Handler<Context>>
     {
         public Chain() : base()
         {
@@ -30,5 +30,6 @@ namespace Hopper.Utils.Chains
 
         ICopyable ICopyable.Copy() => new Chain<Context>(this);
         public Chain<Context> Copy() => new Chain<Context>(this);
+        void IChain<Handler<Context>>.Add(Handler<Context> handler) => Add(handler);
     }
 }

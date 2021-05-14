@@ -8,7 +8,6 @@ namespace Hopper.Meta
 {
     public class ComponentSymbolWrapper : TypeSymbolWrapperBase
     {   
-        public ExportedMethodSymbolWrapper[] exportedMethods;
         public HashSet<IFieldSymbol> flaggedFields;
         public AliasMethodSymbolWrapper[] aliasMethods;
         public InjectedFieldSymbolWrapper[] injectedFields;
@@ -37,13 +36,6 @@ namespace Hopper.Meta
             }
 
             return false;
-        }
-
-        protected override bool AfterInit(GenerationEnvironment env)
-        {
-            if (exportedMethods == null)
-                exportedMethods = GetNonNativeExportedMethods(env).ToArray();
-            return true;
         }
 
         public IEnumerable<InjectedFieldSymbolWrapper> GetInjectedFields()

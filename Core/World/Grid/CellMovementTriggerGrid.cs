@@ -43,21 +43,21 @@ namespace Hopper.Core.WorldNS
     }
 
 
-    public struct PermanentCellMovementTriggerGrid
+    public struct SelfFilteringCellMovementTriggerGrid
     {
-        private Dictionary<IntVector2, PermanentChain<CellMovementContext>> _triggers;
+        private Dictionary<IntVector2, SelfFilteringChain<CellMovementContext>> _triggers;
 
         public void Init()
         {
-            _triggers = new Dictionary<IntVector2, PermanentChain<CellMovementContext>>();
+            _triggers = new Dictionary<IntVector2, SelfFilteringChain<CellMovementContext>>();
         }
 
         public void Subscribe(IntVector2 position, System.Func<CellMovementContext, bool> handler)
         {
-            PermanentChain<CellMovementContext> chain;
+            SelfFilteringChain<CellMovementContext> chain;
             if (!_triggers.TryGetValue(position, out chain))
             {
-                chain = new PermanentChain<CellMovementContext>();
+                chain = new SelfFilteringChain<CellMovementContext>();
                 _triggers[position] = chain;
             }
             chain.AddMaybeWhileIterating(handler);

@@ -6,9 +6,9 @@ namespace Hopper.Meta.Template
 {
     public partial class ChainHandlersPrinter
     {
-        public ExportedMethodsClassSymbolWrapper methodClass;
+        public ExportedStuffClassSymbolWrapper methodClass;
 
-        public ChainHandlersPrinter(ExportedMethodsClassSymbolWrapper methodClass)
+        public ChainHandlersPrinter(ExportedStuffClassSymbolWrapper methodClass)
         {
             this.methodClass = methodClass;
         }

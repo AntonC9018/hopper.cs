@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Hopper.Utils.Chains
 {
-    public class LinearChain<Context> : List<System.Action<Context>>, IChain
+    public class LinearChain<Context> : List<System.Action<Context>>, IChain<System.Action<Context>>
     {
         public LinearChain() : base()
         {

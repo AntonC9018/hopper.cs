@@ -200,37 +200,13 @@ namespace Hopper.Meta
 
         public static IEnumerable<object> GetActualConstuctorParams(this AttributeData attributeData)
         {
-            /*int params_index = attributeData.AttributeConstructor.Parameters.IndexOfFirst(p => p.IsParams);
-            
-            // There is no params parameter or it was passed as an array
-            if (params_index == -1 || params_index == attributeData.ConstructorArguments.Length - 1) 
-            {
-                foreach (var arg in attributeData.ConstructorArguments)
-                {
-                    yield return arg.GetValue();
-                }
-            }
-            // There is a params parameter and it was passed nothing
-            // We cannot know the type of the params array (although we could get it by reflection)
-            else if (params_index >= attributeData.ConstructorArguments.Length)
-            {
-                yield return null;
-            }
-            else
-            {
-                for (int i = 0; i < params_index; i++)
-                {
-                    yield return attributeData.ConstructorArguments[i].GetValue();
-                }
-
-                yield return attributeData.ConstructorArguments
-                    .Skip(params_index).Select(arg => arg.GetValue()).ToArray();
-            }
-            */
             foreach (var arg in attributeData.ConstructorArguments)
             {
                 if (arg.Kind == TypedConstantKind.Array)
                 {
+                    // Assume they are strings, but the array that we get from this
+                    // should actually be of type of the objects within it, be it strings or ints
+                    // This is definitely possible with reflection, I just don't know how exactly. 
                     yield return arg.Values.Select(a => a.Value).OfType<string>().ToArray();
                 }
                 else
@@ -362,7 +338,11 @@ namespace Hopper.Meta
             return false;
         }
 
-        public static IEnumerable<INamedTypeSymbol> GetTypeHierarchyReverse(this INamedTypeSymbol symbol)
+        /// <summary>
+        /// Returns the base types of the current type, including the current type.
+        /// The types are returned in order from most derived to least derived.
+        /// </summary>
+        public static IEnumerable<INamedTypeSymbol> GetReversedTypeHierarchy(this INamedTypeSymbol symbol)
         {
             while (symbol != null) 
             {
@@ -371,14 +351,28 @@ namespace Hopper.Meta
             }
         }
 
+        /// <summary>
+        /// Returns the base types of the current type, including the current type.
+        /// The types are returned in order from least derived to most derived.
+        /// </summary>
         public static IEnumerable<INamedTypeSymbol> GetTypeHierarchy(this INamedTypeSymbol symbol)
         {
-            return GetTypeHierarchyReverse(symbol).Reverse();
+            return GetReversedTypeHierarchy(symbol).Reverse();
+        }
+
+        public static IEnumerable<IFieldSymbol> GetFields(this INamedTypeSymbol symbol)
+        {
+            return symbol.GetMembers().OfType<IFieldSymbol>();
         }
 
         public static IEnumerable<IFieldSymbol> GetInstanceFields(this INamedTypeSymbol symbol)
         {
-            return symbol.GetMembers().OfType<IFieldSymbol>().Where(f => !f.IsStatic && !f.IsConst);
+            return symbol.GetFields().Where(f => !f.IsStatic && !f.IsConst);
+        }
+
+        public static IEnumerable<IFieldSymbol> GetStaticFields(this INamedTypeSymbol symbol)
+        {
+            return symbol.GetFields().Where(f => f.IsStatic);
         }
 
         public static string CommaJoin<T>(this IEnumerable<T> things, System.Func<T, string> func)
@@ -411,6 +405,20 @@ namespace Hopper.Meta
         public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> e) where T : class
         {
             return e.Where(el => !(el is null));
+        }
+        
+        public static IEnumerable<ITypeSymbol> GetLeafTypeArguments(this ITypeSymbol symbol)
+        {
+            if (symbol is INamedTypeSymbol named_symbol && named_symbol.IsGenericType)
+            {
+                foreach (var type_argument in named_symbol.TypeArguments) 
+                foreach (var nested_symbol in GetLeafTypeArguments(type_argument))
+                    yield return nested_symbol;
+            }
+            else
+            {
+                yield return symbol;
+            }
         }
     }
 }

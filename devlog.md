@@ -26,6 +26,7 @@
     - [Changing the context](#changing-the-context)
     - [Bug with stats](#bug-with-stats)
     - [More Chains (aka events)](#more-chains-aka-events)
+      - [The Plan](#the-plan)
 
 <!-- /TOC -->
 
@@ -1001,7 +1002,7 @@ public static class Demo
 
     // It will be given an id in the main init function automatically
 
-    // Now, if one wanted to add chains to this chain, either query it manually
+    // Now, if one wanted to add handlers to this chain, either query it manually
     public void Thing() => Demo.MyChainPath(entity).Add(SomeHandler);
 
     // Or use the export attribute, e.g. like this
@@ -1023,3 +1024,17 @@ public static class Demo
     }
 }
 ```
+
+
+#### The Plan
+
+1. Add the `[Chain]` attribute with Name property
+2. Remove `[Chains]`.
+3. Get the fields decorated with `[Chain]`. Ignore non-index chains on non-behavior classes. For index field.
+4. Add a new snippet for generating code from indices.
+5. Give identifiers to these indices by the registry.
+6. Recognize the + syntax. In this case, get the correspondind static class instead of behavior.
+7. Chains now store their context themselves. They also store their type (linear or nor).
+8. Let's say the context stays as it is for now (actor + other stuff on an object).
+9. Export attribute disallow priorities for linear chains (emit a warning).
+10.  

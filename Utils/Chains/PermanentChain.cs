@@ -2,13 +2,13 @@ using System.Collections.Generic;
 
 namespace Hopper.Utils.Chains
 {
-    public class PermanentChain<Context> : DoubleList<System.Func<Context, bool>>
+    public class SelfFilteringChain<Context> : DoubleList<System.Func<Context, bool>>
     {
-        public PermanentChain()
+        public SelfFilteringChain()
         {
         }
 
-        public PermanentChain(List<System.Func<Context, bool>> buffer) : base(buffer)
+        public SelfFilteringChain(List<System.Func<Context, bool>> buffer) : base(buffer)
         {
             _primaryBuffer = new List<System.Func<Context, bool>>(buffer);
         }

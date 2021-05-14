@@ -16,8 +16,8 @@ namespace Hopper.Core.WorldNS
         // TODO: these are basically useless, because they get wiped off at the end of loop
         public CellMovementTriggerGrid EnterTriggerGrid; 
         public CellMovementTriggerGrid LeaveTriggerGrid; 
-        public PermanentCellMovementTriggerGrid EnterPermanentTriggerGrid;
-        public PermanentCellMovementTriggerGrid LeavePermanentTriggerGrid;
+        public SelfFilteringCellMovementTriggerGrid EnterPermanentTriggerGrid;
+        public SelfFilteringCellMovementTriggerGrid LeavePermanentTriggerGrid;
 
         private void InitGrids()
         {

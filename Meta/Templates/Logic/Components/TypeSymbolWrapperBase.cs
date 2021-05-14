@@ -12,6 +12,8 @@ namespace Hopper.Meta
     {
         public INamedTypeSymbol symbol;
         public IEnumerable<UsingDirectiveSyntax> usings;
+        public ExportedMethodSymbolWrapper[] exportedMethods;
+        public ChainWrapper[] moreChains;
 
         public TypeSymbolWrapperBase(INamedTypeSymbol symbol)
         {
@@ -20,11 +22,16 @@ namespace Hopper.Meta
 
         protected virtual bool Init(GenerationEnvironment env)
         {
-            usings = GetUsingSyntax(env._solution);
+            usings = GetUsingSyntax(env.Solution);
             return true;
         }
 
-        protected virtual bool AfterInit(GenerationEnvironment env) => true;
+        protected virtual bool AfterInit(GenerationEnvironment env)
+        {
+            if (exportedMethods == null)
+                exportedMethods = GetNonNativeExportedMethods(env).ToArray();
+            return true;   
+        }
 
         public bool TryInit(GenerationEnvironment env)
             => env.DoScoped(this, () => Init(env));
@@ -110,6 +117,21 @@ namespace Hopper.Meta
                     }
 
                     env.errorContext.PopThing();
+                }
+            }
+        }
+
+        private IEnumerable<ChainWrapper> GetMoreChainsChains(GenerationEnvironment env)
+        {
+            foreach (var field in symbol.GetStaticFields())
+            {
+                if (field.TryGetAttribute(RelevantSymbols.ChainAttribute, out var chainAttribute))
+                {
+                    var wrapped = new ChainWrapper(field, chainAttribute);
+                    
+                    env.errorContext.PushThing(wrapped);
+
+                    
                 }
             }
         }

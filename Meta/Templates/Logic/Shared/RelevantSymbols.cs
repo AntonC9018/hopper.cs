@@ -13,11 +13,13 @@ namespace Hopper.Meta
         public static INamedTypeSymbol IComponent;
         public static INamedTypeSymbol IBehavior;
         public static INamedTypeSymbol ITag;
+        public static INamedTypeSymbol Chain;
+        public static INamedTypeSymbol Index;
         public static AttributeSymbolWrapper<AliasAttribute> AliasAttribute;
         public static AttributeSymbolWrapper<ActivationAliasAttribute> ActivationAliasAttribute;
         public static AttributeSymbolWrapper<AutoActivationAttribute> AutoActivationAttribute;
         public static AttributeSymbolWrapper<NoActivationAttribute> NoActivationAttribute;
-        public static AttributeSymbolWrapper<ChainsAttribute> ChainsAttribute;
+        public static AttributeSymbolWrapper<ChainAttribute> ChainAttribute;
         public static AttributeSymbolWrapper<InjectAttribute> InjectAttribute;
         public static AttributeSymbolWrapper<FlagsAttribute> FlagsAttribute;
         public static AttributeSymbolWrapper<ExportAttribute> ExportAttribute;
@@ -45,12 +47,12 @@ namespace Hopper.Meta
         
         private static INamedTypeSymbol GetComponentSymbol(Compilation compilation, string name)
         {
-            return (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Components.{name}");
+            return (INamedTypeSymbol) compilation.GetTypeByMetadataName($"Hopper.Core.Components.{name}");
         }
 
-        public static INamedTypeSymbol GetKnownSymbol(Compilation compilation, System.Type t)
+        private static INamedTypeSymbol GetHopperTypeSymbol(Compilation compilation, string name)
         {
-            return (INamedTypeSymbol)compilation.GetTypeByMetadataName(t.FullName);
+            return (INamedTypeSymbol) compilation.GetTypeByMetadataName($"Hopper.{name}");
         }
 
         /// <summary>
@@ -60,20 +62,22 @@ namespace Hopper.Meta
         /// </summary>
         private static void Init(Compilation compilation)
         {
-            entity = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.Entity");
-            icopyable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Utils.ICopyable");
-            istandartActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IStandartActivateable");
-            ipredictable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IPredictable");
-            iundirectedActivateable = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IUndirectedActivateable");
-            iundirectedPredictable  = (INamedTypeSymbol)compilation.GetTypeByMetadataName($"Hopper.Core.ActingNS.IUndirectedPredictable");
+            entity                   = GetHopperTypeSymbol(compilation, "Core.Entity");
+            icopyable                = GetHopperTypeSymbol(compilation, "Utils.ICopyable");
+            istandartActivateable    = GetHopperTypeSymbol(compilation, "Core.ActingNS.IStandartActivateable");
+            ipredictable             = GetHopperTypeSymbol(compilation, "Core.ActingNS.IPredictable");
+            iundirectedActivateable  = GetHopperTypeSymbol(compilation, "Core.ActingNS.IUndirectedActivateable");
+            iundirectedPredictable   = GetHopperTypeSymbol(compilation, "Core.ActingNS.IUndirectedPredictable");
+            Chain                    = GetHopperTypeSymbol(compilation, "Utils.Chains.Chain`1");
+            Index                    = GetHopperTypeSymbol(compilation, "Core.Components.Index`1");
             IComponent               = GetComponentSymbol(compilation, nameof(IComponent));
             IBehavior                = GetComponentSymbol(compilation, nameof(IBehavior));
             ITag                     = GetComponentSymbol(compilation, nameof(ITag));
             AliasAttribute          .Init(compilation);
             ActivationAliasAttribute.Init(compilation);
-            AutoActivationAttribute .Init(compilation);
+            AutoActivationAttribute .Init(compilation); 
             NoActivationAttribute   .Init(compilation);
-            ChainsAttribute         .Init(compilation);
+            ChainAttribute          .Init(compilation);
             InjectAttribute         .Init(compilation);
             FlagsAttribute          .Init(compilation);
             ExportAttribute         .Init(compilation);

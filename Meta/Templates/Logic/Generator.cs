@@ -111,7 +111,7 @@ namespace Hopper.Meta
                 behavior.WriteGenerationMessage();
 
                 (new BehaviorPrinter(behavior))
-                    .WriteToFile($"{env.paths.BehaviorAutogenFolder}/{behavior.ClassName}.cs");
+                    .WriteToFile($"{env.Paths.BehaviorAutogenFolder}/{behavior.ClassName}.cs");
             }
 
             foreach (var component in componentWrappers)
@@ -119,7 +119,7 @@ namespace Hopper.Meta
                 component.WriteGenerationMessage();
 
                 (new ComponentPrinter(component))
-                    .WriteToFile($"{env.paths.ComponentAutogenFolder}/{component.ClassName}.cs");
+                    .WriteToFile($"{env.Paths.ComponentAutogenFolder}/{component.ClassName}.cs");
             }
 
             foreach (var tag in tagWrappers)
@@ -127,7 +127,7 @@ namespace Hopper.Meta
                 tag.WriteGenerationMessage();
 
                 (new ComponentPrinter(tag)).WriteToFile(
-                    $"{env.paths.TagsAutogenFolder}/{tag.ClassName}.cs");
+                    $"{env.Paths.TagsAutogenFolder}/{tag.ClassName}.cs");
             }
 
             var methodClasses = env.GetExportedMethodClasses();
@@ -137,12 +137,12 @@ namespace Hopper.Meta
                     methodClass.WriteGenerationMessage();
 
                     (new ChainHandlersPrinter(methodClass))
-                        .WriteToFile($"{env.paths.HandlersAutogenFolder}/{methodClass.ClassName}.cs");
+                        .WriteToFile($"{env.Paths.HandlersAutogenFolder}/{methodClass.ClassName}.cs");
                 }
             }
 
             
-            var topLevelStatTypes = GetJsonFileNames(env.paths.StatJsonsFolder)
+            var topLevelStatTypes = GetJsonFileNames(env.Paths.StatJsonsFolder)
                 .Select(fname => StatType.ParseJson(env.statParsingContext, fname))
                 .WhereNotNull();
             {
@@ -153,7 +153,7 @@ namespace Hopper.Meta
                     Console.WriteLine($"Generating code for stat {stat.Name}");
 
                     startPrinter.ResetStat(stat);
-                    startPrinter.WriteToFile($@"{env.paths.StatAutogenFolder}/{stat.Name}.cs");
+                    startPrinter.WriteToFile($@"{env.Paths.StatAutogenFolder}/{stat.Name}.cs");
                 }
             }
 
@@ -161,7 +161,7 @@ namespace Hopper.Meta
 
             {
                 (new SlotExtensionsPrinter(env.RootNamespaceName, slots))
-                    .WriteToFile(env.paths.SlotExtensionsPath);
+                    .WriteToFile(env.Paths.SlotExtensionsPath);
             }
 
             var flagEnums = env.GetFlagEnums()
@@ -171,7 +171,7 @@ namespace Hopper.Meta
             foreach (var flag in flagEnums)
             {
                 (new FlagsPrinter(flag))
-                    .WriteToFile($"{env.paths.FlagsAutogenFolder}/{flag.ClassName}.cs");
+                    .WriteToFile($"{env.Paths.FlagsAutogenFolder}/{flag.ClassName}.cs");
             }
 
             var entityTypes = env.GetEntityTypes();
@@ -199,7 +199,7 @@ namespace Hopper.Meta
 
                     Console.WriteLine("Generating code for the main init function");
 
-                    File.WriteAllText(env.paths.MainAutogenFile, mainPrinter.TransformText(), Encoding.UTF8);
+                    File.WriteAllText(env.Paths.MainAutogenFile, mainPrinter.TransformText(), Encoding.UTF8);
                 }
                 else
                 {
