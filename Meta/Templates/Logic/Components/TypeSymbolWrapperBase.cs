@@ -27,15 +27,10 @@ namespace Hopper.Meta
         protected virtual bool AfterInit(GenerationEnvironment env) => true;
 
         public bool TryInit(GenerationEnvironment env)
-        {
-            return env.DoScoped(this, () => Init(env));
-
-        }
+            => env.DoScoped(this, () => Init(env));
 
         public bool TryAfterInit(GenerationEnvironment env)
-        {
-            return env.DoScoped(this, () => AfterInit(env));
-        }
+            => env.DoScoped(this, () => AfterInit(env));
 
 
         public void WriteGenerationMessage()
@@ -109,8 +104,11 @@ namespace Hopper.Meta
                         {
                             env.ReportError($"The class {ClassName} marked a method for export but did not specify the chain path. Note: one may omit the chain path only if the method being exported is inside a behavior class.");
                         }
+                        env.errorContext.PopThing();
                         yield break;
                     }
+
+                    env.errorContext.PopThing();
                 }
             }
         }

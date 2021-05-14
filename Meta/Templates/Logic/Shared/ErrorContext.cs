@@ -51,12 +51,11 @@ namespace Hopper.Meta
             things.Pop();
         }
 
-        private void WriteErrorPrefix()
+        private void WriteErrorLocation()
         {
-            Console.Write("An error has occured");
             foreach (var thing in things)
             {
-                Console.WriteLine($" at {thing.Identity} at {thing.Location}");
+                Console.WriteLine($"  at {thing.Identity} at {thing.Location}");
             }
         }
 
@@ -65,9 +64,8 @@ namespace Hopper.Meta
         public void Report(string errorText)
         {
             Flag = true;
-            WriteErrorPrefix();
-
             Console.WriteLine(errorText);
+            WriteErrorLocation();
         }
     }
 }

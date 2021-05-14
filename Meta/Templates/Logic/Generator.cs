@@ -142,8 +142,9 @@ namespace Hopper.Meta
             }
 
             
-            var topLevelStatTypes = GetJsonFileNames(env.paths.StatJsonsFolder).Select(
-                fname => StatType.ParseJson(env.statParsingContext, fname));
+            var topLevelStatTypes = GetJsonFileNames(env.paths.StatJsonsFolder)
+                .Select(fname => StatType.ParseJson(env.statParsingContext, fname))
+                .WhereNotNull();
             {
                 var startPrinter = new StatStartPrinter(env.RootNamespaceName);
 

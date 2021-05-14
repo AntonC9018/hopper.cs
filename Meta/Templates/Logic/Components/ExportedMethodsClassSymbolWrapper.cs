@@ -11,8 +11,10 @@ namespace Hopper.Meta
         {
         }
 
-        public bool TryInit(GenerationEnvironment env)
+        protected override bool Init(GenerationEnvironment env)
         {
+            if (!base.Init(env)) return false;
+            
             exportedMethods = GetNonNativeExportedMethods(env)
                 .Where(m => m.TryInit(env)).ToArray();
 

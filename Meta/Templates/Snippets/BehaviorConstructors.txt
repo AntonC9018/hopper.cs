@@ -10,7 +10,7 @@
         { #>
             this.<#= injected.Name #> = <#= injected.Name #>;
 <#      } 
-        foreach (var chain in behavior.chains) 
+        foreach (var chain in behavior.Chains) 
         { #>
             this._<#= chain.Name #>Chain = new Chain<Context>();
 <#      } #>
@@ -25,7 +25,7 @@
         /// </summary>
         public <#= behavior.ClassName #>(<#= behavior.ClassName #> other)
         {
-<#      foreach (var chain in behavior.chains) 
+<#      foreach (var chain in behavior.Chains) 
         { #>
             _<#= chain.Name #>Chain = other._<#= chain.Name #>Chain.Copy();
 <#      } 

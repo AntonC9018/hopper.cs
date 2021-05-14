@@ -1,4 +1,4 @@
-<#  foreach (var chain in behavior.chains) 
+<#  foreach (var chain in behavior.Chains) 
     { #>
         public readonly Chain<Context> _<#= chain.Name #>Chain;
 
@@ -11,15 +11,15 @@
 <#  }
     if (behavior.ShouldGenerateAutoActivation) 
     { #>
-        public bool Activate(<#= behavior.context.JoinedParamsWithActor() #>)
+        public bool Activate(<#= behavior.Context.JoinedParamsWithActor() #>)
         {
             Context ctx = new Context
             {
-<#      if (behavior.context.IsActorAField)
+<#      if (behavior.Context.IsActorAField)
         { #>
-                <#= behavior.context.ActorName #> = <#= behavior.context.ActorName #>,
+                <#= behavior.Context.ActorName #> = <#= behavior.Context.ActorName #>,
 <#      }
-        foreach (var name in behavior.context.ParamNames()) 
+        foreach (var name in behavior.Context.ParamNames()) 
         { #>
                 <#= name #> = <#= name #>,
 <#      } #>

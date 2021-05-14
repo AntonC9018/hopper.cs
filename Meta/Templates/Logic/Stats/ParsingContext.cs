@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Hopper.Meta.Stats
@@ -57,9 +58,15 @@ namespace Hopper.Meta.Stats
         public void Push(string tokenName) => tokenNames.Add(tokenName);
         public void Pop() => tokenNames.RemoveAt(tokenNames.Count - 1);
 
+
+        // TODO: this has already been implemented in the error context, so try and use that one instead.
+        public bool Flag;
+        public void ClearFlag() => Flag = false;
+
         public void Report(string error)
         {
-            throw new SyntaxException($"Error while parsing {fileName} at {System.String.Join(".", tokenNames)}: {error}");
+            Console.WriteLine($"Error while parsing {fileName} at {System.String.Join(".", tokenNames)}: {error}");
+            Flag = true;
         }
     }
 }

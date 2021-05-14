@@ -11,9 +11,9 @@ namespace Hopper.Meta
     {
         public IMethodSymbol symbol;
         public ExportAttribute exportAttribute;
-        public BehaviorSymbolWrapper referencedBehavior;
+        public BehaviorSymbolWrapper ReferencedBehavior { get; private set; }
 
-        public ContextSymbolWrapper Context => referencedBehavior.context;
+        public ContextSymbolWrapper Context => ReferencedBehavior.Context;
         public string Name => symbol.Name;
         public string ContextName => Context.NameWithParentClass;
         public bool IsDynamic => exportAttribute.Dynamic;
@@ -25,13 +25,6 @@ namespace Hopper.Meta
         public string AdapterBody;
 
 
-        public ExportedMethodSymbolWrapper(BehaviorSymbolWrapper behavior, IMethodSymbol symbol, ExportAttribute exportAttribute)
-        {
-            this.symbol = symbol;
-            this.exportAttribute = exportAttribute;
-            this.referencedBehavior = behavior;
-        }
-
         public ExportedMethodSymbolWrapper(IMethodSymbol symbol, ExportAttribute exportAttribute)
         {
             this.symbol = symbol;
@@ -40,7 +33,7 @@ namespace Hopper.Meta
 
         private bool InitWithBehavior(GenerationEnvironment env, BehaviorSymbolWrapper behavior)
         {
-            this.referencedBehavior = behavior;
+            this.ReferencedBehavior = behavior;
             AdapterBody = GetAdapterBody(env);
             return !(AdapterBody is null);
         }
@@ -66,29 +59,26 @@ namespace Hopper.Meta
             var componentName = chain.Substring(0, indexOfDot);
             var chainName = chain.Substring(indexOfDot + 1, chain.Length - indexOfDot - 1);
 
-            if (!env.components.ContainsKey(componentName))
+            if (!env.components.TryGetValue(componentName, out var component))
             {
                 env.ReportError($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not exist.");
                 return false;
             }
 
-            var component = env.components[componentName];
-
             if (component is BehaviorSymbolWrapper behavior)
             {
-                if (!behavior.chains.Any(ch => ch.Name == chainName))
+                if (behavior.Chains.Any(ch => ch.Name == chainName))
                 {
-                    env.ReportError($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not define the referenced {chainName} chain.");
-                    return false;
+                    return InitWithBehavior(env, behavior);
                 }
+                env.ReportError($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not define the referenced {chainName} chain.");
             }
             else
             {
                 env.ReportError($"The component with the name {componentName} specified in the export attribute of {Name} method is not a behavior.");
-                return false;
             }
 
-            return InitWithBehavior(env, behavior);
+            return false;        
         }
 
         private string GetNamePrefixAtCall()
@@ -96,7 +86,7 @@ namespace Hopper.Meta
             if (symbol.IsStatic)
             {
                 // If it is inside a behavior while referencing that behavior.
-                if (referencedBehavior.symbol == symbol.ContainingType)
+                if (ReferencedBehavior.symbol == symbol.ContainingType)
                 {
                     return "";
                 }

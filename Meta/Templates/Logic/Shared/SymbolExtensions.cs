@@ -389,11 +389,8 @@ namespace Hopper.Meta
         public static IEnumerable<T> InitAndAfterInit<T>(
             this IEnumerable<T> guys, GenerationEnvironment context) where T : TypeSymbolWrapperBase
         {
-            foreach (var g in guys)
-            {
-
-            }
             return guys
+                .OrderBy(g => g.ClassName)
                 .Where(g => g.TryInit(context))
                 .ToArray() // all the inits must run first
                            // this is the reason we have two functions in the first place
@@ -410,5 +407,10 @@ namespace Hopper.Meta
                 default: return "";
             }
         } 
+
+        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> e) where T : class
+        {
+            return e.Where(el => !(el is null));
+        }
     }
 }

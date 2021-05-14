@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Hopper.Meta.Template;
 using System.Linq;
+using System;
 
 namespace Hopper.Meta.Stats
 {
@@ -61,24 +62,39 @@ namespace Hopper.Meta.Stats
             nestedTypes = new List<StatType>();
         }
 
-        public static StatType ParseJson(ParsingContext ctx, string inPath)
+        private bool InitFromFile(ParsingContext ctx, string inPath)
         {
-            string statJson = File.ReadAllText(inPath);
-            var jobj = JObject.Parse(statJson);
-            
             var statName = Path.GetFileNameWithoutExtension(inPath);
             ctx.ResetFileName(inPath);
             ctx.PushScope(statName);
+            ctx.ClearFlag();
 
-            var stat = new StatType();
-            stat.name = statName;
-            stat.metadata.scope = ctx.currentScope;
-            ctx.currentScope.value = stat;
-            stat.Populate(jobj, ctx);
-
+            try
+            {
+                string statJson = File.ReadAllText(inPath);
+                var jobj = JObject.Parse(statJson);
+                
+                name = statName;
+                metadata.scope = ctx.currentScope;
+                ctx.currentScope.value = this;
+                Populate(jobj, ctx);
+            }
+            catch (JsonReaderException exc)
+            {
+                Console.WriteLine(exc.Message);
+                return false;
+            }
+            
             ctx.PopScope();
 
-            return stat;
+            return ctx.Flag;
+        }
+
+        public static StatType ParseJson(ParsingContext ctx, string inPath)
+        {
+            var stat = new StatType();
+            if (stat.InitFromFile(ctx, inPath)) return stat;
+            return null;
         }
 
         public void Populate(JObject jobj, ParsingContext ctx)
