@@ -5,7 +5,37 @@ using System.Linq;
 
 namespace Hopper.Meta
 {
-    public class ChainWrapper : FieldSymbolWrapper, IThing
+    public interface IChainWrapper
+    {
+        string Name { get; }
+        ContextSymbolWrapper Context { get; }
+        bool IsMore { get; }
+        bool IsWithPriorities { get; }
+        INamedTypeSymbol GetChainType();
+        string GetTypeText();
+    }
+
+    public class ImaginaryBehavioralChainWrapper : IChainWrapper
+    {
+        public string Name { get; private set; }
+        public ContextSymbolWrapper Context { get; private set; }
+
+        public ImaginaryBehavioralChainWrapper(string name, ContextSymbolWrapper context)
+        {
+            Name = name;
+            Context = context;
+        }
+
+        public bool IsMore => false;
+        public bool IsWithPriorities => true;
+
+        public INamedTypeSymbol GetChainType() => RelevantSymbols.Chain;
+
+        public string GetTypeText() => 
+            $"{GetChainType().Name}<{Context.symbol.GetFullyQualifiedName()}>";
+    }
+
+    public class ChainSymbolWrapper : FieldSymbolWrapper, IChainWrapper, IThing
     {
         public new string Name { get; private set; }
         public ContextSymbolWrapper Context { get; private set; }
@@ -15,12 +45,12 @@ namespace Hopper.Meta
         public string Identity => $"{Name} Chain{(IsMore ? "+" : "")}";
         public string Location => symbol.Locations.First().ToString();
 
-        public ChainWrapper(IFieldSymbol symbol) : base(symbol)
+        public ChainSymbolWrapper(IFieldSymbol symbol) : base(symbol)
         {
             Name = symbol.Name;
         }
         
-        public ChainWrapper(IFieldSymbol symbol, ChainAttribute chainAttribute) : base(symbol)
+        public ChainSymbolWrapper(IFieldSymbol symbol, ChainAttribute chainAttribute) : base(symbol)
         {
             Name = chainAttribute.Name is null ? symbol.Name : chainAttribute.Name;
         }
@@ -48,10 +78,15 @@ namespace Hopper.Meta
 
             // 2. See if that context has already been cached in the environment.
             // 3. Initialize the context if it is not found.
-            if (!env.TryGetContextLazy(contextType, out var Context)) return false;
+            if (!env.TryGetContextLazy(contextType, out var context)) return false;
+
+            Context = context;
 
             return true;
         }
+
+        public string GetTypeText() => 
+            $"{GetChainType().GetFullyQualifiedName()}<{Context.symbol.GetFullyQualifiedName()}>";
 
     }
 }

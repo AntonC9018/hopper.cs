@@ -15,5 +15,6 @@ namespace Hopper.Meta.Template
         public BehaviorSymbolWrapper component => behavior;
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => behavior.exportedMethods;
         public IEnumerable<string> Usings() => behavior.Usings();
+        public IEnumerable<ChainSymbolWrapper> MoreChains => behavior.moreChains;
     }
 }

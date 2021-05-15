@@ -19,7 +19,9 @@ namespace <#= behavior.Namespace #>
 
 <#@ include file="Templates/Snippets/BehaviorChains.txt" #>
 
-<#@ include file="Templates/Snippets/HandlerFromExportedMethods.txt" #>
+<#@ include file="Templates/Snippets/HandlersFromExportedMethods.txt" #>
+
+<#@ include file="Templates/Snippets/MoreChains.txt" #>
     }
 
     public static class <#= behavior.ClassName #>EntityExtensions

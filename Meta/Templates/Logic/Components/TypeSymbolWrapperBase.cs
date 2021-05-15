@@ -13,7 +13,7 @@ namespace Hopper.Meta
         public INamedTypeSymbol symbol;
         public IEnumerable<UsingDirectiveSyntax> usings;
         public ExportedMethodSymbolWrapper[] exportedMethods;
-        public ChainWrapper[] moreChains;
+        public ChainSymbolWrapper[] moreChains;
 
         public TypeSymbolWrapperBase(INamedTypeSymbol symbol)
         {
@@ -121,17 +121,18 @@ namespace Hopper.Meta
             }
         }
 
-        private IEnumerable<ChainWrapper> GetMoreChainsChains(GenerationEnvironment env)
+        private IEnumerable<ChainSymbolWrapper> GetMoreChainsChains(GenerationEnvironment env)
         {
             foreach (var field in symbol.GetStaticFields())
             {
                 if (field.TryGetAttribute(RelevantSymbols.ChainAttribute, out var chainAttribute))
                 {
-                    var wrapped = new ChainWrapper(field, chainAttribute);
+                    var wrapped = new ChainSymbolWrapper(field, chainAttribute);
                     
-                    env.errorContext.PushThing(wrapped);
-
-                    
+                    if (env.DoScoped(wrapped, () => wrapped.InitMore(env)))
+                    {
+                        yield return wrapped;
+                    }
                 }
             }
         }

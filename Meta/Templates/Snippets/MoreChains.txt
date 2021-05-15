@@ -1,1 +1,16 @@
-        <#
+<#  foreach(var chain in MoreChains) 
+    { #>
+            public static readonly <#= chain.Name #>DefaultChain = new <#= chain.GetTypeText() #>();
+
+            public static readonly MoreChainsPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new MoreChainsPath<<#= chain.GetTypeText() #>>(<#= chain.symbol.Name #>);
+
+<#  } #>
+        static void InitMoreChains()
+        {
+<#  foreach(var chain in MoreChains) 
+    { 
+            /* The registry need the index */ #>
+            <#= chain.Name #>DefaultChain.Clear();
+            <#= chain.symbol.Name #>.Id = Registry.Global.RegisterMoreChains(<#= chain.Name #>DefaultChain);
+<#  } #>          
+        }

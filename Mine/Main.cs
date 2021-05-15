@@ -19,11 +19,15 @@ using static Hopper.Utils.Vector.IntVector2;
 
 namespace Hopper.Mine
 {
+    public static class A
+    {
+        public static readonly int a;
+
+        static A() { a = 9; }
+    }
+
     public class Program
     {
-
-
-       
 
         public static void Main(string[] args)
         {

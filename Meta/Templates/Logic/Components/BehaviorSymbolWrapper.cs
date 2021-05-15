@@ -13,7 +13,7 @@ namespace Hopper.Meta
         public bool ShouldGenerateCheckDo;
         public string ActivationAlias;
 
-        public ChainWrapper[] Chains { get; private set; }
+        public IChainWrapper[] Chains { get; private set; }
         public bool HasCheck() => Chains.Any(chain => chain.Name == "Check");
         public bool HasDo() => Chains.Any(chain => chain.Name == "Do");
         public bool ShouldGenerateActivationShortcuts => ActivationAlias != null;
@@ -41,13 +41,13 @@ namespace Hopper.Meta
             return env.TryCacheContext(named_ctx_symbol, out Context);
         }
 
-        private IEnumerable<ChainWrapper> GetExportedChains(GenerationEnvironment env)
+        private IEnumerable<ChainSymbolWrapper> GetExportedChains(GenerationEnvironment env)
         {
             foreach (var field in symbol.GetInstanceFields())
             {
                 if (field.TryGetAttribute(RelevantSymbols.ChainAttribute, out var chainAttribute))
                 {
-                    var wrapped = new ChainWrapper(field, chainAttribute);
+                    var wrapped = new ChainSymbolWrapper(field, chainAttribute);
                     wrapped.InitBehavioral(Context);
                     yield return wrapped;
                 }
@@ -74,10 +74,9 @@ namespace Hopper.Meta
 
                 if (!exportedChains.Any())
                 {
-
-                    Chains = new ChainWrapper[] { 
-                        new ChainWrapper(null, "Check"), 
-                        new ChainWrapper("Do", symbol)
+                    Chains = new IChainWrapper[] { 
+                        new ImaginaryBehavioralChainWrapper("Check", Context), 
+                        new ImaginaryBehavioralChainWrapper("Do",    Context)
                     };
                 }
 
@@ -94,14 +93,13 @@ namespace Hopper.Meta
 
                 if (!(autoActivation is null))
                 {
-                    if (!(activation is null))
+                    if (activation is null)
                     {
-                        env.ReportError($"Found a request for automatic generation of an activation method beside the ActivationAlias attribute in the behavior {symbol.Name}. This is not allowed.");
+                        ActivationAlias = autoActivation.Alias;
                     }
                     else
                     {
-                        // See AutoActivationAttribute. It always takes in one argument.
-                        ActivationAlias = autoActivation.Alias;
+                        env.ReportError($"Found a request for automatic generation of an activation method beside the ActivationAlias attribute in the behavior {symbol.Name}. This is not allowed.");
                     }
                 }
                 else if (activation is null)
@@ -110,7 +108,6 @@ namespace Hopper.Meta
                 }
                 else
                 {
-                    // See ActivationAliasAttribute. It always takes in one argument.
                     ActivationAlias = activation.Alias;
                     
                     // Make sure there is a method that takes the same arguments that the context expects
@@ -121,7 +118,7 @@ namespace Hopper.Meta
                             || (m.Parameters.FirstOrDefault()?.Type == RelevantSymbols.entity 
                                 && m.Parameters.Skip(1).TypeSequenceEqual(Context.notOmitted)));
 
-                    if (activationMethods.Count() == 0)
+                    if (!activationMethods.Any())
                     {
                         env.ReportError($"No suitable activation method found for the {symbol.Name} behavior. To resolve, provide an activation method that would take the following arguments: {Context.JoinedParamTypeNames()}\nAlternatively, apply the AutoActivation attribute for such a method to be generated automatically.\nYou may also apply the Omit attribute to members of your Context class or give them default values, if the activation must not require them.\nAlternatively, mark the behavior with the NoActivation attribute to skip code generation for activation altogether.");
                     }
@@ -132,17 +129,14 @@ namespace Hopper.Meta
                     env.ReportError($"Duplicate alias name {ActivationAlias} in behavior {symbol.Name}.");
                 }
             }
-            else
+            else if (!(autoActivation is null))
             {
-                if (autoActivation != null)
-                {
-                    env.ReportError($"The behavior {symbol.Name} both the NoActivation attribute and AutoActivation attribute were found. You must remove one or the other.");
-                }
+                env.ReportError($"The behavior {symbol.Name} both the NoActivation attribute and AutoActivation attribute were found. You must remove one or the other.");
             }
 
             if (Chains == null)
             {
-                Chains = new ChainWrapper[0];
+                Chains = new ChainSymbolWrapper[0];
             }
 
             return !env.errorContext.Flag;

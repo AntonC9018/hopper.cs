@@ -136,7 +136,7 @@ namespace Hopper.Meta
                 {
                     methodClass.WriteGenerationMessage();
 
-                    (new ChainHandlersPrinter(methodClass))
+                    (new ExportedStuffPrinter(methodClass))
                         .WriteToFile($"{env.Paths.HandlersAutogenFolder}/{methodClass.ClassName}.cs");
                 }
             }
