@@ -21,7 +21,7 @@ namespace Hopper.Tests.Test_Content
             entityFactory = new EntityFactory();
             Transform.AddTo(entityFactory, Layer.REAL);
             Stats.AddTo(entityFactory, Registry.Global._defaultStats);
-            Stats.AddInitTo(entityFactory);
+            
             Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK).DefaultPreset();
             Moving.AddTo(entityFactory).DefaultPreset();
             Pushable.AddTo(entityFactory).DefaultPreset();

@@ -40,7 +40,7 @@ namespace Hopper.Tests
 
                 // Retouch
                 Equip.OnDisplaceHandlerWrapper.HookTo(entityFactory);
-                Stats.AddInitTo(entityFactory);
+                
                 Inventory.AddInitTo(entityFactory);
             }
 

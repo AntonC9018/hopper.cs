@@ -28,7 +28,7 @@ namespace Hopper.TestContent.PinningNS
 
         public static void Retouch(EntityFactory factory)
         {
-            Stats.AddInitTo(factory);
+            
             PinningComponent.AddInitTo(factory);
         }
     }

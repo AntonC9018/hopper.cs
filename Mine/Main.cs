@@ -55,7 +55,7 @@ namespace Hopper.Mine
 
 
             Stats.AddTo(entityFactory, Registry.Global._defaultStats);
-            Stats.AddInitTo(entityFactory);
+            
 
             var stats = entityFactory.subject.GetStats();
 

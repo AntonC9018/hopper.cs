@@ -22,7 +22,7 @@ namespace Hopper.Tests.Test_Content
             Stats.AddTo(entityFactory, Registry.Global._defaultStats);
             Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK).DefaultPreset();
             Pushable.AddTo(entityFactory).DefaultPreset();
-            Stats.AddInitTo(entityFactory);
+            
         }
 
         [SetUp]

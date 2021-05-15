@@ -32,7 +32,7 @@ namespace Hopper.TestContent.BouncingNS
 
         public static void Retouch(EntityFactory factory)
         {
-            Stats.AddInitTo(factory);
+            
             Bouncing.AddInitTo(factory);
         }
     }
