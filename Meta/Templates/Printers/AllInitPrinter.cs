@@ -9,7 +9,7 @@ namespace Hopper.Meta.Template
         public string Namespace;
         public IEnumerable<ComponentSymbolWrapper> components;
         public IEnumerable<BehaviorSymbolWrapper> behaviors;
-        public IEnumerable<ExportedStuffClassSymbolWrapper> methodClasses;
+        public IEnumerable<ExportedStuffClassSymbolWrapper> exportingClasses;
         public IEnumerable<FieldSymbolWrapper> methodClassInstances;
         public IEnumerable<FieldSymbolWrapper> fieldsRequiringInit;
         public IEnumerable<EntityTypeWrapper> entityTypes;

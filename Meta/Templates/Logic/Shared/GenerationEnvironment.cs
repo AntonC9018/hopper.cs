@@ -76,9 +76,9 @@ namespace Hopper.Meta
             return true;
         }
 
-        public bool TryAddChain(string typeName, IChainWrapper chain)
+        public bool TryAddChain(IChainWrapper chain)
         {
-            string uid = chain.GetUid(typeName);
+            string uid = chain.GetUid();
 
             if (chains.ContainsKey(uid)) return false;
 
@@ -200,7 +200,7 @@ namespace Hopper.Meta
                 yield return type;
         }
 
-        public IEnumerable<ExportedStuffClassSymbolWrapper> GetExportedMethodClasses()
+        public IEnumerable<ExportedStuffClassSymbolWrapper> GetOtherExportingClasses()
         {
             var typeSymbols = GetNotNestedTypes();
 

@@ -50,7 +50,7 @@ namespace Hopper.Meta
                 if (field.TryGetAttribute(RelevantSymbols.ChainAttribute, out var chainAttribute))
                 {
                     var wrapped = new ChainSymbolWrapper(field, chainAttribute);
-                    if (wrapped.Init(env) && env.TryAddChain(ClassName, wrapped)) 
+                    if (wrapped.Init(env) && env.TryAddChain(wrapped)) 
                     {
                         yield return wrapped;
                     }
@@ -87,13 +87,13 @@ namespace Hopper.Meta
                     if (!TryInitContext(env, out var context)) return false;
                   
                     Chains = new IChainWrapper[] { 
-                        new ImaginaryBehavioralChainWrapper("Check", context), 
-                        new ImaginaryBehavioralChainWrapper("Do",    context)
+                        new ImaginaryBehavioralChainWrapper("Check", symbol, context), 
+                        new ImaginaryBehavioralChainWrapper("Do",    symbol, context)
                     };
 
                     foreach (var chain in Chains) 
                     { 
-                        env.TryAddChain(ClassName, chain); 
+                        env.TryAddChain(chain); 
                     }
 
                     ActivationAlias = autoActivation.Alias;

@@ -52,7 +52,7 @@ namespace Hopper.Meta
 
         public HashSet<IFieldSymbol> GetFlaggedFields()
         {
-            return symbol.GetMembers().OfType<IFieldSymbol>()
+            return symbol.GetFields()
                 .Where(field => !field.GetAttributes().IsEmpty).ToHashSet();
         }
 
@@ -129,7 +129,7 @@ namespace Hopper.Meta
                 {
                     var wrapped = new ChainSymbolWrapper(field, chainAttribute);
                     
-                    if (wrapped.Init(env) && env.TryAddChain(ClassName, wrapped))
+                    if (wrapped.Init(env) && env.TryAddChain(wrapped))
                     {
                         yield return wrapped;
                     }

@@ -14,7 +14,7 @@ namespace Hopper.Meta
         private IChainWrapper ReferencedChain;
         private ContextSymbolWrapper Context => ReferencedChain.Context;
         public string Name => symbol.Name;
-        public string ChainName => $"{symbol.GetFullQualification()}.{Name}";
+        public string ChainName => ReferencedChain.GetFullyQualifiedName();
         public string ContextName => Context.symbol.GetFullyQualifiedName();
         public bool IsDynamic => exportAttribute.Dynamic;
         public string Priority => exportAttribute.Priority.ToString();

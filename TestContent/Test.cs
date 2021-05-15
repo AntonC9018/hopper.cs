@@ -9,6 +9,6 @@ namespace Hopper.TestContent
     public static partial class Test
     {
         public class Context : ActorContext {}
-        [Chain("Hello")] public static readonly Index<Chain<Context>> Hello = new Index<Chain<Context>>();
+        [Chain("Hello")] public static readonly Index<LinearChain<Context>> Hello = new Index<LinearChain<Context>>();
     }
 }

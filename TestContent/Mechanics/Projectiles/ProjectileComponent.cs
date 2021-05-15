@@ -53,7 +53,7 @@ namespace Hopper.TestContent.Projectiles
                 }
 
                 stats.GetLazy(Move.Index, out var move);
-                actor.TryDisplace(direction, move);
+                actor.TryDisplace(direction, move, out bool _);
             }
 
             if (!actor.IsDead())

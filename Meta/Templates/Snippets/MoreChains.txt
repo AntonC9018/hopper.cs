@@ -5,12 +5,12 @@
         public static readonly MoreChainsPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new MoreChainsPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
 
 <#  } #>
-    static void InitMoreChains()
-    {
+        public static void InitMoreChains()
+        {
 <#  foreach(var chain in MoreChains) 
     { 
-        /* The registry need the index */ #>
-        <#= chain.Name #>DefaultChain.Clear();
-        <#= chain.FieldName #>.Id = Registry.Global.RegisterMoreChains(<#= chain.Name #>DefaultChain);
+            /* The registry need the index */ #>
+            <#= chain.Name #>DefaultChain.Clear();
+            <#= chain.FieldName #>.Id = Registry.Global.RegisterMoreChains(<#= chain.Name #>DefaultChain);
 <#  } #>          
         }

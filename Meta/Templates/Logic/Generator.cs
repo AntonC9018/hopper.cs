@@ -130,9 +130,9 @@ namespace Hopper.Meta
                     $"{env.Paths.TagsAutogenFolder}/{tag.ClassName}.cs");
             }
 
-            var methodClasses = env.GetExportedMethodClasses().ToArray();
+            var exportingClasses = env.GetOtherExportingClasses().ToArray();
             {
-                foreach (var methodClass in methodClasses)
+                foreach (var methodClass in exportingClasses)
                 {
                     methodClass.WriteGenerationMessage();
 
@@ -189,7 +189,7 @@ namespace Hopper.Meta
                     {
                         components = componentWrappers,
                         behaviors = behaviorWrappers,
-                        methodClasses = methodClasses,
+                        exportingClasses = exportingClasses,
                         methodClassInstances = methodClassInstances,
                         fieldsRequiringInit = fieldsRequiringInit,
                         staticIndentiyingStatFields = staticIndentiyingStatFields,

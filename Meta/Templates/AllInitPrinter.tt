@@ -14,15 +14,18 @@ namespace <#= Namespace #>
     { #>
             <#= component.FullyQualifiedClassName #>.InitIndex();
             <#= component.FullyQualifiedClassName #>.InitHandlers();
+            <#= component.FullyQualifiedClassName #>.InitMoreChains();
 <#  } 
     foreach (var behavior in behaviors) 
     { #>
             <#= behavior.FullyQualifiedClassName #>.InitIndex();
             <#= behavior.FullyQualifiedClassName #>.InitHandlers();
+            <#= behavior.FullyQualifiedClassName #>.InitMoreChains();
 <#  } 
-    foreach (var methodClass in methodClasses) 
+    foreach (var exportingClass in exportingClasses) 
     { #>
-            <#= methodClass.FullyQualifiedClassName #>.InitHandlers();
+            <#= exportingClass.FullyQualifiedClassName #>.InitHandlers();
+            <#= exportingClass.FullyQualifiedClassName #>.InitMoreChains();
 <#  } 
     foreach (var methodClassInstance in methodClassInstances)
     { #>

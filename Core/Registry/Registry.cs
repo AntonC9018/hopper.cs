@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
+using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core
 {
@@ -16,13 +19,15 @@ namespace Hopper.Core
         }
 
         public int _currentMod;
-        public IdentifierAssigner _component;
-        public PriorityAssigner _priority;
+        private IdentifierAssigner _component;
+        private PriorityAssigner _priority;
         public RuntimeRegistry<Entity> _entities;
         public StaticRegistry<EntityFactory> _entityFactory;
-        public IdentifierAssigner _stats;
-        public IdentifierAssigner _slots;
+        private IdentifierAssigner _stats;
         public StatsBuilder _defaultStats;
+        private IdentifierAssigner _moreChains;
+        public ChainsBuilder _defaultMoreChains;
+        private IdentifierAssigner _slots;
         public Pools _pools;
         
 
@@ -48,6 +53,13 @@ namespace Hopper.Core
         public RuntimeIdentifier RegisterRuntimeEntity(Entity entity)
         {
             return _entities.Add(entity);
+        }
+
+        public Identifier RegisterMoreChains<T>(IChain<T> chain)
+        {
+            var id = new Identifier(_currentMod, _moreChains.Next());
+            _defaultMoreChains[id] = chain;
+            return id;
         }
 
         public void UnregisterRuntimeEntity(Entity entity)

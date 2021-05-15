@@ -22,6 +22,11 @@ namespace Hopper.Core.Components.Basic
         {
             Add(index.Id, stat);
         }
+
+        public T Get<T>(Index<T> index) where T : IChain
+        {
+            return (T) this[index.Id];
+        }
     }
 
     public partial class MoreChains : IComponent
@@ -40,11 +45,11 @@ namespace Hopper.Core.Components.Basic
         }
     }
 
-    public readonly struct MoreChainsChainPath<T> : IPath<T> where T : IChain
+    public readonly struct MoreChainsPath<T> : IPath<T> where T : IChain
     {
         public readonly Index<T> Index;
 
-        public MoreChainsChainPath(Index<T> index)
+        public MoreChainsPath(Index<T> index)
         {
             Index = index;
         }

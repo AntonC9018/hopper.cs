@@ -7,31 +7,37 @@ namespace Hopper.Meta
 {
     public interface IChainWrapper
     {
+
         string Name { get; }
         string FieldName { get; }
         ContextSymbolWrapper Context { get; }
         bool IsMore { get; }
         bool IsWithPriorities { get; }
         INamedTypeSymbol GetChainType();
+        INamedTypeSymbol Parent { get; }
         string GetTypeText();
     }
 
     public static class ChainWrapperExtensions
     {
         public static string GetPrefix(this IChainWrapper wrapper) => wrapper.IsMore ? "+" : "";
-        public static string GetUid(this IChainWrapper wrapper, string enclosingTypeName)
-            => $"{wrapper.GetPrefix()}{enclosingTypeName}.{wrapper.Name}";
+        public static string GetUid(this IChainWrapper wrapper)
+            => $"{wrapper.GetPrefix()}{wrapper.Parent.Name}.{wrapper.Name}";
+        public static string GetFullyQualifiedName(this IChainWrapper wrapper)
+            => $"{wrapper.Parent.GetFullyQualifiedName()}.{wrapper.Name}";
     }
 
     public class ImaginaryBehavioralChainWrapper : IChainWrapper
     {
         public string Name { get; private set; }
+        public INamedTypeSymbol Parent { get; private set; }
         public string FieldName => $"_{Name}Chain";
         public ContextSymbolWrapper Context { get; private set; }
 
-        public ImaginaryBehavioralChainWrapper(string name, ContextSymbolWrapper context)
+        public ImaginaryBehavioralChainWrapper(string name, INamedTypeSymbol parentSymbol, ContextSymbolWrapper context)
         {
             Name = name;
+            Parent = parentSymbol;
             Context = context;
         }
 
@@ -47,9 +53,10 @@ namespace Hopper.Meta
     public class ChainSymbolWrapper : FieldSymbolWrapper, IChainWrapper, IThing
     {
         public new string Name { get; private set; }
+        public INamedTypeSymbol Parent => symbol.ContainingType;
         public string FieldName => symbol.Name;
         public ContextSymbolWrapper Context { get; private set; }
-        public bool IsMore => symbol.Type == RelevantSymbols.Index;
+        public bool IsMore => symbol.IsStatic;
         public bool IsWithPriorities => GetChainType() == RelevantSymbols.Chain;
 
         public string Identity => $"{Name} Chain{this.GetPrefix()}";
