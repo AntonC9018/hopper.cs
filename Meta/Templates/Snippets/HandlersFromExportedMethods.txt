@@ -9,7 +9,7 @@
 <#      if (method.IsDynamic) 
         { #>
         public static HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper = 
-            new HandlerWrapper<<#= method.ContextName #>>(<#= method.Name #>Handler, <#= method.Chain #>Path);
+            new HandlerWrapper<<#= method.ContextName #>>(<#= method.Name #>Handler, <#= method.ChainName #>Path);
 <#      } #>
 
 <#  } #>

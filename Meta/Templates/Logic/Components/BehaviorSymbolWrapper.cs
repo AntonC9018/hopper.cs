@@ -58,7 +58,7 @@ namespace Hopper.Meta
         {
             env.errorContext.ClearFlag();
 
-            if (!(base.Init(env) && InitContext(env) && env.TryAddComponent(this))) return false;
+            if (!(base.Init(env) && InitContext(env) && env.TryAddExportingClass(this))) return false;
 
             var exportedChains = GetExportedChains(env);
 
@@ -136,7 +136,7 @@ namespace Hopper.Meta
 
             if (Chains == null)
             {
-                Chains = new ChainSymbolWrapper[0];
+                Chains = exportedChains.ToArray();
             }
 
             return !env.errorContext.Flag;
@@ -164,8 +164,7 @@ namespace Hopper.Meta
                     if (attribute.Chain is null)
                     {
                         var m = new ExportedMethodSymbolWrapper(method, attribute);
-                        if (m.TryInit(env, this))
-                            yield return m;
+                        if (m.TryInit(env, Chains.First())) yield return m;
                     }
                     else
                     {

@@ -28,8 +28,9 @@ namespace Hopper.Meta
         // Even if one mod does not reference the other, duplicate names will cause collision.
         // So this dictionary has to be adjusted based on which assemblies are referenced by the given mod.
         // This problem is a long way away, though, so I'll leave it as it is right now.
-        public Dictionary<string, ComponentSymbolWrapper> components;
-        public Dictionary<INamedTypeSymbol, ContextSymbolWrapper> contexts; 
+        public Dictionary<string, TypeSymbolWrapperBase> exportingClasses;
+        public Dictionary<INamedTypeSymbol, ContextSymbolWrapper> contexts;
+        public Dictionary<string, IChainWrapper> chains; 
 
         // Same problem here.
         public HashSet<string> aliases;
@@ -38,15 +39,15 @@ namespace Hopper.Meta
         public string RootNamespaceName => _project.AssemblyName;
         public ParsingContext statParsingContext;
 
-        public bool TryAddComponent(ComponentSymbolWrapper wrapper)
+        public bool TryAddExportingClass(TypeSymbolWrapperBase wrapper)
         {
-            if (components.ContainsKey(wrapper.ClassName))
+            if (exportingClasses.ContainsKey(wrapper.ClassName))
             {
                 ReportError($"The behavior {wrapper.ClassName} has been defined twice, which is not allowed.");
                 return false;
             }
 
-            components.Add(wrapper.ClassName, wrapper);
+            exportingClasses.Add(wrapper.ClassName, wrapper);
             return true;
         }
 
@@ -65,6 +66,52 @@ namespace Hopper.Meta
             return true;
         }
 
+        public bool AddChain(string typeName, IChainWrapper chain)
+        {
+            string uid = chain.GetUid(typeName);
+
+            if (chains.ContainsKey(uid)) return false;
+
+            chains.Add(uid, chain);
+            return true;
+        }
+
+        public bool ValidateChainUid(string uid)
+        {
+            var split = uid.Split('.');
+            if (split.Length != 2) 
+            {
+                ReportError($"{uid} had wrong format. Expecting format [+]<ExportingClassName>.<ChainName>");
+                return false;
+            }
+            if (split[0][0] == '+') split[0] = split[0].Substring(1);
+
+            if (exportingClasses.TryGetValue(split[0], out var exportingType))
+            {
+                if (uid[0] == '+')
+                {
+                    if (exportingType.moreChains.Any(chain => chain.Name == split[1]))
+                        return true;
+                    ReportError($"{uid} references a non-existent chain: {split[1]}.");
+                }
+                else if (exportingType is BehaviorSymbolWrapper behavior)
+                {
+                    if (behavior.Chains.Any(chain => chain.Name == split[1]))
+                        return true;
+                    ReportError($"{uid} references a non-existent behavior chain: {split[1]}.");
+                }
+                else
+                {
+                    ReportError($"{uid} referenced an exporting class that was not a behavior: {split[0]}. If you meant a static class, use '+{uid}' instead.");
+                }
+            }
+            else
+            {
+                ReportError($"{uid} references a non-existent exporting class: {split[0]}");
+            }
+            return false;
+        }
+
         public ErrorContext errorContext;
         public void ReportError(string errorMessage) => errorContext.Report(errorMessage);
         
@@ -79,7 +126,7 @@ namespace Hopper.Meta
         public GenerationEnvironment(string[] projectPaths)
         {
             aliases = new HashSet<string>();
-            components = new Dictionary<string, ComponentSymbolWrapper>();
+            exportingClasses = new Dictionary<string, TypeSymbolWrapperBase>();
             statParsingContext = new ParsingContext("Hopper");
             errorContext = new ErrorContext();
 

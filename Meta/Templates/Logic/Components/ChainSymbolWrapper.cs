@@ -15,6 +15,13 @@ namespace Hopper.Meta
         string GetTypeText();
     }
 
+    public static class ChainWrapperExtensions
+    {
+        public static string GetPrefix(this IChainWrapper wrapper) => wrapper.IsMore ? "+" : "";
+        public static string GetUid(this IChainWrapper wrapper, string enclosingTypeName)
+            => $"{wrapper.GetPrefix()}{enclosingTypeName}.{wrapper.Name}";
+    }
+
     public class ImaginaryBehavioralChainWrapper : IChainWrapper
     {
         public string Name { get; private set; }
@@ -31,8 +38,8 @@ namespace Hopper.Meta
 
         public INamedTypeSymbol GetChainType() => RelevantSymbols.Chain;
 
-        public string GetTypeText() => 
-            $"{GetChainType().Name}<{Context.symbol.GetFullyQualifiedName()}>";
+        public string GetTypeText() 
+            => $"{GetChainType().Name}<{Context.symbol.GetFullyQualifiedName()}>";
     }
 
     public class ChainSymbolWrapper : FieldSymbolWrapper, IChainWrapper, IThing
@@ -42,7 +49,7 @@ namespace Hopper.Meta
         public bool IsMore => symbol.Type == RelevantSymbols.Index;
         public bool IsWithPriorities => GetChainType() == RelevantSymbols.Chain;
 
-        public string Identity => $"{Name} Chain{(IsMore ? "+" : "")}";
+        public string Identity => $"{Name} Chain{this.GetPrefix()}";
         public string Location => symbol.Locations.First().ToString();
 
         public ChainSymbolWrapper(IFieldSymbol symbol) : base(symbol)

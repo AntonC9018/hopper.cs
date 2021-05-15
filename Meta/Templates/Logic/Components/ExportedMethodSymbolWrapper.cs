@@ -10,15 +10,14 @@ namespace Hopper.Meta
     public sealed class ExportedMethodSymbolWrapper : IThing
     {
         public IMethodSymbol symbol;
-        public ExportAttribute exportAttribute;
-        public BehaviorSymbolWrapper ReferencedBehavior { get; private set; }
-
-        public ContextSymbolWrapper Context => ReferencedBehavior.Context;
+        private ExportAttribute exportAttribute;
+        private IChainWrapper ReferencedChain;
+        private ContextSymbolWrapper Context => ReferencedChain.Context;
         public string Name => symbol.Name;
-        public string ContextName => Context.NameWithParentClass;
+        public string ChainName => ReferencedChain.Name;
+        public string ContextName => Context.symbol.GetFullyQualifiedName();
         public bool IsDynamic => exportAttribute.Dynamic;
         public string Priority => exportAttribute.Priority.ToString();
-        public string Chain => exportAttribute.Chain;
         public string Identity => $"{Name} exported method";
         public string Location => $"{symbol.Locations.First()}";
 
@@ -31,54 +30,25 @@ namespace Hopper.Meta
             this.exportAttribute = exportAttribute;
         }
 
-        private bool InitWithBehavior(GenerationEnvironment env, BehaviorSymbolWrapper behavior)
+        private bool InitWithChain(GenerationEnvironment env, IChainWrapper chain)
         {
-            this.ReferencedBehavior = behavior;
+            this.ReferencedChain = chain;
             AdapterBody = GetAdapterBody(env);
             return !(AdapterBody is null);
         }
 
-        public bool TryInit(GenerationEnvironment env, BehaviorSymbolWrapper behavior)
-            => env.DoScoped(this, () => InitWithBehavior(env, behavior));
+        public bool TryInit(GenerationEnvironment env, IChainWrapper chain)
+            => env.DoScoped(this, () => InitWithChain(env, chain));
 
         public bool TryInit(GenerationEnvironment env)
             => env.DoScoped(this, () => Init(env));
 
         private bool Init(GenerationEnvironment env)
         {
-            var chain = exportAttribute.Chain;
+            var uid = exportAttribute.Chain;
 
-            // The chain must be of form "ComponentName.ChainName"
-            var indexOfDot = chain.IndexOf('.');
-            if (indexOfDot == -1)
-            {
-                env.ReportError($"The chain name specified in the export attribute is not valid ({chain}). Expected form \"ComponentName.ChainName\"");
-                return false;
-            }
-
-            var componentName = chain.Substring(0, indexOfDot);
-            var chainName = chain.Substring(indexOfDot + 1, chain.Length - indexOfDot - 1);
-
-            if (!env.components.TryGetValue(componentName, out var component))
-            {
-                env.ReportError($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not exist.");
-                return false;
-            }
-
-            if (component is BehaviorSymbolWrapper behavior)
-            {
-                if (behavior.Chains.Any(ch => ch.Name == chainName))
-                {
-                    return InitWithBehavior(env, behavior);
-                }
-                env.ReportError($"The behavior with the name {componentName} specified in the export attribute of {Name} method did not define the referenced {chainName} chain.");
-            }
-            else
-            {
-                env.ReportError($"The component with the name {componentName} specified in the export attribute of {Name} method is not a behavior.");
-            }
-
-            return false;        
+            return env.ValidateChainUid(uid) 
+                && env.chains.TryGetValue(uid, out var ReferencedChain);
         }
 
         private string GetNamePrefixAtCall()
@@ -86,10 +56,10 @@ namespace Hopper.Meta
             if (symbol.IsStatic)
             {
                 // If it is inside a behavior while referencing that behavior.
-                if (ReferencedBehavior.symbol == symbol.ContainingType)
-                {
-                    return "";
-                }
+                // if (ReferencedBehavior.symbol == symbol.ContainingType)
+                // {
+                //     return "";
+                // }
 
                 // If inside a context (which also means it references the same behavior).
                 if (Context.symbol == symbol.ContainingType)
@@ -97,7 +67,7 @@ namespace Hopper.Meta
                     return $"{ContextName}.";
                 }
 
-                // Otherwise, we're in some other type.
+                // Otherwise, we're in some type.
                 // Return the longer qualification (all nested types).
                 return $"{symbol.GetTypeQualification()}.";
             }
