@@ -14,7 +14,7 @@ namespace Hopper.Meta
         private IChainWrapper ReferencedChain;
         private ContextSymbolWrapper Context => ReferencedChain.Context;
         public string Name => symbol.Name;
-        public string ChainName => ReferencedChain.Name;
+        public string ChainName => $"{symbol.GetFullQualification()}.{Name}";
         public string ContextName => Context.symbol.GetFullyQualifiedName();
         public bool IsDynamic => exportAttribute.Dynamic;
         public string Priority => exportAttribute.Priority.ToString();
@@ -48,7 +48,8 @@ namespace Hopper.Meta
             var uid = exportAttribute.Chain;
 
             return env.ValidateChainUid(uid) 
-                && env.chains.TryGetValue(uid, out var ReferencedChain);
+                && env.chains.TryGetValue(uid, out var chain)
+                && InitWithChain(env, chain); 
         }
 
         private string GetNamePrefixAtCall()

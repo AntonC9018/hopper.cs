@@ -1,3 +1,4 @@
+// TODO: Account for linear chains
 <#  foreach (var method in ExportedInstanceMethods) 
     { #>
         public void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)

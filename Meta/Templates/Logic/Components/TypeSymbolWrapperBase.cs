@@ -28,8 +28,8 @@ namespace Hopper.Meta
 
         protected virtual bool AfterInit(GenerationEnvironment env)
         {
-            if (exportedMethods == null)
-                exportedMethods = GetNonNativeExportedMethods(env).ToArray();
+            if (exportedMethods == null) exportedMethods = GetNonNativeExportedMethods(env).ToArray();
+            if (moreChains == null) moreChains = GetMoreChainsChains(env).ToArray();
             return true;   
         }
 
@@ -129,7 +129,7 @@ namespace Hopper.Meta
                 {
                     var wrapped = new ChainSymbolWrapper(field, chainAttribute);
                     
-                    if (env.DoScoped(wrapped, () => wrapped.InitMore(env)))
+                    if (wrapped.Init(env) && env.TryAddChain(ClassName, wrapped))
                     {
                         yield return wrapped;
                     }

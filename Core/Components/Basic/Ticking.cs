@@ -1,16 +1,14 @@
 using Hopper.Shared.Attributes;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
-    [Chains("Do")]
     [NoActivation]
     public partial class Ticking : IBehavior
     {
+        // TODO: Linear chain
+        [Chain("Do")] private readonly Chain<ActorContext> _DoChain;
         public Entity actor;
-
-        public class Context : ActorContext
-        {
-        }
 
         public void Init(Entity actor)
         {
@@ -19,7 +17,7 @@ namespace Hopper.Core.Components.Basic
 
         public bool Activate()
         {
-            var ctx = new Context { actor = actor };
+            var ctx = new ActorContext { actor = actor };
             _DoChain.Pass(ctx);
             return true;
         }

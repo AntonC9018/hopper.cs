@@ -2,10 +2,10 @@ using System;
 using Hopper.Core.Stat;
 using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
-    [Chains("Death")]
     [NoActivation]
     public partial class Damageable : IBehavior
     {
@@ -14,6 +14,7 @@ namespace Hopper.Core.Components.Basic
             public Entity actor;
         }
 
+        [Chain("Death")] private readonly Chain<Context> _DeathChain;
         [Inject] public Health health;
 
         [Alias("IsDead")] public bool IsHealthZero() 

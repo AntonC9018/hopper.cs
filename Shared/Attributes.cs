@@ -2,30 +2,6 @@ using System;
 
 namespace Hopper.Shared.Attributes
 {
-    /// <summary>
-    /// Enables autogeneration of various shortcuts for acessing methods of the
-    /// behavior through the entity. They are added as extension methods over entities.
-    /// The parameter passed down the constructor indicates the name of those methods.
-    /// The resulting code depends on the chains that the behavior adds.
-    /// </summary>
-    /// <example>
-    /// Applying the attribute with alias "Attack" and chains "Do" and "Check"
-    /// will create the following extension methods:
-    /// Act(), TryAct()                            methods call the activation
-    /// UnconditionalAct(), TryUnconditionalAct()  call the Do() method
-    /// CheckAct(), TryCheckAct()                  methods call the Check() method 
-    /// </example>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class ActivationAliasAttribute : Attribute
-    {
-        public string Alias;
-
-        public ActivationAliasAttribute(string alias)
-        {
-            Alias = alias;
-        }
-    }
-
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class NoActivationAttribute : Attribute
     {
@@ -67,6 +43,11 @@ namespace Hopper.Shared.Attributes
     public class ChainAttribute : Attribute
     {
         public string Name;
+
+        public ChainAttribute(string name)
+        {
+            Name = name;
+        }
     }
 
     /// <summary>

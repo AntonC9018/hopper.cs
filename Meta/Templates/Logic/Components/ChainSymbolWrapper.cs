@@ -8,6 +8,7 @@ namespace Hopper.Meta
     public interface IChainWrapper
     {
         string Name { get; }
+        string FieldName { get; }
         ContextSymbolWrapper Context { get; }
         bool IsMore { get; }
         bool IsWithPriorities { get; }
@@ -25,6 +26,7 @@ namespace Hopper.Meta
     public class ImaginaryBehavioralChainWrapper : IChainWrapper
     {
         public string Name { get; private set; }
+        public string FieldName => $"_{Name}Chain";
         public ContextSymbolWrapper Context { get; private set; }
 
         public ImaginaryBehavioralChainWrapper(string name, ContextSymbolWrapper context)
@@ -45,6 +47,7 @@ namespace Hopper.Meta
     public class ChainSymbolWrapper : FieldSymbolWrapper, IChainWrapper, IThing
     {
         public new string Name { get; private set; }
+        public string FieldName => symbol.Name;
         public ContextSymbolWrapper Context { get; private set; }
         public bool IsMore => symbol.Type == RelevantSymbols.Index;
         public bool IsWithPriorities => GetChainType() == RelevantSymbols.Chain;
@@ -62,11 +65,6 @@ namespace Hopper.Meta
             Name = chainAttribute.Name is null ? symbol.Name : chainAttribute.Name;
         }
 
-        public void InitBehavioral(ContextSymbolWrapper context)
-        {
-            Context = context;
-        }
-
         public INamedTypeSymbol GetChainType()
         {
             var t = (INamedTypeSymbol) symbol.Type;
@@ -78,7 +76,7 @@ namespace Hopper.Meta
                 : t;
         }
 
-        public bool InitMore(GenerationEnvironment env)
+        public bool Init(GenerationEnvironment env)
         {
             // 1. Lookup the type of the context. It is the most nested generic type of the index type.
             var contextType = (INamedTypeSymbol) symbol.Type.GetLeafTypeArguments().First();

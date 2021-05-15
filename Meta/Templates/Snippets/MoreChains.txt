@@ -1,16 +1,16 @@
 <#  foreach(var chain in MoreChains) 
     { #>
-            public static readonly <#= chain.Name #>DefaultChain = new <#= chain.GetTypeText() #>();
+        public static readonly <#= chain.GetTypeText() #> <#= chain.Name #>DefaultChain = new <#= chain.GetTypeText() #>();
 
-            public static readonly MoreChainsPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new MoreChainsPath<<#= chain.GetTypeText() #>>(<#= chain.symbol.Name #>);
+        public static readonly MoreChainsPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new MoreChainsPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
 
 <#  } #>
-        static void InitMoreChains()
-        {
+    static void InitMoreChains()
+    {
 <#  foreach(var chain in MoreChains) 
     { 
-            /* The registry need the index */ #>
-            <#= chain.Name #>DefaultChain.Clear();
-            <#= chain.symbol.Name #>.Id = Registry.Global.RegisterMoreChains(<#= chain.Name #>DefaultChain);
+        /* The registry need the index */ #>
+        <#= chain.Name #>DefaultChain.Clear();
+        <#= chain.FieldName #>.Id = Registry.Global.RegisterMoreChains(<#= chain.Name #>DefaultChain);
 <#  } #>          
         }

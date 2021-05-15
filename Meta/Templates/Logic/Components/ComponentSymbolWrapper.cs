@@ -32,7 +32,7 @@ namespace Hopper.Meta
                 injectedFields = GetInjectedFields().ToArray();
 
                 HasInitInWorldMethod = symbol.GetMethods().Any(m => !m.IsStatic && m.Name == "InitInWorld");
-                return true;
+                return env.TryAddExportingClass(this);
             }
 
             return false;

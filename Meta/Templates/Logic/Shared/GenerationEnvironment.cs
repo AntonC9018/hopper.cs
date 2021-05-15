@@ -11,11 +11,6 @@ using System;
 
 namespace Hopper.Meta
 {
-    public class HopperProject
-    {
-
-    }
-
     public class GenerationEnvironment
     {
         private Project _project;
@@ -31,19 +26,34 @@ namespace Hopper.Meta
         public Dictionary<string, TypeSymbolWrapperBase> exportingClasses;
         public Dictionary<INamedTypeSymbol, ContextSymbolWrapper> contexts;
         public Dictionary<string, IChainWrapper> chains; 
-
-        // Same problem here.
         public HashSet<string> aliases;
 
         private INamespaceSymbol _rootNamespace;
         public string RootNamespaceName => _project.AssemblyName;
         public ParsingContext statParsingContext;
 
+        public GenerationEnvironment(string[] projectPaths)
+        {
+            aliases            = new HashSet<string>();
+            exportingClasses   = new Dictionary<string, TypeSymbolWrapperBase>();
+            contexts           = new Dictionary<INamedTypeSymbol, ContextSymbolWrapper>();
+            statParsingContext = new ParsingContext("Hopper");
+            chains             = new Dictionary<string, IChainWrapper>();
+            errorContext       = new ErrorContext();
+
+            Paths = new AutogenPaths();
+            foreach (var p in projectPaths)
+            {
+                Paths.Reset(Path.GetDirectoryName(p));
+                Paths.CreateOrEmpty();
+            }
+        }
+
         public bool TryAddExportingClass(TypeSymbolWrapperBase wrapper)
         {
             if (exportingClasses.ContainsKey(wrapper.ClassName))
             {
-                ReportError($"The behavior {wrapper.ClassName} has been defined twice, which is not allowed.");
+                ReportError($"The exporting class {wrapper.ClassName} has been defined twice, which is not allowed.");
                 return false;
             }
 
@@ -66,7 +76,7 @@ namespace Hopper.Meta
             return true;
         }
 
-        public bool AddChain(string typeName, IChainWrapper chain)
+        public bool TryAddChain(string typeName, IChainWrapper chain)
         {
             string uid = chain.GetUid(typeName);
 
@@ -122,21 +132,6 @@ namespace Hopper.Meta
             errorContext.PopThing();
             return result;
         } 
-
-        public GenerationEnvironment(string[] projectPaths)
-        {
-            aliases = new HashSet<string>();
-            exportingClasses = new Dictionary<string, TypeSymbolWrapperBase>();
-            statParsingContext = new ParsingContext("Hopper");
-            errorContext = new ErrorContext();
-
-            Paths = new AutogenPaths();
-            foreach (var p in projectPaths)
-            {
-                Paths.Reset(Path.GetDirectoryName(p));
-                Paths.CreateOrEmpty();
-            }
-        }
 
         public async Task Reset(Project project)
         {
@@ -211,7 +206,9 @@ namespace Hopper.Meta
 
             foreach (var typeSymbol in typeSymbols)
             {
-                if (typeSymbol.IsStatic || typeSymbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol))
+                if (typeSymbol.IsStatic 
+                    || typeSymbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol)
+                    && !exportingClasses.ContainsKey(typeSymbol.Name))
                 {
                     var classWrapper = new ExportedStuffClassSymbolWrapper(typeSymbol);
                     if (classWrapper.TryInit(this))

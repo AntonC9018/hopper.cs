@@ -12,7 +12,7 @@
 <#      } 
         foreach (var chain in behavior.Chains) 
         { #>
-            this._<#= chain.Name #>Chain = new Chain<Context>();
+            this._<#= chain.Name #>Chain = new <#= chain.GetTypeText() #>();
 <#      } #>
         }
 <#  } 

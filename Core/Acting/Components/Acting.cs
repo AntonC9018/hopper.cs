@@ -15,15 +15,18 @@ namespace Hopper.Core.ActingNS
         ActionSucceeded = 0b_100
     };
     
-    [Chains("Do", "Check", "Success", "Fail")]
-    [NoActivation]
     public partial class Acting : IBehavior
     {
-        [Flags] public ActingState _flags;
+        [Chain("Do")] private readonly Chain<Context> _DoChain;        
+        [Chain("Check")] private readonly Chain<Context> _CheckChain;
+        [Chain("Success")] private readonly Chain<Context> _SuccessChain;
+        [Chain("Fail")] private readonly Chain<Context> _FailChain;
 
         [Inject] public readonly System.Func<Entity, CompiledAction> ActionCalculationAlgorithm;
         [Inject] public readonly System.Action<Context> ActionExecutionAlgorithm;
         [Inject] public readonly Order order;
+
+        [Flags] public ActingState _flags;
         public CompiledAction nextAction;
         public IntVector2 selectedDirection;
         public Entity actor;
@@ -104,7 +107,7 @@ namespace Hopper.Core.ActingNS
             return ctx.success;
         }
 
-        [Export(Chain = "Ticking.Do")] 
+        [Export(Chain = "Ticking.Do", Dynamic = true)] 
         public void ResetAction()
         {
             _flags = 0;
@@ -127,7 +130,7 @@ namespace Hopper.Core.ActingNS
 
         public void DefaultPreset(Entity subject)
         {
-            subject.GetTicking()._DoChain.Add(ResetActionHandler);
+            ResetActionHandlerWrapper.HookTo(subject);
         }
 
         public IEnumerable<IntVector2> GetPossibleDirections()

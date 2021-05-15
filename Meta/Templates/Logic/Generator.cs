@@ -130,7 +130,7 @@ namespace Hopper.Meta
                     $"{env.Paths.TagsAutogenFolder}/{tag.ClassName}.cs");
             }
 
-            var methodClasses = env.GetExportedMethodClasses();
+            var methodClasses = env.GetExportedMethodClasses().ToArray();
             {
                 foreach (var methodClass in methodClasses)
                 {
@@ -144,7 +144,8 @@ namespace Hopper.Meta
             
             var topLevelStatTypes = GetJsonFileNames(env.Paths.StatJsonsFolder)
                 .Select(fname => StatType.ParseJson(env.statParsingContext, fname))
-                .WhereNotNull();
+                .WhereNotNull()
+                .ToArray();
             {
                 var startPrinter = new StatStartPrinter(env.RootNamespaceName);
 
@@ -157,7 +158,7 @@ namespace Hopper.Meta
                 }
             }
 
-            var slots = env.GetSlots();
+            var slots = env.GetSlots().ToArray();
 
             {
                 (new SlotExtensionsPrinter(env.RootNamespaceName, slots))
@@ -166,7 +167,8 @@ namespace Hopper.Meta
 
             var flagEnums = env.GetFlagEnums()
                 .Select(f => new FlagEnumSymbolWrapper(f))
-                .Where(f => f.TryInit(env));
+                .Where(f => f.TryInit(env))
+                .ToArray();
 
             foreach (var flag in flagEnums)
             {
@@ -174,10 +176,10 @@ namespace Hopper.Meta
                     .WriteToFile($"{env.Paths.FlagsAutogenFolder}/{flag.ClassName}.cs");
             }
 
-            var entityTypes = env.GetEntityTypes();
-            var methodClassInstances = env.GetMethodClassInstances();
-            var fieldsRequiringInit = env.GetFieldsRequiringInit();
-            var staticIndentiyingStatFields = env.GetStaticIdentifyingStatFields();
+            var entityTypes = env.GetEntityTypes().ToArray();
+            var methodClassInstances = env.GetMethodClassInstances().ToArray();
+            var fieldsRequiringInit = env.GetFieldsRequiringInit().ToArray();
+            var staticIndentiyingStatFields = env.GetStaticIdentifyingStatFields().ToArray();
 
             {
                 // They must live in at least the base namespace hopper

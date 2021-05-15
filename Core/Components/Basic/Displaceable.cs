@@ -8,8 +8,6 @@ using Hopper.Core.WorldNS;
 namespace Hopper.Core.Components.Basic
 {
     // TODO: Add option for generating linear chains instead of normal chains
-    [ActivationAlias("Displace")]
-    [Chains("Check", "BeforeRemove", "BeforeReset", "After")]
     public partial class Displaceable : IBehavior
     {
         public class Context : ContextBase
@@ -60,10 +58,14 @@ namespace Hopper.Core.Components.Basic
             }
         }
 
-        /* [PassToContext] */ [Inject] public Layer blockLayer;
+        [Chain("Check")] private readonly Chain<Context> _CheckChain;
+        [Chain("BeforeRemove")] private readonly Chain<Context> _BeforeRemoveChain;
+        [Chain("BeforeReset")] private readonly Chain<Context> _BeforeResetChain;
+        [Chain("After")] private readonly Chain<Context> _AfterChain;
+        [Inject] public Layer blockLayer;
 
         // TODO: To support sized entities, a lot has to be done here
-        public bool Activate(Entity actor, IntVector2 direction, Move move)
+        [Alias("Displace")] public bool Activate(Entity actor, IntVector2 direction, Move move)
         {
             var ctx = new Context
             {
