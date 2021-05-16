@@ -17,7 +17,6 @@ namespace Hopper.Meta
         public static INamedTypeSymbol Index;
         public static AttributeSymbolWrapper<AliasAttribute> AliasAttribute;
         public static AttributeSymbolWrapper<AutoActivationAttribute> AutoActivationAttribute;
-        public static AttributeSymbolWrapper<NoActivationAttribute> NoActivationAttribute;
         public static AttributeSymbolWrapper<ChainAttribute> ChainAttribute;
         public static AttributeSymbolWrapper<InjectAttribute> InjectAttribute;
         public static AttributeSymbolWrapper<FlagsAttribute> FlagsAttribute;
@@ -74,7 +73,6 @@ namespace Hopper.Meta
             ITag                     = GetComponentSymbol(compilation, nameof(ITag));
             AliasAttribute          .Init(compilation);
             AutoActivationAttribute .Init(compilation); 
-            NoActivationAttribute   .Init(compilation);
             ChainAttribute          .Init(compilation);
             InjectAttribute         .Init(compilation);
             FlagsAttribute          .Init(compilation);

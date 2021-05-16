@@ -26,7 +26,7 @@ namespace Hopper.Core.ActingNS
         [Inject] public readonly System.Action<Context> ActionExecutionAlgorithm;
         [Inject] public readonly Order order;
 
-        [Flags] public ActingState _flags;
+        public ActingState _flags;
         public CompiledAction nextAction;
         public IntVector2 selectedDirection;
         public Entity actor;

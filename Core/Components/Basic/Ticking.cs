@@ -3,7 +3,6 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
-    [NoActivation]
     public partial class Ticking : IBehavior
     {
         // TODO: Linear chain

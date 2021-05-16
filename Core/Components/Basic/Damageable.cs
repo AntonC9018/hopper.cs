@@ -6,7 +6,6 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
-    [NoActivation]
     public partial class Damageable : IBehavior
     {
         public class Context 
