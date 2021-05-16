@@ -37,6 +37,7 @@ namespace Hopper.Core
             _entities.Init();
             _entityFactory.Init();
             _defaultStats = new StatsBuilder();
+            _defaultMoreChains = new ChainsBuilder();
             _pools.Init();
         }
 
