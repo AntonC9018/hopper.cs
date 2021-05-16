@@ -86,42 +86,6 @@ namespace Hopper.Meta
             return true;
         }
 
-        public bool ValidateChainUid(string uid)
-        {
-            var split = uid.Split('.');
-            if (split.Length != 2) 
-            {
-                ReportError($"{uid} had wrong format. Expecting format [+]<ExportingClassName>.<ChainName>");
-                return false;
-            }
-            if (split[0][0] == '+') split[0] = split[0].Substring(1);
-
-            if (exportingClasses.TryGetValue(split[0], out var exportingType))
-            {
-                if (uid[0] == '+')
-                {
-                    if (exportingType.moreChains.Any(chain => chain.Name == split[1]))
-                        return true;
-                    ReportError($"{uid} references a non-existent chain: {split[1]}.");
-                }
-                else if (exportingType is BehaviorSymbolWrapper behavior)
-                {
-                    if (behavior.Chains.Any(chain => chain.Name == split[1]))
-                        return true;
-                    ReportError($"{uid} references a non-existent behavior chain: {split[1]}.");
-                }
-                else
-                {
-                    ReportError($"{uid} referenced an exporting class that was not a behavior: {split[0]}. If you meant a static class, use '+{uid}' instead.");
-                }
-            }
-            else
-            {
-                ReportError($"{uid} references a non-existent exporting class: {split[0]}");
-            }
-            return false;
-        }
-
         public ErrorContext errorContext;
         public void ReportError(string errorMessage) => errorContext.Report(errorMessage);
         

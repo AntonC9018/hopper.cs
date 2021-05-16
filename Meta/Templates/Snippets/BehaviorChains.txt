@@ -1,10 +1,9 @@
-<#  foreach (var chain in behavior.Chains) 
-    { 
-        if (chain is ImaginaryBehavioralChainWrapper)
-        { #>
+<#  foreach (var chain in behavior.ActivationChains) 
+    { #>
         public readonly Chain<Context> _<#= chain.Name #>Chain;
-<#      } #>
-
+<#  }
+    foreach (var chain in behavior.Chains) 
+    { #>
         /// <summary>
         /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity / entity factory.
         /// </summary>

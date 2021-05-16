@@ -92,10 +92,10 @@ namespace Hopper.Core.Targeting
                 if ((
                     // Try getting the blocks first, since those block the posibillity 
                     // of attacking the entity at all.
-                    World.Global.grid.TryGetTransformFromLayer(
+                    World.Global.Grid.TryGetTransformFromLayer(
                         ctx.position, ctx.direction, blockLayer, out ctx.normal.transform)
                     // Try getting actual targets next
-                    || World.Global.grid.TryGetTransformFromLayer(
+                    || World.Global.Grid.TryGetTransformFromLayer(
                         ctx.position, ctx.direction, targetedLayer, out ctx.normal.transform))
 
                         // Get its attackable afterwards
@@ -117,8 +117,8 @@ namespace Hopper.Core.Targeting
                 AttackTargetContext context, Layer targetedLayer, Layer skipLayer)
         {
             if (
-                World.Global.grid.HasNoTransformAt(context.position, context.direction, skipLayer)
-                && World.Global.grid.TryGetTransformFromLayer(
+                World.Global.Grid.HasNoTransformAt(context.position, context.direction, skipLayer)
+                && World.Global.Grid.TryGetTransformFromLayer(
                     context.position, context.direction, targetedLayer, out context.normal.transform)
                 && context.transform.entity.TryGetAttackable(out var attackable))
             {

@@ -8,23 +8,24 @@ namespace Hopper.Meta
 {
     public class BehaviorSymbolWrapper : ComponentSymbolWrapper
     {
-        public string ActivationAlias;
-
         public IChainWrapper[] Chains { get; private set; }
-        public bool HasCheck() => Chains.Any(chain => chain.Name == "Check");
-        public bool HasDo() => Chains.Any(chain => chain.Name == "Do");
-        public bool ShouldGenerateAutoActivation => ActivationAlias != null;
-
-        // TODO: this only works for behaviors with AutoActivation attribute.
-        public ContextSymbolWrapper Context => Chains[0].Context;
-
         public override string TypeText => "behavior";
+
+
+        // TODO: this only works for the particular class of behaviors which have been
+        //       decorated with the AutoActivation attribute.
+        public string ActivationAlias;
+        public bool ShouldGenerateAutoActivation => ActivationAlias != null;
+        public IEnumerable<BehaviorActivationChainWrapper> ActivationChains 
+            => Chains.OfType<BehaviorActivationChainWrapper>();
+        public ContextSymbolWrapper Context => ActivationChains.FirstOrDefault()?.Context;
+
 
         public BehaviorSymbolWrapper(INamedTypeSymbol symbol) : base(symbol)
         {
         }
 
-        public bool TryInitContext(GenerationEnvironment env, out ContextSymbolWrapper context)
+        public bool TryInitActivationContext(GenerationEnvironment env, out ContextSymbolWrapper context)
         {
             // Initialize the context class symbol wrapper
             var ctx_symbol = symbol.GetMembers().FirstOrDefault(s => s.Name == "Context");
@@ -84,11 +85,11 @@ namespace Hopper.Meta
                 }                
                 else
                 {
-                    if (!TryInitContext(env, out var context)) return false;
+                    if (!TryInitActivationContext(env, out var context)) return false;
                   
                     Chains = new IChainWrapper[] { 
-                        new ImaginaryBehavioralChainWrapper("Check", symbol, context), 
-                        new ImaginaryBehavioralChainWrapper("Do",    symbol, context)
+                        new BehaviorActivationChainWrapper("Check", symbol, context), 
+                        new BehaviorActivationChainWrapper("Do",    symbol, context)
                     };
 
                     foreach (var chain in Chains) 

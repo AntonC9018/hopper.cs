@@ -1,0 +1,30 @@
+<#  foreach (var chain in MoreChains) 
+    { #>
+        public static readonly <#= chain.GetTypeText() #> <#= chain.Name #>DefaultChain = new <#= chain.GetTypeText() #>();
+
+<#      if (chain.IsMore()) 
+        { #>
+        public static readonly MoreChainPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new MoreChainPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
+<#      } 
+        else if (chain.IsGlobal())
+        { #>
+        public static readonly GlobalChainPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new GlobalChainPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
+<#      } #>
+
+<#  } #>
+        public static void InitMoreChains()
+        {
+<#  foreach (var chain in MoreChains) 
+    { 
+            /* The registry need the index */ #>
+            <#= chain.Name #>DefaultChain.Clear();
+<#      if (chain.IsMore())
+        { #>
+            <#= chain.FieldName #>.Id = Registry.Global.RegisterMoreChain(<#= chain.Name #>DefaultChain);
+<#      }
+        else if (chain.IsGlobal())
+        { #>
+            <#= chain.FieldName #>.Id = Registry.Global.RegisterGlobalChain(<#= chain.Name #>DefaultChain);
+<#      } #>
+<#  } #>          
+        }

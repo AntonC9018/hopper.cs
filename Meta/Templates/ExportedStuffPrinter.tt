@@ -15,7 +15,7 @@ namespace <#= container.Namespace #>
 <#@ include file="Templates/Snippets/InstanceHandlersFromExportedMethods.txt" #>
 <#  } #>
 
-<#@ include file="Templates/Snippets/MoreChains.txt" #>
+<#@ include file="Templates/Snippets/ContributedChains.txt" #>
 
     }
 }

@@ -14,6 +14,6 @@ namespace Hopper.Meta.Template
 
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => component.exportedMethods;
         public IEnumerable<string> Usings() => component.Usings();
-        public IEnumerable<ChainSymbolWrapper> MoreChains => component.moreChains;
+        public IEnumerable<ChainSymbolWrapper> MoreChains => component.contributedChains;
     }
 }

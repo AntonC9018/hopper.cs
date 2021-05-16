@@ -14,7 +14,7 @@ namespace Hopper.Core.Targeting
             {
                 var targetPosition = position + pieces[i].relativePosition.RotateAndRound(angle);
 
-                if (World.Global.grid.IsInBounds(targetPosition))
+                if (World.Global.Grid.IsInBounds(targetPosition))
                 {
                     yield return new AttackTargetContext(
                         targetPosition,

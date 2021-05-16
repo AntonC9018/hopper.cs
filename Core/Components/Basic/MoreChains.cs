@@ -60,18 +60,34 @@ namespace Hopper.Core.Components.Basic
         }
     }
 
-    public readonly struct MoreChainsPath<T> : IPath<T> where T : IChain
+    public readonly struct MoreChainPath<T> : IPath<T> where T : IChain
     {
         public readonly Index<T> Index;
 
-        public MoreChainsPath(Index<T> index)
+        public MoreChainPath(Index<T> index)
         {
             Index = index;
         }
 
         public T Follow(Entity entity)
         {
-            return entity.GetMoreChains().GetLazy(Index);
+            if (entity.TryGetMoreChains(out var moreChains))
+                return moreChains.GetLazy(Index);
+            return default;
         }
+    }
+
+
+    public readonly struct GlobalChainPath<T> where T : IChain
+    {
+        public readonly Index<T> Index;
+
+        public GlobalChainPath(Index<T> index)
+        {
+            Index = index;
+        }
+
+        public T Follow(World world) => world.Chains.GetLazy(Index);
+        public T Follow() => Follow(World.Global);
     }
 }

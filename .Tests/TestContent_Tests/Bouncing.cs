@@ -31,7 +31,7 @@ namespace Hopper.Tests.Test_Content
             World.Global = new World(5, 3);
         }
 
-        public GridManager Grid => World.Global.grid;
+        public GridManager Grid => World.Global.Grid;
 
         [Test]
         public void Test_One_Two()

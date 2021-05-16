@@ -34,10 +34,10 @@ namespace Hopper.TestContent.Boss
             {
                 nextPosition -= direction;
 
-                if (World.Global.grid.IsOutOfBounds(nextPosition))
+                if (World.Global.Grid.IsOutOfBounds(nextPosition))
                     break;
 
-                if (World.Global.grid.HasNoUndirectedTransformAt(nextPosition, Layer.REAL))
+                if (World.Global.Grid.HasNoUndirectedTransformAt(nextPosition, Layer.REAL))
                 {
                     World.Global.SpawnEntity(Whelp.Factory, nextPosition, direction);
                     whelpCount++;

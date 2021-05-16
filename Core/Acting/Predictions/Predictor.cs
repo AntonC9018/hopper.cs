@@ -21,7 +21,7 @@ namespace Hopper.Core.ActingNS
         {
             var set = new HashSet<IntVector2>();
 
-            foreach (var actings in world.state.actings)
+            foreach (var actings in world.State.actings)
             foreach (var acting in actings)
             {
                 if (!acting.nextAction.HasAction())

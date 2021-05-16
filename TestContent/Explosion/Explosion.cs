@@ -62,7 +62,7 @@ namespace Hopper.TestContent
             }
         }
 
-        public static GridManager Grid => World.Global.grid;
+        public static GridManager Grid => World.Global.Grid;
 
         public static void ExplodeBy(Entity entity)
         {

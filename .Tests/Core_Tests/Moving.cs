@@ -29,7 +29,7 @@ namespace Hopper.Tests
             World.Global = new World(3, 3);
         }
 
-        public GridManager Grid => World.Global.grid;
+        public GridManager Grid => World.Global.Grid;
 
         [Test]
         public void MovingWorks()

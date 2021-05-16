@@ -17,8 +17,8 @@ namespace Hopper.Core.Targeting
         {
             position += direction;
 
-            while (World.Global.grid.IsInBounds(position) 
-                && World.Global.grid.HasNoTransformAt(position, direction, _stopSearchLayer))
+            while (World.Global.Grid.IsInBounds(position) 
+                && World.Global.Grid.HasNoTransformAt(position, direction, _stopSearchLayer))
             {
                 yield return new PositionAndDirection(position, direction);
                 position += direction;

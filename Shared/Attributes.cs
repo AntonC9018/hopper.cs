@@ -17,6 +17,13 @@ namespace Hopper.Shared.Attributes
         }
     }
 
+    public enum ChainContributionType
+    {
+        Instance = 0, 
+        More = 1, 
+        Global = 2, 
+    }
+
     /// <summary>
     /// Enables autogeneration of fields and methods related to the given chain.
     /// You may mark your instance chains with this attribute in your behavior classes
@@ -30,6 +37,7 @@ namespace Hopper.Shared.Attributes
     public class ChainAttribute : Attribute
     {
         public string Name;
+        public ChainContributionType Type = ChainContributionType.Instance;
 
         public ChainAttribute(string name)
         {

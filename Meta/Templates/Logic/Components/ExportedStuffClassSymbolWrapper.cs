@@ -14,7 +14,7 @@ namespace Hopper.Meta
             // If there are no exported methods, this class is unusable anyway
             // and should be either given another symbol, or thrown away.
             return base.Init(env) && base.AfterInit(env) 
-                && (exportedMethods.Length > 0 || moreChains.Length > 0)
+                && (exportedMethods.Length > 0 || contributedChains.Length > 0)
                 && env.TryAddExportingClass(this);
         }
 

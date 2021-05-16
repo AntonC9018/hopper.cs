@@ -7,11 +7,10 @@ namespace Hopper.Meta
 {
     public interface IChainWrapper
     {
-
         string Name { get; }
         string FieldName { get; }
         ContextSymbolWrapper Context { get; }
-        bool IsMore { get; }
+        ChainContributionType ContributionType { get; }
         bool IsWithPriorities { get; }
         INamedTypeSymbol GetChainType();
         INamedTypeSymbol Parent { get; }
@@ -20,28 +19,139 @@ namespace Hopper.Meta
 
     public static class ChainWrapperExtensions
     {
-        public static string GetPrefix(this IChainWrapper wrapper) => wrapper.IsMore ? "+" : "";
+        public static string GetPrefix(this IChainWrapper wrapper)
+        {
+            switch (wrapper.ContributionType)
+            {
+            case ChainContributionType.More:
+                return "+";
+            case ChainContributionType.Global:
+                return "@";
+            case ChainContributionType.Instance:
+                return "";
+            default:
+                throw new System.Exception("Never gets to here");
+            }
+        }
+
+        private static ChainContributionType StripContributionType(ref string uid)
+        {
+            switch (uid[0])
+            {
+            case '+':
+                uid = uid.Substring(1);
+                return ChainContributionType.More;
+            case '@':
+                uid = uid.Substring(1);
+                return ChainContributionType.Global;
+            default:
+                return ChainContributionType.Instance;
+            }
+        }
+
+        private struct ChainIdentifier
+        {
+            public ChainContributionType Type;
+            public string Class;
+            public string Chain;
+
+            public static bool TryParse(string uid, ErrorContext ctx, out ChainIdentifier parsed)
+            {
+                var strippedUid = uid;
+                var type = StripContributionType(ref strippedUid);
+                var split = strippedUid.Split('.');
+
+                if (split.Length != 2)
+                {
+                    ctx.Report($"{uid} had wrong format. Expecting format [+]<ExportingClassName>.<ChainName>");
+                    parsed = default;
+                    return false;
+                }
+
+                parsed = new ChainIdentifier
+                {
+                    Type = type,
+                    Class = split[0],
+                    Chain = split[1] 
+                };
+                return true;
+            }
+        }
+
+
+        public static bool TrueOr(bool expression, System.Action or)
+        {
+            if (expression) return true;
+            or();
+            return false;
+        }
+
+        public static bool ValidateChainUidAgainst(this string uid, GenerationEnvironment env)
+        {
+            if (!ChainIdentifier.TryParse(uid, env.errorContext, out var parsed))
+            {
+                return false;
+            }
+
+            if (env.exportingClasses.TryGetValue(parsed.Class, out var exportingType))
+            {
+                switch (parsed.Type)
+                {
+                case ChainContributionType.More:
+                case ChainContributionType.Global:
+                    return TrueOr(
+                        exportingType.contributedChains.Any(chain => chain.Name == parsed.Chain
+                            && chain.ContributionType == parsed.Type),
+                        () => env.ReportError($"{uid} references a non-existent chain: {parsed.Chain}."));
+
+                case ChainContributionType.Instance:
+                    if (exportingType is BehaviorSymbolWrapper behavior)
+                    {
+                        if (behavior.Chains.Any(chain => chain.Name == parsed.Chain)) 
+                            return true;
+                        env.ReportError($"{uid} references a non-existent behavior chain: {parsed.Chain}.");
+                    }
+                    else
+                    {
+                        env.ReportError($"{uid} referenced an exporting class that was not a behavior: {parsed.Class}. If you meant a static class, use '+{uid}' instead.");
+                    }
+                    return false;
+                default:
+                    return false;
+                }
+            }
+            else
+            {
+                env.ReportError($"{uid} references a non-existent exporting class: {parsed.Class}");
+            }
+            return false;
+        }
+
         public static string GetUid(this IChainWrapper wrapper)
             => $"{wrapper.GetPrefix()}{wrapper.Parent.Name}.{wrapper.Name}";
         public static string GetFullyQualifiedName(this IChainWrapper wrapper)
             => $"{wrapper.Parent.GetFullyQualifiedName()}.{wrapper.Name}";
+        public static bool IsMore(this IChainWrapper wrapper)
+            => wrapper.ContributionType == ChainContributionType.More;
+        public static bool IsGlobal(this IChainWrapper wrapper)
+            => wrapper.ContributionType == ChainContributionType.Global;
     }
 
-    public class ImaginaryBehavioralChainWrapper : IChainWrapper
+    public class BehaviorActivationChainWrapper : IChainWrapper
     {
         public string Name { get; private set; }
         public INamedTypeSymbol Parent { get; private set; }
         public string FieldName => $"_{Name}Chain";
         public ContextSymbolWrapper Context { get; private set; }
 
-        public ImaginaryBehavioralChainWrapper(string name, INamedTypeSymbol parentSymbol, ContextSymbolWrapper context)
+        public BehaviorActivationChainWrapper(string name, INamedTypeSymbol parentSymbol, ContextSymbolWrapper context)
         {
             Name = name;
             Parent = parentSymbol;
             Context = context;
         }
 
-        public bool IsMore => false;
+        public ChainContributionType ContributionType => ChainContributionType.Instance;
         public bool IsWithPriorities => true;
 
         public INamedTypeSymbol GetChainType() => RelevantSymbols.Chain;
@@ -52,31 +162,29 @@ namespace Hopper.Meta
 
     public class ChainSymbolWrapper : FieldSymbolWrapper, IChainWrapper, IThing
     {
-        public new string Name { get; private set; }
+        private ChainAttribute _attribute;
+        public ContextSymbolWrapper Context { get; private set; }
+
+        public ChainContributionType ContributionType => _attribute.Type;
+        public new string Name => _attribute.Name;
         public INamedTypeSymbol Parent => symbol.ContainingType;
         public string FieldName => symbol.Name;
-        public ContextSymbolWrapper Context { get; private set; }
-        public bool IsMore => symbol.IsStatic;
         public bool IsWithPriorities => GetChainType() == RelevantSymbols.Chain;
 
         public string Identity => $"{Name} Chain{this.GetPrefix()}";
         public string Location => symbol.Locations.First().ToString();
 
-        public ChainSymbolWrapper(IFieldSymbol symbol) : base(symbol)
-        {
-            Name = symbol.Name;
-        }
         
         public ChainSymbolWrapper(IFieldSymbol symbol, ChainAttribute chainAttribute) : base(symbol)
         {
-            Name = chainAttribute.Name is null ? symbol.Name : chainAttribute.Name;
+            _attribute = chainAttribute;
         }
 
         public INamedTypeSymbol GetChainType()
         {
             var t = (INamedTypeSymbol) symbol.Type;
 
-            return IsMore 
+            return symbol.IsStatic 
                 // We assume it is an index
                 // So the inner type of the type is the chain type
                 ? (INamedTypeSymbol) t.TypeArguments.Single()

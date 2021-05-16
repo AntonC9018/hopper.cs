@@ -27,7 +27,7 @@ namespace Hopper.Tests
             Attackable.AddTo(entityFactory, Attackness.ALWAYS);
         }
 
-        public GridManager Grid => World.Global.grid;
+        public GridManager Grid => World.Global.Grid;
 
         [SetUp]
         public void Setup()

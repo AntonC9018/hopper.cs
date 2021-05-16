@@ -47,7 +47,7 @@ namespace Hopper.Meta
         {
             var uid = exportAttribute.Chain;
 
-            return env.ValidateChainUid(uid) 
+            return uid.ValidateChainUidAgainst(env) 
                 && env.chains.TryGetValue(uid, out var chain)
                 && InitWithChain(env, chain); 
         }

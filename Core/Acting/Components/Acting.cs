@@ -117,7 +117,7 @@ namespace Hopper.Core.ActingNS
         [Alias("IsCurrentOrderFavorable")]
         public bool IsCurrentOrderFavorable()
         {
-            return World.Global.state.currentPhase == order;
+            return World.Global.State.currentPhase == order;
         }
 
         public void CalculateNextAction()

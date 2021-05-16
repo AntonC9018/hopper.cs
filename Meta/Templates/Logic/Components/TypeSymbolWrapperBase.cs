@@ -13,7 +13,7 @@ namespace Hopper.Meta
         public INamedTypeSymbol symbol;
         public IEnumerable<UsingDirectiveSyntax> usings;
         public ExportedMethodSymbolWrapper[] exportedMethods;
-        public ChainSymbolWrapper[] moreChains;
+        public ChainSymbolWrapper[] contributedChains;
 
         public TypeSymbolWrapperBase(INamedTypeSymbol symbol)
         {
@@ -29,7 +29,7 @@ namespace Hopper.Meta
         protected virtual bool AfterInit(GenerationEnvironment env)
         {
             if (exportedMethods == null) exportedMethods = GetNonNativeExportedMethods(env).ToArray();
-            if (moreChains == null) moreChains = GetMoreChainsChains(env).ToArray();
+            if (contributedChains == null) contributedChains = GetMoreChainsChains(env).ToArray();
             return true;   
         }
 

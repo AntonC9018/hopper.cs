@@ -18,6 +18,6 @@ namespace Hopper.Meta.Template
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedInstanceMethods => 
             container.exportedMethods.Where(m => !m.symbol.IsStatic);
         public IEnumerable<string> Usings() => container.Usings();
-        public IEnumerable<ChainSymbolWrapper> MoreChains => container.moreChains;
+        public IEnumerable<ChainSymbolWrapper> MoreChains => container.contributedChains;
     }
 }

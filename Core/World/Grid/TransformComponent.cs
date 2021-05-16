@@ -20,7 +20,7 @@ namespace Hopper.Core.WorldNS
         public IntVector2 orientation;
         [Inject] public Layer layer;
 
-        private GridManager Grid => World.Global.grid;
+        private GridManager Grid => World.Global.Grid;
         
 
         [Alias("InitTransform")]

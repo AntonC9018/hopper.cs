@@ -10,9 +10,10 @@ namespace Hopper.Core.WorldNS
     {
         public static World Global;
 
-        public GridManager grid;
-        public WorldStateManager state;
-
+        public GridManager Grid { get; private set; }
+        public WorldStateManager State { get; private set; }
+        public MoreChains Chains { get; private set; }
+        
         public static readonly int NumOrders = System.Enum.GetValues(typeof(Order)).Length;
         public static readonly int NumLayers = System.Enum.GetValues(typeof(Layer)).Length;
 
@@ -20,19 +21,20 @@ namespace Hopper.Core.WorldNS
         // The world currently does not really need an id
         public World(int width, int height)
         {
-            grid = new GridManager(width, height);
-            state = new WorldStateManager();
+            Grid   = new GridManager(width, height);
+            State  = new WorldStateManager();
+            Chains = new MoreChains(Registry.Global._defaultGlobalChains);
         }
 
         public void Loop()
         {
-            state.Loop();
-            grid.ResetCellTriggers();
+            State.Loop();
+            Grid.ResetCellTriggers();
         }
 
         public int GetNextTimeFrame()
         {
-            return state.NextTimeFrame();
+            return State.NextTimeFrame();
         }
 
         public event System.Action<Entity> SpawnEntityEvent;
@@ -64,19 +66,19 @@ namespace Hopper.Core.WorldNS
 
             if (entity.TryInitTransform(pos, orientation, out var transform))
             {
-                grid.AddTransformNoEvent(transform);
+                Grid.AddTransformNoEvent(transform);
                 factory.InitInWorld(transform);
             }
 
             if (entity.TryInitActing(out var acting))
             {
-                state.AddActor(acting);
+                State.AddActor(acting);
             }
 
             if (entity.TryGetTicking(out var ticking))
             {
                 ticking.Init(entity);
-                state.AddTicking(ticking);
+                State.AddTicking(ticking);
             }
 
             SpawnEntityEvent?.Invoke(entity);

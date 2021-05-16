@@ -50,7 +50,7 @@ namespace Hopper.Tests
             }
         }
 
-        public GridManager Grid => World.Global.grid;
+        public GridManager Grid => World.Global.Grid;
 
         [SetUp]
         public void Setup()

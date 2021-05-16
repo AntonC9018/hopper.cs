@@ -18,7 +18,7 @@ namespace Hopper.Core.Targeting
         {
             foreach (var pd in _pattern.GetPositionsAndDirections(position, direction))
             {
-                var matches = World.Global.grid.GetAllFromLayer(pd.position, pd.direction, _targetedLayer)
+                var matches = World.Global.Grid.GetAllFromLayer(pd.position, pd.direction, _targetedLayer)
                     .Where(t1 => !t1.entity.TryCheckFaction(_targetedFaction, out bool result) || result);
 
                 if (matches.Any())
@@ -32,7 +32,7 @@ namespace Hopper.Core.Targeting
         {
             foreach (var t in _pattern.GetPositionsAndDirections(position, direction))
             {
-                var matches = World.Global.grid.GetAllFromLayer(t.position, t.direction, _targetedLayer)
+                var matches = World.Global.Grid.GetAllFromLayer(t.position, t.direction, _targetedLayer)
                     .Where(t1 => t1.entity.TryCheckFaction(_targetedFaction, out bool result) && result);
 
                 foreach (var transform in matches)

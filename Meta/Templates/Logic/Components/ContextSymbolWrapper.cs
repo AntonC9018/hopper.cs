@@ -14,14 +14,12 @@ namespace Hopper.Meta
             this.symbol = symbol;
             
             fieldsHashed = new Dictionary<string, IFieldSymbol>();
-            omitted = new HashSet<string>();
             notOmitted = new List<IFieldSymbol>();
         }
 
         public bool TryInit(GenerationEnvironment env) => TryHashFields(env);
 
         private Dictionary<string, IFieldSymbol> fieldsHashed;
-        private HashSet<string> omitted;
         public List<IFieldSymbol> notOmitted;
         public string ActorName { get; private set; }
         public bool IsActorAField => fieldsHashed.ContainsKey(ActorName);
@@ -46,14 +44,9 @@ namespace Hopper.Meta
                 if (field.Name == "actor" && field.Type == RelevantSymbols.entity)
                 {
                     ActorName = "actor";
-                    omitted.Add(field.Name);
                 }
-                else if (field.HasAttribute(RelevantSymbols.OmitAttribute.symbol) 
-                    || field.IsImplicitlyDeclared)
-                {
-                    omitted.Add(field.Name);
-                }
-                else
+                else if (!field.HasAttribute(RelevantSymbols.OmitAttribute.symbol) 
+                    && !field.IsImplicitlyDeclared)
                 {
                     if (ActorName is null && field.Type == RelevantSymbols.entity)
                     {
@@ -66,11 +59,11 @@ namespace Hopper.Meta
                 }
             }
 
-            if (ActorName is null) 
-            {
-                env.ReportError("The context class must contain a field of type \"Entity\", representing the entity, or a property with name \"actor\"");
-                return false;
-            }
+            // if (ActorName is null) 
+            // {
+            //     env.ReportError("The context class must contain a field of type \"Entity\", representing the entity, or a property with name \"actor\"");
+            //     return false;
+            // }
 
             return true;
         }
@@ -82,12 +75,6 @@ namespace Hopper.Meta
         public bool ContainsFieldWithNameAndType(string name, ITypeSymbol type) 
             => fieldsHashed.TryGetValue(name, out var fieldSymbol)
                 && SymbolEqualityComparer.Default.Equals(fieldSymbol.Type, type);
-
-        public bool ShouldBeOmitted(string name) => omitted.Contains(name);
-
-        public string ParentClassName => symbol.ContainingType.Name;
-        public string Name => symbol.Name;
-        public string NameWithParentClass => $"{ParentClassName}.{Name}";
 
 
         /* Things mainly called in the template */
@@ -106,7 +93,5 @@ namespace Hopper.Meta
             foreach (var p in ParamNames()) yield return p;
         }
         public string JoinedParamNamesWithActor() => String.Join(", ", ParamNamesWithActor());
-
-        public string JoinedParamTypeNames() => notOmitted.CommaJoin(f => f.Type.Name);
     }
 }

@@ -87,7 +87,7 @@ namespace Hopper.TestContent.BouncingNS
             }
 
             if (actor.IsCurrentOrderFavorable()
-                && World.Global.grid.HasNoUndirectedTransformAt(context.initialPosition, _targetedLayer))
+                && World.Global.Grid.HasNoUndirectedTransformAt(context.initialPosition, _targetedLayer))
             {
                 bouncing._isPressedDown = false;
             }
