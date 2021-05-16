@@ -7,11 +7,21 @@ using Hopper.Core.Stat;
 using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
 using Hopper.TestContent.Stat;
+using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 using static Hopper.Core.ActingNS.Action;
 
 namespace Hopper.TestContent.SlidingNS
 {
+    public static partial class Sliding
+    {
+        [Chain("+Applied")]
+        public static readonly Index<Chain<Entity>> Applied = new Index<Chain<Entity>>();
+        
+        [Chain("+Removed")]
+        public static readonly Index<Chain<Entity>> Removed = new Index<Chain<Entity>>();
+    }
+
     public partial class SlidingEntityModifier : IComponent, IStandartActivateable
     {
         [Inject] public IntVector2 directionOfSliding; 
@@ -76,6 +86,7 @@ namespace Hopper.TestContent.SlidingNS
         {
             Unset(actor);
             actor.RemoveComponent(Index);
+            Sliding.RemovedPath.Follow(actor)?.Pass(actor);
         }
 
         public static void TryApplyTo(Transform transform, IntVector2 directionOfSliding)
@@ -89,6 +100,7 @@ namespace Hopper.TestContent.SlidingNS
             {
                 SlidingEntityModifier.AddTo(actor, directionOfSliding);
                 Preset(actor);
+                Sliding.AppliedPath.Follow(actor)?.Pass(actor);
             }
         }
     }

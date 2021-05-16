@@ -1,16 +1,19 @@
 using System.Collections.Generic;
 using Hopper.Core;
 using Hopper.Core.ActingNS;
+using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
 using Hopper.Core.WorldNS;
+using Hopper.Shared.Attributes;
+using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 using static Hopper.Core.ActingNS.Action;
 
 namespace Hopper.TestContent
 {
     // [Service]
-    public static class Explosion
+    public static partial class Explosion
     {
         // public static readonly WorldEventPath<IntVector2> EventPath = new WorldEventPath<IntVector2>();
 
@@ -70,11 +73,14 @@ namespace Hopper.TestContent
             Explode(entity.GetTransform().position, explosion.radius);
         }
 
-        public static void Explode(IntVector2 pos, int radius)
+        [Chain("@Explosion")] 
+        public static readonly Index<Chain<IntVector2>> ExplosionChainIndex = new Index<Chain<IntVector2>>();
+
+        public static void Explode(IntVector2 position, int radius)
         {
             foreach (var vec in IntVector2.Spiral(-radius, -radius, radius, radius))
             {
-                IntVector2 current_pos = pos + vec;
+                IntVector2 current_pos = position + vec;
                 if (Grid.IsOutOfBounds(current_pos) == false)
                 {
                     IntVector2 knockback_dir = vec.Sign();
@@ -83,9 +89,11 @@ namespace Hopper.TestContent
             }
         }
 
-        public static void ExplodeCell(IntVector2 pos, IntVector2 knockbackDir)
+        public static void ExplodeCell(IntVector2 position, IntVector2 knockbackDir)
         {
-            var targetTransforms = Grid.GetAllFromLayer(pos, knockbackDir, TargetedLayer);
+            ExplosionPath.Follow().Pass(position);
+
+            var targetTransforms = Grid.GetAllFromLayer(position, knockbackDir, TargetedLayer);
 
             foreach (var transform in targetTransforms)
             {

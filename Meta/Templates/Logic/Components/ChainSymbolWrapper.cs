@@ -19,35 +19,10 @@ namespace Hopper.Meta
 
     public static class ChainWrapperExtensions
     {
-        public static string GetPrefix(this IChainWrapper wrapper)
-        {
-            switch (wrapper.ContributionType)
-            {
-            case ChainContributionType.More:
-                return "+";
-            case ChainContributionType.Global:
-                return "@";
-            case ChainContributionType.Instance:
-                return "";
-            default:
-                throw new System.Exception("Never gets to here");
-            }
-        }
+        public static string GetPrefix(this IChainWrapper wrapper) => wrapper.ContributionType.GetPrefix();
 
-        private static ChainContributionType StripContributionType(ref string uid)
-        {
-            switch (uid[0])
-            {
-            case '+':
-                uid = uid.Substring(1);
-                return ChainContributionType.More;
-            case '@':
-                uid = uid.Substring(1);
-                return ChainContributionType.Global;
-            default:
-                return ChainContributionType.Instance;
-            }
-        }
+        private static ChainContributionType StripContributionType(ref string uid) => 
+            ChainContribution.StripContributionType(ref uid);
 
         private struct ChainIdentifier
         {

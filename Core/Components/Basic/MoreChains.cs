@@ -4,7 +4,6 @@ using Hopper.Core.Items;
 using Hopper.Shared.Attributes;
 using System.Collections.Generic;
 using Hopper.Utils;
-using Hopper.Core.WorldNS;
 
 namespace Hopper.Core.Components.Basic
 {
@@ -75,19 +74,5 @@ namespace Hopper.Core.Components.Basic
                 return moreChains.GetLazy(Index);
             return default;
         }
-    }
-
-
-    public readonly struct GlobalChainPath<T> where T : IChain
-    {
-        public readonly Index<T> Index;
-
-        public GlobalChainPath(Index<T> index)
-        {
-            Index = index;
-        }
-
-        public T Follow(World world) => world.Chains.GetLazy(Index);
-        public T Follow() => Follow(World.Global);
     }
 }

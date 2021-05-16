@@ -24,6 +24,39 @@ namespace Hopper.Shared.Attributes
         Global = 2, 
     }
 
+    public static class ChainContribution
+    {
+        public static string GetPrefix(this ChainContributionType type)
+        {
+            switch (type)
+            {
+            case ChainContributionType.More:
+                return "+";
+            case ChainContributionType.Global:
+                return "@";
+            case ChainContributionType.Instance:
+                return "";
+            default:
+                throw new System.Exception("Never gets to here");
+            }
+        }
+
+        public static ChainContributionType StripContributionType(ref string uid)
+        {
+            switch (uid[0])
+            {
+            case '+':
+                uid = uid.Substring(1);
+                return ChainContributionType.More;
+            case '@':
+                uid = uid.Substring(1);
+                return ChainContributionType.Global;
+            default:
+                return ChainContributionType.Instance;
+            }
+        }
+    }
+
     /// <summary>
     /// Enables autogeneration of fields and methods related to the given chain.
     /// You may mark your instance chains with this attribute in your behavior classes
@@ -41,6 +74,7 @@ namespace Hopper.Shared.Attributes
 
         public ChainAttribute(string name)
         {
+            Type = ChainContribution.StripContributionType(ref name);
             Name = name;
         }
     }
