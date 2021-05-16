@@ -5,14 +5,11 @@ namespace Hopper.Meta
 {
     class Program
     {
-        public static async Task Main()
+        public static async Task Main(string[] args)
         {
             MSBuildLocator.RegisterDefaults();
             var generator = new Generator();
-            await generator.Start(new string[] { 
-                "../Core/Hopper.Core.csproj", 
-                "../TestContent/Hopper.TestContent.csproj" 
-            });
+            await generator.Start(args);
         }
     }
 }
