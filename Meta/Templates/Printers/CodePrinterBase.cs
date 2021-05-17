@@ -109,13 +109,13 @@ namespace Hopper.Meta.Template
         
         public void Write(string textToAppend) 
         {
-            GenerationEnvironment.Append(textToAppend);
+            GenerationEnvironment.Append(textToAppend.Replace("\r\n", "\r\n" + currentIndent));
         }
 
         public void WriteWithIndent(string text)
         {
             PushIndent();
-            WriteLine(text);
+            Write(text);
             PopIndent();
         }
         

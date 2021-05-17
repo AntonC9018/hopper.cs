@@ -1,24 +1,24 @@
 // TODO: Account for linear chains
 <#  foreach (var method in ExportedInstanceMethods) 
     { #>
-        public void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
-        {
-<#= method.AdapterBody #>
-        }
-        public Handler<<#= method.ContextName #>> <#= method.Name #>Handler;
+public void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
+{
+<# WriteWithIndent(method.AdapterBody); #>
+}
+public Handler<<#= method.ContextName #>> <#= method.Name #>Handler;
 <#      if (method.IsDynamic) 
         { #>
-        public HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper;
+public HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper;
 <#      } #>
 
 <#  } #>
-        public void InitInstanceHandlers()
-        {
+public void InitInstanceHandlers()
+{
 <#  foreach (var method in ExportedInstanceMethods) { #>
-            <#= method.Name #>Handler = new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);
-            <#= method.Name #>Handler.priority = Registry.Global.NextPriority(PriorityRank.<#= method.Priority #>);
+    <#= method.Name #>Handler = new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);
+    <#= method.Name #>Handler.priority = Registry.Global.NextPriority(PriorityRank.<#= method.Priority #>);
 <#      if (method.IsDynamic) { #>
-            <#= method.Name #>HandlerWrapper = new HandlerWrapper<<#= method.ContextName #>>(<#= method.Name #>Handler, <#= method.ChainName #>Path);
+    <#= method.Name #>HandlerWrapper = new HandlerWrapper<<#= method.ContextName #>>(<#= method.Name #>Handler, <#= method.ChainName #>Path);
 <#      } 
     } #>
-        }
+}

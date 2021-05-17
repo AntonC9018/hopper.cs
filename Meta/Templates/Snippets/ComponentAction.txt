@@ -2,22 +2,22 @@
     { 
         if (component.IsPredictable) 
         { #>
-        public static readonly PredictableActivatingAction<<#= component.ClassName #>> Action = new PredictableActivatingAction<<#= component.ClassName #>>(Index);
+public static readonly PredictableActivatingAction<<#= component.ClassName #>> Action = new PredictableActivatingAction<<#= component.ClassName #>>(Index);
 <#      }
         else
         { #>
-        public static readonly ActivatingAction<<#= component.ClassName #>> Action = 
-            new ActivatingAction<<#= component.ClassName #>>(Index);
+public static readonly ActivatingAction<<#= component.ClassName #>> Action = 
+    new ActivatingAction<<#= component.ClassName #>>(Index);
 <#      }
     }
     if (component.IsUndirectedActivateable)
     { 
         if (component.IsUndirectedPredictable)
         { #>
-        public static readonly UndirectedPredictableActivatingAction<<#= component.ClassName #>> UAction = new UndirectedPredictableActivatingAction<<#= component.ClassName #>>(Index);
+public static readonly UndirectedPredictableActivatingAction<<#= component.ClassName #>> UAction = new UndirectedPredictableActivatingAction<<#= component.ClassName #>>(Index);
 <#      } 
         else
         { #>
-        public static readonly UndirectedActivatingAction<<#= component.ClassName #>> UAction = new UndirectedActivatingAction<<#= component.ClassName #>>(Index);
+public static readonly UndirectedActivatingAction<<#= component.ClassName #>> UAction = new UndirectedActivatingAction<<#= component.ClassName #>>(Index);
 <#      } 
     } #>

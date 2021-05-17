@@ -7,7 +7,8 @@ using Hopper.Utils.Chains;
 namespace <#= container.Namespace #>
 {
     public <#= container.StaticityString#>partial class <#= container.ClassName #>
-    {
+    { <# PushIndent("        "); #>
+
 <#@ include file="Templates/Snippets/HandlersFromExportedMethods.txt" #>
 
 <#  if (container.IsExportingInstanceMethods) 
@@ -16,6 +17,7 @@ namespace <#= container.Namespace #>
 <#  } #>
 
 <#@ include file="Templates/Snippets/ContributedChains.txt" #>
+<# PopIndent(); #>
 
     }
 }
