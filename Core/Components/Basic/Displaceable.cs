@@ -23,8 +23,6 @@ namespace Hopper.Core.Components.Basic
             {
                 int i = 1;
 
-                var transform = actor.GetTransform();
-
                 do
                 {
                     if (transform.HasBlockRelative(direction * i, blockLayer))
