@@ -13,7 +13,6 @@ namespace Hopper.Core.WorldNS
         public int Height => m_grid.GetLength(0);
         public int Width => m_grid.GetLength(1);
 
-        // TODO: these are basically useless, because they get wiped off at the end of loop
         public CellMovementTriggerGrid EnterTriggerGrid; 
         public CellMovementTriggerGrid LeaveTriggerGrid; 
         public SelfFilteringCellMovementTriggerGrid EnterFilteringTriggerGrid;
