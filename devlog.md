@@ -27,6 +27,13 @@
     - [Bug with stats](#bug-with-stats)
     - [More Chains (aka events)](#more-chains-aka-events)
       - [The Plan](#the-plan)
+- [Proper project setup](#proper-project-setup)
+    - [My current setup](#my-current-setup)
+    - [What I want to achieve](#what-i-want-to-achieve)
+    - [Building into one directory?](#building-into-one-directory)
+    - [Why not run tests through your IDE?](#why-not-run-tests-through-your-ide)
+    - [How can you help me](#how-can-you-help-me)
+    - [Actual code of the current set up](#actual-code-of-the-current-set-up)
 
 <!-- /TOC -->
 
@@ -1037,4 +1044,130 @@ public static class Demo
 7. Chains now store their context themselves. They also store their type (linear or nor).
 8. Let's say the context stays as it is for now (actor + other stuff on an object).
 9. Export attribute disallow priorities for linear chains (emit a warning).
-10.  
+
+
+# Proper project setup
+
+### My current setup
+
+I have a game (library) project already in development which already has a lot of features. 
+
+It contains a bunch of subprojects:
+- `Utils` with utility code, like `IEnumerable` extensions, some data structures etc.
+- `Core` with the base library of the game. Contains essential game logic code.
+- `Meta` for code analysis and generation for the main project (`Core`) and any mods.
+- `Shared` contains some stuff available for both `Core` and `Meta`.
+- `TestContent` is a test mod. 
+- `Tests` with tests for the `Core` code and the code from `TestContent`. I'm using `nunit-3` for tests.
+- `Mine` as a playground for quickly running and debugging certain tests.
+
+References between projects are achieved via `ProjectReference` in the `.csproj` files.
+
+My `Utils`, `Core`, `Shared`, `TestContent` and `Mine` subprojects do not reference any external projects, just each other (and no circular dependencies). All of these also have their `AssemblyName` property in `.csproj` files set to their name. For example, here is the `Hopper.Core.csproj` file (others are similar): 
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>net4.8;netcoreapp3.1</TargetFrameworks>
+    <AssemblyName>Hopper.Core</AssemblyName>
+    <Name>Core</Name>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Utils\Hopper.Utils.csproj" />
+    <ProjectReference Include="..\Shared\Hopper.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
+```
+
+Another problem with this is that I do not really care which version it exports for. I'm using only features from C# 7.X, so no default interface implementations, no nullable types and no a couple more things. C# 7.X is supported by basically any dotnet runtime (I guess?) there is, be it `Core`, `Framework`, `Standart`, whatever. (I am still confused by these, even though I have read tons of documentation on this).
+
+The base folder *does not* have a solution file. I personally do not understand the meaning behind solutions. I'd appreciate if a knowlegeable person explained it to me.
+
+
+### What I want to achieve
+
+I'd like the particulars of the build system to be defined from an outer project, but with a default fallback. So, if I import this code as a `git submodule` in another project, say a Godot project, I'd have my build system pick up on Godot's build system while all of the subprojects kept working: I want to be able to generate code through `Meta`, I want to be able to run my tests and I want to even be able to run some test code on just the included code, all while being a subproject of the main project in Godot.
+
+Also, I want to somehow clearly state to the outer project that `Tests` are for tests and should not be in the build of the game, `Meta` is a tool, and should not be in the game build as well. Maybe, these should even be built in separate folders, to aboid confusion.
+
+I also want the runtime version of the outer project (e.g. `DotNet Framework 4.8` to propagate to the subprojects). I also want this version to be distinct from the version of the `Meta` tool, which should be built with the runtime needed for `Roslyn` to work. Ideally, this second "tool version" should be selectable by the outer project, but should have a default value too.
+
+I want my projects to build individual dlls, so we don't get all code compiled into a single dll.
+
+I would like to avoid splitting it up into even more github projects. I want the Core projects to have both the code generation tool and the tests code.
+
+
+### Building into one directory?
+
+I have only half-figured out how to force `msbuild` to write output to a single folder. So, I have a build folder in the root of the project, where dll's of all subprojects end up. I have been able to achieve this via a `Directory.Build.props` like this:
+
+```xml
+<Project>
+ <PropertyGroup>
+    <BaseOutputPath>..\build\bin</BaseOutputPath>
+ </PropertyGroup>
+</Project>
+```
+
+There are a couple of problems with this solution:
+1. All of the subprojects, apparently, if they reference another subproject, even within the same project, seem to be recompiling these projects. E.g. `Tests` reference `Core` and `Utils`, `Core` references `Utils` as well. When `Tests` are built, it builds `Core`, which builds `Utils`, but then `Tests` builds `Utils` the second time. This is annoying.  
+2. All of the binaries end up mangled in that one folder, which is also annoying. I'd like them to be stored in separate folders, e.g. by the name of the project, in that build folder, but I could not find a way to get a reference to the project in `Directory.Build.props`. I must set this path in `.props`, because if I set it in corresponding `.csproj` files, where the name is known, `Nuget` then messes it up by writing to the default path anyway (that is, a nested to the project `bin`).
+
+I have also not been able to figure out how to write the assembly info, I guess, generated in nested `obj` folders, to somewhere else. Whichever setting/property I tried in `msbuild`, it didn't end up working out.
+
+I also have a couple of helper `bat` scripts. One launches `Meta`, the code generator, on the `Core` subproject and on the `TestContent` subproject, generating code for both, under their project folders. The other runs either all tests or a selection of tests. I would like to either convert these to tasks which I could run in an IDE or via `dotnet whatever` commands, or make them decide what exactly to do depending on whether the project is included as a submodule or not. 
+
+For example, my `test.bat` literally looks like this:
+
+```bat
+@echo off
+cd .Tests
+call dotnet build
+cd ..
+
+if %1==all (
+    nunit3-console build\bin\Debug\net4.8\Hopper.Tests.dll
+) else (
+    nunit3-console build\bin\Debug\net4.8\Hopper.Tests.dll --test=Hopper.Tests.%1
+)
+```
+
+So it literally builds the `Tests` project and then goes ahead and runs the compiled dll by path. This is obviously no good if the dll ends up in a different folder.
+
+
+### Why not run tests through your IDE?
+
+Oh, I was not able to run tests via VS Code. I have struggled for like 2 days, then ditched it. So, basically, if you write code for tests, VS Code automatically pick up on it. It displays `Run Test`, `Debug Test` and other buttons above your tests.
+
+![Run Tests, Debug Tests](https://imgur.com/ddzTsUu)
+
+However, if you click on it, it always runs in the integrated terminal, which is really slow, annoying and doesn't color code correcly. I have searched for hours, but have not been able to find a sloution to this. (I'm using `ConEmu` as my console, which I like a lot more than the janky integrated terminal).
+
+If you try debugging the test, the error `Error processing 'configurationDone' request. Only 64-bit processes can be debugged.` pops up. I tried to find what exact command and in what way `VS Code` actually tries debugging those tests with, but could not find any info whatsoever on this. This is why I have another project for debugging and quick tests: I am unable to debug tests. This is, too, extremely annoying.
+
+
+### How can you help me
+
+I would like to get an advice from a more experienced developer on how to set up such projects in the most flexible, but at the same time least troublesome and annoying way possible. Partially breaking the existing setup is fine. 
+
+The most important thing is for this nested project to be totally independent of the parent-project, but at the same time to be customizable from the outside. Also, keep in mind that this project must be copied as a git submodule into the outer project.
+
+I would appreciate examples of real projects, maybe blogposts that explain this in depth, any tricks or concepts I will need to learn to set this up, anything. I'm totally new to all this and have no idea where to start. I am too overwhelmed by the problems that have come up that I have no idea how to solve.
+
+I would also appreciate useful information on Godot build system and examples of any complex Godot projects that make use of dotnet, or, likewise, any articles on how to set it up properly or how to customize it.
+
+Ideally, I would like to avoid reading 1000 pages of random documentation to hopefully fish some useful ideas. I would like to get this sorted in, ideally, a few days.
+
+
+### Actual code of the current set up
+
+The Godot code is currently broken: the nested repo for first is not used in any way (it's just included as a submodule) and, for second, there is essentially no game yet. See [1][the state of the godot outer project as of the day of writing]. 
+
+[2][Here is the state of the library project as of the day of writing]. It is the repo described above, with the code generator and the `Core` code. 
+
+[1]: https://github.com/AntonC9018/hopper-godot/tree/e2656e219fdee4375e3b4c86594446086a115c2f
+[2]: https://github.com/AntonC9018/hopper.cs/tree/37afc578ba174285403ae74269d9e7b514d61174

@@ -139,12 +139,12 @@ namespace Hopper.Core.WorldNS
 
         public void SubsribeToPermanentEnterEvent(System.Func<CellMovementContext, bool> handler)
         {
-            Grid.EnterPermanentTriggerGrid.Subscribe(position, handler);
+            Grid.EnterFilteringTriggerGrid.Subscribe(position, handler);
         }
         
         public void SubsribeToPermanentLeaveEvent(System.Func<CellMovementContext, bool> handler)
         {
-            Grid.LeavePermanentTriggerGrid.Subscribe(position, handler);
+            Grid.LeaveFilteringTriggerGrid.Subscribe(position, handler);
         }
     }
 }

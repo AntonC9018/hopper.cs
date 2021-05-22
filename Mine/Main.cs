@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Hopper.Core;
 using Hopper.Core.ActingNS;
 using Hopper.Core.Components;
@@ -19,50 +21,97 @@ using static Hopper.Utils.Vector.IntVector2;
 
 namespace Hopper.Mine
 {
-    public static class A
-    {
-        public static readonly int a;
-
-        static A() { a = 9; }
-    }
 
     public class Program
     {
+        class Inheriting : List<int>
+        {
+        }
+
+        class Forwarding : IList<int>
+        {
+            public readonly List<int> list = new List<int>();
+
+            public int this[int index] { get => list[index]; set => list[index] = value; }
+            public int Count => list.Count;
+            public bool IsReadOnly => ((ICollection<int>)list).IsReadOnly;
+            public void Add(int item) => list.Add(item);
+            public void Clear() => list.Clear();
+            public bool Contains(int item) => list.Contains(item);
+            public void CopyTo(int[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
+
+            public IEnumerator<int> GetEnumerator() => list.GetEnumerator();
+            public int IndexOf(int item) => list.IndexOf(item);
+            public void Insert(int index, int item) => list.Insert(index, item);
+            public bool Remove(int item) => list.Remove(item);
+            public void RemoveAt(int index) => list.RemoveAt(index);
+
+            IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
+        }
 
         public static void Main(string[] args)
         {
-            Hopper.Core.Main.Init();
-            Hopper.TestContent.Main.Init();
+            Stopwatch stopwatch = new Stopwatch();
+ 
+            stopwatch.Start();
+            for (int i = 0; i < 10; i++)
+                Forwardings();
+            stopwatch.Stop();
+ 
+            Console.WriteLine($"Elapsed Time is {stopwatch.ElapsedMilliseconds} ms");
+            Console.WriteLine($"Medium time is {stopwatch.ElapsedMilliseconds / 10} ms");
+        }
 
-
-            var entityFactory = new EntityFactory();
-            Transform.AddTo(entityFactory, Layer.REAL);
-
-
-            var template = new StatsBuilder
+        public static void Forwardings()
+        {
+            List<Forwarding> forwardings = new List<Forwarding>();
+            for (int i = 0; i < 1000; i++)
             {
-                { Attack.Index,                                  new Attack(1, 2, 3, Attack.Source.Basic.Index) },
-                { Push.Index,                                    new Push(1, 2, 3, Push.Source.Basic.Index)     },
-                { Push.Source.Basic.Index,                       new Push.Source.Resistance(5)                  },
-                { Attack.Source.Basic.Index,                     new Attack.Source.Resistance(4)                },
-                { TestContent.Stat.Explosion.AttackSource.Index, new Attack.Source.Resistance(3)                },
-                { Attack.Resistance.Index,                       new Attack.Resistance(1, 2, 3, 4)              },
-                { Push.Resistance.Index,                         new Push.Resistance(5)                         },
-                { Dig.Index,                                     new Dig(6, 7, 8)                               },
-                { TestContent.Stat.Bind.Source.Index,            new StatusSource.Resistance(9)                 }
-                // 3, 9, 5
-            };
+                forwardings.Add(new Forwarding());
 
+                for (int j = 0; j < 1000; j++)
+                {
+                    forwardings[i].Add(j * i);
+                }
+            }
 
-            Stats.AddTo(entityFactory, Registry.Global._defaultStats);
-            
+            int sum = 0;
+            for (int k = 0; k < 20; k++)
+            for (int i = 0; i < 1000; i++)
+            {
+                for (int j = 0; j < 1000; j++)
+                {
+                    sum += forwardings[i][j];
+                }
+            }
 
-            var stats = entityFactory.subject.GetStats();
+            Console.WriteLine(sum);
+        }
 
-            stats.GetLazy(Attack.Index, out var attack);
+        public static void Inheritings()
+        {
+            List<Inheriting> inheritings = new List<Inheriting>();
+            for (int i = 0; i < 1000; i++)
+            {
+                inheritings.Add(new Inheriting());
 
-            var factory = Player.Factory;
-            Equip.OnDisplaceHandlerWrapper.HookTo(factory);
+                for (int j = 0; j < 1000; j++)
+                {
+                    inheritings[i].Add(j * i);
+                }
+            }
+
+            int sum = 0;
+            for (int k = 0; k < 20; k++)
+            for (int i = 0; i < 1000; i++)
+            {
+                for (int j = 0; j < 1000; j++)
+                {
+                    sum += inheritings[i][j];
+                }
+            }
+            Console.WriteLine(sum);
+
         }
     }
 }

@@ -16,15 +16,15 @@ namespace Hopper.Core.WorldNS
         // TODO: these are basically useless, because they get wiped off at the end of loop
         public CellMovementTriggerGrid EnterTriggerGrid; 
         public CellMovementTriggerGrid LeaveTriggerGrid; 
-        public SelfFilteringCellMovementTriggerGrid EnterPermanentTriggerGrid;
-        public SelfFilteringCellMovementTriggerGrid LeavePermanentTriggerGrid;
+        public SelfFilteringCellMovementTriggerGrid EnterFilteringTriggerGrid;
+        public SelfFilteringCellMovementTriggerGrid LeaveFilteringTriggerGrid;
 
         private void InitGrids()
         {
             EnterTriggerGrid.Init();
             LeaveTriggerGrid.Init();
-            EnterPermanentTriggerGrid.Init();
-            LeavePermanentTriggerGrid.Init();
+            EnterFilteringTriggerGrid.Init();
+            LeaveFilteringTriggerGrid.Init();
         }
 
         public GridManager(int width, int height)
@@ -219,13 +219,13 @@ namespace Hopper.Core.WorldNS
         public void TriggerEnter(Transform transform, IntVector2 direction)
         {
             EnterTriggerGrid.Trigger(transform, direction);
-            EnterPermanentTriggerGrid.Trigger(transform, direction);
+            EnterFilteringTriggerGrid.Trigger(transform, direction);
         }
 
         public void TriggerLeave(Transform transform, IntVector2 direction)
         {
             LeaveTriggerGrid.Trigger(transform, direction);
-            LeavePermanentTriggerGrid.Trigger(transform, direction);
+            LeaveFilteringTriggerGrid.Trigger(transform, direction);
         }
     }
 }
