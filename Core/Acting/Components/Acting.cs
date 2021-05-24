@@ -28,7 +28,6 @@ namespace Hopper.Core.ActingNS
 
         public ActingState _flags;
         public CompiledAction nextAction;
-        public IntVector2 selectedDirection;
         public Entity actor;
 
         public class Context : ContextBase
