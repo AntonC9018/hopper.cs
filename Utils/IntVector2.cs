@@ -31,6 +31,20 @@ namespace Hopper.Utils.Vector
             }
         }
 
+        public static IEnumerable<IntVector2> CircleAroundOrigin
+        {
+            get
+            {
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        yield return new IntVector2(x, y);
+                    }
+                }
+            }
+        }
+
         public IEnumerable<IntVector2> OrthogonallyAdjacent
         {
             get

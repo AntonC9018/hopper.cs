@@ -24,94 +24,48 @@ namespace Hopper.Mine
 
     public class Program
     {
-        class Inheriting : List<int>
+        public static IEnumerable<IntVector2> Basic(IntVector2 diff, IntVector2 orientation)
         {
-        }
+            var diff_ones = diff.Sign();
+            var diff_x = new IntVector2(diff_ones.x, 0);
+            var diff_y = new IntVector2(0, diff_ones.y);
 
-        class Forwarding : IList<int>
-        {
-            public readonly List<int> list = new List<int>();
+            // The difference is not diagonal
+            if      (diff_ones.x == 0) yield return diff_y;
+            else if (diff_ones.y == 0) yield return diff_x;
 
-            public int this[int index] { get => list[index]; set => list[index] = value; }
-            public int Count => list.Count;
-            public bool IsReadOnly => ((ICollection<int>)list).IsReadOnly;
-            public void Add(int item) => list.Add(item);
-            public void Clear() => list.Clear();
-            public bool Contains(int item) => list.Contains(item);
-            public void CopyTo(int[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
+            // the difference is diagonal
+            else
+            {
+                int dot_x = diff_x.Dot(orientation);
+                int dot_y = diff_y.Dot(orientation);
 
-            public IEnumerator<int> GetEnumerator() => list.GetEnumerator();
-            public int IndexOf(int item) => list.IndexOf(item);
-            public void Insert(int index, int item) => list.Insert(index, item);
-            public bool Remove(int item) => list.Remove(item);
-            public void RemoveAt(int index) => list.RemoveAt(index);
-
-            IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
+                if (dot_x >= dot_y)
+                {
+                    yield return diff_x;
+                    yield return diff_y;
+                } 
+                else
+                {
+                    yield return diff_y;
+                    yield return diff_x;
+                }
+            }
         }
 
         public static void Main(string[] args)
         {
-            Stopwatch stopwatch = new Stopwatch();
- 
-            stopwatch.Start();
-            for (int i = 0; i < 10; i++)
-                Forwardings();
-            stopwatch.Stop();
- 
-            Console.WriteLine($"Elapsed Time is {stopwatch.ElapsedMilliseconds} ms");
-            Console.WriteLine($"Medium time is {stopwatch.ElapsedMilliseconds / 10} ms");
-        }
-
-        public static void Forwardings()
-        {
-            List<Forwarding> forwardings = new List<Forwarding>();
-            for (int i = 0; i < 1000; i++)
+            foreach (var diff in CircleAroundOrigin)
+            if (diff != Zero)
+            foreach (var orientation in OrthogonallyAdjacentToOrigin)
             {
-                forwardings.Add(new Forwarding());
-
-                for (int j = 0; j < 1000; j++)
+                Console.Write($"diff {diff}, orientation {orientation}: ");
+                foreach (var dir in Basic(diff, orientation))
                 {
-                    forwardings[i].Add(j * i);
+                    Console.Write($"{dir}, ");
                 }
+                Console.WriteLine();
             }
-
-            int sum = 0;
-            for (int k = 0; k < 20; k++)
-            for (int i = 0; i < 1000; i++)
-            {
-                for (int j = 0; j < 1000; j++)
-                {
-                    sum += forwardings[i][j];
-                }
-            }
-
-            Console.WriteLine(sum);
-        }
-
-        public static void Inheritings()
-        {
-            List<Inheriting> inheritings = new List<Inheriting>();
-            for (int i = 0; i < 1000; i++)
-            {
-                inheritings.Add(new Inheriting());
-
-                for (int j = 0; j < 1000; j++)
-                {
-                    inheritings[i].Add(j * i);
-                }
-            }
-
-            int sum = 0;
-            for (int k = 0; k < 20; k++)
-            for (int i = 0; i < 1000; i++)
-            {
-                for (int j = 0; j < 1000; j++)
-                {
-                    sum += inheritings[i][j];
-                }
-            }
-            Console.WriteLine(sum);
-
         }
     }
 }
