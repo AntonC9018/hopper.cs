@@ -9,18 +9,9 @@ namespace Hopper.Core.WorldNS
     public class WorldStateManager
     {
         public readonly DoubleList<Acting>[] actings;
-        public DoubleList<Ticking> tickings;
-
-        public event System.Action StartOfLoopEvent;
-        public event System.Action EndOfLoopEvent;
-        public event System.Action BeforeFilterEvent;
-        public event System.Action<Order> StartOfPhaseEvent;
-        public event System.Action<Order> EndOfPhaseEvent;
+        public readonly DoubleList<Ticking> tickings;
 
         public Order currentPhase = Order.Player;
-        private int m_currentTimeFrame = 0;
-        public int NextTimeFrame() => m_currentTimeFrame++;
-        private int[] m_updateCountPhaseLimits = new int[World.NumOrders + 1];
 
         public WorldStateManager()
         {
@@ -46,8 +37,6 @@ namespace Hopper.Core.WorldNS
 
         public void Loop()
         {
-            StartOfLoopEvent?.Invoke();
-
             ResetPhase();
             ActivatePlayers();
             CalculateActionOnEntities();
@@ -55,8 +44,6 @@ namespace Hopper.Core.WorldNS
             TickAll();
             FilterDead();
             EndPhase();
-
-            EndOfLoopEvent?.Invoke();
         }
 
         private void Activate(Acting acting)
@@ -127,7 +114,6 @@ namespace Hopper.Core.WorldNS
 
         private void ResetPhase()
         {
-            m_currentTimeFrame = 0;
             currentPhase = Order.Player;
         }
 
@@ -139,9 +125,7 @@ namespace Hopper.Core.WorldNS
 
         private void EndPhase()
         {
-            Assert.That((int)currentPhase < m_updateCountPhaseLimits.Length, $"{Enum.GetName(typeof(Order), currentPhase)}({(int)currentPhase}) is outside the phase range");
-            m_updateCountPhaseLimits[(int)currentPhase] = m_currentTimeFrame;
-            EndOfPhaseEvent?.Invoke(currentPhase);
+            Assert.That((int)currentPhase < World.NumOrders, $"{Enum.GetName(typeof(Order), currentPhase)}({(int)currentPhase}) is outside the phase range");
         }
     }
 }
