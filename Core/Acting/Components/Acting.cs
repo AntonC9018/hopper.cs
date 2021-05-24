@@ -90,18 +90,15 @@ namespace Hopper.Core.ActingNS
                 ActionExecutionAlgorithm(ctx);
             }
 
-            ctx.Propagate = true;
-
-            if (ctx.success) _flags |=  ActingState.ActionSucceeded;
-            else             _flags &= ~ActingState.ActionSucceeded;
+            _flags = _flags.Set(ActingState.ActionSucceeded, ctx.success);
 
             if (ctx.success)
                 _SuccessChain.Pass(ctx);
             else
                 _FailChain.Pass(ctx);
 
-            _flags |=  ActingState.DidAction;
-            _flags &= ~ActingState.DoingAction;
+            _flags = _flags.Set(ActingState.DidAction)
+                           .Unset(ActingState.DoingAction);
 
             return ctx.success;
         }

@@ -32,11 +32,6 @@ namespace Hopper.Core.WorldNS
             Grid.ResetCellTriggers();
         }
 
-        public int GetNextTimeFrame()
-        {
-            return State.NextTimeFrame();
-        }
-
         public event System.Action<Entity> SpawnEntityEvent;
 
         // Spawning of particles. (A `Particle` being a `Scent` without a `Logent`)

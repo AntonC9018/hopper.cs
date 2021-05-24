@@ -7,14 +7,50 @@ namespace <#= flag.Namespace #>
 { 
     public static class <#= flag.ClassName #>FlagsExtensions
     {
+        /// <summary>
+        /// Checks whether the given flags intersect with the other flags.
+        /// Returns true if either of the other flags are set on the flags.
+        /// To see if flags contain all of some other flags, use <c>HasFlag()</c> instead. 
+        /// </summary>
         public static bool HasEitherFlag(this <#= flag.ClassName #> flag1, <#= flag.ClassName #> flag2)
         {
             return (flag1 & flag2) != 0;
         }
 
+        /// <summary>
+        /// Checks whether the given flags does not intersect with the other flags.
+        /// Returns false if either of the other flags are set on the flags.
+        /// This function does the same as negating a call to <c>HasEitherFlag()</c>.
+        /// </summary>
         public static bool HasNeitherFlag(this <#= flag.ClassName #> flag1, <#= flag.ClassName #> flag2)
         {
             return (flag1 & flag2) == 0;
+        }
+
+        /// <summary>
+        /// Returns a new <c><#= flag.ClassName #></c> with the given flags set.
+        /// </summary>
+        public static <#= flag.ClassName #> Set(this <#= flag.ClassName #> flagInitial, <#= flag.ClassName #> flagToSet)
+        {
+            return flagInitial | flagToSet;
+        }
+
+        /// <summary>
+        /// Returns a new <c><#= flag.ClassName #></c> with the given flags unset.
+        /// </summary>
+        public static <#= flag.ClassName #> Unset(this <#= flag.ClassName #> flagInitial, <#= flag.ClassName #> flagToSet)
+        {
+            return flagInitial & (~flagToSet);
+        }
+        
+        /// <summary>
+        /// Returns a new <c><#= flag.ClassName #></c> with the given flags set or unset, 
+        /// indicated by the <c>set</c> boolean parameter.
+        /// </summary>
+        public static <#= flag.ClassName #> Set(this <#= flag.ClassName #> flagInitial, <#= flag.ClassName #> flagToSet, bool set)
+        {
+            if (set) return Set(flagInitial, flagToSet);
+            else     return Unset(flagInitial, flagToSet);
         }
     }
 }

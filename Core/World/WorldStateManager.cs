@@ -98,7 +98,6 @@ namespace Hopper.Core.WorldNS
 
         private void FilterDead()
         {
-            BeforeFilterEvent?.Invoke();
             foreach (var _actings in actings)
             {
                 foreach (var acting in _actings.StartFiltering())

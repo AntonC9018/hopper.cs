@@ -13,13 +13,13 @@ namespace Hopper.Core.History
         public EntityState(Entity entity)
         {
             this.transformSnapshot = entity.GetTransform().GetSnapshot();
-            this.timeframe = World.Global.GetNextTimeFrame();
+            // this.timeframe = World.Global.GetNextTimeFrame();
         }
 
         public EntityState(Transform transform)
         {
             this.transformSnapshot = transform.GetSnapshot();
-            this.timeframe = World.Global.GetNextTimeFrame();
+            // this.timeframe = World.Global.GetNextTimeFrame();
         }
 
         public EntityState(IntVector2 pos, IntVector2 orientation, int timeframe)
