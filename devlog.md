@@ -34,6 +34,7 @@
     - [Why not run tests through your IDE?](#why-not-run-tests-through-your-ide)
     - [How can you help me](#how-can-you-help-me)
     - [Actual code of the current set up](#actual-code-of-the-current-set-up)
+- [More ideas](#more-ideas)
 
 <!-- /TOC -->
 
@@ -1070,7 +1071,6 @@ My `Utils`, `Core`, `Shared`, `TestContent` and `Mine` subprojects do not refere
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net4.8;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>Hopper.Core</AssemblyName>
     <Name>Core</Name>
   </PropertyGroup>
@@ -1171,3 +1171,13 @@ The Godot code is currently broken: the nested repo for first is not used in any
 
 [1]: https://github.com/AntonC9018/hopper-godot/tree/e2656e219fdee4375e3b4c86594446086a115c2f
 [2]: https://github.com/AntonC9018/hopper.cs/tree/37afc578ba174285403ae74269d9e7b514d61174
+
+
+
+
+# More ideas
+
+1. Moving should do Check and then Do, separately, on the displaceable, or work differently than a check do (like check and before or something).
+2. Movs should use the faction to figure out what faction to target.
+3. Add DB "indices" to the registry, that is, accelerate common queries.
+4. FLag and enum registry types.

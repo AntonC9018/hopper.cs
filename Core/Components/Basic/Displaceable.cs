@@ -19,6 +19,14 @@ namespace Hopper.Core.Components.Basic
             [Omit] public IntVector2 newPosition;
             [Omit] public Layer blockLayer;
 
+            public Context(IntVector2 direction, Move move, Transform transform, Layer blockLayer)
+            {
+                this.direction = direction;
+                this.move = move;
+                this.transform = transform;
+                this.blockLayer = blockLayer;
+            }
+
             public void SetNewPosition()
             {
                 int i = 1;
@@ -65,13 +73,7 @@ namespace Hopper.Core.Components.Basic
         // TODO: To support sized entities, a lot has to be done here
         [Alias("Displace")] public bool Activate(Entity actor, IntVector2 direction, Move move)
         {
-            var ctx = new Context
-            {
-                move = move,
-                blockLayer = blockLayer,
-                transform = actor.GetTransform(),
-                direction = direction
-            };
+            var ctx = new Context(direction, move, actor.GetTransform(), blockLayer);
 
             ctx.SetNewPosition();
 

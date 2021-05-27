@@ -5,7 +5,7 @@
     <StartupObject>Hopper.Mine.Program</StartupObject>
     <Name>Mine</Name>
     <AssemblyName>Hopper.Mine</AssemblyName>
-    <TargetFrameworks>net4.8;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net4.8;netcoreapp3.1;net472</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
