@@ -1,19 +1,20 @@
 <!-- TOC -->
 
 - [Overview](#overview)
-    - [View](#view)
+  - [WARNING](#warning)
+  - [View](#view)
 - [Introduction](#introduction)
-    - [Style](#style)
-    - [The architectural structure](#the-architectural-structure)
-    - [Entities](#entities)
-    - [Layers](#layers)
-    - [World events](#world-events)
-    - [Game loop](#game-loop)
-    - [Communication between `Model` and `Controller`](#communication-between-model-and-controller)
-    - [Chains](#chains)
-    - [Behaviors](#behaviors)
-    - [Entity factory](#entity-factory)
-    - [Retouchers and Tinkers](#retouchers-and-tinkers)
+  - [Style](#style)
+  - [The architectural structure](#the-architectural-structure)
+  - [Entities](#entities)
+  - [Layers](#layers)
+  - [World events](#world-events)
+  - [Game loop](#game-loop)
+  - [Communication between `Model` and `Controller`](#communication-between-model-and-controller)
+  - [Chains](#chains)
+  - [Behaviors](#behaviors)
+  - [Entity factory](#entity-factory)
+  - [Retouchers and Tinkers](#retouchers-and-tinkers)
 
 <!-- /TOC -->
 
@@ -27,6 +28,12 @@ This particular repo is just the `Model` part of the project.
 The documentation does not exist, although some general concepts like Chains, Tinkers, Retouchers and Decorators (called Behaviors in this code) as well as some others, which all have been described in the [docs for the prior version](https://antonc9018.github.io/Dungeon-Hopper-Docs/), are present in this version too, although in a somewhat different form.
 
 The file `main.cs` contains some demo code. You may look through it to assess the capabilities of the system.
+
+## WARNING
+
+Most of the stuff below is **out-of-date**! 
+The project has been massively refactored lately, and most of the things described below have become irrelevant.
+Likewise, all of the new features are yet to be documented.
 
 ## View
 
