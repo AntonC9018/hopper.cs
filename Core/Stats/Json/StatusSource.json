@@ -1,0 +1,8 @@
+{
+    "@identifies": "Resistance",
+    "_Resistance": 
+    {
+        "amount": 0
+    },
+    "$Test": { "@type": "StatusSource" }
+}

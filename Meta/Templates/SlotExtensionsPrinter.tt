@@ -1,0 +1,33 @@
+<#@ template debug="false" hostspecific="true" language="C#" inherits="CodePrinterBase" #>
+<#@ assembly name="Meta" #>
+<#@ include file="Templates/Snippets/autogen_notice.txt" #>
+using Hopper.Core;
+using Hopper.Core.Items;
+
+namespace <#= Namespace #>
+{
+    public static class SlotExtensions
+    {
+<#  foreach (var slot in slots) 
+    { #>
+<#      if (slot.ShouldGenerate)
+        { #>
+        public static bool TryGet<#= slot.SlotName #>(this Entity entity, out Entity item)
+        {
+            if (entity.TryGetInventory(out var inventory))
+            {
+                return inventory.TryGet<#= slot.SlotName #>(out item);
+            }
+            item = null;
+            return false;
+        }
+
+        public static bool TryGet<#= slot.SlotName #>(this Inventory inventory, out Entity item)
+        {
+            return inventory.TryGetItemFromSlot(<#= slot.FullyQualifiedName #>.Id, out item);
+        }
+        
+<#      } 
+    } #>
+    }
+}

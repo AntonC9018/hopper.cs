@@ -1,6 +1,8 @@
+using Hopper.Shared.Attributes;
+
 namespace Hopper.Core.Targeting
 {
-    public enum Attackness
+    [Flags] public enum Attackness
     {
         CAN_BE_ATTACKED = 0b_0000_0001,
         BY_DEFAULT = 0b_0000_1000,
@@ -16,14 +18,9 @@ namespace Hopper.Core.Targeting
 
     public static class AttacknessExtensions
     {
-        public static bool Is(this Attackness attackness, Attackness checkAgainst)
+        public static bool AreEitherSet(this Attackness attackness, Attackness flags)
         {
-            return (attackness & checkAgainst) != 0;
-        }
-
-        public static bool IsNot(this Attackness attackness, Attackness checkAgainst)
-        {
-            return (attackness & checkAgainst) == 0;
+            return (attackness & flags) != 0;
         }
     }
 }

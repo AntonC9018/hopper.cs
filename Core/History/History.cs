@@ -1,42 +1,22 @@
 using System.Collections.Generic;
 using Hopper.Utils;
 using System.Linq;
+using Hopper.Core.Components;
 
 namespace Hopper.Core.History
 {
-    public class History<T>
+    public partial class History : IComponent
     {
-        private List<UpdateInfo<T>> m_updates;
-        public IReadOnlyList<UpdateInfo<T>> Updates => m_updates.AsReadOnly();
+        private List<IUpdateInfo> m_updates;
 
         public History()
         {
-            m_updates = new List<UpdateInfo<T>>();
+            m_updates = new List<IUpdateInfo>();
         }
 
-        public void InitControlUpdate(ITrackable<T> trackable)
+        public void Add(IUpdateInfo info)
         {
-            var initialUpdate = CreateControlUpdate(trackable.GetState());
-            m_updates.Add(initialUpdate);
-        }
-
-        private UpdateInfo<T> CreateControlUpdate(T state)
-        {
-            return new UpdateInfo<T>
-            {
-                stateAfter = state,
-                updateCode = UpdateCode.control
-            };
-        }
-
-        public void Add(T state, UpdateCode updateCode)
-        {
-            var update = new UpdateInfo<T>
-            {
-                stateAfter = state,
-                updateCode = updateCode
-            };
-            m_updates.Add(update);
+            m_updates.Add(info);
         }
 
         public void Clear()
@@ -45,46 +25,7 @@ namespace Hopper.Core.History
             {
                 return;
             }
-            var controlState = m_updates.Last().stateAfter;
             m_updates.Clear();
-            // add the control update. this has the initial state at the start of history
-            m_updates.Add(CreateControlUpdate(controlState));
-        }
-
-        public T GetStateBefore(UpdateCode updateCode)
-        {
-            // first, find the displacement event
-            for (int i = m_updates.Count - 1; i > 0; i--)
-            {
-                if (m_updates[i].updateCode == updateCode)
-                {
-                    // return the state before that 
-                    return m_updates[i - 1].stateAfter;
-                }
-            }
-            // otherwise, return the last state
-            return m_updates[m_updates.Count - 1].stateAfter;
-        }
-    }
-
-    public static class HistoryExtension
-    {
-        static public void Add(this History<EntityState> history, Entity entity, UpdateCode updateCode)
-        {
-            history.Add(
-                state: ((ITrackable<EntityState>)entity).GetState(),
-                updateCode
-            );
-        }
-
-        static public bool Did(this Entity entity, UpdateCode code)
-        {
-            return Was(entity.History, code);
-        }
-
-        static public bool Was(this History<EntityState> history, UpdateCode code)
-        {
-            return history.Updates.Find(u => u.updateCode == code) != null;
         }
     }
 }

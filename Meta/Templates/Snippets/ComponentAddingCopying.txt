@@ -1,0 +1,13 @@
+/// <summary>
+/// This method adds a <#= component.Identity #> onto the given entity.
+/// </summary>
+public static <#= component.ClassName #> AddTo(Entity entity<#= component.GetInjectedParamsWithLeadingComma() #>)
+{
+    Assert.False(entity is null, $"Trying to add {Index} <#= component.Identity #> to a null entity.");
+    var _component = new <#= component.ClassName #>(<#= component.InjectedParamJoinedNames #>);
+    entity.TryAddComponent(Index, _component);
+    return _component;
+}
+
+public <#= component.ClassName #> Copy() => new <#= component.ClassName #>(this);
+ICopyable ICopyable.Copy() => new <#= component.ClassName #>(this);

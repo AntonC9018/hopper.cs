@@ -1,9 +1,9 @@
 using Hopper.Utils.Chains;
 using Hopper.Utils.FS;
 
-namespace Hopper.Core.Stats
+namespace Hopper.Core.Stat
 {
-    public class StatEvent<T> : EventBase where T : File
+    public class StatContext<T> : ContextBase where T : File
     {
         public T file;
     }

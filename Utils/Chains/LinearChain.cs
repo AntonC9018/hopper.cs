@@ -2,41 +2,25 @@ using System.Collections.Generic;
 
 namespace Hopper.Utils.Chains
 {
-    public class LinearChain<Event> : Chain
+    public class LinearChain<Context> : List<System.Action<Context>>, IChain<System.Action<Context>>
     {
-        public readonly List<System.Action<Event>> m_handlers;
-
-        public LinearChain()
+        public LinearChain() : base()
         {
-            m_handlers = new List<System.Action<Event>>();
         }
 
-        public void AddHandler(System.Action<Event> handler)
+        public LinearChain(IEnumerable<System.Action<Context>> collection) : base(collection)
         {
-            m_handlers.Add(handler);
         }
 
-        public void PassWithoutStop(Event ev)
+        public void PassWithoutStop(Context ev)
         {
-            foreach (var handler in m_handlers)
+            foreach (var handler in this)
             {
                 handler(ev);
             }
         }
 
-        public void Pass(Event ev, System.Func<Event, bool> stopFunc)
-        {
-            foreach (var handler in m_handlers)
-            {
-                if (stopFunc(ev))
-                    return;
-                handler(ev);
-            }
-        }
-
-        public void Clear()
-        {
-            m_handlers.Clear();
-        }
+        ICopyable ICopyable.Copy() => new LinearChain<Context>(this);
+        public LinearChain<Context> Copy() => new LinearChain<Context>(this);
     }
 }

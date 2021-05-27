@@ -5,7 +5,6 @@ using System;
 
 namespace Hopper.Core.Generation
 {
-
     public class Node
     {
         public int id;

@@ -1,32 +1,31 @@
 using Hopper.Core.Targeting;
+using Hopper.Core.WorldNS;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.History
 {
-    public class EntityState // possible include some more data
+    public interface IUpdateInfo{}
+    public class EntityState : IUpdateInfo // possible include some more data
     {
-        public IntVector2 pos;
-        public IntVector2 orientation;
+        public TransformSnapshot transformSnapshot;
         public int timeframe;
 
         public EntityState(Entity entity)
         {
-            this.pos = entity.Pos;
-            this.orientation = entity.Orientation;
-            this.timeframe = entity.World.GetNextTimeFrame();
+            this.transformSnapshot = entity.GetTransform().GetSnapshot();
+            // this.timeframe = World.Global.GetNextTimeFrame();
         }
 
-        public EntityState(IWorldSpot spot, IntVector2 orientation)
+        public EntityState(Transform transform)
         {
-            this.pos = spot.Pos;
-            this.orientation = orientation;
-            this.timeframe = spot.World.GetNextTimeFrame();
+            this.transformSnapshot = transform.GetSnapshot();
+            // this.timeframe = World.Global.GetNextTimeFrame();
         }
 
         public EntityState(IntVector2 pos, IntVector2 orientation, int timeframe)
         {
-            this.pos = pos;
-            this.orientation = orientation;
+            this.transformSnapshot.position = pos;
+            this.transformSnapshot.orientation = orientation;
             this.timeframe = timeframe;
         }
     }

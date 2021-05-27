@@ -1,0 +1,18 @@
+{
+    "power": 1,
+    "distance": 1,
+    "pierce": 1,
+    "source": { "@type": "Index<Source.Resistance>", "@default": "Source.Basic.Index" },
+
+    "_Resistance":
+    {
+        "pierce": 1
+    },
+
+    "_Source":
+    {
+        "@identifies": "Resistance",
+        "_Resistance": { "amount": 1 },
+        "$Basic": { "@type": "Source" }
+    }
+}

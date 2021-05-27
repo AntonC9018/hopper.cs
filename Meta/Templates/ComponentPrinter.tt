@@ -1,0 +1,35 @@
+<#@ template debug="false" hostspecific="true" language="C#" inherits="CodePrinterBase" #>
+<#@ assembly name="Meta" #>
+<#@ include file="Templates/Snippets/autogen_notice.txt" #>
+<#@ include file="Templates/Snippets/ComponentUsings.txt" #>
+
+namespace <#= component.Namespace #>
+{
+    public partial class <#= component.ClassName #> : ICopyable
+    {<# PushIndent("        "); #>
+
+<#@ include file="Templates/Snippets/ComponentIndex.txt" #>
+
+<#@ include file="Templates/Snippets/ComponentAction.txt" #>
+
+<#@ include file="Templates/Snippets/ComponentInitInWorldFunc.txt" #>
+
+<#@ include file="Templates/Snippets/ComponentConstructors.txt" #>
+
+<#@ include file="Templates/Snippets/ComponentAddingCopying.txt" #>
+
+<#@ include file="Templates/Snippets/HandlersFromExportedMethods.txt" #>
+
+<#@ include file="Templates/Snippets/ContributedChains.txt" #>
+<# PopIndent(); #>
+
+    }
+
+    public static class <#= component.ClassName #>EntityExtensions
+    { <# PushIndent("        "); #>
+
+<#@ include file="Templates/Snippets/ComponentEntityExtension.txt" #>
+<# PopIndent(); #>
+
+    }
+}

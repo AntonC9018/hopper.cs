@@ -1,13 +1,16 @@
 #define MAIN_WILL_BE_DELETED
 #if !MAIN_WILL_BE_DELETED
 
+// This is old code and it is not going to work with the current version.
+// See tests for examples.
+
 using System.Collections.Generic;
 using Hopper.Utils.Vector;
 using Hopper.Core;
 using Hopper.Core.Items;
 using System.Linq;
 using Hopper.Core.Targeting;
-using Hopper.Core.Behaviors;
+using Hopper.Core.Components;
 using Hopper.Test_Content;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -15,7 +18,6 @@ using Hopper.Core.Generation;
 using Hopper.Core.Stats;
 using Hopper.Core.Stats.Basic;
 using Hopper.Core.History;
-using Hopper.Core.Chains;
 using Hopper.Utils.Chains;
 
 namespace Hopper
@@ -224,9 +226,9 @@ namespace Hopper
             player.Init(new IntVector2(1, 1), world);
             var slot = new SizedSlot<CircularItemContainer, Hopper.Core.Items.IItem>("stuff", 5);
             var item = new TinkerItem(
-                new ItemMetadata("Test_Item_1"), new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
+                new ItemMetadata("Test_Item_1"), new Tinker<TinkerData>(new ChainDef<ContextBase>[] { }), slot);
             var item2 = new TinkerItem(
-                new ItemMetadata("Test_Item_2"), new Tinker<TinkerData>(new ChainDef<EventBase>[] { }), slot);
+                new ItemMetadata("Test_Item_2"), new Tinker<TinkerData>(new ChainDef<ContextBase>[] { }), slot);
             var packed = Registry.Default.Items.PackModMap();
             ((Inventory)player.Inventory).AddContainer(slot, new CircularItemContainer(5));
             player.Inventory.Equip(item);

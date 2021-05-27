@@ -1,163 +1,101 @@
-using Hopper.Core.Registries;
-using Hopper.Utils.Vector;
-using Hopper.Core.Items;
-using System.Runtime.Serialization;
-using Hopper.Core.Stats;
-using Hopper.Core.History;
+using Hopper.Core.Components;
 using Hopper.Utils;
+using System;
+using System.Collections.Generic;
 
 namespace Hopper.Core
 {
-    [DataContract]
-    public class Entity : IHaveId, IWorldSpot, ITrackable<EntityState>
+    // TODO: make this a struct!
+    public sealed class Entity
     {
-        [DataMember] public int Id => m_id;
-        private int m_id;
+        public Identifier typeId;
+        public RuntimeIdentifier id;
 
-        [DataMember(Name = "pos")]
-        protected IntVector2 m_pos = IntVector2.Zero;
-        [DataMember(Name = "orientation")]
-        protected IntVector2 m_orientation = IntVector2.Zero;
-        public IntVector2 Pos
+
+        // Do it the easy way, with classes, for now.
+        // In the future, maybe switch to value types and store them in central place, 
+        // but I think that's a little too much for C#.
+        public Dictionary<Identifier, IComponent> components;
+
+        public bool TryAddComponent<T>(Index<T> index, T component) where T : IComponent
         {
-            get => m_pos;
-            set => m_pos = value;
-        }
-        public IntVector2 Orientation
-        {
-            get => m_orientation;
-            set => m_orientation = value;
-        }
-
-        public virtual Layer Layer => Layer.REAL;
-        public virtual Faction Faction => Faction.Enemy; // by default, entities are enemies
-        public virtual bool IsDirected => false;
-        public bool IsPlayer => Faction.IsOfFaction(Faction.Player);
-
-        /// <summary>
-        /// <c>IsDead</c> is set to true when the entity needs to be removed from the world entity lists.
-        /// Dead entities do not, by default, execute actions and are removed from the world grid.
-        /// Do not try to attack or kill an already dead entity.
-        /// To kill an entity, use the <c>Die()</c> method.
-        /// </summary>
-        [DataMember] public bool IsDead { get; protected set; }
-
-
-        // These field store persistent state
-        [DataMember] public IInventory Inventory { get; set; }
-
-        [DataMember(Order = 1)] public BehaviorControl Behaviors { get; private set; }
-        [DataMember(Order = 2)] public TinkerControl Tinkers { get; private set; }
-
-        // These fields do not store persistent state
-        public World World { get; private set; }
-        public StatManager Stats { get; internal set; }
-
-        public History<EntityState> History { get; private set; }
-
-        // this event is fired once the entity gets assigned 
-        // the world and its initial position in the world
-        public event System.Action InitEvent;
-        public event System.Action DieEvent;
-
-        EntityState ITrackable<EntityState>.GetState() => new EntityState(this);
-
-        public Entity()
-        {
-            IsDead = false;
-            Behaviors = new BehaviorControl();
-            Tinkers = new TinkerControl();
-            History = new History<EntityState>();
-        }
-
-        internal void _SetId(int id)
-        {
-            this.m_id = id;
-        }
-
-        public void RegisterSelf(ModRegistry registry)
-        {
-            throw new Exception("Entity cannot register self");
-        }
-
-        public void Init(IntVector2 pos, IntVector2 orientation, World world)
-        {
-            m_orientation = orientation;
-            m_pos = pos;
-            World = world;
-
-            History.InitControlUpdate(this);
-
-            if (Stats == null)
+            if (!components.ContainsKey(index.Id))
             {
-                Stats = new StatManager(world.m_currentRepository);
+                components[index.Id] = component;
+                return true;
             }
-
-            // fire the init event and destroy it, since it should only be called once
-            InitEvent?.Invoke();
-            InitEvent = null;
+            return false;
+        }
+        
+        public void RemoveComponent<T>(Index<T> index) where T : IComponent
+        {
+            Assert.That(components.ContainsKey(index.Id), $"Cannot remove a non-existent component {index}.");
+            components.Remove(index.Id);
         }
 
-        // Utility methods
-        public void ResetPosInGrid(IntVector2 newPos)
+        public bool TryRemoveComponent<T>(Index<T> index) where T : IComponent
         {
-            RemoveFromGrid();
-            m_pos = newPos;
-            ResetInGrid();
+            return components.Remove(index.Id);
+        }
+        
+        public void AddComponent<T>(Index<T> index, T component) where T : IComponent
+        {
+            Assert.That(!components.ContainsKey(index.Id), $"Cannot add {index} twice.");
+            components.Add(index.Id, component);
         }
 
-        public void RemoveFromGrid(GridManager grid)
+        public T GetComponent<T>(Index<T> index) where T : IComponent
         {
-            var cell = grid.GetCellAt(m_pos);
-            bool wasRemoved = cell.m_entities.Remove(this);
-            Assert.That(wasRemoved, "Trying to remove an entity which is not in the cell is not allowed");
-            cell.FireLeaveEvent(this);
+            Assert.That(components.ContainsKey(index.Id), $"{index} not found among entities' components.");
+            return (T)components[index.Id];
         }
 
-        public void ResetInGrid(GridManager grid)
+        public IComponent GetSomeComponent(Identifier componentId)
         {
-            var cell = grid.GetCellAt(m_pos);
-            cell.m_entities.Add(this);
-            cell.FireEnterEvent(this);
+            return components[componentId];
         }
 
-        public void RemoveFromGrid()
+        public T TryGetComponent<T>(Index<T> index) where T : IComponent
         {
-            RemoveFromGrid(World.Grid);
+            if (components.TryGetValue(index.Id, out var component))
+            {
+                return (T)component;
+            }
+            return default(T);
         }
 
-        public void ResetInGrid()
+        public bool TryGetComponent<T>(Index<T> index, out T component) where T : IComponent
         {
-            ResetInGrid(World.Grid);
+            bool result = components.TryGetValue(index.Id, out IComponent comp);
+            component = (T)comp;
+            return result;
         }
 
-        public void Reorient_(IntVector2 orientation)
+        public bool HasComponent<T>(Index<T> index) where T : IComponent
         {
-            m_orientation = orientation;
+            return components.ContainsKey(index.Id);
         }
 
-        public void Die()
+        public bool HasSomeComponent(Identifier id)
         {
-            Assert.That(!IsDead, "Must not be dead to die");
-
-            IsDead = true;
-            RemoveFromGrid();
-
-            DieEvent?.Invoke();
-
-            History.Add(this, UpdateCode.dead);
+            return components.ContainsKey(id);
         }
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            return id == (obj as Entity)?.id;
         }
 
-        public override int GetHashCode() => m_id;
-
-        public int GetFactoryId()
+        public override int GetHashCode() => id.GetHashCode();
+        
+        public static bool operator==(Entity a, Entity b)
         {
-            return World.State.m_instanceSubregistry.MapMetadata(m_id).factoryId;
+            return a.id == b.id;
+        }
+
+        public static bool operator!=(Entity a, Entity b)
+        {
+            return a.id != b.id;
         }
     }
 }

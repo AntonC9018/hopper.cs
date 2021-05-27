@@ -1,0 +1,22 @@
+<#  foreach (var method in ExportedMethods) 
+    { #>
+public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
+{
+<# WriteWithIndent(method.AdapterBody); #>
+}
+public static Handler<<#= method.ContextName #>> <#= method.Name #>Handler = 
+    new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);
+<#      if (method.IsDynamic) 
+        { #>
+public static HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper = 
+    new HandlerWrapper<<#= method.ContextName #>>(<#= method.Name #>Handler, <#= method.ChainName #>Path);
+<#      } #>
+
+<#  } #>
+public static void InitHandlers()
+{
+<#  foreach (var method in ExportedMethods) { #>
+    <#= method.Name #>Handler.priority = Registry.Global.NextPriority(PriorityRank.<#= method.Priority #>);
+<#  } #>
+}
+        

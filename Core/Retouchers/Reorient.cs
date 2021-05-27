@@ -1,64 +1,44 @@
-using Hopper.Core.Registries;
-using Hopper.Utils.Chains;
-using Hopper.Core.Behaviors.Basic;
+using Hopper.Core.Components.Basic;
 using Hopper.Utils.Vector;
+using Hopper.Shared.Attributes;
+using Hopper.Core.ActingNS;
+using Hopper.Core.WorldNS;
 
 namespace Hopper.Core.Retouchers
 {
-    public static class Reorient
+    public static partial class Reorient
     {
-        public static readonly Retoucher OnMove = Retoucher
-            .SingleHandlered(Moving.Do, AnyReorient, PriorityRank.High);
-        public static readonly Retoucher OnDisplace = Retoucher
-            .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRank.High);
-        public static readonly Retoucher OnActionSuccess = Retoucher
-            .SingleHandlered(Acting.Success, ActingReorient, PriorityRank.High);
-        public static readonly Retoucher OnAttack = Retoucher
-            .SingleHandlered(Displaceable.Do, AnyReorient, PriorityRank.High);
-        public static readonly Retoucher OnActionSuccessToClosestPlayer = Retoucher
-            .SingleHandlered(Acting.Success, ToPlayer, PriorityRank.High);
 
-        public static void RegisterAll(ModRegistry registry)
+        [Export(Chain = "Displaceable.BeforeRemove", Dynamic = true)]
+        private static void OnDisplace(IntVector2 direction, Transform transform)
         {
-            OnMove.RegisterSelf(registry);
-            OnDisplace.RegisterSelf(registry);
-            OnActionSuccess.RegisterSelf(registry);
-            OnAttack.RegisterSelf(registry);
-            OnActionSuccessToClosestPlayer.RegisterSelf(registry);
+            if (direction != IntVector2.Zero) 
+                transform.orientation = direction;
         }
 
-        private static void AnyReorient(StandartEvent ev)
+        [Export(Chain = "Acting.Success", Dynamic = true)]
+        private static void OnActionSuccess(CompiledAction action, Transform transform)
         {
-            if (ev.direction != IntVector2.Zero)
-            {
-                ev.actor.Orientation = ev.direction;
-            }
+            if (action.direction != IntVector2.Zero)
+                transform.orientation = action.direction;
         }
 
-        private static void ActingReorient(Acting.Event ev)
+        [Export(Chain = "Acting.Success", Dynamic = true)]
+        private static void ToPlayerOnActionSuccess(Transform transform)
         {
-            if (ev.action is ParticularDirectedAction)
+            if (transform.TryGetClosestPlayer(out Entity player))
             {
-                ev.actor.Orientation = ((ParticularDirectedAction)ev.action).direction;
-            }
-        }
-
-        private static void ToPlayer(ActorEvent ev)
-        {
-            if (ev.actor.TryGetClosestPlayer(out var player))
-            {
-                var diff = player.Pos - ev.actor.Pos;
+                var diff = player.GetTransform().position - transform.position;
                 var sign = diff.Sign();
                 var abs = diff.Abs();
                 if (abs.x > abs.y)
                 {
-                    ev.actor.Orientation = new IntVector2(sign.x, 0);
+                    transform.orientation = new IntVector2(sign.x, 0);
                 }
                 if (abs.y > abs.x)
                 {
-                    ev.actor.Orientation = new IntVector2(0, sign.y);
+                    transform.orientation = new IntVector2(0, sign.y);
                 }
-
             }
         }
     }

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>net4.8;netcoreapp3.1;net472</TargetFrameworks>
+    <Name>Shared</Name>
+    <AssemblyName>Hopper.Shared</AssemblyName>
+  </PropertyGroup>
+
+</Project>

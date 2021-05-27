@@ -5,19 +5,6 @@ namespace Hopper.Utils
 {
     public static class ListExtension
     {
-        public static List<T> Where<T>(this List<T> list, System.Func<T, bool> pred)
-        {
-            var l = new List<T>();
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (pred(list[i]))
-                {
-                    l.Add(list[i]);
-                }
-            }
-            return l;
-        }
-
         public static List<T> FilterFromIndex<T>(
             this List<T> list, System.Func<T, bool> pred, int includeAllBefore)
         {

@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net4.8</TargetFramework>
+        <Name>Meta</Name>
+        <AssemblyName>Hopper.Meta</AssemblyName>
+        <StartupObject>Hopper.Meta.Program</StartupObject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Shared\Hopper.Shared.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <!-- Prevents copying msbuild dlls into the output directory. Instead, locate the ones on system -->
+        <PackageReference Include="Microsoft.Build" Version="15.3.409" ExcludeAssets="runtime" />
+        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.3.409" ExcludeAssets="runtime" />
+        <PackageReference Include="Microsoft.Build.Locator" Version="1.1.2" />
+        <PackageReference Include="Microsoft.VisualStudio.TextTemplating.14.0" Version="14.3.25407" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis" Version="3.9.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="3.9.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <DotNetCliToolReference Include="dotnet-t4-project-tool" Version="2.2.1" />
+        <TextTemplate Include="**\*.tt" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    </ItemGroup>
+
+    <Target Name="TextTemplateTransform" BeforeTargets="BeforeBuild">
+        <ItemGroup>
+            <Compile Remove="TemplatesAutogen\*.cs" />
+        </ItemGroup>
+            <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet t4 %(TextTemplate.Identity) -c Hopper.Meta.Template.%(TextTemplate.FileName) -o TemplatesAutogen\%(TextTemplate.FileName).cs" />
+        <ItemGroup>
+            <Compile Include="TemplatesAutogen\*.cs" />
+        </ItemGroup>
+    </Target>
+
+  <Target Name="TextTemplateClean" AfterTargets="Clean">
+    <Delete Files="@(Generated)" />
+  </Target>
+
+</Project>

@@ -1,3 +1,23 @@
+<!-- TOC -->
+
+- [Overview](#overview)
+    - [View](#view)
+- [Introduction](#introduction)
+    - [Style](#style)
+    - [The architectural structure](#the-architectural-structure)
+    - [Entities](#entities)
+    - [Layers](#layers)
+    - [World events](#world-events)
+    - [Game loop](#game-loop)
+    - [Communication between `Model` and `Controller`](#communication-between-model-and-controller)
+    - [Chains](#chains)
+    - [Behaviors](#behaviors)
+    - [Entity factory](#entity-factory)
+    - [Retouchers and Tinkers](#retouchers-and-tinkers)
+
+<!-- /TOC -->
+
+
 # Overview
 
 This is the C# rework of [my previous project](https://github.com/AntonC9018/Dungeon-Hopper), which was programmed with lua.

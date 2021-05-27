@@ -1,110 +1,54 @@
-using Hopper.Core.Registries;
 using System.Collections.Generic;
-using Hopper.Core.Behaviors;
-using Hopper.Core.Behaviors.Basic;
-using Hopper.Core.Stats;
+using Hopper.Core.Components;
+using Hopper.Core.WorldNS;
+using Hopper.Utils;
 
 namespace Hopper.Core
 {
-    public class EntityFactory<T> : Kind<IFactory<Entity>>, IFactory<T>, IProvideBehaviorFactory
-        where T : Entity, new()
+    public sealed class EntityFactory
     {
-        public event System.Action<T> InitEvent;
-        public event System.Action<PatchArea> PostPatchEvent;
-        public DefaultStats DefaultStats;
-
-        private Dictionary<System.Type, IBehaviorFactory<Behavior>> m_behaviorFactories;
+        public Identifier id;
+        public Entity subject;
+        public System.Action<Transform> InitInWorldFunc;
 
         public EntityFactory()
         {
-            m_behaviorFactories = new Dictionary<System.Type, IBehaviorFactory<Behavior>>();
-            AddBehavior(Tick.Preset);
+            subject = new Entity();
+            subject.components = new Dictionary<Identifier, IComponent>();
         }
 
-        public T Instantiate()
+        public EntityFactory AddComponent<T>(Index<T> index, T component) where T : IComponent
         {
-            T entity = new T();
+            subject.AddComponent(index, component);
+            return this;
+        }
+
+        public T GetComponent<T>(Index<T> index) where T : IComponent
+        {
+            return subject.GetComponent(index);
+        }
+
+        public Entity Instantiate()
+        {
+            Entity entity = new Entity();
+            entity.typeId = id;
+            entity.components = new Dictionary<Identifier, IComponent>();
 
             // Instantiate and save behaviors
-            foreach (var kvp in m_behaviorFactories)
+            foreach (var kvp in subject.components)
             {
-                var type = kvp.Key;
-                var setting = kvp.Value;
-                var behavior = setting.Instantiate(entity);
-                entity.Behaviors.Add(type, behavior);
+                // Create copies of chains etc.
+                entity.components.Add(kvp.Key, (IComponent)((ICopyable)kvp.Value).Copy());
             }
 
-            if (DefaultStats != null)
-            {
-                entity.Stats = new StatManager(DefaultStats);
-            }
-
-            InitEvent?.Invoke(entity);
             return entity;
         }
 
-        public void PostPatch(PatchArea patchArea)
+        public void InitInWorld(Transform transform)
         {
-            PostPatchEvent?.Invoke(patchArea);
-            PostPatchEvent = null;
+            if (InitInWorldFunc != null) InitInWorldFunc(transform);
         }
-
-        public EntityFactory<T> AddBehavior<Beh>(IBehaviorFactory<Beh> factory)
-            where Beh : Behavior, new()
-        {
-            m_behaviorFactories.Add(typeof(Beh), factory);
-            return this;
-        }
-
-        public EntityFactory<T> Retouch(Retoucher retoucher)
-        {
-            retoucher.Retouch(this);
-            return this;
-        }
-
-        public IBehaviorFactory<U> GetBehaviorFactory<U>() where U : Behavior, new()
-        {
-            return (IBehaviorFactory<U>)m_behaviorFactories[typeof(U)];
-        }
-
-        public bool HasBehaviorFactory<U>() where U : Behavior, new()
-        {
-            return m_behaviorFactories.ContainsKey(typeof(U));
-        }
-
-        public EntityFactory<T> ReconfigureBehavior<U, Config>(Config config)
-            where U : Behavior, IInitable<Config>, new()
-        {
-            var factory = (ConfigurableBehaviorFactory<U, Config>)m_behaviorFactories[typeof(U)];
-            factory.config = config;
-            return this;
-        }
-
-        public EntityFactory<T> AddSetupListener(System.Action<T> listener)
-        {
-            InitEvent += listener;
-            return this;
-        }
-
-        public EntityFactory<T> AddInitListener(System.Action<T> listener)
-        {
-            // call the listener once the entity gets assigned 
-            // a position in the world for the first time
-            InitEvent += (e => e.InitEvent += () => listener(e));
-            return this;
-        }
-
-        public EntityFactory<T> AddDieListener(System.Action<T> listener)
-        {
-            // call the listener once the entity dies
-            InitEvent += (e => e.DieEvent += () => listener(e));
-            return this;
-        }
-
-        public EntityFactory<T> SetDefaultStats(System.Func<PatchArea, DefaultStats> callback)
-        {
-            PostPatchEvent += (patchArea) => DefaultStats = callback(patchArea);
-            return this;
-        }
+        
+        public static implicit operator Entity(EntityFactory factory) => factory.subject;
     }
 }

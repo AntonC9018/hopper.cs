@@ -1,4 +1,6 @@
 bin
 obj
 *.meta
-Mine
+build
+
+TestResult.xml

@@ -1,0 +1,11 @@
+<#@ template debug="false" hostspecific="true" language="C#" inherits="CodePrinterBase" #>
+<#@ assembly name="Meta" #>
+<#@ include file="Templates/Snippets/autogen_notice.txt" #>
+using Hopper.Core;
+using Hopper.Core.Stat;
+using Hopper.Core.Components;
+
+namespace <#= Namespace #>
+{ 
+<#  WriteWithIndent(statPrinter.TransformText()); #>
+}

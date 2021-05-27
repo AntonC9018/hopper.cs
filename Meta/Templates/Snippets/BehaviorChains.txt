@@ -1,0 +1,41 @@
+<#  foreach (var chain in behavior.ActivationChains) 
+    { #>
+public readonly Chain<Context> _<#= chain.Name #>Chain;
+<#  }
+    foreach (var chain in behavior.Chains) 
+    { #>
+/// <summary>
+/// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity / entity factory.
+/// </summary>
+public static readonly BehaviorChainPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new BehaviorChainPath<<#= chain.GetTypeText() #>>(
+    (Entity entity) => entity.TryGetComponent(Index, out var component) ? component.<#= chain.FieldName #> : null);
+
+<#  }
+    if (behavior.ShouldGenerateAutoActivation) 
+    { #>
+public bool Activate(<#= behavior.Context.JoinedParamsWithActor() #>)
+{
+    Context ctx = new Context
+    {
+<#      if (behavior.Context.IsActorAField)
+        { #>
+        <#= behavior.Context.ActorName #> = <#= behavior.Context.ActorName #>,
+<#      }
+        foreach (var name in behavior.Context.ParamNames()) 
+        { #>
+                <#= name #> = <#= name #>,
+<#      } #>
+    };
+    return _CheckDo(ctx);
+}
+
+private bool _CheckDo(Context ctx)
+{
+    if (_CheckChain.PassWithPropagationChecking(ctx)) 
+    {
+        _DoChain.PassWithPropagationChecking(ctx);
+        return true;
+    }
+    return false;
+}
+<# } #>

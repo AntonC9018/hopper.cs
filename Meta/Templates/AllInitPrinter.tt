@@ -1,0 +1,71 @@
+<#@ template debug="true" hostspecific="true" language="C#" inherits="CodePrinterBase"#>
+<#@ assembly name="Meta" #>
+<#@ include file="Templates/Snippets/autogen_notice.txt" #>
+using Hopper.Core;
+
+namespace <#= Namespace #>
+{
+    public static class Main
+    {
+        public static void Init()
+        {
+            int modId = Registry.Global.NextMod();            
+<#  foreach(var component in components) 
+    { #>
+            <#= component.FullyQualifiedClassName #>.InitIndex();
+            <#= component.FullyQualifiedClassName #>.InitHandlers();
+            <#= component.FullyQualifiedClassName #>.InitMoreChains();
+<#  } 
+    foreach (var behavior in behaviors) 
+    { #>
+            <#= behavior.FullyQualifiedClassName #>.InitIndex();
+            <#= behavior.FullyQualifiedClassName #>.InitHandlers();
+            <#= behavior.FullyQualifiedClassName #>.InitMoreChains();
+<#  } 
+    foreach (var exportingClass in exportingClasses) 
+    { #>
+            <#= exportingClass.FullyQualifiedClassName #>.InitHandlers();
+            <#= exportingClass.FullyQualifiedClassName #>.InitMoreChains();
+<#  } 
+    foreach (var methodClassInstance in methodClassInstances)
+    { #>
+            <#= methodClassInstance.FullyQualifiedName #>.InitInstanceHandlers();
+<#  }
+    foreach (var fieldRequiringInit in fieldsRequiringInit)
+    { #>
+            <#= fieldRequiringInit.FullyQualifiedName #>.Init();
+<#  } 
+    foreach (var slot in slots) 
+    { #>
+            <#= slot.FullyQualifiedName #>.Id = Registry.Global.NextSlotId();
+<#  }
+    foreach (var stat in statRootScope.GetAllChildrenValues()) 
+    {
+        if (!stat.IsIdentifying && !stat.IsIdentified) 
+        { #>
+            <#= stat.QualifiedName #>.Index.Id = Registry.Global.RegisterStat(<#= stat.QualifiedName #>.Default());
+<#      }
+        foreach (var identifyingField in stat.staticIndentiyingFields) 
+        { #>
+            <#= stat.QualifiedName #>.<#= identifyingField.name #>.Index.Id = Registry.Global.RegisterStat(<#= stat.QualifiedName #>.<#= identifyingField.name #>.Default());
+<#      }
+        
+    }
+    foreach (var identifyingField in staticIndentiyingStatFields) 
+    { #>
+            <#= identifyingField.FullyQualifiedName #>.Index.Id = Registry.Global.RegisterStat(<#= identifyingField.FullyQualifiedName #>.Default());
+<#  }
+    foreach (var entityType in entityTypes) 
+    { /* TODO: Link the metadata (the name or whatever) */#>
+            {
+                var factory = new EntityFactory();
+                <#= entityType.FullyQualifiedClassName #>.AddComponents(factory);
+                <#= entityType.FullyQualifiedClassName #>.InitComponents(factory);
+                <#= entityType.FullyQualifiedClassName #>.Retouch(factory);
+                factory.id = Registry.Global.RegisterEntityFactory(factory);
+                <#= entityType.FullyQualifiedClassName #>.Factory = factory;
+            }
+<#  } #>
+        }
+    }
+}

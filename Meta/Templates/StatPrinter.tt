@@ -1,0 +1,82 @@
+<#@ template debug="false" hostspecific="true" language="C#" inherits="CodePrinterBase" #>
+<#@ assembly name="Meta" #>
+public struct <#= stat.Name #> : IStat
+{
+<#  if (!stat.IsIdentifying) 
+    { #>
+<#      foreach (var field in stat.fields) 
+        {  #>
+    public <#= field.metadata.type #> <#= field.name #>; 
+<#      } #>
+    
+    public <#= stat.Name #>(<#= stat.JoinedParams #>)
+    {
+<#      foreach (var field in stat.fields) 
+        { #>
+        this.<#= field.name #> = <#= field.name #>;
+<#      } #>
+    }
+
+    public <#= stat.Name #> AddWith(<#= stat.Name #> other) => new <#= stat.Name #>
+    (
+        <#= stat.FieldCommaJoin(f => f.metadata.type == "int" 
+            ? $"{f.name} : {f.name} + other.{f.name}"
+            : $"{f.name} : other.{f.name}") #>
+    );
+
+<#      if (!stat.IsIdentified) 
+        { #>
+    public static Index<<#= stat.Name #>> Index = new Index<<#= stat.Name #>>();
+<#      } #>
+    public static <#= stat.Name #> Default() => new <#= stat.Name #>
+    (
+        <#= stat.FieldCommaJoin(f => $"{f.name} : {f.metadata.defaultValue}") #>
+    );
+
+<# /* It identifies a type (aka it is a source) */ 
+    } 
+    else 
+    { #>
+    public Index<<#= stat.identifiedType.Name #>> Index;
+
+    public System.Func<<#= stat.identifiedType.Name #>> Default;
+
+    public <#= stat.Name #>(System.Func<<#= stat.identifiedType.Name #>> Default)
+    {
+        this.Default = Default;
+        this.Index = new Index<<#= stat.identifiedType.Name #>>();
+    }
+
+<#  } #>
+    public <#= stat.Name #> Copy() => this;
+    
+    IStat IStat.Copy() => this;
+
+<#  foreach (var nestedType in stat.nestedTypes) 
+    {
+        WriteWithIndent((new StatPrinter(nestedType)).TransformText());
+    } #>
+<#  /* this is not complete as of now, there are edge cases and the code is not very stable
+       but it will work for now. TODO: refactor the hell out of this, it is not ok. */
+    foreach (var field in stat.staticIndentiyingFields) 
+    { 
+        var identifyingType = field.metadata.scope.value;
+        var identifiedType = identifyingType.identifiedType;
+        var identifyingTypeName = identifyingType == stat ? identifyingType.Name : identifyingType.QualifiedName;
+        var identifiedTypeName = identifiedType == stat.identifiedType ? identifiedType.Name : identifiedType.QualifiedName; #>
+    public static <#= identifyingTypeName #> <#= field.name #> = new <#= identifyingTypeName #>
+    (
+<#      if (field.metadata.fields.Count > 0) 
+        { #>
+        Default : () => new <#= identifiedTypeName #>
+        (
+            <#= field.metadata.FieldCommaJoin(f => $"{f.name} : {f.defaultValue}") #>
+        )
+<#      }
+        else
+        { #>
+        Default : <#= identifiedTypeName #>.Default
+<#      }#>
+    );
+<#  } #> 
+}
