@@ -124,7 +124,7 @@ namespace Hopper.Core.WorldNS
 
         private void EndPhase()
         {
-            Assert.That((int)currentPhase < World.NumOrders, $"{Enum.GetName(typeof(Order), currentPhase)}({(int)currentPhase}) is outside the phase range");
+            Assert.That((int)currentPhase <= World.NumOrders, $"{Enum.GetName(typeof(Order), currentPhase)}({(int)currentPhase}) is outside the phase range");
         }
     }
 }

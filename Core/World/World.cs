@@ -15,7 +15,6 @@ namespace Hopper.Core.WorldNS
         public MoreChains Chains { get; private set; }
         
         public static readonly int NumOrders = System.Enum.GetValues(typeof(Order)).Length;
-        public static readonly int NumLayers = System.Enum.GetValues(typeof(Layer)).Length;
 
         // For now, do this for the sake of tests and debugging
         // The world currently does not really need an id
