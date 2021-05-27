@@ -72,10 +72,13 @@ namespace Hopper.Meta
 
         public static IEnumerable<string> GetJsonFileNames(string directory)
         {
-            foreach (var file in Directory.EnumerateFiles(directory))
+            if (Directory.Exists(directory))
             {
-                if (Path.GetExtension(file).ToLower() == ".json")
-                    yield return file;
+                foreach (var file in Directory.EnumerateFiles(directory))
+                {
+                    if (Path.GetExtension(file).ToLower() == ".json")
+                        yield return file;
+                }
             }
         }
 
