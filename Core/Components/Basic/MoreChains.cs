@@ -44,6 +44,11 @@ namespace Hopper.Core.Components.Basic
         [Inject] public readonly ChainsBuilder template;
         public Dictionary<Identifier, ICopyable> store = new Dictionary<Identifier, ICopyable>();
 
+        /// <summary>
+        /// Retrieves the specified chain.
+        /// If the chain has not been loaded yet, copies it from the template.
+        /// If you are sure the given chain has been loaded, or you have loaded it previously, use <c>Get()</c>.
+        /// </summary>
         public T GetLazy<T>(Index<T> index) where T : IChain
         {
             if (!store.TryGetValue(index.Id, out var chain))
@@ -56,6 +61,17 @@ namespace Hopper.Core.Components.Basic
                 store.Add(index.Id, chain.Copy());
             }
             return (T) chain;
+        }
+
+
+        /// <summary>
+        /// Retrieves the specified chain.
+        /// Use this method if you are sure a given chain has already been loaded.
+        /// If you are not sure whether the given chain has been loaded, use <c>GetLazy()</c>.
+        /// </summary>
+        public T Get<T>(Index<T> index)  where T : IChain
+        {
+            return (T) store[index.Id];
         }
     }
 

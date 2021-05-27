@@ -1,14 +1,24 @@
 using System.Collections.Generic;
 using Hopper.Core.ActingNS;
+using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
+using Hopper.Shared.Attributes;
+using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 
 namespace Hopper.Core.WorldNS
 {
-    public class World
+    [InstanceExport]
+    public partial class World
     {
         public static World Global;
+        [Chain("@SpawnEntity")] 
+        public static readonly Index<Chain<Entity>> SpawnEntityIndex = new Index<Chain<Entity>>();
+        [Chain("@StartLoop")]
+        public static readonly Index<Chain<int>> StartLoopIndex = new Index<Chain<int>>();
+        [Chain("@EndLoop")]
+        public static readonly Index<Chain<int>> EndLoopIndex = new Index<Chain<int>>();
 
         public GridManager Grid { get; private set; }
         public WorldStateManager State { get; private set; }
@@ -23,33 +33,25 @@ namespace Hopper.Core.WorldNS
             Grid   = new GridManager(width, height);
             State  = new WorldStateManager();
             Chains = new MoreChains(Registry.Global._defaultGlobalChains);
+
+            // Preload the chains
+            Chains.GetLazy(SpawnEntityIndex);
+            Chains.GetLazy(StartLoopIndex);
+            Chains.GetLazy(EndLoopIndex);
         }
+
+        public int _loopCount = 0;
 
         public void Loop()
         {
+            Chains.Get(StartLoopIndex).Pass(_loopCount);
+            
             State.Loop();
             Grid.ResetCellTriggers();
+
+            Chains.Get(EndLoopIndex).Pass(_loopCount);
+            _loopCount++;
         }
-
-        public event System.Action<Entity> SpawnEntityEvent;
-
-        // Spawning of particles. (A `Particle` being a `Scent` without a `Logent`)
-        // 
-        // So there's two ways to do this:
-        //
-        //  1. world is aware of particles at a basic level. The viewmodel subscribes to
-        //     the spawnParticle event and reaches out to its dict of handlers, ignoring the
-        //     event if no handler has been found for the specified event. The ids also need
-        //     to be generated and stored, but the system is similar to that of entities.
-        //  
-        //  2. world is not responsible for particles. As a result, each `particle spawner`
-        //     defines a static event, which has as arguments all the necessary metadata and
-        //     the world object (since there may be multiple worlds at a time). The code
-        //     defines custom handlers, called watchers, who manage what exactly happens. 
-        //
-        // For now, I'm opting for the second option 
-        //
-        // public event System.Action<int> SpawnParticleEvent;
 
         public Entity SpawnEntity(EntityFactory factory, IntVector2 pos, IntVector2 orientation)
         {
@@ -75,7 +77,7 @@ namespace Hopper.Core.WorldNS
                 State.AddTicking(ticking);
             }
 
-            SpawnEntityEvent?.Invoke(entity);
+            Chains.Get(SpawnEntityIndex).Pass(entity);
             return entity;
         }
 
