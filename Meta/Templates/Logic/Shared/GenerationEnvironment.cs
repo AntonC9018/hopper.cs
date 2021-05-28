@@ -13,7 +13,7 @@ namespace Hopper.Meta
 {
     public class GenerationEnvironment
     {
-        private Project _project;
+        private ModProject _project;
         private Compilation _compilation;
 
         public Solution Solution { get; private set; }
@@ -32,7 +32,7 @@ namespace Hopper.Meta
         public string RootNamespaceName => _project.AssemblyName;
         public ParsingContext statParsingContext;
 
-        public GenerationEnvironment(string[] projectPaths)
+        public GenerationEnvironment(IEnumerable<ModProject> projects)
         {
             aliases            = new HashSet<string>();
             exportingClasses   = new Dictionary<string, TypeSymbolWrapperBase>();
@@ -42,11 +42,21 @@ namespace Hopper.Meta
             errorContext       = new ErrorContext();
 
             Paths = new AutogenPaths();
-            foreach (var p in projectPaths)
+
+            foreach (var p in projects)
+            if (p.ToGenerate)
             {
-                Paths.Reset(Path.GetDirectoryName(p));
+                Paths.Reset(Path.GetDirectoryName(p.ProjectPath));
                 Paths.CreateOrEmpty();
             }
+        }
+
+        public void Init(Solution solution, Compilation compilation)
+        {
+            Solution = solution;
+            _compilation = compilation;
+
+            RelevantSymbols.TryInitializeSingleton(_compilation);
         }
 
         public bool TryAddExportingClass(TypeSymbolWrapperBase wrapper)
@@ -97,13 +107,10 @@ namespace Hopper.Meta
             return result;
         } 
 
-        public async Task Reset(Project project)
+        public void ResetProject(ModProject project)
         {
             _project = project;
-            Solution = _project.Solution;
-            _compilation = await project.GetCompilationAsync();
-            RelevantSymbols.TryInitializeSingleton(_compilation);
-            Paths.Reset(Path.GetDirectoryName(project.FilePath));
+            Paths.Reset(Path.GetDirectoryName(project.ProjectPath));
             _rootNamespace = GetRootNamespace();
 
             // Hopper.

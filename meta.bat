@@ -1,4 +1,4 @@
 @echo off
 cd Meta
-call dotnet run ../Core/Hopper.Core.csproj ../TestContent/Hopper.TestContent.csproj
+call dotnet run Hopper.Core;../Core/Hopper.Core.csproj Hopper.TestContent;../TestContent/Hopper.TestContent.csproj
 cd ..

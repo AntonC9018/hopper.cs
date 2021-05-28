@@ -214,7 +214,10 @@ I'm working on a game that will have different mods.
 Mods may reference the game's core as well as other mods.
 I generate some code for the mods, using Roslyn and T4.
 
-So what I'd doing is first loading the Core project and storing the relevant symbols that I care about globally.
+So what I'm doing is I'm first loading the Core project and storing the relevant symbols that I care about globally.
 Then I load each of the mods, do some code analysis and then generate some code for each of them.
+Currently, the only option is to generate code for all of the referenced mods, including the core, and for the mod itself.
 
-I could analyze the code for each of the mod projects separately, setting up the context first by analyzing each of the referenced mods, but that seems like a waste of 
+See, the mods are dependent on the context gathered from all of the previously loaded mods.
+So, in order to generate the code correctly, I need to first 
+I could analyze the code for each of the mod projects separately, setting up the context first by analyzing each of the referenced mods, but that seems like a waste.
