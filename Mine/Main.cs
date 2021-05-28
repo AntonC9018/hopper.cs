@@ -1,71 +1,71 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Hopper.Core;
-using Hopper.Core.ActingNS;
-using Hopper.Core.Components;
-using Hopper.Core.Components.Basic;
-using Hopper.Core.Items;
-using Hopper.Core.Retouchers;
-using Hopper.Core.Stat;
-using Hopper.Core.Targeting;
-using Hopper.Core.WorldNS;
-using Hopper.TestContent;
-using Hopper.TestContent.BindingNS;
-using Hopper.TestContent.PinningNS;
-using Hopper.TestContent.SimpleMobs;
-using Hopper.Utils;
-using Hopper.Utils.Vector;
-using static Hopper.Utils.Vector.IntVector2;
+using System.Threading.Tasks;
+using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.MSBuild;
 
-namespace Hopper.Mine
+namespace Mine
 {
-
     public class Program
     {
-        public static IEnumerable<IntVector2> Basic(IntVector2 diff, IntVector2 orientation)
+        public static async Task Main(string[] args)
         {
-            var diff_ones = diff.Sign();
-            var diff_x = new IntVector2(diff_ones.x, 0);
-            var diff_y = new IntVector2(0, diff_ones.y);
-
-            // The difference is not diagonal
-            if      (diff_ones.x == 0) yield return diff_y;
-            else if (diff_ones.y == 0) yield return diff_x;
-
-            // the difference is diagonal
-            else
-            {
-                int dot_x = diff_x.Dot(orientation);
-                int dot_y = diff_y.Dot(orientation);
-
-                if (dot_x >= dot_y)
-                {
-                    yield return diff_x;
-                    yield return diff_y;
-                } 
-                else
-                {
-                    yield return diff_y;
-                    yield return diff_x;
-                }
-            }
+            MSBuildLocator.RegisterDefaults();
+            await Test();
         }
 
-        public static void Main(string[] args)
+        public static async Task Test()
         {
-            foreach (var diff in CircleAroundOrigin)
-            if (diff != Zero)
-            foreach (var orientation in OrthogonallyAdjacentToOrigin)
+            MSBuildWorkspace msWorkspace = MSBuildWorkspace.Create();
+
+            msWorkspace.WorkspaceFailed += (s, args) => 
             {
-                Console.Write($"diff {diff}, orientation {orientation}: ");
-                foreach (var dir in Basic(diff, orientation))
+                if (args.Diagnostic.Kind == WorkspaceDiagnosticKind.Failure)
                 {
-                    Console.Write($"{dir}, ");
+                    Console.WriteLine($"Unable to open the project.\n  {args.Diagnostic.Message}");
                 }
-                Console.WriteLine();
-            }
+                else
+                {
+                    Console.WriteLine($"Warning while opening a project:\n  {args.Diagnostic.Message}");
+                }
+            };
+
+            msWorkspace.LoadMetadataForReferencedProjects = true;
+            var projectC = await msWorkspace.OpenProjectAsync("../ProjectsTest/C/C.csproj");
+            var projectA = await msWorkspace.OpenProjectAsync("../ProjectsTest/A/A.csproj");
+            var projectB = await msWorkspace.OpenProjectAsync("../ProjectsTest/B/B.csproj");
+
+            var compilationA  = await projectA.GetCompilationAsync();
+            var symbolClassAA = compilationA.GetTypeByMetadataName("A.Class");
+            
+            var compilationB  = await projectB.GetCompilationAsync();
+            var symbolClassAB = compilationB.GetTypeByMetadataName("A.Class");
+            var symbolClassBB = compilationB.GetTypeByMetadataName("B.Class");
+
+            var compilationC  = await projectC.GetCompilationAsync();
+            var symbolClassAC = compilationC.GetTypeByMetadataName("A.Class");
+            var symbolClassBC = compilationC.GetTypeByMetadataName("B.Class");
+
+            
+            // Prints the metadata names of the types.
+            // If the classes were not found, it would print empty strings instead of their metadata names.
+            Console.WriteLine($"{nameof(symbolClassAA)} = {symbolClassAA}");
+            Console.WriteLine($"{nameof(symbolClassAB)} = {symbolClassAB}");
+            Console.WriteLine($"{nameof(symbolClassAC)} = {symbolClassAC}");
+            Console.WriteLine($"{nameof(symbolClassBB)} = {symbolClassBB}");
+            Console.WriteLine($"{nameof(symbolClassBC)} = {symbolClassBC}");
+            Console.WriteLine($"");
+
+            // Compile symbols from different compilations.
+            Console.WriteLine($"{nameof(symbolClassAA)} = {nameof(symbolClassAB)}? {symbolClassAA == symbolClassAB}");
+            Console.WriteLine($"{nameof(symbolClassAA)} = {nameof(symbolClassAC)}? {symbolClassAA == symbolClassAC}");
+            Console.WriteLine($"{nameof(symbolClassAB)} = {nameof(symbolClassAC)}? {symbolClassAA == symbolClassAC}");
+            Console.WriteLine($"{nameof(symbolClassBC)} = {nameof(symbolClassBB)}? {symbolClassBC == symbolClassBB}");
+            
+            // False
+            // False
+            // False
+            // False
         }
     }
 }

@@ -2,5 +2,6 @@ bin
 obj
 *.meta
 build
+ProjectsTest
 
 TestResult.xml
