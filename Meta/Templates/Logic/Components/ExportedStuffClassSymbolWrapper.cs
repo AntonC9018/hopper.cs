@@ -18,6 +18,6 @@ namespace Hopper.Meta
                 && env.TryAddExportingClass(this);
         }
 
-        public override string TypeText => "Static Class";
+        public override string TypeText => "exporting class other";
     }
 }

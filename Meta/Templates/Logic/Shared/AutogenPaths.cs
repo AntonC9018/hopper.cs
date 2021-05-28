@@ -24,7 +24,7 @@ namespace Hopper.Meta
 
         public void CreateOrEmpty()
         {
-            Console.Write($"Deleting or emptying for directory {AutogenFolder}");
+            Console.WriteLine($"Creating or emptying {AutogenFolder}");
 
             if (!Directory.Exists(AutogenFolder))
             {
