@@ -15,7 +15,8 @@ namespace Hopper.TestContent
     // [Service]
     public static partial class Explosion
     {
-        // public static readonly WorldEventPath<IntVector2> EventPath = new WorldEventPath<IntVector2>();
+        [Chain("@Explosion")] 
+        public static readonly Index<Chain<IntVector2>> ExplosionChainIndex = new Index<Chain<IntVector2>>();
 
         private static Attack DefaultAttack =
             new Attack
@@ -72,9 +73,6 @@ namespace Hopper.TestContent
             entity.GetStats().GetLazy(Stat.Explosion.Index, out var explosion);
             Explode(entity.GetTransform().position, explosion.radius);
         }
-
-        [Chain("@Explosion")] 
-        public static readonly Index<Chain<IntVector2>> ExplosionChainIndex = new Index<Chain<IntVector2>>();
 
         public static void Explode(IntVector2 position, int radius)
         {
