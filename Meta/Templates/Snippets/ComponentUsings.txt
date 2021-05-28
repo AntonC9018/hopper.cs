@@ -2,7 +2,8 @@ using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 using Hopper.Utils;
 using Hopper.Core.Components;
-using Hopper.Core; 
+using Hopper.Core;
+using Hopper.Shared.Attributes;
 using System;
 
 <#@ include file="Templates/Snippets/GenericUsings.txt" #>

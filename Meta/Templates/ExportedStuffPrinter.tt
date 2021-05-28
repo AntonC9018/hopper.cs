@@ -3,6 +3,8 @@
 <#@ include file="Templates/Snippets/autogen_notice.txt" #>
 <#@ include file="Templates/Snippets/GenericUsings.txt" #>
 using Hopper.Utils.Chains;
+using Hopper.Core;
+using Hopper.Shared.Attributes;
 
 namespace <#= container.Namespace #>
 {
@@ -14,8 +16,8 @@ namespace <#= container.Namespace #>
 <#  if (container.IsExportingInstanceMethods) 
     { #>
 <#@ include file="Templates/Snippets/InstanceHandlersFromExportedMethods.txt" #>
-<#  } #>
 
+<#  } #>
 <#@ include file="Templates/Snippets/ContributedChains.txt" #>
 <# PopIndent(); #>
 

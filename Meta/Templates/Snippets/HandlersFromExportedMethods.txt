@@ -2,7 +2,8 @@
     { #>
 public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
 {
-<# WriteWithIndent(method.AdapterBody); #>
+<# PushIndent("  "); Write(method.AdapterBody); PopIndent(); #>
+
 }
 public static Handler<<#= method.ContextName #>> <#= method.Name #>Handler = 
     new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);
