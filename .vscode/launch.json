@@ -26,14 +26,15 @@
             "type": "clr",
             "request": "launch",
             "preLaunchTask": "build Meta",
-            "program": "${workspaceFolder}/build/bin/Debug/net4.8/Hopper.Meta.exe",
+            "program": "${workspaceFolder}/Meta/bin/Debug/net4.8/Hopper.Meta.exe",
             "args": [
-                "../Core/Hopper.Core.csproj", 
-                "../TestContent/Hopper.TestContent.csproj"
+                "Hopper.Core;../Core/Hopper.Core.csproj", 
+                "Hopper.TestContent;../TestContent/Hopper.TestContent.csproj"
             ],
             "cwd": "${workspaceFolder}/Meta",
             "console": "externalTerminal",
-            "stopAtEntry": false
+            "stopAtEntry": false,
+            "justMyCode":false
         },
         {
             "name": "Generate Code attach",

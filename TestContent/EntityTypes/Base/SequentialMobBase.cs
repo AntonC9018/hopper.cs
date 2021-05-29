@@ -16,7 +16,7 @@ namespace Hopper.TestContent
         
         public static void AddComponents(Entity subject, System.Action<Acting.Context> Algorithm, params Step[] sequenceSteps)
         {
-            Stats.AddTo(subject, Registry.Global._defaultStats);
+            Stats.AddTo(subject, Registry.Global.Stats._map);
             Transform.AddTo(subject, Layer.REAL);
             FactionComponent.AddTo(subject, Faction.Enemy);
             History.AddTo(subject);

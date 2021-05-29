@@ -42,7 +42,7 @@ namespace Hopper.Core
             Controllable.AddTo(subject, null);
 
             // TODO: rename the namespaces
-            Stats.AddTo(subject, Registry.Global._defaultStats);
+            Stats.AddTo(subject, Registry.Global.Stats._map);
         }
 
         public static void InitComponents(Entity subject)

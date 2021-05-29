@@ -19,7 +19,7 @@ namespace Hopper.Core
 
             FactionComponent.AddTo(subject, Faction.Environment);
             Transform .AddTo(subject, Layer.WALL);
-            Stats     .AddTo(subject, Registry.Global._defaultStats);
+            Stats     .AddTo(subject, Registry.Global.Stats._map);
 
         }
         

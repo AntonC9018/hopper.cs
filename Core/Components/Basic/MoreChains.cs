@@ -7,13 +7,13 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Components.Basic
 {
-    public class ChainsBuilder : Dictionary<Identifier, ICopyable>
+    public class ChainsBuilder : Dictionary<Identifier, IChain>
     {
         public ChainsBuilder() : base()
         {
         }
 
-        public ChainsBuilder(IDictionary<Identifier, ICopyable> chains) : base(chains)
+        public ChainsBuilder(IDictionary<Identifier, IChain> chains) : base(chains)
         {
         }
 
@@ -42,7 +42,7 @@ namespace Hopper.Core.Components.Basic
     public partial class MoreChains : IComponent
     {
         [Inject] public readonly ChainsBuilder template;
-        public Dictionary<Identifier, ICopyable> store = new Dictionary<Identifier, ICopyable>();
+        public Dictionary<Identifier, IChain> store = new Dictionary<Identifier, IChain>();
 
         /// <summary>
         /// Retrieves the specified chain.
@@ -56,9 +56,9 @@ namespace Hopper.Core.Components.Basic
                 // Double lazy loading is the simplest solution to mods adding content synchronyzation
                 if (!template.TryGetValue(index.Id, out chain))
                 {
-                    chain = Registry.Global._defaultMoreChains[index.Id];
+                    chain = Registry.Global.MoreChains._map[index.Id];
                 }
-                store.Add(index.Id, chain.Copy());
+                store.Add(index.Id, (IChain) chain.Copy());
             }
             return (T) chain;
         }

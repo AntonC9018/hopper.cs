@@ -32,7 +32,7 @@ namespace Hopper.Core.WorldNS
         {
             Grid   = new GridManager(width, height);
             State  = new WorldStateManager();
-            Chains = new MoreChains(Registry.Global._defaultGlobalChains);
+            Chains = new MoreChains(Registry.Global.GlobalChains._map);
 
             // Preload the chains
             Chains.GetLazy(SpawnEntityIndex);
@@ -58,7 +58,7 @@ namespace Hopper.Core.WorldNS
             System.Console.WriteLine($"Creating entity of factory id : {factory.id}");
 
             var entity = factory.Instantiate();
-            entity.id = Registry.Global.RegisterRuntimeEntity(entity);
+            entity.id = Registry.Global.RuntimeEntities.Add(entity);
 
             if (entity.TryInitTransform(pos, orientation, out var transform))
             {

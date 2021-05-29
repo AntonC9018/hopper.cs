@@ -11,7 +11,7 @@ namespace Hopper.Core.Items
         {
             // the item will be lost
             // So, remove it from the registry
-            Registry.Global.UnregisterRuntimeEntity(item);
+            Registry.Global.RuntimeEntities.Remove(item.id);
 
             var countable = item.GetCountable();
             count += countable.count;

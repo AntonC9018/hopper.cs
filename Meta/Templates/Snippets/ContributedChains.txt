@@ -20,11 +20,11 @@ public static void InitMoreChains()
     <#= chain.Name #>DefaultChain.Clear();
 <#      if (chain.IsMore())
         { #>
-    <#= chain.FieldName #>.Id = Registry.Global.RegisterMoreChain(<#= chain.Name #>DefaultChain);
+    <#= chain.FieldName #>.Id = Registry.Global.MoreChains.AddForCurrentMod(<#= chain.Name #>DefaultChain);
 <#      }
         else if (chain.IsGlobal())
         { #>
-    <#= chain.FieldName #>.Id = Registry.Global.RegisterGlobalChain(<#= chain.Name #>DefaultChain);
+    <#= chain.FieldName #>.Id = Registry.Global.GlobalChains.AddForCurrentMod(<#= chain.Name #>DefaultChain);
 <#      } #>
 <#  } #>          
 }

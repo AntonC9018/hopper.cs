@@ -10,7 +10,7 @@ namespace Hopper.Core.ActingNS
             Transform closestPlayerTransform = null;
 
             // TODO: optimize such queries
-            foreach (var entity in Registry.Global._entities.map.Values)
+            foreach (var entity in Registry.Global.RuntimeEntities.map.Values)
             if (entity.TryGetFactionComponent(out var f) 
                 && f.faction.HasFlag(Faction.Player)
                 && entity.TryGetTransform(out var playerTransform))

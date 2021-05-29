@@ -16,7 +16,7 @@ public void InitInstanceHandlers()
 {
 <#  foreach (var method in ExportedInstanceMethods) { #>
     <#= method.Name #>Handler = new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);
-    <#= method.Name #>Handler.priority = Registry.Global.NextPriority(PriorityRank.<#= method.Priority #>);
+    <#= method.Name #>Handler.priority = Registry.Global.Priority.Next(PriorityRank.<#= method.Priority #>);
 <#      if (method.IsDynamic) { #>
     <#= method.Name #>HandlerWrapper = new HandlerWrapper<<#= method.ContextName #>>(<#= method.Name #>Handler, <#= method.ChainName #>Path);
 <#      } 

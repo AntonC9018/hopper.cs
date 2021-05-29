@@ -2,5 +2,5 @@ public static Index<<#= component.ClassName #>> Index = new Index<<#= component.
 
 public static void InitIndex()
 {
-    Index.Id = Registry.Global.NextComponentId();
+    Index.Id = Registry.Global.Component.NextIdentifierForCurrentMod();
 }

@@ -21,7 +21,7 @@ namespace Hopper.Tests.Test_Content
             
             entityFactory = new EntityFactory();
             Transform.AddTo(entityFactory, Layer.REAL);
-            Stats.AddTo(entityFactory, Registry.Global._defaultStats);
+            Stats.AddTo(entityFactory, Registry.Global.Stats._map);
             Attackable.AddTo(entityFactory, Attackness.ALWAYS).DefaultPreset();
             Damageable.AddTo(entityFactory, new Health(1)).DefaultPreset();
             Displaceable.AddTo(entityFactory, Layer.WALL | Layer.REAL).DefaultPreset();
@@ -30,7 +30,7 @@ namespace Hopper.Tests.Test_Content
 
             bindingFactory = new EntityFactory();
             Transform.AddTo(bindingFactory, Layer.REAL);
-            Stats.AddTo(bindingFactory, Registry.Global._defaultStats);
+            Stats.AddTo(bindingFactory, Registry.Global.Stats._map);
             Binding.AddTo(bindingFactory, Layer.REAL, BoundEntityModifier.DefaultHookable).DefaultPreset();
             Damageable.AddTo(bindingFactory, new Health(1)).DefaultPreset();
             Attackable.AddTo(bindingFactory, Attackness.ALWAYS).DefaultPreset();

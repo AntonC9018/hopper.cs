@@ -32,7 +32,7 @@ namespace Hopper.Core
         public EntityFactory Draw(Identifier poolId)
         {
             var entityId = pool.DrawFrom(poolId);
-            return Registry.Global._entityFactory.Get(entityId);
+            return Registry.Global.EntityFactory.Get(entityId);
         }
     }
 }

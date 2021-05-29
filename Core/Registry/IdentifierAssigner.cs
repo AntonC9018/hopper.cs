@@ -8,5 +8,10 @@ namespace Hopper.Core
         {
             return ++offset;
         }
+
+        public Identifier NextIdentifierForCurrentMod()
+        {
+            return new Identifier(Registry.Global._currentMod, Next());
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace Hopper.TestContent.SimpleMobs
             Displaceable.AddTo(subject, ExtendedLayer.BLOCK);
             Attackable.AddTo(subject, Attackness.ALWAYS);
             // TODO: Be able to manipulate stats in a simple way.
-            Stats.AddTo(subject, Registry.Global._defaultStats);
+            Stats.AddTo(subject, Registry.Global.Stats._map);
             Pushable.AddTo(subject);
             Damageable.AddTo(subject, new Health(1));
             Transform.AddTo(subject, Layer.REAL);

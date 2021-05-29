@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Core.Stat;
@@ -9,6 +10,12 @@ using Hopper.Utils.Chains;
 
 namespace Hopper.Core
 {
+    /// <summary>
+    /// A registry extension is another smaller registry, that is added to the global Registy
+    /// at content initilization time by mods.
+    /// </summary>
+    public interface IRegistryExtension {}
+
     public struct Registry
     {
         public static Registry Global;
@@ -20,95 +27,33 @@ namespace Hopper.Core
         }
 
         public int _currentMod;
-        private IdentifierAssigner _component;
-        private PriorityAssigner _priority;
-        public RuntimeRegistry<Entity> _entities;
-        public StaticRegistry<EntityFactory> _entityFactory;
-        private IdentifierAssigner _stats;
-        public StatsBuilder _defaultStats;
-        private IdentifierAssigner _moreChains;
-        public ChainsBuilder _defaultMoreChains;
-        private IdentifierAssigner _globalChains;
-        public ChainsBuilder _defaultGlobalChains;
-        private IdentifierAssigner _slots;
-        public Pools _pools;
+        public PriorityAssigner Priority;
+        public RuntimeRegistry<Entity> RuntimeEntities;
+        public StaticRegistry<EntityFactory> EntityFactory;
+        public IdentifierAssigner Component;
         
+        public IdentifierAssigner Slot;
+        public Pools Pools;
+
+        public StaticGeneralRegistry<StatsBuilder, IStat> Stats; 
+        public StaticGeneralRegistry<ChainsBuilder, IChain> MoreChains; 
+        public StaticGeneralRegistry<ChainsBuilder, IChain> GlobalChains; 
+
 
         public void Init()
         {
-            _priority.Init();
-            _entities.Init();
-            _entityFactory.Init();
-            _defaultStats        = new StatsBuilder();
-            _defaultMoreChains   = new ChainsBuilder();
-            _defaultGlobalChains = new ChainsBuilder();
-            _pools.Init();
+            Priority.Init();
+            RuntimeEntities.Init();
+            EntityFactory.Init();
+            Pools.Init();
+            Stats.Init(new StatsBuilder());
+            MoreChains.Init(new ChainsBuilder());
+            GlobalChains.Init(new ChainsBuilder());
         }
 
         public int NextMod()
         {
             return ++_currentMod;
-        }
-
-        public Identifier NextComponentId()
-        {
-            return new Identifier(_currentMod, _component.Next());
-        }
-
-        public RuntimeIdentifier RegisterRuntimeEntity(Entity entity)
-        {
-            return _entities.Add(entity);
-        }
-
-        public Identifier RegisterMoreChain<T>(IChain<T> chain)
-        {
-            var id = new Identifier(_currentMod, _moreChains.Next());
-            _defaultMoreChains[id] = chain;
-            return id;
-        }
-
-        public Identifier RegisterGlobalChain<T>(IChain<T> chain)
-        {
-            var id = new Identifier(_currentMod, _globalChains.Next());
-            _defaultGlobalChains[id] = chain;
-            return id;
-        }
-
-        public void UnregisterRuntimeEntity(Entity entity)
-        {
-            _entities.Remove(entity.id);
-        }
-
-        public Identifier RegisterEntityFactory(EntityFactory factory)
-        {
-            return _entityFactory.Add(_currentMod, factory);
-        }
-
-        public void UnregisterEntityFactory(EntityFactory factory)
-        {
-            _entityFactory.Remove(factory.id);
-        }
-
-        public Identifier RegisterStat(IStat stat)
-        {
-            var id = new Identifier(_currentMod, _stats.Next());
-            _defaultStats[id] = stat;
-            return id;
-        }
-
-        public Identifier NextSlotId()
-        {
-            return new Identifier(_currentMod, _slots.Next());
-        }
-
-        public int NextPriority(PriorityRank rank)
-        {
-            return _priority.Next(rank);
-        }
-
-        public void RegisterEntitySubPool(Identifier subpool)
-        {
-
         }
     }
 }

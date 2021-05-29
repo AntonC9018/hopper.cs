@@ -73,7 +73,7 @@ namespace Hopper.Core.Stat
             {   
                 if (!template.TryGet(index, out stat))
                 {
-                    stat = Registry.Global._defaultStats.Get(index);
+                    stat = Registry.Global.Stats._map.Get(index);
                 }
                 Set(index, in stat);
             }
@@ -114,7 +114,7 @@ namespace Hopper.Core.Stat
             {   
                 if (!template.TryGet(index, out var stat))
                 {
-                    stat = Registry.Global._defaultStats.Get(index);
+                    stat = Registry.Global.Stats._map.Get(index);
                 }
                 Set(index, in stat);
             }

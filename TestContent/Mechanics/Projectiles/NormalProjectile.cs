@@ -15,7 +15,7 @@ namespace Hopper.TestContent.Projectiles
 
         public static void AddComponents(Entity subject)
         {
-            Stats.AddTo(subject, Registry.Global._defaultStats);
+            Stats.AddTo(subject, Registry.Global.Stats._map);
             Transform.AddTo(subject, Layer.PROJECTILE);
             FactionComponent.AddTo(subject, Faction.Environment);
             Displaceable.AddTo(subject, 0);

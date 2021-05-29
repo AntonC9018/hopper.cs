@@ -25,7 +25,7 @@ namespace Hopper.Tests
 
                 // AddComponents
                 var transform = Transform.AddTo(entityFactory, Layer.REAL);
-                var stats = Stats.AddTo(entityFactory, Registry.Global._defaultStats);
+                var stats = Stats.AddTo(entityFactory, Registry.Global.Stats._map);
                 var acting = Acting.AddTo(entityFactory, null, Algos.SimpleAlgo, Order.Player);
                 var moving = Moving.AddTo(entityFactory);
                 var displaceable = Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK);

@@ -64,7 +64,7 @@ namespace Hopper.Core.Items
                 // we must create a new instance of this same type and drop it in the world
                 // TODO: factor in another function that would also take amount as an argument
                 var transform = owner.GetTransform();
-                var factory = Registry.Global._entityFactory.Get(actor.typeId);
+                var factory = Registry.Global.EntityFactory.Get(actor.typeId);
                 var newInstance = World.Global.SpawnEntity(
                     factory, transform.position, transform.orientation);
                 countable.count--;
