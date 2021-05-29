@@ -228,7 +228,8 @@ namespace Hopper.Meta
                         entityTypes = entityTypes,
                         statRootScope = _env.statParsingContext.currentScope,
                         slots = slots,
-                        Namespace = _env.RootNamespaceName
+                        Namespace = _env.RootNamespaceName,
+                        HasCustomInitFunction = _env.DoesMainHaveCustomInit()
                     };
 
                     Console.WriteLine("Generating code for the main init function");

@@ -152,7 +152,9 @@ namespace Hopper.Shared.Attributes
         /// <example>
         /// "Attacking.Check" would export for the Check chain of Attacking behavior.
         /// "+MyClass.MyChain" would export for the MyChain chain, contributed to MoreChains component
-        /// by the static class named MyClass.
+        /// by the exporting class MyClass.
+        /// "@MyClass.MyChain" would export for the MyChain chain, contributed to GlobalChains (world chains)
+        /// by the exporting class MyClass.
         /// </example>
         public string Chain = null;
 

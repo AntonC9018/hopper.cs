@@ -6,6 +6,7 @@ using Hopper.Core.Items;
 using Hopper.Core.Stat;
 using Hopper.Core.WorldNS;
 using Hopper.Shared.Attributes;
+using Hopper.Utils;
 using Hopper.Utils.Chains;
 
 namespace Hopper.Core
@@ -15,6 +16,13 @@ namespace Hopper.Core
     /// at content initilization time by mods.
     /// </summary>
     public interface IRegistryExtension {}
+
+    public struct RegistryExtensionPath<T> where T : IRegistryExtension
+    {
+        public int modId;
+        public T Follow() => Follow(Registry.Global);
+        public T Follow(Registry registry) => (T) registry._extensions[modId];
+    }
 
     public struct Registry
     {
@@ -27,6 +35,14 @@ namespace Hopper.Core
         }
 
         public int _currentMod;
+        public Dictionary<int, IRegistryExtension> _extensions;
+
+        public void Extend(IRegistryExtension registryExt)
+        {
+            Assert.That(!_extensions.ContainsKey(_currentMod), "The given mod has already extended the registry");
+            _extensions.Add(_currentMod, registryExt);
+        }
+
         public PriorityAssigner Priority;
         public RuntimeRegistry<Entity> RuntimeEntities;
         public StaticRegistry<EntityFactory> EntityFactory;

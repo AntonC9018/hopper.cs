@@ -5,14 +5,20 @@ using Hopper.Core;
 
 namespace <#= Namespace #>
 {
-    public static class Main
+    public static partial class Main
     {
         public static void Init()
         {
 <# /* TODO: make mods hardcode a consistent mod id, in order to be independent of their import order */ #>
 <# /* Store it in a mod config of sorts, maybe a json, which would include the data about the mod */ #>
 <# /* Load it dynamically? */ #>
-            int modId = Registry.Global.NextMod();            
+            int modId = Registry.Global.NextMod(); 
+            
+<#  if (HasCustomInitFunction)
+    { #>
+            CustomInit();
+            
+<#  } #>
 <#  foreach(var component in components) 
     { #>
             <#= component.FullyQualifiedClassName #>.InitIndex();

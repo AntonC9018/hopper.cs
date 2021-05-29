@@ -268,5 +268,12 @@ namespace Hopper.Meta
                 }
             }
         }
+
+        public bool DoesMainHaveCustomInit()
+        {
+            var main = _compilation.GetTypeByMetadataName($"{_rootNamespace}.Main");
+            if (main == null) return false;
+            return main.GetMethods().Any(m => m.Name == "CustomInit");
+        }
     }
 }
