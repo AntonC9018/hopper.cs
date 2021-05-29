@@ -67,7 +67,7 @@ namespace Hopper.Meta
             iundirectedActivateable  = GetHopperTypeSymbol(compilation, "Core.ActingNS.IUndirectedActivateable");
             iundirectedPredictable   = GetHopperTypeSymbol(compilation, "Core.ActingNS.IUndirectedPredictable");
             Chain                    = GetHopperTypeSymbol(compilation, "Utils.Chains.Chain`1");
-            Index                    = GetHopperTypeSymbol(compilation, "Core.Components.Index`1");
+            Index                    = GetHopperTypeSymbol(compilation, "Core.Index`1");
             IComponent               = GetComponentSymbol(compilation, nameof(IComponent));
             IBehavior                = GetComponentSymbol(compilation, nameof(IBehavior));
             ITag                     = GetComponentSymbol(compilation, nameof(ITag));

@@ -249,4 +249,16 @@ namespace Hopper.Shared.Attributes
     public class IdentifyingStatAttribute : Attribute
     {
     }
+
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class RegistryAttribute : Attribute
+    {
+        public string Name = null;
+
+        public RegistryAttribute(string name)
+        {
+            name = Name;
+        }
+    }
 }

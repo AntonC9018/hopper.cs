@@ -1,4 +1,4 @@
-namespace Hopper.Core.Components
+namespace Hopper.Core
 {
     public class Index<T>
     {
@@ -29,4 +29,6 @@ namespace Hopper.Core.Components
             return index1.Id != index2.Id;
         }
     }
+
+    public class Index<T1, T2> : Index<T1>{}
 }
