@@ -65,10 +65,13 @@ namespace Hopper.Core
             Stats.Init(new StatsBuilder());
             MoreChains.Init(new ChainsBuilder());
             GlobalChains.Init(new ChainsBuilder());
+            Component = new IdentifierAssigner();
+            Slot = new IdentifierAssigner();
         }
 
         public int NextMod()
         {
+            // TODO: reset identifier assigners to 0
             return ++_currentMod;
         }
     }
