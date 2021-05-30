@@ -86,7 +86,7 @@ namespace Hopper.TestContent.SlidingNS
         {
             Unset(actor);
             actor.RemoveComponent(Index);
-            Sliding.RemovedPath.Follow(actor)?.Pass(actor);
+            Sliding.RemovedPath.Get(actor)?.Pass(actor);
         }
 
         public static void TryApplyTo(Transform transform, IntVector2 directionOfSliding)
@@ -100,7 +100,7 @@ namespace Hopper.TestContent.SlidingNS
             {
                 SlidingEntityModifier.AddTo(actor, directionOfSliding);
                 Preset(actor);
-                Sliding.AppliedPath.Follow(actor)?.Pass(actor);
+                Sliding.AppliedPath.Get(actor)?.Pass(actor);
             }
         }
     }

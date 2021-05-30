@@ -4,16 +4,20 @@ namespace Hopper.Core.Components
 {
     public static class PathExtensions
     {
-        public static bool TryFollow<T>(this IPath<T> path, Entity entity, out T thing)
+        public static bool TryGet<T>(this IPath<T> path, Entity entity, out T thing)
         {
-            thing = path.Follow(entity);
+            thing = path.Get(entity);
             return thing != null;
         }
     }
 
     public interface IPath<out T>
     {
-        T Follow(Entity entity);
+        /// <summary>
+        /// Returns the thing the path points to stored on the entity.
+        /// If the entity does not contain the given thing, returns null.
+        /// </summary>
+        T Get(Entity entity);
     }
 
     public readonly struct BehaviorChainPath<T> : IPath<T> where T : IChain
@@ -31,6 +35,6 @@ namespace Hopper.Core.Components
 
         public T FactoryChain(EntityFactory factory) => Chain(factory.subject);
 
-        T IPath<T>.Follow(Entity entity) => Chain(entity);
+        T IPath<T>.Get(Entity entity) => Chain(entity);
     }
 }

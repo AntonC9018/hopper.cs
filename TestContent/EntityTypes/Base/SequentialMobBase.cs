@@ -3,7 +3,6 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Stat;
 using Hopper.Shared.Attributes;
 using Hopper.Core.Targeting;
-using Hopper.Core.History;
 using Hopper.Core.WorldNS;
 using Hopper.Core.ActingNS;
 
@@ -19,7 +18,6 @@ namespace Hopper.TestContent
             Stats.AddTo(subject, Registry.Global.Stats._map);
             Transform.AddTo(subject, Layer.REAL);
             FactionComponent.AddTo(subject, Faction.Enemy);
-            History.AddTo(subject);
             
             Acting    .AddTo(subject, Sequential.CalculateAction, Algorithm, Order.Entity);
             Moving    .AddTo(subject);
@@ -30,6 +28,7 @@ namespace Hopper.TestContent
             Attackable.AddTo(subject, Attackness.ALWAYS);
             Damageable.AddTo(subject, new Health(1));
             Displaceable.AddTo(subject, ExtendedLayer.BLOCK);
+            MoreChains.AddTo(subject, Registry.Global.MoreChains._map);
         }
 
         public static void InitComponents(Entity subject)

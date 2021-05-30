@@ -7,12 +7,6 @@ using System.Linq;
 
 namespace Hopper.Core.WorldNS
 {
-    public struct TransformSnapshot 
-    {
-        public IntVector2 position;
-        public IntVector2 orientation;
-    }
-
     public partial class Transform : IComponent
     {
         public Entity entity;
@@ -30,11 +24,6 @@ namespace Hopper.Core.WorldNS
             this.position = position;
             this.orientation = orientation;
             return this;
-        }
-
-        public TransformSnapshot GetSnapshot()
-        {
-            return new TransformSnapshot { position = position, orientation = orientation };
         }
 
         public void ResetPositionInGrid(IntVector2 newPos)

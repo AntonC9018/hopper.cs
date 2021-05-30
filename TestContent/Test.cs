@@ -36,7 +36,7 @@ namespace Hopper.TestContent
 
         public static void Call2(Entity actor)
         {
-            var chain = Test1.HelloPath.Follow(actor);
+            var chain = Test1.HelloPath.Get(actor);
             chain.Pass(new Test1.Context { actor = actor });
         }
     }

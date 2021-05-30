@@ -84,7 +84,7 @@ namespace Hopper.Core.Components.Basic
             Index = index;
         }
 
-        public T Follow(Entity entity)
+        public T Get(Entity entity)
         {
             if (entity.TryGetMoreChains(out var moreChains))
                 return moreChains.GetLazy(Index);

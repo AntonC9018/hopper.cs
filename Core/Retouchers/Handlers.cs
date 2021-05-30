@@ -18,17 +18,17 @@ namespace Hopper.Core
 
         public void HookTo(Entity entity)
         {
-            chainPath.Follow(entity).Add(handler);
+            chainPath.Get(entity).Add(handler);
         }
 
         public bool IsHookedTo(Entity entity)
         {
-            return chainPath.TryFollow(entity, out var chain) && chain.Contains(handler);
+            return chainPath.TryGet(entity, out var chain) && chain.Contains(handler);
         }
 
         public void TryHookTo(Entity entity)
         {
-            if (chainPath.TryFollow(entity, out var chain) && !chain.Contains(handler))
+            if (chainPath.TryGet(entity, out var chain) && !chain.Contains(handler))
             {
                 chain.Add(handler);
             }
@@ -36,12 +36,12 @@ namespace Hopper.Core
 
         public void UnhookFrom(Entity entity)
         {
-            chainPath.Follow(entity).Remove(handler);
+            chainPath.Get(entity).Remove(handler);
         }
         
         public void TryUnhookFrom(Entity entity)
         {
-            if (chainPath.TryFollow(entity, out var chain))
+            if (chainPath.TryGet(entity, out var chain))
             {
                 chain.Remove(handler);
             }
@@ -78,7 +78,7 @@ namespace Hopper.Core
 
         public void HookTo(Entity entity)
         {
-            var chain = chainPath.Follow(entity);
+            var chain = chainPath.Get(entity);
             
             foreach (var handler in handlers)
             {
@@ -88,13 +88,13 @@ namespace Hopper.Core
 
         public bool IsHookedTo(Entity entity)
         {
-            return chainPath.TryFollow(entity, out var chain) 
+            return chainPath.TryGet(entity, out var chain) 
                 && chain.Contains(handlers[0]);
         }
 
         public void UnhookFrom(Entity entity)
         {
-            var chain = chainPath.Follow(entity);
+            var chain = chainPath.Get(entity);
 
             foreach (var handler in handlers)
             {
@@ -104,7 +104,7 @@ namespace Hopper.Core
 
         public void TryHookTo(Entity entity)
         {
-            if (!chainPath.TryFollow(entity, out var chain) 
+            if (!chainPath.TryGet(entity, out var chain) 
                 || chain.Contains(handlers[0]))
             {
                 return;
@@ -117,7 +117,7 @@ namespace Hopper.Core
 
         public void TryUnhookFrom(Entity entity)
         {
-            if (chainPath.TryFollow(entity, out var chain))
+            if (chainPath.TryGet(entity, out var chain))
             {
                 foreach (var handler in handlers)
                 {
