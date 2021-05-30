@@ -89,7 +89,7 @@ namespace Hopper.TestContent
 
         public static void ExplodeCell(IntVector2 position, IntVector2 knockbackDir)
         {
-            ExplosionPath.Follow().Pass(position);
+            ExplosionPath.Get().Pass(position);
 
             var targetTransforms = Grid.GetAllFromLayer(position, knockbackDir, TargetedLayer);
 

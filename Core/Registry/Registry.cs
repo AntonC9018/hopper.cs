@@ -20,8 +20,8 @@ namespace Hopper.Core
     public struct RegistryExtensionPath<T> where T : IRegistryExtension
     {
         public int modId;
-        public T Follow() => Follow(Registry.Global);
-        public T Follow(Registry registry) => (T) registry._extensions[modId];
+        public T Get() => Get(Registry.Global);
+        public T Get(Registry registry) => (T) registry._extensions[modId];
     }
 
     public struct Registry

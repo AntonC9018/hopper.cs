@@ -13,7 +13,7 @@ namespace Hopper.Core.WorldNS
             Index = index;
         }
 
-        public T Follow(World world) => world.Chains.GetLazy(Index);
-        public T Follow() => Follow(World.Global);
+        public T Get(World world) => world.Chains.GetLazy(Index);
+        public T Get() => Get(World.Global);
     }
 }
