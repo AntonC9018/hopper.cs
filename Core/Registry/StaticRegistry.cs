@@ -67,5 +67,15 @@ namespace Hopper.Core
         public void Remove(Identifier id) => _map.Remove(id);
         public T Get(Identifier identifier) => _map[identifier];
         public T GetByName(string name) => (T) _map[_nameMap[name]];
+        public bool TryGetByName(string name, out T value)
+        {
+            if (!_nameMap.TryGetValue(name, out Identifier identifier))
+            {
+                value = default;
+                return false;
+            }
+            value = Get(identifier);
+            return true;
+        }
     }
 }

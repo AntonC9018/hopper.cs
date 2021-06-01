@@ -25,5 +25,10 @@ namespace Hopper.Utils
         {
             return x > y ? x : y;
         }
+
+        public static int Round(float value)
+        {
+            return (int) Math.Round(value);
+        }
     }
 }
