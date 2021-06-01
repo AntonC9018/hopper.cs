@@ -78,11 +78,11 @@ namespace Hopper.TestContent
         {
             foreach (var vec in IntVector2.Spiral(-radius, -radius, radius, radius))
             {
-                IntVector2 current_pos = position + vec;
-                if (Grid.IsOutOfBounds(current_pos) == false)
+                IntVector2 currentPosition = position + vec;
+                if (Grid.IsOutOfBounds(currentPosition) == false)
                 {
                     IntVector2 knockback_dir = vec.Sign();
-                    ExplodeCell(current_pos, knockback_dir);
+                    ExplodeCell(currentPosition, knockback_dir);
                 }
             }
         }

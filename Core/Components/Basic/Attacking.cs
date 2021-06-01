@@ -129,9 +129,9 @@ namespace Hopper.Core.Components.Basic
                 && inventory.TryGetWeapon(out var weapon)
                 && weapon.TryGetBufferedAttackTargetProvider(out var provider))
             {
-                var pos = actor.GetTransform().position;
+                var position = actor.GetTransform().position;
 
-                foreach (var ctx in provider._pattern.MakeContexts(pos, direction))
+                foreach (var ctx in provider._pattern.MakeContexts(position, direction))
                 {
                     // This has more info, can use.
                     yield return ctx.position;

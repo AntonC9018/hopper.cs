@@ -53,14 +53,14 @@ namespace Hopper.Core.WorldNS
             _loopCount++;
         }
 
-        public Entity SpawnEntity(EntityFactory factory, IntVector2 pos, IntVector2 orientation)
+        public Entity SpawnEntity(EntityFactory factory, IntVector2 position, IntVector2 orientation)
         {
             System.Console.WriteLine($"Creating entity of factory id : {factory.id}");
 
             var entity = factory.Instantiate();
             entity.id = Registry.Global.RuntimeEntities.Add(entity);
 
-            if (entity.TryInitTransform(pos, orientation, out var transform))
+            if (entity.TryInitTransform(position, orientation, out var transform))
             {
                 Grid.AddTransformNoEvent(transform);
                 factory.InitInWorld(transform);
@@ -81,9 +81,9 @@ namespace Hopper.Core.WorldNS
             return entity;
         }
 
-        public Entity SpawnEntity(EntityFactory factory, IntVector2 pos)
+        public Entity SpawnEntity(EntityFactory factory, IntVector2 position)
         {
-            return SpawnEntity(factory, pos, IntVector2.Zero);
+            return SpawnEntity(factory, position, IntVector2.Zero);
         }
     }
 }

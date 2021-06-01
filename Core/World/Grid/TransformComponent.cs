@@ -26,11 +26,11 @@ namespace Hopper.Core.WorldNS
             return this;
         }
 
-        public void ResetPositionInGrid(IntVector2 newPos)
+        public void ResetPositionInGrid(IntVector2 newPosition)
         {
-            var direction = (newPos - position).Sign();
+            var direction = (newPosition - position).Sign();
             RemoveFromGrid(direction);
-            position = newPos;
+            position = newPosition;
             ResetInGrid(direction);
         }
 
