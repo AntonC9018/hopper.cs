@@ -8,7 +8,7 @@ using static Hopper.Core.ActingNS.Action;
 namespace Hopper.TestContent.SimpleMobs
 {
     [EntityType]
-    public static class Knipper
+    public static class Bomber
     {
         public static EntityFactory Factory;
 

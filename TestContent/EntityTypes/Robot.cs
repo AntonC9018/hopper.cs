@@ -39,7 +39,7 @@ namespace Hopper.TestContent.Boss
 
                 if (World.Global.Grid.HasNoUndirectedTransformAt(nextPosition, Layer.REAL))
                 {
-                    World.Global.SpawnEntity(Whelp.Factory, nextPosition, direction);
+                    World.Global.SpawnEntity(RobotSummon.Factory, nextPosition, direction);
                     whelpCount++;
                 }
             }
@@ -49,7 +49,7 @@ namespace Hopper.TestContent.Boss
     }
 
     [EntityType]
-    public static class TestBoss
+    public static class Robot
     {
         public static EntityFactory Factory;
         
@@ -97,7 +97,7 @@ namespace Hopper.TestContent.Boss
 
     
     [EntityType]
-    public static class Whelp
+    public static class RobotSummon
     {
         public static EntityFactory Factory;
 
