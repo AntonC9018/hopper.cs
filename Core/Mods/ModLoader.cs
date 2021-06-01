@@ -16,7 +16,7 @@ namespace Hopper.Core.Mods
             modInits.Add(modInit);
         }
 
-        public void Init()
+        public void InitMods()
         {
             foreach (var mod in modInits)
             {

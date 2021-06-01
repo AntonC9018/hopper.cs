@@ -24,5 +24,11 @@ namespace Hopper.Core
         {
             map.Remove(id);
         }
+
+        public void Clear()
+        {
+            map.Clear();
+            assigner = new IdentifierAssigner();
+        }
     }
 }
