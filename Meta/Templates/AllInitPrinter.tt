@@ -52,17 +52,17 @@ namespace <#= Namespace #>
     {
         if (!stat.IsIdentifying && !stat.IsIdentified) 
         { #>
-            <#= stat.QualifiedName #>.Index.Id = Registry.Global.Stats.AddForCurrentMod(<#= stat.QualifiedName #>.Default());
+            <#= stat.QualifiedName #>.Index.Id = Registry.Global.Stats.AddForCurrentMod((Hopper.Core.Stat.IStat) <#= stat.QualifiedName #>.Default());
 <#      }
         foreach (var identifyingField in stat.staticIndentiyingFields) 
         { #>
-            <#= stat.QualifiedName #>.<#= identifyingField.name #>.Index.Id = Registry.Global.Stats.AddForCurrentMod(<#= stat.QualifiedName #>.<#= identifyingField.name #>.Default());
+            <#= stat.QualifiedName #>.<#= identifyingField.name #>.Index.Id = Registry.Global.Stats.AddForCurrentMod((Hopper.Core.Stat.IStat) <#= stat.QualifiedName #>.<#= identifyingField.name #>.Default());
 <#      }
         
     }
     foreach (var identifyingField in staticIndentiyingStatFields) 
     { #>
-            <#= identifyingField.FullyQualifiedName #>.Index.Id = Registry.Global.Stats.AddForCurrentMod(<#= identifyingField.FullyQualifiedName #>.Default());
+            <#= identifyingField.FullyQualifiedName #>.Index.Id = Registry.Global.Stats.AddForCurrentMod((Hopper.Core.Stat.IStat) <#= identifyingField.FullyQualifiedName #>.Default());
 <#  }
     foreach (var entityType in entityTypes) 
     { /* TODO: Link the metadata (the name or whatever) */#>

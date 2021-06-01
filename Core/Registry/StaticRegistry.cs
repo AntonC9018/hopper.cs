@@ -2,14 +2,14 @@ using System.Collections.Generic;
 
 namespace Hopper.Core
 {
-    public interface ISubRegistry<T> 
+    public interface ISubRegistry<in T> 
     {
         Identifier Add(int modId, T item);
     }
 
     public static class SubRegistryExtensions
     {
-        public static Identifier AddForCurrentMod<T>(this ISubRegistry<T> registry, T item) 
+        public static Identifier AddForCurrentMod<T, V>(this ref T registry, V item) where T : struct, ISubRegistry<V>
             => registry.Add(Registry.Global._currentMod, item);
     }
 

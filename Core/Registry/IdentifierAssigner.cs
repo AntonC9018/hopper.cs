@@ -1,6 +1,6 @@
 namespace Hopper.Core
 {
-    public class IdentifierAssigner
+    public struct IdentifierAssigner
     {
         public int offset;
 
