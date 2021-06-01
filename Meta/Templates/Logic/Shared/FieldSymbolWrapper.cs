@@ -14,5 +14,6 @@ namespace Hopper.Meta
         public string Name => symbol.Name;
         public string Namespace => symbol.ContainingNamespace.GetFullName();
         public string FullyQualifiedName => $"{symbol.GetFullQualification()}.{Name}";
+        public string StringIdentifier => FullyQualifiedName;
     }
 }

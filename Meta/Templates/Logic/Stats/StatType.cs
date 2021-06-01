@@ -35,8 +35,11 @@ namespace Hopper.Meta.Stats
             }
             return stack;
         }
+
+        // TODO: add other name for mods? like `core:stat`, minecraft style
+        public string StringIdentifier => QualifiedName;
+
         public string QualifiedName => System.String.Join(".", GetScopeQualification());
-        
         public string JoinedParams => System.String.Join(", ", fields.Select(f => $"{f.metadata.type} {f.name}"));
 
         public string FieldCommaJoin(System.Func<FieldDeclaration, string> func)
