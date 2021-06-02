@@ -1,42 +1,46 @@
 using System.Collections.Generic;
-using System.Reflection;
 using Hopper.Utils.Vector;
 using Hopper.Shared.Attributes;
 using Hopper.Utils.Chains;
 using Hopper.Core.Items;
 using Hopper.Core.Components;
+using Hopper.Core.WorldNS;
 using Hopper.Core.Components.Basic;
 
 namespace Hopper.Core.ActingNS
 {
-    public class InputMapping
+    public struct InputMapping
     {
-        public readonly static InputMapping Vector = new InputMapping("Vector");
-        public readonly static InputMapping Action_0 = new InputMapping("Action_0");
-        public readonly static InputMapping Action_1 = new InputMapping("Action_1");
-        public readonly static InputMapping Special_0 = new InputMapping("Special_0");
-        public readonly static InputMapping Special_1 = new InputMapping("Special_1");
-        public readonly static InputMapping Item_0 = new InputMapping("Item_0");
-        public readonly static InputMapping Item_1 = new InputMapping("Item_1");
-        public readonly static InputMapping Weapon_0 = new InputMapping("Weapon_0");
-        public readonly static InputMapping Weapon_1 = new InputMapping("Weapon_1");
+        public static IdentifierAssigner assigner = new IdentifierAssigner(); 
+        
+        // TODO: 
+        // the thing I'm doing here is garbage:
+        // 1. Mods cannot add new ones.
+        // 2. These should be stored in the registry.
+        // 3. I want to allow other code to store custom stuff that needs ids in the registry too,
+        //    for that we need to generate more generic code.
+        //    My current idea is to use an attibute, which would take a string or something 
+        //    as the target registry, the registry itself being either defined in the custom
+        //    subregistry per mod, or be in the default registry.
+        //    Since this is in Core, the registry is assumed to already contain the subregistry.
+        //    The code may then inherit that generic attribute.
+        // say 
+        // [ExportedToRegistry("Registry.Name")]
+        //  RegistryNameExportAttribute : ExportedToRegstry { cctor() : base("Registry.Name") {} }
+        // [RegistryNameExportAttribute]
+        public readonly static InputMapping Vector = new InputMapping();
+        public readonly static InputMapping Special_0 = new InputMapping();
+        public readonly static InputMapping Special_1 = new InputMapping();
 
-        string name;
-        public InputMapping(string name)
+        // TODO: When an activated slot is created, it should automatically create a mapping? 
+        public readonly static InputMapping Item_0 = new InputMapping();
+        public readonly static InputMapping Item_1 = new InputMapping();
+        
+        public readonly int id;
+
+        public InputMapping(int id)
         {
-            this.name = name;
-        }
-
-        public static IEnumerable<InputMapping> Members
-        {
-            get
-            {
-                var type = typeof(InputMapping);
-                var fields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
-
-                foreach (var field in fields)
-                    yield return (InputMapping)field.GetValue(null);
-            }
+            this.id = assigner.Next();
         }
     }
 
@@ -53,27 +57,25 @@ namespace Hopper.Core.ActingNS
             }
         }
 
-        [Inject] public IAction defaultAction;
+        [Inject] public IAction defaultVectorAction;
         public Dictionary<InputMapping, Chain<Context>> _chains;
 
 
         /// <summary>
-        /// Gets the next action from the currently bound item slot, 
-        /// then does a guard pass over a chain dedicated to that slot.
+        /// Currently, does nothing.
+        /// What is should actually do, is it should return the special action assigned to the given input.
         /// </summary>
         public CompiledAction ConvertInputToAction(Entity entity, InputMapping input)
         {
-            var ev = new Context { actor = entity };
-            _chains[input].PassWithPropagationChecking(ev);
-            return ev.Compile();
+            Hopper.Utils.Assert.That(false);
+            return default;
         }
 
-
         /// <summary>
-        /// Gets the next action from the currently bound item slot, 
-        /// then does a guard pass over a chain dedicated to that slot.
+        /// Gets the next action from the currently bound item slot. 
+        /// Then does a guard pass over a chain dedicated to that slot (unimplemented).
         /// </summary>
-        public IAction ConvertSlotIdToAction(Entity entity, Identifier slotId)
+        private IAction ConvertSlotIdToAction(Entity entity, Identifier slotId)
         {
             var inventory = entity.GetInventory();
             if (inventory.TryGetItemFromSlot(slotId, out var item) 
@@ -82,31 +84,28 @@ namespace Hopper.Core.ActingNS
                 return action;
             }
             return null;
+        } 
+
+        /// <summary>
+        /// </summary>
+        public void SelectActionByItemSlot(Entity entity, Identifier slotId)
+        {
+            var action = ConvertSlotIdToAction(entity, slotId)
+                .Compile(entity.GetTransform().orientation);
+
+            entity.GetActing().SetPotentialAction(action);
         }
 
-        public CompiledAction ConvertVectorToAction(Entity entity, IntVector2 direction)
+        /// <summary>
+        /// Sets the default vector action for the given direction as the next action.
+        /// The action may get substituted with a different action, e.g. if the character is sliding.
+        /// </summary>
+        public void SelectVectorAction(Entity entity, IntVector2 direction)
         {
-            var ev = new Context
-            {
-                actor = entity,
-                action = defaultAction,
-                direction = direction
-            };
-            _chains[InputMapping.Vector].PassWithPropagationChecking(ev);
-            return ev.Compile();
-        }
+            var action = defaultVectorAction.Compile(direction);
 
-        public static Dictionary<InputMapping, IPath<Chain<Context>>> Paths;
-        static Controllable()
-        {
-            Paths = new Dictionary<InputMapping, IPath<Chain<Context>>>();
-            // set up all chain paths for the input mappings
-            // set up all templates
-            foreach (InputMapping name in InputMapping.Members)
-            {
-                // Paths[name] = new IPath<Chain<Context>>(
-                //     (Entity entity) => entity.TryGetComponent(Index, out var component) ? component._chains[name] : null);
-            }
+            // Runs the ActionSelected event, so it may be saved as a different action in the end.
+            entity.GetActing().SetPotentialAction(action);
         }
     }
 }

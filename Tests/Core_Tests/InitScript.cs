@@ -15,7 +15,7 @@ namespace Hopper.Tests
             modLoader = new ModLoader();
             modLoader.Add(Core.Main.Init);
             modLoader.Add(TestContent.Main.Init);
-            modLoader.Init();
+            modLoader.InitMods();
         }
     }
 }

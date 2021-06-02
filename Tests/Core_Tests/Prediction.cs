@@ -34,9 +34,9 @@ namespace Hopper.Tests
         [Test]
         public void WithEnemyTryingToAttack_ThereAreBadCells()
         {
-            var skeleton = World.Global.SpawnEntity(Skeleton.Factory, new IntVector2(1, 1));
+            var skeleton = World.Global.SpawnEntity(Zombie.Factory, new IntVector2(1, 1));
             var acting = skeleton.GetActing();
-            acting.CalculateNextAction();
+            acting.CalculateAndSetAction();
 
             Assert.NotNull(acting.nextAction, "Will attack");
 

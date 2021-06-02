@@ -10,17 +10,20 @@ namespace Hopper.Core.ActingNS
 {
     [Flags] public enum ActingState 
     {
-        DidAction = 0b_001,
-        DoingAction = 0b_010,
-        ActionSucceeded = 0b_100
+        DidAction         = 1,
+        DoingAction       = 2,
+        ActionSucceeded   = 4,
+        ActionSet         = 8,
+        ActionSubstituted = 16
     };
     
     public partial class Acting : IBehavior
     {
-        [Chain("Do")] private readonly Chain<Context> _DoChain;        
-        [Chain("Check")] private readonly Chain<Context> _CheckChain;
-        [Chain("Success")] private readonly Chain<Context> _SuccessChain;
-        [Chain("Fail")] private readonly Chain<Context> _FailChain;
+        [Chain("Do")]             private readonly Chain<Context> _DoChain;        
+        [Chain("Check")]          private readonly Chain<Context> _CheckChain;
+        [Chain("ActionSelected")] private readonly Chain<Context> _ActionSelectedChain;
+        [Chain("Success")]        private readonly Chain<Context> _SuccessChain;
+        [Chain("Fail")]           private readonly Chain<Context> _FailChain;
 
         [Inject] public readonly System.Func<Entity, CompiledAction> ActionCalculationAlgorithm;
         [Inject] public readonly System.Action<Context> ActionExecutionAlgorithm;
@@ -37,18 +40,18 @@ namespace Hopper.Core.ActingNS
             [Omit] public CompiledAction action;
             [Omit] public bool success = false;
 
-            public bool HasActionBeenReset => 
-                !ReferenceEquals(action._storedAction, acting.nextAction._storedAction);
+            public bool HasActionBeenReset => acting._flags.HasFlag(ActingState.ActionSubstituted);
 
             public void SetAction(in IAction action)
             {
                 this.action = this.action.WithAction(action);
+                acting._flags |= ActingState.ActionSubstituted;
             }
 
-            // TODO: you once can check the initial action on Acting, so is this really worth it?
             public void SetAction(in CompiledAction action)
             {
                 this.action = action;
+                acting._flags |= ActingState.ActionSubstituted;
             }
         }
 
@@ -66,6 +69,9 @@ namespace Hopper.Core.ActingNS
             return Activate();
         }
 
+        /// <summary>
+        /// In essense, executes the stored calculated (or set directly) action.
+        /// </summary>
         public bool Activate()
         {
             var ctx = new Context
@@ -103,32 +109,78 @@ namespace Hopper.Core.ActingNS
             return ctx.success;
         }
 
+        /// <summary>
+        /// Resets the flags representing the internal state. 
+        /// The flags control interaction between entities acting in the world. 
+        /// If the Activate() is to be called manually, it would still work, even without resetting beforehand.
+        /// </summary>
         [Export(Chain = "Ticking.Do", Dynamic = true)] 
-        public void ResetAction()
+        public void Reset()
         {
             _flags = 0;
-            nextAction = new CompiledAction();
         }
 
+        /// <summary>
+        /// Returns true if the entity could act given the current order of the global world.
+        /// </summary>
         [Alias("IsCurrentOrderFavorable")]
         public bool IsCurrentOrderFavorable()
         {
             return World.Global.State.currentPhase == order;
         }
 
-        public void CalculateNextAction()
+        /// <summary>
+        /// Runs the action selection algorithm if the action has not been set already.
+        /// Note that the actual action that will be selected is affected by the  ActionSelected chain (unimplemented).
+        /// See <see cref="SetPotentialAction"/> for more details.
+        /// </summary>
+        public void CalculateAndSetAction()
         {
-            if (!nextAction.HasAction() && ActionCalculationAlgorithm != null)
+            // TODO: add a flag "action selected"
+            if (!_flags.HasFlag(ActingState.ActionSet) && ActionCalculationAlgorithm != null)
             {
-                nextAction = ActionCalculationAlgorithm(actor);
+                SetPotentialAction(ActionCalculationAlgorithm(actor));
             }
         }
 
+        /// <summary>
+        /// Tries setting the next action to the corresponding value.
+        /// The given action may be altered, depending on the current state of the entity.
+        /// For example, if the entity is sliding, the sliding action will be substituted here.
+        /// The action's direction may also be influenced by e.g. dizzying effects.
+        /// This action substitution is governed by the ActionSelected chain (unimplemented).
+        /// </summary>
+        public void SetPotentialAction(CompiledAction action)
+        {
+            // Iterate a chain to maybe change the action.
+            // TODO: 
+            // This should work with a different context type.
+            // This one has fields only useful for execution, and vice-versa.
+            var context = new Context { action = action, acting = this };
+
+            // If the action gets substituted, the ActionSubstituted flag on acting gets set.
+            _ActionSelectedChain.PassWithPropagationChecking(context);
+            
+            // Save the modified action.
+            // TODO: 
+            // This seems wasteful. 
+            // What is the point of storing this in the context, when it could be set directly on the acting?
+            // Would it be ok to save it directly?
+            nextAction = context.action;
+            _flags |= ActingState.ActionSet;
+        }
+        
+        /// <summary>
+        /// Use in the <c>InitComponents()</c> of your entity type.
+        /// </summary>
         public void DefaultPreset(Entity subject)
         {
-            ResetActionHandlerWrapper.HookTo(subject);
+            ResetHandlerWrapper.HookTo(subject);
         }
 
+        /// <summary>
+        /// Returns the directions that the entity would try while trying their action.
+        /// </summary>
         public IEnumerable<IntVector2> GetPossibleDirections()
         {
             // This will have to be patched, if any other multidirectional algos appear

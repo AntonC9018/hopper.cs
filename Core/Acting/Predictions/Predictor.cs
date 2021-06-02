@@ -26,7 +26,7 @@ namespace Hopper.Core.ActingNS
             {
                 if (!acting.nextAction.HasAction())
                 {
-                    acting.CalculateNextAction();
+                    acting.CalculateAndSetAction();
                 }
 
                 // TODO: Add support for good/bad predicted positions (currenlty, all are processed as one thing)

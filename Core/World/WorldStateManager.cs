@@ -59,7 +59,7 @@ namespace Hopper.Core.WorldNS
         {
             foreach (var _actings in actings)
             foreach (var acting in _actings)
-                acting.CalculateNextAction();
+                acting.CalculateAndSetAction();
         }
 
         private void ActivatePlayers()

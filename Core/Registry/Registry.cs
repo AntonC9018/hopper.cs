@@ -55,6 +55,7 @@ namespace Hopper.Core
         public StaticGeneralRegistry<ChainsBuilder, IChain> MoreChains; 
         public StaticGeneralRegistry<ChainsBuilder, IChain> GlobalChains; 
 
+        public StaticRegistry<ActingNS.InputMapping> InputMappings;
 
         public void Init()
         {
@@ -67,6 +68,7 @@ namespace Hopper.Core
             GlobalChains.Init(new ChainsBuilder());
             Component = new IdentifierAssigner();
             Slot = new IdentifierAssigner();
+            InputMappings.Init();
         }
 
         public int NextMod()
