@@ -111,8 +111,8 @@ namespace Hopper.Tests
 
             Transform otherTransform = null;
             bool keep = true;
-            transform.SubsribeToPermanentEnterEvent(ctx => { otherTransform = ctx.transform; return keep; }); 
-            transform.SubsribeToPermanentLeaveEvent(ctx => { otherTransform = ctx.transform; return keep; }); 
+            transform.SubsribeToFilteredEnterEvent(ctx => { otherTransform = ctx.transform; return keep; }); 
+            transform.SubsribeToFilteredLeaveEvent(ctx => { otherTransform = ctx.transform; return keep; }); 
 
             transform.RemoveFromGrid(IntVector2.Zero);
             Assert.AreSame(transform, otherTransform);

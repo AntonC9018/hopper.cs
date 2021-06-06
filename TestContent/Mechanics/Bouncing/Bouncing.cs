@@ -24,8 +24,8 @@ namespace Hopper.TestContent.BouncingNS
 
             // add the things
             var entity = transform.entity;
-            transform.SubsribeToPermanentEnterEvent(ctx => Enter(entity, ctx));
-            transform.SubsribeToPermanentLeaveEvent(ctx => Leave(entity, ctx));
+            transform.SubsribeToFilteredEnterEvent(ctx => Enter(entity, ctx));
+            transform.SubsribeToFilteredLeaveEvent(ctx => Leave(entity, ctx));
         }
 
         [Alias("Bounce")]

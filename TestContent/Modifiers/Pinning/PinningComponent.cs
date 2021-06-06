@@ -11,7 +11,7 @@ namespace Hopper.TestContent.PinningNS
         public void InitInWorld(Transform transform)
         {
             var entity = transform.entity;
-            transform.SubsribeToPermanentEnterEvent(ctx => Enter(entity, ctx));
+            transform.SubsribeToFilteredEnterEvent(ctx => Enter(entity, ctx));
         }
 
         public bool Enter(Entity actor, CellMovementContext ctx)

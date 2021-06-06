@@ -12,7 +12,7 @@ namespace Hopper.TestContent.SlidingNS
 
         public void InitInWorld(Transform transform)
         {
-            transform.SubsribeToPermanentEnterEvent(ctx => Enter(transform.entity, ctx));
+            transform.SubsribeToFilteredEnterEvent(ctx => Enter(transform.entity, ctx));
         }
 
         public static bool Enter(Entity actor, CellMovementContext context)
