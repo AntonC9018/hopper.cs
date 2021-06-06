@@ -4,6 +4,8 @@ using Hopper.Core.Components;
 using Hopper.Shared.Attributes;
 using System.Collections.Generic;
 using System.Linq;
+using Hopper.Utils.Chains;
+using Hopper.Core.Components.Basic;
 
 namespace Hopper.Core.WorldNS
 {
@@ -51,6 +53,8 @@ namespace Hopper.Core.WorldNS
         public IntVector2 orientation;
         [Inject] public Layers layer;
         [Inject] public TransformFlags flags;
+
+        [Chain("+Reorient")] public static readonly Index<Chain<Transform>> ReorientIndex = new Index<Chain<Transform>>();
 
         private GridManager Grid => World.Global.Grid;
 
@@ -112,6 +116,12 @@ namespace Hopper.Core.WorldNS
             var cell = Grid.GetCellAt(position);
             Assert.That(!cell.Contains(this), "Already in the cell, cannot add itself twice");
             cell.Add(this);
+        }
+
+        public void Reorient(IntVector2 newOrientation)
+        {
+            orientation = newOrientation;
+            ReorientPath.Get(entity)?.Pass(this);
         }
 
         public bool HasBlockRelative(IntVector2 direction, Layers layer)

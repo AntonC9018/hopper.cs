@@ -64,10 +64,10 @@ namespace Hopper.Core.Components.Basic
             }
         }
 
-        [Chain("Check")] private readonly Chain<Context> _CheckChain;
+        [Chain("Check")]        private readonly Chain<Context> _CheckChain;
         [Chain("BeforeRemove")] private readonly Chain<Context> _BeforeRemoveChain;
-        [Chain("BeforeReset")] private readonly Chain<Context> _BeforeResetChain;
-        [Chain("After")] private readonly Chain<Context> _AfterChain;
+        [Chain("BeforeReset")]  private readonly Chain<Context> _BeforeResetChain;
+        [Chain("After")]        private readonly Chain<Context> _AfterChain;
         [Inject] public Layers blockLayer;
 
         // TODO: To support sized entities, a lot has to be done here
