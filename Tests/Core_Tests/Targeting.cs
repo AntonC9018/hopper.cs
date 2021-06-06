@@ -19,11 +19,11 @@ namespace Hopper.Tests
             InitScript.Init();
 
             wallFactory = new EntityFactory();
-            Transform.AddTo(wallFactory, Layer.WALL);
+            Transform.AddTo(wallFactory, Layers.WALL, 0);
             Attackable.AddTo(wallFactory, Attackness.IS_BLOCK);
 
             entityFactory = new EntityFactory();
-            Transform.AddTo(entityFactory, Layer.REAL);
+            Transform.AddTo(entityFactory, Layers.REAL, 0);
             Attackable.AddTo(entityFactory, Attackness.ALWAYS);
         }
 
@@ -42,7 +42,7 @@ namespace Hopper.Tests
                 new Piece(new IntVector2(1, 0), new IntVector2(1, 0), new Reach(true))
             );
             var provider = new BufferedAttackTargetProvider(pattern, 
-                BufferedAttackTargetProvider.SingleSimpleMap, Layer.REAL, 0);
+                BufferedAttackTargetProvider.SingleSimpleMap, Layers.REAL, 0);
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 0));
 
             AttackTargetingContext context;
@@ -57,7 +57,7 @@ namespace Hopper.Tests
 
             // 3. "Dagger" via SingleDefaultMap and a custom pattern
             provider = new BufferedAttackTargetProvider(pattern,
-                BufferedAttackTargetProvider.SingleDefaultMap, Layer.REAL, 0);
+                BufferedAttackTargetProvider.SingleDefaultMap, Layers.REAL, 0);
             context = provider.GetTargets(null, new IntVector2(0, 1), new IntVector2(0, -1));
             Assert.AreSame(context.targetContexts.Single().transform, entity.GetTransform());
 
@@ -67,7 +67,7 @@ namespace Hopper.Tests
                 new Piece(new IntVector2(2, 0), new IntVector2(1, 0), new Reach(0))
             );
             provider = new BufferedAttackTargetProvider(pattern,
-                BufferedAttackTargetProvider.SingleDefaultMap, Layer.REAL, Layer.WALL);
+                BufferedAttackTargetProvider.SingleDefaultMap, Layers.REAL, Layers.WALL);
 
             // Targeting an entity 2 blocks away
             context = provider.GetTargets(null, new IntVector2(0, 2), new IntVector2(0, -1));
@@ -109,8 +109,8 @@ namespace Hopper.Tests
         [Test]
         public void StraightUnbuffered()
         {
-            var pattern = new StraightPattern(stopSearchLayer : Layer.WALL);
-            var provider = new UnbufferedTargetProvider(pattern, Layer.REAL, Faction.Any);
+            var pattern = new StraightPattern(stopSearchLayer : Layers.WALL);
+            var provider = new UnbufferedTargetProvider(pattern, Layers.REAL, Faction.Any);
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 0));
             var target = provider.GetTargets(new IntVector2(3, 0), new IntVector2(-1, 0)).Single();
             Assert.AreSame(target.transform, entity.GetTransform());

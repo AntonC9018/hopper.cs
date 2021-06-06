@@ -37,7 +37,7 @@ namespace Hopper.TestContent.Boss
                 if (World.Global.Grid.IsOutOfBounds(nextPosition))
                     break;
 
-                if (World.Global.Grid.HasNoUndirectedTransformAt(nextPosition, Layer.REAL))
+                if (World.Global.Grid.HasNoUndirectedTransformAt(nextPosition, Layers.REAL))
                 {
                     World.Global.SpawnEntity(RobotSummon.Factory, nextPosition, direction);
                     whelpCount++;

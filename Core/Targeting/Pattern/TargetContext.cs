@@ -11,10 +11,10 @@ namespace Hopper.Core.Targeting
         public Entity attacker;
         public IntVector2 attackerPosition;
         public IntVector2 attackDirection;
-        public Layer targetedLayer;
-        public Layer blockLayer;
+        public Layers targetedLayer;
+        public Layers blockLayer;
 
-        public AttackTargetingContext(List<AttackTargetContext> targetContexts, PieceAttackPattern pattern, Entity attacker, IntVector2 attackerPosition, IntVector2 attackDirection, Layer targetedLayer, Layer blockLayer)
+        public AttackTargetingContext(List<AttackTargetContext> targetContexts, PieceAttackPattern pattern, Entity attacker, IntVector2 attackerPosition, IntVector2 attackDirection, Layers targetedLayer, Layers blockLayer)
         {
             this.targetContexts = targetContexts;
             this.pattern = pattern;

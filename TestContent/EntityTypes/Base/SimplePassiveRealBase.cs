@@ -16,13 +16,13 @@ namespace Hopper.TestContent.SimpleMobs
         public static void AddComponents(Entity subject)
         {
             FactionComponent.AddTo(subject, Faction.Environment);
-            Displaceable.AddTo(subject, ExtendedLayer.BLOCK);
+            Displaceable.AddTo(subject, Layers.BLOCK);
             Attackable.AddTo(subject, Attackness.ALWAYS);
             // TODO: Be able to manipulate stats in a simple way.
             Stats.AddTo(subject, Registry.Global.Stats._map);
             Pushable.AddTo(subject);
             Damageable.AddTo(subject, new Health(1));
-            Transform.AddTo(subject, Layer.REAL);
+            Transform.AddTo(subject, Layers.REAL, TransformFlags.Default);
             Ticking.AddTo(subject);
         }
 

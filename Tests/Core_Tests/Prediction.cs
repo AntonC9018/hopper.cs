@@ -27,7 +27,7 @@ namespace Hopper.Tests
         public void WithoutEnemies_ThereAreNoBadCells()
         {
             var player = World.Global.SpawnEntity(Player.Factory, new IntVector2(0, 0));
-            var predictor = new Predictor(World.Global, Layer.REAL, Faction.Player);
+            var predictor = new Predictor(World.Global, Layers.REAL, Faction.Player);
             Assert.Zero(predictor.GetBadPositions().Count());
         }
 
@@ -41,7 +41,7 @@ namespace Hopper.Tests
             Assert.NotNull(acting.nextAction, "Will attack");
 
             var player = World.Global.SpawnEntity(Player.Factory, new IntVector2(1, 0));
-            var predictor = new Predictor(World.Global, Layer.REAL, Faction.Player);
+            var predictor = new Predictor(World.Global, Layers.REAL, Faction.Player);
             
             // Just in case, assert that the faction works correctly
             Assert.True(player.IsPlayer(), "IsPlayer says we are player");
@@ -61,7 +61,7 @@ namespace Hopper.Tests
         public void ExplosionPredictionWorks()
         {
             var entity = World.Global.SpawnEntity(Dummy.Factory, new IntVector2(1, 1));
-            var info = new PredictionTargetInfo(Layer.Any, Faction.Any);
+            var info = new PredictionTargetInfo(Layers.Any, Faction.Any);
             var predictions = Explosion.DefaultExplodeAction(1).Predict(entity, info).ToArray();
             Assert.AreEqual(9, predictions.Length, "Would explode 9 cells");
         }
@@ -69,11 +69,11 @@ namespace Hopper.Tests
         [Test]
         public void ProviderPredictionWorks()
         {
-            var pattern  = new StraightPattern(Layer.WALL);
-            var provider = new UnbufferedTargetProvider(pattern, Layer.REAL, Faction.Any); 
+            var pattern  = new StraightPattern(Layers.WALL);
+            var provider = new UnbufferedTargetProvider(pattern, Layers.REAL, Faction.Any); 
 
             // Generating predictions relative to this point
-            var info = new PredictionTargetInfo(Layer.REAL, Faction.Player);
+            var info = new PredictionTargetInfo(Layers.REAL, Faction.Player);
 
             var positions = provider.PredictPositions(IntVector2.Zero, IntVector2.Right, info);
 

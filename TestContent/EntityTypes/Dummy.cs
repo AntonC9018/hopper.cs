@@ -16,7 +16,7 @@ namespace Hopper.TestContent.SimpleMobs
         public static void AddComponents(Entity subject)
         {
             Stats.AddTo(subject, Registry.Global.Stats._map);
-            Transform.AddTo(subject, Layer.REAL);
+            Transform.AddTo(subject, Layers.REAL, TransformFlags.Default);
             Attackable.AddTo(subject, Attackness.ALWAYS);
             FactionComponent.AddTo(subject, Faction.Enemy);
         }

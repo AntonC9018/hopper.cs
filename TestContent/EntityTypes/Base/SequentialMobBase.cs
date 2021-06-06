@@ -16,7 +16,7 @@ namespace Hopper.TestContent
         public static void AddComponents(Entity subject, System.Action<Acting.Context> Algorithm, params Step[] sequenceSteps)
         {
             Stats.AddTo(subject, Registry.Global.Stats._map);
-            Transform.AddTo(subject, Layer.REAL);
+            Transform.AddTo(subject, Layers.REAL, TransformFlags.Default);
             FactionComponent.AddTo(subject, Faction.Enemy);
             
             Acting    .AddTo(subject, Sequential.CalculateAction, Algorithm, Order.Entity);
@@ -27,7 +27,7 @@ namespace Hopper.TestContent
             Sequential.AddTo(subject, new Sequence(sequenceSteps));
             Attackable.AddTo(subject, Attackness.ALWAYS);
             Damageable.AddTo(subject, new Health(1));
-            Displaceable.AddTo(subject, ExtendedLayer.BLOCK);
+            Displaceable.AddTo(subject, Layers.BLOCK);
             MoreChains.AddTo(subject, Registry.Global.MoreChains._map);
         }
 

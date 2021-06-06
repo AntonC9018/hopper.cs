@@ -14,7 +14,7 @@ namespace Hopper.TestContent.SlidingNS
 
         public static void AddComponents(Entity subject)
         {
-            Transform.AddTo(subject, Layer.FLOOR);
+            Transform.AddTo(subject, Layers.FLOOR, 0);
             FactionComponent.AddTo(subject, Faction.Enemy);
             Damageable.AddTo(subject, new Health(1));
             SlipperyComponent.AddTo(subject);

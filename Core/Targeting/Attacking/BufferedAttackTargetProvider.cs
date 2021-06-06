@@ -23,7 +23,7 @@ namespace Hopper.Core.Targeting
         /// Only entities from this layer will be targeted.
         /// However the exact logic of this field depends on the map function.
         /// </summary>
-        [Inject] public Layer _targetLayer;
+        [Inject] public Layers _targetLayer;
 
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Hopper.Core.Targeting
         /// but they will still take part in figuring out which of the other entities are to be targeted.
         /// However the exact logic of this field depends on the map function.
         /// </summary>
-        [Inject] public Layer _blockLayer;
+        [Inject] public Layers _blockLayer;
 
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Hopper.Core.Targeting
         /// which jsut tries to return the first valid target.
         /// </summary>
         public static readonly BufferedAttackTargetProvider Simple = new BufferedAttackTargetProvider(
-            new PieceAttackPattern(Piece.Default), SingleSimpleMap, Layer.REAL, Layer.WALL);
+            new PieceAttackPattern(Piece.Default), SingleSimpleMap, Layers.REAL, Layers.WALL);
 
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Hopper.Core.Targeting
         /// Modifies the attackness to the actual attackness of the entity if it is attackable.
         /// </summary>
         public static void SetTargetEntitiesAndBlocks(
-            IEnumerable<AttackTargetContext> targetContexts, Layer targetedLayer, Layer blockLayer)
+            IEnumerable<AttackTargetContext> targetContexts, Layers targetedLayer, Layers blockLayer)
         {
             foreach (var ctx in targetContexts)
             {
@@ -114,7 +114,7 @@ namespace Hopper.Core.Targeting
         /// Returns true is the entity can be attacked by default.
         /// </summary>
         public static bool _IsAttackableTarget_AndSetTransformAndAttackness(
-                AttackTargetContext context, Layer targetedLayer, Layer skipLayer)
+                AttackTargetContext context, Layers targetedLayer, Layers skipLayer)
         {
             if (
                 World.Global.Grid.HasNoTransformAt(context.position, context.direction, skipLayer)
@@ -242,7 +242,7 @@ namespace Hopper.Core.Targeting
             }
         }
 
-        public static bool _IsBlock(AttackTargetContext context, Layer skipLayer)
+        public static bool _IsBlock(AttackTargetContext context, Layers skipLayer)
         {
             return skipLayer.HasFlag(context.transform.layer);
         }

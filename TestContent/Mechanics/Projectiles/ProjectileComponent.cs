@@ -12,7 +12,7 @@ namespace Hopper.TestContent.Projectiles
 {
     public partial class ProjectileComponent : IComponent, IStandartActivateable
     {
-        [Inject] public Layer targetedLayer;
+        [Inject] public Layers targetedLayer;
 
         /// <summary>
         /// Attacks the entity looking in the specified direction. Otherwise, 
@@ -35,7 +35,7 @@ namespace Hopper.TestContent.Projectiles
             // If the projectile is not floating at one spot
             if (direction != IntVector2.Zero)
             {
-                Assert.That(!actor.GetDisplaceable().blockLayer.HasFlag(Layer.WALL),
+                Assert.That(!actor.GetDisplaceable().blockLayer.HasFlag(Layers.WALL),
                     "We should be able to move INTO walls");
 
                 // First, attack entities, that are looking at us, standing at the same cell as us.

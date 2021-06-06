@@ -24,11 +24,11 @@ namespace Hopper.Tests
                 entityFactory = new EntityFactory();
 
                 // AddComponents
-                var transform = Transform.AddTo(entityFactory, Layer.REAL);
+                var transform = Transform.AddTo(entityFactory, Layers.REAL, TransformFlags.Default);
                 var stats = Stats.AddTo(entityFactory, Registry.Global.Stats._map);
                 var acting = Acting.AddTo(entityFactory, null, Algos.SimpleAlgo, Order.Player);
                 var moving = Moving.AddTo(entityFactory);
-                var displaceable = Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK);
+                var displaceable = Displaceable.AddTo(entityFactory, Layers.BLOCK);
                 var inventory = Inventory.AddTo(entityFactory);
                 var ticking = Ticking.AddTo(entityFactory);
 
@@ -46,7 +46,7 @@ namespace Hopper.Tests
 
             {
                 itemFactory = new EntityFactory();
-                var transform = Transform.AddTo(itemFactory, Layer.ITEM);
+                var transform = Transform.AddTo(itemFactory, Layers.ITEM, 0);
             }
         }
 
@@ -106,7 +106,7 @@ namespace Hopper.Tests
             acting.Activate();
             Assert.True(inventory.ContainsItem(item2.typeId));
             Assert.AreSame(inventory.GetItem(item2.typeId), item2);
-            Assert.AreSame(item1.GetTransform().GetAllFromLayer(Layer.ITEM).Single().entity, item1);
+            Assert.AreSame(item1.GetTransform().GetAllFromLayer(Layers.ITEM).Single().entity, item1);
             Assert.AreSame(inventory.GetItemFromSlot(slot.Id), item2);
         }
     }

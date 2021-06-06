@@ -17,14 +17,13 @@ namespace Hopper.Tests
             InitScript.Init();
 
             wallFactory = new EntityFactory();
-            Transform.AddTo(wallFactory, Layer.WALL);
+            Transform.AddTo(wallFactory, Layers.WALL, 0);
 
             entityFactory = new EntityFactory();
-            Transform.AddTo(entityFactory, Layer.REAL);
+            Transform.AddTo(entityFactory, Layers.REAL, TransformFlags.Default);
 
             directionalBlockFactory = new EntityFactory();
-            Directed.AddTo(directionalBlockFactory);
-            Transform.AddTo(directionalBlockFactory, Layer.WALL);
+            Transform.AddTo(directionalBlockFactory, Layers.WALL, TransformFlags.Directed);
         }
 
         public GridManager Grid => World.Global.Grid;
@@ -151,15 +150,15 @@ namespace Hopper.Tests
             var queriedPosition = new IntVector2(0, 0);
             var queriedDirection = new IntVector2(-1, 0); // equivalently, IntVector2.Up
 
-            Assert.False(Grid.HasBlockAt(queriedPosition, queriedDirection, Layer.REAL)); // no entity place there yet
+            Assert.False(Grid.HasBlockAt(queriedPosition, queriedDirection, Layers.REAL)); // no entity place there yet
 
             var entity = World.Global.SpawnEntity(entityFactory, queriedPosition);
             var transform = entity.GetTransform();
 
-            Assert.True(Grid.HasBlockAt(queriedPosition, queriedDirection, Layer.REAL));
+            Assert.True(Grid.HasBlockAt(queriedPosition, queriedDirection, Layers.REAL));
             // wall has the wall layer type, which we disregard for this test (no walls)
-            Assert.False(Grid.HasBlockAt(queriedPosition, queriedDirection, Layer.WALL));
-            Assert.True(Grid.HasBlockAt(queriedPosition, queriedDirection, Layer.WALL | Layer.REAL));
+            Assert.False(Grid.HasBlockAt(queriedPosition, queriedDirection, Layers.WALL));
+            Assert.True(Grid.HasBlockAt(queriedPosition, queriedDirection, Layers.WALL | Layers.REAL));
         }
 
         [Test]
@@ -203,24 +202,24 @@ namespace Hopper.Tests
 
             // 1
             // I set the layer of the directional block to `Wall`, see above
-            Assert.True(Grid.HasBlockAt(pos, dir, Layer.WALL));
+            Assert.True(Grid.HasBlockAt(pos, dir, Layers.WALL));
             // Here we ignore the wall Layer
-            Assert.False(Grid.HasBlockAt(pos, dir, Layer.REAL));
+            Assert.False(Grid.HasBlockAt(pos, dir, Layers.REAL));
 
             // 2
             dir = IntVector2.Left;
-            Assert.False(Grid.HasBlockAt(pos, dir, Layer.WALL));
+            Assert.False(Grid.HasBlockAt(pos, dir, Layers.WALL));
 
             // 3
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 0));
             var transform = entity.GetTransform();
 
             // If we still ignore the entity layer, nothing happens
-            Assert.False(Grid.HasBlockAt(pos, dir, Layer.WALL));
+            Assert.False(Grid.HasBlockAt(pos, dir, Layers.WALL));
             // Now we that take into account both of the layers, it becomes blocked
-            Assert.True(Grid.HasBlockAt(pos, dir, Layer.WALL | Layer.REAL));
+            Assert.True(Grid.HasBlockAt(pos, dir, Layers.WALL | Layers.REAL));
             // Same if we consider just the entity
-            Assert.True(Grid.HasBlockAt(pos, dir, Layer.REAL));
+            Assert.True(Grid.HasBlockAt(pos, dir, Layers.REAL));
 
             // 4 Setup
             transform.RemoveFromGrid();
@@ -233,17 +232,17 @@ namespace Hopper.Tests
 
             // 4
             dir = IntVector2.Up;
-            Assert.True(Grid.HasBlockAt(pos, dir, Layer.WALL));
+            Assert.True(Grid.HasBlockAt(pos, dir, Layers.WALL));
 
             dir = IntVector2.Down;
-            Assert.False(Grid.HasBlockAt(pos, dir, Layer.WALL));
+            Assert.False(Grid.HasBlockAt(pos, dir, Layers.WALL));
 
             pos += IntVector2.Down;
             dir = IntVector2.Up;
-            Assert.False(Grid.HasBlockAt(pos, dir, Layer.WALL));
+            Assert.False(Grid.HasBlockAt(pos, dir, Layers.WALL));
             
             dir = IntVector2.Down;
-            Assert.True(Grid.HasBlockAt(pos, dir, Layer.WALL));
+            Assert.True(Grid.HasBlockAt(pos, dir, Layers.WALL));
         }
 
     }

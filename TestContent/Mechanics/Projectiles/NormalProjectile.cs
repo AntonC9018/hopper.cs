@@ -16,10 +16,10 @@ namespace Hopper.TestContent.Projectiles
         public static void AddComponents(Entity subject)
         {
             Stats.AddTo(subject, Registry.Global.Stats._map);
-            Transform.AddTo(subject, Layer.PROJECTILE);
+            Transform.AddTo(subject, Layers.PROJECTILE, 0);
             FactionComponent.AddTo(subject, Faction.Environment);
             Displaceable.AddTo(subject, 0);
-            ProjectileComponent.AddTo(subject, Layer.REAL | Layer.WALL | Layer.PROJECTILE);
+            ProjectileComponent.AddTo(subject, Layers.REAL | Layers.WALL | Layers.PROJECTILE);
             Attackable.AddTo(subject, Attackness.CAN_BE_ATTACKED);
             Damageable.AddTo(subject, new Health(1));
             Ticking.AddTo(subject);

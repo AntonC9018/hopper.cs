@@ -8,7 +8,7 @@ namespace Hopper.TestContent.SlidingNS
     // Put on ice or whatever
     public partial class SlipperyComponent : IComponent
     {
-        public static Layer TargetedLayer = Layer.REAL;
+        public static Layers TargetedLayer = Layers.REAL;
 
         public void InitInWorld(Transform transform)
         {

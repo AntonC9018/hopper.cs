@@ -11,8 +11,7 @@ namespace Hopper.TestContent
         
         public static void AddComponents(Entity subject)
         {
-            Transform.AddTo(subject, Layer.REAL);
-            Directed.AddTo(subject);
+            Transform.AddTo(subject, Layers.REAL, TransformFlags.Directed);
             // Stats.AddTo(subject, Registry.Global.Stats._map);
         }
 

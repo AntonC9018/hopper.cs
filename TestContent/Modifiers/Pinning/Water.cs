@@ -15,7 +15,7 @@ namespace Hopper.TestContent.PinningNS
         public static void AddComponents(Entity subject)
         {
             Stats.AddTo(subject, Registry.Global.Stats._map);
-            Transform.AddTo(subject, Layer.FLOOR);
+            Transform.AddTo(subject, Layers.FLOOR, 0);
             FactionComponent.AddTo(subject, Faction.Environment);
             Damageable.AddTo(subject, new Health(1));
             PinningComponent.AddTo(subject);

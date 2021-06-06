@@ -11,7 +11,7 @@ namespace Hopper.Core.ActingNS
         public World world;
         public PredictionTargetInfo predictionInfo;
 
-        public Predictor(World world, Layer targetedLayer, Faction targetedFaction)
+        public Predictor(World world, Layers targetedLayer, Faction targetedFaction)
         {
             this.world = world;
             this.predictionInfo = new PredictionTargetInfo(targetedLayer, targetedFaction);

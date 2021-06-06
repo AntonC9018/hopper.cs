@@ -11,7 +11,7 @@ namespace Hopper.Core.Targeting
     public partial class UnbufferedTargetProvider : IComponent
     {
         [Inject] public IGeneralizedPattern _pattern;
-        [Inject] public Layer _targetedLayer;
+        [Inject] public Layers _targetedLayer;
         [Inject] public Faction _targetedFaction; 
 
         public IEnumerable<TargetContext> GetTargets(IntVector2 position, IntVector2 direction)
@@ -42,7 +42,7 @@ namespace Hopper.Core.Targeting
             }
         }
 
-        public bool WhetherMayAffect(Layer targetLayer, Faction targetFaction)
+        public bool WhetherMayAffect(Layers targetLayer, Faction targetFaction)
         {
             return _targetedFaction.HasEitherFlag(targetFaction) && _targetedLayer.HasEitherFlag(targetLayer);
         }

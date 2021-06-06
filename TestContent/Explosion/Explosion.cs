@@ -36,15 +36,15 @@ namespace Hopper.TestContent
                 source = Stat.Explosion.PushSource.Index
             };
 
-        private const Layer TargetedLayer = 
-            Layer.DROPPED
-            | Layer.ITEM
-            | Layer.MISC
-            | Layer.PROJECTILE
-            | Layer.REAL
-            | Layer.TRAP
-            | Layer.FLOOR
-            | Layer.WALL;
+        private const Layers TargetedLayer = 
+            Layers.DROPPED
+            | Layers.ITEM
+            | Layers.MISC
+            | Layers.PROJECTILE
+            | Layers.REAL
+            | Layers.TRAP
+            | Layers.FLOOR
+            | Layers.WALL;
 
 
         // TODO: Add a parameter for exposion attack stat

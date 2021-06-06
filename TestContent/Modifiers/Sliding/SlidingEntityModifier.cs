@@ -61,8 +61,8 @@ namespace Hopper.TestContent.SlidingNS
         public static void MaybeStopSliding(Transform transform, IntVector2 direction)
         {
             // If none of the floor is slippery or the next thing is a block
-            if (!transform.GetAllButSelfFromLayer(Layer.FLOOR).Any(t => t.entity.HasSlipperyComponent())
-                || transform.HasBlockRelative(direction, ExtendedLayer.BLOCK))
+            if (!transform.GetAllButSelfFromLayer(Layers.FLOOR).Any(t => t.entity.HasSlipperyComponent())
+                || transform.HasBlockRelative(direction, Layers.BLOCK))
             {
                 RemoveFrom(transform.entity);
             }
@@ -96,7 +96,7 @@ namespace Hopper.TestContent.SlidingNS
             if (!actor.HasSlidingEntityModifier() 
                 && directionOfSliding != IntVector2.Zero
                 // No walls ahead
-                && !transform.HasBlockRelative(directionOfSliding, ExtendedLayer.BLOCK))
+                && !transform.HasBlockRelative(directionOfSliding, Layers.BLOCK))
             {
                 SlidingEntityModifier.AddTo(actor, directionOfSliding);
                 Preset(actor);

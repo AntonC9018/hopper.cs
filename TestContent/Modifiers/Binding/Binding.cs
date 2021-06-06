@@ -15,7 +15,7 @@ namespace Hopper.TestContent.BindingNS
     {
         // The hookable that defines the exact effect applying 
         // this type of bind will have on the target entity.
-        [Inject] public Layer targetedLayer;
+        [Inject] public Layers targetedLayer;
         [Inject] public IHookable hookable;
         public Transform host;
 

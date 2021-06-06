@@ -30,7 +30,7 @@ namespace Hopper.TestContent.Items
 
         public static Entity Drop(IntVector2 position, int amount)
         {
-            if (World.Global.Grid.GetCellAt(position).TryGetAnyFromLayer(Layer.ITEM, out var transform)
+            if (World.Global.Grid.GetCellAt(position).TryGetAnyFromLayer(Layers.ITEM, out var transform)
                 && transform.entity.typeId == Factory.id)
             {
                 var countable = transform.entity.GetCountable();

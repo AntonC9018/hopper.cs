@@ -15,7 +15,7 @@ namespace Hopper.TestContent.BouncingNS
         public static void AddComponents(Entity subject)
         {
             Stats.AddTo(subject, Registry.Global.Stats._map);
-            Transform.AddTo(subject, Layer.TRAP);
+            Transform.AddTo(subject, Layers.TRAP, 0);
             FactionComponent.AddTo(subject, Faction.Enemy);
             Acting.AddTo(subject, ctx => Bouncing.UAction.Compile(), Algos.SimpleAlgo, Order.Trap);
             Damageable.AddTo(subject, new Health(1));

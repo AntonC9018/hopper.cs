@@ -16,7 +16,7 @@ namespace Hopper.TestContent.BlockingTrapNS
     // TODO: this needs some thought
     public partial class BlockingTrapComponent : IComponent
     {
-        [Inject] public Layer targetedLayer;
+        [Inject] public Layers targetedLayer;
         public List<Entity> barriers = new List<Entity>();
 
         public bool Activate(Entity actor)

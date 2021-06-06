@@ -20,18 +20,18 @@ namespace Hopper.Tests.Test_Content
             InitScript.Init();
             
             entityFactory = new EntityFactory();
-            Transform.AddTo(entityFactory, Layer.REAL);
+            Transform.AddTo(entityFactory, Layers.REAL, TransformFlags.Default);
             Stats.AddTo(entityFactory, Registry.Global.Stats._map);
             Attackable.AddTo(entityFactory, Attackness.ALWAYS).DefaultPreset();
             Damageable.AddTo(entityFactory, new Health(1)).DefaultPreset();
-            Displaceable.AddTo(entityFactory, Layer.WALL | Layer.REAL).DefaultPreset();
+            Displaceable.AddTo(entityFactory, Layers.WALL | Layers.REAL).DefaultPreset();
             Moving.AddTo(entityFactory).DefaultPreset();
             
 
             bindingFactory = new EntityFactory();
-            Transform.AddTo(bindingFactory, Layer.REAL);
+            Transform.AddTo(bindingFactory, Layers.REAL, TransformFlags.Default);
             Stats.AddTo(bindingFactory, Registry.Global.Stats._map);
-            Binding.AddTo(bindingFactory, Layer.REAL, BoundEntityModifier.DefaultHookable).DefaultPreset();
+            Binding.AddTo(bindingFactory, Layers.REAL, BoundEntityModifier.DefaultHookable).DefaultPreset();
             Damageable.AddTo(bindingFactory, new Health(1)).DefaultPreset();
             Attackable.AddTo(bindingFactory, Attackness.ALWAYS).DefaultPreset();
         }

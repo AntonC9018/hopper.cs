@@ -107,40 +107,40 @@ namespace Hopper.Core.WorldNS
 
         */
         public Transform GetTransformFromLayer(
-            IntVector2 position, IntVector2 direction, Layer layer)
+            IntVector2 position, IntVector2 direction, Layers layer)
         {
             return GetAllFromLayer(position, direction, layer).FirstOrDefault();
         }
 
         public bool TryGetTransformFromLayer(
-            IntVector2 position, IntVector2 direction, Layer layer, out Transform transform)
+            IntVector2 position, IntVector2 direction, Layers layer, out Transform transform)
         {
             transform = GetTransformFromLayer(position, direction, layer);
             return transform != null;
         }
         
-        public bool HasNoTransformAt(IntVector2 position, IntVector2 direction, Layer layer)
+        public bool HasNoTransformAt(IntVector2 position, IntVector2 direction, Layers layer)
         {
             return GetTransformFromLayer(position, direction, layer) == null;
         }
 
-        public bool HasNoUndirectedTransformAt(IntVector2 position, Layer layer)
+        public bool HasNoUndirectedTransformAt(IntVector2 position, Layers layer)
         {
             return !HasUndirectedTransformAt(position, layer);
         }
 
-        public bool HasUndirectedTransformAt(IntVector2 position, Layer layer)
+        public bool HasUndirectedTransformAt(IntVector2 position, Layers layer)
         {
             return GetCellAt(position).GetAllUndirectedFromLayer(layer).Any();
         }
         
-        public bool HasTransformAt(IntVector2 position, IntVector2 direction, Layer layer)
+        public bool HasTransformAt(IntVector2 position, IntVector2 direction, Layers layer)
         {
             return !HasNoTransformAt(position, direction, layer);
         }
 
         public IEnumerable<Transform> GetAllFromLayer(
-            IntVector2 position, IntVector2 direction, Layer layer)
+            IntVector2 position, IntVector2 direction, Layers layer)
         {
             if (IsInBounds(-direction + position))
             {
@@ -160,7 +160,7 @@ namespace Hopper.Core.WorldNS
                     var t = cell[i];
                     if (t.layer.HasEitherFlag(layer))
                     {
-                        if (t.entity.IsDirected() && t.orientation != -direction)
+                        if (t.IsDirected() && t.orientation != -direction)
                         {
                             continue;
                         }
@@ -185,7 +185,7 @@ namespace Hopper.Core.WorldNS
 
             it would return `true`.
         */
-        public bool HasBlockAt(IntVector2 position, IntVector2 direction, Layer layer)
+        public bool HasBlockAt(IntVector2 position, IntVector2 direction, Layers layer)
         {
             // Has directional block prev
             if (TryGetCell(-direction + position, out var prevCell) 

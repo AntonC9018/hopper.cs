@@ -6,9 +6,9 @@ namespace Hopper.Core.Targeting
 {
     public class StraightPattern : IGeneralizedPattern
     {
-        private Layer _stopSearchLayer;
+        private Layers _stopSearchLayer;
 
-        public StraightPattern(Layer stopSearchLayer)
+        public StraightPattern(Layers stopSearchLayer)
         {
             _stopSearchLayer = stopSearchLayer;
         }

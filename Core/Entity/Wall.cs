@@ -18,7 +18,7 @@ namespace Hopper.Core
             Damageable.AddTo(subject, new Health(1));
 
             FactionComponent.AddTo(subject, Faction.Environment);
-            Transform .AddTo(subject, Layer.WALL);
+            Transform .AddTo(subject, Layers.WALL, 0);
             Stats     .AddTo(subject, Registry.Global.Stats._map);
 
         }

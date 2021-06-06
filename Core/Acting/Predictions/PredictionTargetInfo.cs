@@ -5,10 +5,10 @@ namespace Hopper.Core.ActingNS
 {
     public readonly struct PredictionTargetInfo
     {
-        public readonly Layer layer;
+        public readonly Layers layer;
         public readonly Faction faction;
 
-        public PredictionTargetInfo(Layer layer, Faction faction)
+        public PredictionTargetInfo(Layers layer, Faction faction)
         {
             this.layer = layer;
             this.faction = faction;

@@ -17,9 +17,9 @@ namespace Hopper.Tests
             InitScript.Init();
 
             entityFactory = new EntityFactory();
-            Transform.AddTo(entityFactory, Layer.REAL);
+            Transform.AddTo(entityFactory, Layers.REAL, 0);
             Stats.AddTo(entityFactory, Registry.Global.Stats._map);
-            Displaceable.AddTo(entityFactory, ExtendedLayer.BLOCK).DefaultPreset();
+            Displaceable.AddTo(entityFactory, Layers.BLOCK).DefaultPreset();
             Moving.AddTo(entityFactory).DefaultPreset();
         }
 
@@ -60,7 +60,7 @@ namespace Hopper.Tests
         public void CannotGoThroughWalls()
         {
             var wallFactory = new EntityFactory();
-            Transform.AddTo(wallFactory, Layer.WALL);
+            Transform.AddTo(wallFactory, Layers.WALL, 0);
             var wall = World.Global.SpawnEntity(wallFactory, Zero + Right);
             var entity = World.Global.SpawnEntity(entityFactory, Zero);
             entity.Move(Right);

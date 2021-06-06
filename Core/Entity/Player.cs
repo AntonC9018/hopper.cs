@@ -31,11 +31,11 @@ namespace Hopper.Core
             Attacking   .AddTo(subject);
             Attackable  .AddTo(subject, Attackness.ALWAYS);
             Damageable  .AddTo(subject, new Health(5));
-            Displaceable.AddTo(subject, ExtendedLayer.BLOCK);
+            Displaceable.AddTo(subject, Layers.BLOCK);
             Ticking.AddTo(subject);
 
             FactionComponent.AddTo(subject, Faction.Player);
-            Transform.AddTo(subject, Layer.REAL);
+            Transform.AddTo(subject, Layers.REAL, TransformFlags.Default);
             Inventory.AddTo(subject);
 
             // TODO: pass this an action

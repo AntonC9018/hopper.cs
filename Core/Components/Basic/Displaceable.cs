@@ -17,9 +17,9 @@ namespace Hopper.Core.Components.Basic
             public Entity actor => transform.entity;
             [Omit] public Transform transform;
             [Omit] public IntVector2 newPosition;
-            [Omit] public Layer blockLayer;
+            [Omit] public Layers blockLayer;
 
-            public Context(IntVector2 direction, Move move, Transform transform, Layer blockLayer)
+            public Context(IntVector2 direction, Move move, Transform transform, Layers blockLayer)
             {
                 this.direction = direction;
                 this.move = move;
@@ -68,7 +68,7 @@ namespace Hopper.Core.Components.Basic
         [Chain("BeforeRemove")] private readonly Chain<Context> _BeforeRemoveChain;
         [Chain("BeforeReset")] private readonly Chain<Context> _BeforeResetChain;
         [Chain("After")] private readonly Chain<Context> _AfterChain;
-        [Inject] public Layer blockLayer;
+        [Inject] public Layers blockLayer;
 
         // TODO: To support sized entities, a lot has to be done here
         [Alias("Displace")] public bool Activate(Entity actor, IntVector2 direction, Move move)

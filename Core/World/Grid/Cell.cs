@@ -13,57 +13,57 @@ namespace Hopper.Core.WorldNS
             base.Add(transform);
         }
 
-        public bool TryGetAnyFromLayer(Layer layer, out Transform transform)
+        public bool TryGetAnyFromLayer(Layers layer, out Transform transform)
         {
             transform = GetAnyFromLayer(layer);
             return transform != null;
         }
 
-        public Transform GetAnyFromLayer(Layer layer)
+        public Transform GetAnyFromLayer(Layers layer)
         {
             return this.FindLast(t => t.layer.HasEitherFlag(layer));
         }
 
-        public IEnumerable<Transform> GetAllFromLayer(Layer layer)
+        public IEnumerable<Transform> GetAllFromLayer(Layers layer)
         {
             return this.Where(t => t.layer.HasEitherFlag(layer));
         }
 
-        public IEnumerable<Transform> GetAllDirectedFromLayer(IntVector2 direction, Layer layer)
+        public IEnumerable<Transform> GetAllDirectedFromLayer(IntVector2 direction, Layers layer)
         {
             for (int i = Count - 1; i >= 0; i--)
             {
                 var t = this[i];
-                if (t.entity.IsDirected() && t.layer.HasEitherFlag(layer) && t.orientation == direction)
+                if (t.IsDirected() && t.layer.HasEitherFlag(layer) && t.orientation == direction)
                 {
                     yield return t;
                 }
             }
         }
 
-        public IEnumerable<Transform> GetAllUndirectedFromLayer(Layer layer)
+        public IEnumerable<Transform> GetAllUndirectedFromLayer(Layers layer)
         {
-            return GetAllFromLayer(layer).Where(t => !t.entity.IsDirected());
+            return GetAllFromLayer(layer).Where(t => !t.IsDirected());
         }
 
-        public Transform GetUndirectedFromLayer(Layer layer)
+        public Transform GetUndirectedFromLayer(Layers layer)
         {
             return this
-                .FindLast(t => t.layer.HasEitherFlag(layer) && t.entity.IsDirected() == false);
+                .FindLast(t => t.layer.HasEitherFlag(layer) && t.IsDirected() == false);
         }
 
         // this one looks for the fitting barriers
-        public Transform GetDirectedFromLayer(IntVector2 direction, Layer layer)
+        public Transform GetDirectedFromLayer(IntVector2 direction, Layers layer)
         {
             return GetAllDirectedFromLayer(direction, layer).FirstOrDefault();
         }
 
-        public bool HasDirectionalBlock(IntVector2 direction, Layer layer)
+        public bool HasDirectionalBlock(IntVector2 direction, Layers layer)
         {
             var dir = direction;
             foreach (var t in this)
             {
-                if (t.entity.IsDirected() && t.layer.HasEitherFlag(layer))
+                if (t.IsDirected() && t.layer.HasEitherFlag(layer))
                 {
                     // block diagonal movement if corner barriers are present
                     if (t.orientation.x == dir.x)

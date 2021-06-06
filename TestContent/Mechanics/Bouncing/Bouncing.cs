@@ -14,7 +14,7 @@ namespace Hopper.TestContent.BouncingNS
 {
     public partial class Bouncing : IComponent, IUndirectedActivateable
     {
-        public const Layer _targetedLayer = Layer.REAL;
+        public const Layers _targetedLayer = Layers.REAL;
         public HashSet<RuntimeIdentifier> _bouncedEntities;
         public bool _isPressedDown;
 

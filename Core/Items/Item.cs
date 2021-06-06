@@ -10,7 +10,7 @@ namespace Hopper.Core.Items
 
         public static void AddComponents(Entity subject)
         {
-            Transform.AddTo(subject, Layer.ITEM);
+            Transform.AddTo(subject, Layers.ITEM, 0);
             // History.History.AddTo(subject);
 
             // Item stuff

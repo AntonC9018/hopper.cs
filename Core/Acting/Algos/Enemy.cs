@@ -9,7 +9,7 @@ namespace Hopper.Core.ActingNS
         static bool AskMove(Entity actor, IntVector2 direction)
         {
             var transform = actor.GetTransform();
-            var targetTransforms = World.Global.Grid.GetAllFromLayer(transform.position, direction, Layer.REAL);
+            var targetTransforms = World.Global.Grid.GetAllFromLayer(transform.position, direction, Layers.REAL);
             bool success = false;
             foreach (var targetTransform in targetTransforms)
             {

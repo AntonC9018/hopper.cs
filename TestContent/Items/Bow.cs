@@ -25,7 +25,7 @@ namespace Hopper.TestContent.Items
         }
 
         public static readonly UnbufferedTargetProvider TargetProvider = 
-            new UnbufferedTargetProvider(new StraightPattern(Layer.WALL), Layer.REAL, Faction.Any);
+            new UnbufferedTargetProvider(new StraightPattern(Layers.WALL), Layers.REAL, Faction.Any);
 
         public static void Attack(Transform ownerTransform, IntVector2 direction)
         {

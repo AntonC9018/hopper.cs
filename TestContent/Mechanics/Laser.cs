@@ -33,10 +33,10 @@ namespace Hopper.TestContent.LaserNS
             pierce   : 1
         );
 
-        private static readonly StraightPattern DefaultPattern = new StraightPattern(Layer.WALL);
+        private static readonly StraightPattern DefaultPattern = new StraightPattern(Layers.WALL);
 
         private static readonly UnbufferedTargetProvider DefaultShooting 
-            = new UnbufferedTargetProvider(DefaultPattern, Layer.REAL, Faction.Any);
+            = new UnbufferedTargetProvider(DefaultPattern, Layers.REAL, Faction.Any);
 
         public static readonly TargetProviderAction ShootAction 
             = new TargetProviderAction(DefaultShooting, DefaultAttack, DefaultPush);
