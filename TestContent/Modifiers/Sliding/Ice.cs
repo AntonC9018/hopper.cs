@@ -26,12 +26,7 @@ namespace Hopper.TestContent.SlidingNS
 
         public static void Retouch(EntityFactory factory)
         {
-            factory.InitInWorldFunc += InitInWorld;
-        }
-
-        public static void InitInWorld(Transform transform)
-        {
-            transform.entity.GetSlipperyComponent().InitInWorld(transform);
+            SlipperyComponent.AddInitTo(factory);
         }
     }
 }
