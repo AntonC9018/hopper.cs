@@ -24,6 +24,7 @@ namespace Hopper.TestContent.SimpleMobs
             Damageable.AddTo(subject, new Health(1));
             Transform.AddTo(subject, Layers.REAL, TransformFlags.Default);
             Ticking.AddTo(subject);
+            MoreChains.AddTo(subject, Registry.Global.MoreChains._map);
         }
 
         public static void InitComponents(Entity subject)

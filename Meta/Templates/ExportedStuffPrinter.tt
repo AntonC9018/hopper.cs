@@ -21,5 +21,11 @@ namespace <#= container.Namespace #>
 <#@ include file="Templates/Snippets/ContributedChains.txt" #>
 <# PopIndent(); #>
 
+        static <#= container.ClassName #>()
+        { <# PushIndent("          "); #>
+<#@ include file="Templates/Snippets/StaticConstructorContentForExporting.txt" #>
+<# PopIndent(); #>
+        }
+
     }
 }

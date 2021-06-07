@@ -37,7 +37,7 @@ namespace Hopper.TestContent.FreezingNS
             iceCubeComponent.captured.GetTransform().position = transform.position;
         }
 
-        [Export(Chain = "Damageable.Death", Dynamic = true)]
+        [Export(Chain = "+Entity.Death", Dynamic = true)]
         private static void ReleaseOnDeath(IceCubeComponent iceCubeComponent)
         {
             // release

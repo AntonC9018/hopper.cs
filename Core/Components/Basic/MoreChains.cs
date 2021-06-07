@@ -53,12 +53,13 @@ namespace Hopper.Core.Components.Basic
         {
             if (!store.TryGetValue(index.Id, out var chain))
             {
-                // Double lazy loading is the simplest solution to mods adding content synchronyzation
+                // Double lazy loading is the simplest solution to mods adding content synchronization
                 if (!template.TryGetValue(index.Id, out chain))
                 {
                     chain = Registry.Global.MoreChains._map[index.Id];
                 }
-                store.Add(index.Id, (IChain) chain.Copy());
+                chain = (IChain) chain.Copy();
+                store.Add(index.Id, chain);
             }
             return (T) chain;
         }
@@ -72,6 +73,17 @@ namespace Hopper.Core.Components.Basic
         public T Get<T>(Index<T> index)  where T : IChain
         {
             return (T) store[index.Id];
+        }
+
+        public bool GetIfExists<T>(Index<T> index, out T chain) where T : IChain
+        {
+            if (store.TryGetValue(index.Id, out var _chain))
+            {
+                chain = (T) _chain;
+                return true;
+            }
+            chain = default;
+            return false;
         }
     }
 
@@ -89,6 +101,22 @@ namespace Hopper.Core.Components.Basic
             if (entity.TryGetMoreChains(out var moreChains))
                 return moreChains.GetLazy(Index);
             return default;
+        }
+
+        public bool GetIfExists(Entity entity, out T chain)
+        {
+            if (entity.TryGetMoreChains(out var moreChains))
+                return moreChains.GetIfExists(Index, out chain);
+
+            chain = default;
+            return false;
+        }
+
+        public T GetIfExists(Entity entity)
+        {
+            return entity.TryGetMoreChains(out var moreChains) 
+                && moreChains.GetIfExists(Index, out var chain) 
+                    ? chain : default;
         }
     }
 }

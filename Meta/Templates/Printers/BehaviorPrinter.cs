@@ -12,6 +12,7 @@ namespace Hopper.Meta.Template
             this.behavior = behavior;
         }
 
+        public ComponentSymbolWrapper container => behavior;
         public BehaviorSymbolWrapper component => behavior;
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => behavior.exportedMethods;
         public IEnumerable<string> Usings() => behavior.Usings();

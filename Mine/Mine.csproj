@@ -5,19 +5,11 @@
         <StartupObject>Mine.Program</StartupObject>
         <TargetFramework>net4.8</TargetFramework>
     </PropertyGroup>
-    
-    <ItemGroup>
-        <!-- Prevents copying msbuild dlls into the output directory. Instead, locate the ones on system -->
-        <PackageReference Include="Microsoft.Build" Version="15.3.409" ExcludeAssets="runtime" />
-        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.3.409" ExcludeAssets="runtime" />
-        <PackageReference Include="Microsoft.Build.Locator" Version="1.1.2" />
-        <PackageReference Include="Microsoft.VisualStudio.TextTemplating.14.0" Version="14.3.25407" />
-    </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis" Version="3.9.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="3.9.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.9.0" />
+      <ProjectReference Include="..\TestContent\Hopper.TestContent.csproj" />
+      <ProjectReference Include="..\Core\Hopper.Core.csproj" />
+      <ProjectReference Include="..\Utils\Hopper.Utils.csproj" />
     </ItemGroup>
 
 </Project>

@@ -4,18 +4,19 @@ public static readonly <#= chain.GetTypeText() #> <#= chain.Name #>DefaultChain 
 
 <#      if (chain.IsMore()) 
         { #>
-public static readonly MoreChainPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new MoreChainPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
+public static readonly MoreChainPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path;
 <#      } 
         else if (chain.IsGlobal())
         { #>
-public static readonly GlobalChainPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new GlobalChainPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
+public static readonly GlobalChainPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path;
 <#      } #>
 
 <#  } #>
+
 public static void InitMoreChains()
 {
 <#  foreach (var chain in MoreChains) 
-    { 
+    {
     /* The registry need the index */ #>
     <#= chain.Name #>DefaultChain.Clear();
 <#      if (chain.IsMore())

@@ -70,7 +70,9 @@ namespace Hopper.TestContent.BindingNS
 
             // We're not done though. If the binding entity dies, the hookable needs to be removed.
             // The host also needs to be restored in the grid.
-            GuestDiedCallbackHandlerWrapper.TryHookTo(actor.entity);
+            // Since the effect cannot be applied to 2 different entities at the same time,
+            // we know this handler has not been applied yet.
+            GuestDiedCallbackHandlerWrapper.HookTo(actor.entity);
 
             // TODO: store these data for the viewmodel somehow
             host = target;
@@ -78,7 +80,7 @@ namespace Hopper.TestContent.BindingNS
             actor.position = target.position;
         }
 
-        [Export(Chain = "Damageable.Death", Dynamic = true)]
+        [Export(Chain = "+Entity.Death", Dynamic = true)]
         public void GuestDiedCallback()
         {
             // The spider is the one who's not in the grid
@@ -102,7 +104,7 @@ namespace Hopper.TestContent.BindingNS
         
         public void DefaultPreset()
         {
-            hookable = BoundEntityModifier.DefaultHookable;
+            hookable = BoundEntityModifierDefault.Hookable;
         }
     }
 }

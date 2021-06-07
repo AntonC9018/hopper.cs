@@ -121,7 +121,7 @@ namespace Hopper.Core.WorldNS
         public void Reorient(IntVector2 newOrientation)
         {
             orientation = newOrientation;
-            ReorientPath.Get(entity)?.Pass(this);
+            ReorientPath.GetIfExists(entity)?.Pass(this);
         }
 
         public bool HasBlockRelative(IntVector2 direction, Layers layer)

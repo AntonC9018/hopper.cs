@@ -1,15 +1,29 @@
 using Hopper.Core.Components;
 using Hopper.Utils;
-using System;
 using System.Collections.Generic;
+using Hopper.Shared.Attributes;
+using Hopper.Utils.Chains;
+using Hopper.Core.WorldNS;
+using Hopper.Core.Components.Basic;
 
 namespace Hopper.Core
 {
+    [Flags] public enum EntityFlags
+    {
+        IsDead    = 1,
+        /// <summary>
+        /// Not currently used, added for consistency sake.
+        /// </summary>
+        IsInWorld = 1 << 1,
+    }
+
     // TODO: make this a struct!
-    public sealed class Entity
+    [InstanceExport]
+    public sealed partial class Entity
     {
         public Identifier typeId;
         public RuntimeIdentifier id;
+        public EntityFlags flags;
 
 
         // Do it the easy way, with classes, for now.
@@ -79,6 +93,35 @@ namespace Hopper.Core
         public bool HasSomeComponent(Identifier id)
         {
             return components.ContainsKey(id);
+        }
+
+        public bool IsDead() => flags.HasFlag(EntityFlags.IsDead);
+
+        /// <summary>
+        /// Exports a death chain to MoreChains.
+        /// The reason it is not in the entity itself is because it is probably unnecessary
+        /// most of the time and we shouldn't clutter the entity.
+        /// </summary>
+        [Chain("+Death")] public static readonly Index<Chain<Entity>> DeathIndex = new Index<Chain<Entity>>();
+
+        // TODO: This is a workaround for now.
+        // I'm pretty sure the codegen won't work for exporting a chain with the context type
+        // of `Entity` without this.
+        public Entity actor => this;
+
+        public void TryDie()
+        {
+            if (!IsDead()) Die();
+        }
+
+        public void Die()
+        {
+            Assert.False(IsDead());
+            flags |= EntityFlags.IsDead;
+            DeathPath.GetIfExists(this)?.Pass(this);
+            // TODO: Shouldn't this be a handler on the transform?
+            actor.GetTransform().TryRemoveFromGridWithoutEvent();
+            // TODO: update indices on the registry? or should this be done via a handler in transform?
         }
 
         public override bool Equals(object obj)

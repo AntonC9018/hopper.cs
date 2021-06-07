@@ -3,7 +3,7 @@
     { #>
 public void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
 {
-<# WriteWithIndent(method.AdapterBody); #>
+<# PushIndent("  "); Write(method.AdapterBody); PopIndent(); #>
 }
 public Handler<<#= method.ContextName #>> <#= method.Name #>Handler;
 <#      if (method.IsDynamic) 

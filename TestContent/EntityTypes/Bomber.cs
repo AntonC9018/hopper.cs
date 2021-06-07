@@ -13,7 +13,7 @@ namespace Hopper.TestContent.SimpleMobs
         public static EntityFactory Factory;
 
         public static readonly JoinedAction DieAndExplodeAction = Join(
-            Simple(actor => actor.TryDie()),
+            Simple(Adapt(actor => actor.TryDie())),
             Explosion.DefaultExplodeAction(1)
         ); 
         

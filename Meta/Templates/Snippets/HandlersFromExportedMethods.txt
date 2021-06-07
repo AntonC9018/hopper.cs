@@ -3,14 +3,11 @@
 public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
 {
 <# PushIndent("  "); Write(method.AdapterBody); PopIndent(); #>
-
 }
-public static Handler<<#= method.ContextName #>> <#= method.Name #>Handler = 
-    new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);
+public static Handler<<#= method.ContextName #>> <#= method.Name #>Handler;
 <#      if (method.IsDynamic) 
         { #>
-public static HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper = 
-    new HandlerWrapper<<#= method.ContextName #>>(<#= method.Name #>Handler, <#= method.ChainName #>Path);
+public static HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper;
 <#      } #>
 
 <#  } #>

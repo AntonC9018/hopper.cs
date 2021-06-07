@@ -7,8 +7,8 @@ namespace Hopper.Core
 {
     public sealed class HandlerWrapper<Context> : IHookable
     {
-        public Handler<Context> handler;
-        public IPath<Chain<Context>> chainPath; // TODO: should this be a T?
+        public readonly Handler<Context> handler;
+        public readonly IPath<Chain<Context>> chainPath; // TODO: should this be a T?
 
         public HandlerWrapper(Handler<Context> handler, IPath<Chain<Context>> chainPath)
         {

@@ -18,7 +18,7 @@ namespace Hopper.TestContent
             }
         }
 
-        [Export(Chain = "Damageable.Death", Dynamic = true)]
+        [Export(Chain = "+Entity.Death", Dynamic = true)]
         public void Explode(Entity actor)
         {
             Explosion.ExplodeBy(actor);

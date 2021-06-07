@@ -20,6 +20,11 @@ namespace Hopper.TestContent.SlidingNS
         
         [Chain("+Removed")]
         public static readonly Index<Chain<Entity>> Removed = new Index<Chain<Entity>>();
+
+        public static readonly HandlerGroupsWrapper HandlerGroup = new HandlerGroupsWrapper(
+            SlidingEntityModifier.AdjustDirectionOfSlidingAfterPushHandlerWrapper, 
+            SlidingEntityModifier.SlideInsteadHandlerWrapper, 
+            SlidingEntityModifier.MaybeStopSlidingHandlerWrapper);
     }
 
     public partial class SlidingEntityModifier : IComponent, IStandartActivateable
@@ -68,25 +73,21 @@ namespace Hopper.TestContent.SlidingNS
             }
         }
 
-
-        public static HandlerGroupsWrapper group = new HandlerGroupsWrapper(
-            AdjustDirectionOfSlidingAfterPushHandlerWrapper, SlideInsteadHandlerWrapper, MaybeStopSlidingHandlerWrapper);
-
         public static void Preset(Entity actor)
         {
-            group.TryHookTo(actor);
+            Sliding.HandlerGroup.TryHookTo(actor);
         }
 
         public static void Unset(Entity actor)
         {
-            group.TryUnhookFrom(actor);
+            Sliding.HandlerGroup.TryUnhookFrom(actor);
         }
 
         public static void RemoveFrom(Entity actor)
         {
             Unset(actor);
             actor.RemoveComponent(Index);
-            Sliding.RemovedPath.Get(actor)?.Pass(actor);
+            Sliding.RemovedPath.GetIfExists(actor)?.Pass(actor);
         }
 
         public static void TryApplyTo(Transform transform, IntVector2 directionOfSliding)
@@ -100,7 +101,7 @@ namespace Hopper.TestContent.SlidingNS
             {
                 SlidingEntityModifier.AddTo(actor, directionOfSliding);
                 Preset(actor);
-                Sliding.AppliedPath.Get(actor)?.Pass(actor);
+                Sliding.AppliedPath.GetIfExists(actor)?.Pass(actor);
             }
         }
     }

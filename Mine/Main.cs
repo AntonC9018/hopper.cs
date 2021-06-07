@@ -1,71 +1,44 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
+
+using Hopper.Core;
+using Hopper.Core.Components.Basic;
+using Hopper.Core.Mods;
+using Hopper.Core.Stat;
+using Hopper.Core.Targeting;
+using Hopper.Core.WorldNS;
+using Hopper.TestContent.BindingNS;
+using Hopper.Utils.Vector;
 
 namespace Mine
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main()
         {
-            MSBuildLocator.RegisterDefaults();
-            await Test();
-        }
+            Hopper.Core.Main.Init();
+            Hopper.TestContent.Main.Init();
 
-        public static async Task Test()
-        {
-            MSBuildWorkspace msWorkspace = MSBuildWorkspace.Create();
-
-            msWorkspace.WorkspaceFailed += (s, args) => 
-            {
-                if (args.Diagnostic.Kind == WorkspaceDiagnosticKind.Failure)
-                {
-                    Console.WriteLine($"Unable to open the project.\n  {args.Diagnostic.Message}");
-                }
-                else
-                {
-                    Console.WriteLine($"Warning while opening a project:\n  {args.Diagnostic.Message}");
-                }
-            };
-
-            msWorkspace.LoadMetadataForReferencedProjects = true;
-            var projectC = await msWorkspace.OpenProjectAsync("../ProjectsTest/C/C.csproj");
-            var projectA = await msWorkspace.OpenProjectAsync("../ProjectsTest/A/A.csproj");
-            var projectB = await msWorkspace.OpenProjectAsync("../ProjectsTest/B/B.csproj");
-
-            var compilationA  = await projectA.GetCompilationAsync();
-            var symbolClassAA = compilationA.GetTypeByMetadataName("A.Class");
+            var entityFactory = new EntityFactory();
+            Transform.AddTo(entityFactory, Layers.REAL, TransformFlags.Default);
+            Stats.AddTo(entityFactory, Registry.Global.Stats._map);
+            Attackable.AddTo(entityFactory, Attackness.ALWAYS).DefaultPreset();
+            Damageable.AddTo(entityFactory, new Health(1)).DefaultPreset();
+            Displaceable.AddTo(entityFactory, Layers.WALL | Layers.REAL).DefaultPreset();
+            Moving.AddTo(entityFactory).DefaultPreset();
+            // Cannot be bound unless it has MoreChains
+            MoreChains.AddTo(entityFactory, Registry.Global.MoreChains._map);
             
-            var compilationB  = await projectB.GetCompilationAsync();
-            var symbolClassAB = compilationB.GetTypeByMetadataName("A.Class");
-            var symbolClassBB = compilationB.GetTypeByMetadataName("B.Class");
 
-            var compilationC  = await projectC.GetCompilationAsync();
-            var symbolClassAC = compilationC.GetTypeByMetadataName("A.Class");
-            var symbolClassBC = compilationC.GetTypeByMetadataName("B.Class");
+            var bindingFactory = new EntityFactory();
+            Transform.AddTo(bindingFactory, Layers.REAL, TransformFlags.Default);
+            Stats.AddTo(bindingFactory, Registry.Global.Stats._map);
+            Binding.AddTo(bindingFactory, Layers.REAL, BoundEntityModifierDefault.Hookable).DefaultPreset();
+            Damageable.AddTo(bindingFactory, new Health(1)).DefaultPreset();
+            Attackable.AddTo(bindingFactory, Attackness.ALWAYS).DefaultPreset();
 
-            
-            // Prints the metadata names of the types.
-            // If the classes were not found, it would print empty strings instead of their metadata names.
-            Console.WriteLine($"{nameof(symbolClassAA)} = {symbolClassAA}");
-            Console.WriteLine($"{nameof(symbolClassAB)} = {symbolClassAB}");
-            Console.WriteLine($"{nameof(symbolClassAC)} = {symbolClassAC}");
-            Console.WriteLine($"{nameof(symbolClassBB)} = {symbolClassBB}");
-            Console.WriteLine($"{nameof(symbolClassBC)} = {symbolClassBC}");
-            Console.WriteLine($"");
-
-            // Compile symbols from different compilations.
-            Console.WriteLine($"{nameof(symbolClassAA)} = {nameof(symbolClassAB)}? {symbolClassAA == symbolClassAB}");
-            Console.WriteLine($"{nameof(symbolClassAA)} = {nameof(symbolClassAC)}? {symbolClassAA == symbolClassAC}");
-            Console.WriteLine($"{nameof(symbolClassAB)} = {nameof(symbolClassAC)}? {symbolClassAA == symbolClassAC}");
-            Console.WriteLine($"{nameof(symbolClassBC)} = {nameof(symbolClassBB)}? {symbolClassBC == symbolClassBB}");
-            
-            // False
-            // False
-            // False
-            // False
+            World.Global = new World(3, 3);
+            var spider = World.Global.SpawnEntity(bindingFactory, new IntVector2(1, 1));
+            var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 0));
+            spider.GetBinding().Activate(spider, new IntVector2(-1, -1));
         }
     }
 }

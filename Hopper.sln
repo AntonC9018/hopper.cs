@@ -1,7 +1,7 @@
-﻿# How to create a solution file from csproj files: https://stackoverflow.com/a/53723577/9731532
-# An explicit solution file is necessary to enable Intellisense for Hopper while in Hopper.Godot.
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# How to create a solution file from csproj files: https://stackoverflow.com/a/53723577/9731532
+# An explicit solution file is necessary to enable Intellisense for Hopper while in Hopper.Godot.
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0

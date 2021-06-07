@@ -9,7 +9,7 @@
             "type": "clr",
             "request": "launch",
             "preLaunchTask": "build Mine",
-            "program": "${workspaceFolder}/build/bin/Debug/net4.8/Hopper.Mine.exe",
+            "program": "${workspaceFolder}/Mine/bin/Debug/net4.8/Mine.exe",
             "args": [],
             "cwd": "${workspaceFolder}/Mine",
             "console": "externalTerminal",

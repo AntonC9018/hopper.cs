@@ -26,14 +26,19 @@ namespace Hopper.Tests.Test_Content
             Damageable.AddTo(entityFactory, new Health(1)).DefaultPreset();
             Displaceable.AddTo(entityFactory, Layers.WALL | Layers.REAL).DefaultPreset();
             Moving.AddTo(entityFactory).DefaultPreset();
+            // Cannot be bound unless it has MoreChains
+            MoreChains.AddTo(entityFactory, Registry.Global.MoreChains._map);
             
 
             bindingFactory = new EntityFactory();
             Transform.AddTo(bindingFactory, Layers.REAL, TransformFlags.Default);
             Stats.AddTo(bindingFactory, Registry.Global.Stats._map);
-            Binding.AddTo(bindingFactory, Layers.REAL, BoundEntityModifier.DefaultHookable).DefaultPreset();
+            Binding.AddTo(bindingFactory, Layers.REAL, BoundEntityModifierDefault.Hookable).DefaultPreset();
             Damageable.AddTo(bindingFactory, new Health(1)).DefaultPreset();
             Attackable.AddTo(bindingFactory, Attackness.ALWAYS).DefaultPreset();
+            // The death chain is also required
+            MoreChains.AddTo(bindingFactory, Registry.Global.MoreChains._map);
+
         }
 
         [SetUp]

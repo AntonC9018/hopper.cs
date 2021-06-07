@@ -12,6 +12,7 @@ namespace Hopper.Meta.Template
             this.component = component;
         }
 
+        public ComponentSymbolWrapper container => component;
         public IEnumerable<ExportedMethodSymbolWrapper> ExportedMethods => component.exportedMethods;
         public IEnumerable<string> Usings() => component.Usings();
         public IEnumerable<ChainSymbolWrapper> MoreChains => component.contributedChains;
