@@ -5,6 +5,7 @@
 using Hopper.Utils.Chains;
 using Hopper.Core;
 using Hopper.Shared.Attributes;
+using Hopper.Core.Components.Basic;
 
 namespace <#= container.Namespace #>
 {
@@ -22,10 +23,10 @@ namespace <#= container.Namespace #>
 <# PopIndent(); #>
 
         static <#= container.ClassName #>()
-        { <# PushIndent("          "); #>
-<#@ include file="Templates/Snippets/StaticConstructorContentForExporting.txt" #>
-<# PopIndent(); #>
-        }
+        { <# PushIndent("            "); #>
+        
+<#@ include file="Templates/Snippets/StaticConstructorContentForExporting.txt" #><# PopIndent(); #>
 
+        }
     }
 }

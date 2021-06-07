@@ -33,7 +33,7 @@ namespace Hopper.Shared.Attributes
             case ChainContributionType.More:
                 return "+";
             case ChainContributionType.Global:
-                return "@";
+                return "g";
             case ChainContributionType.Instance:
                 return "";
             default:
@@ -48,7 +48,7 @@ namespace Hopper.Shared.Attributes
             case '+':
                 uid = uid.Substring(1);
                 return ChainContributionType.More;
-            case '@':
+            case 'g':
                 uid = uid.Substring(1);
                 return ChainContributionType.Global;
             default:

@@ -82,6 +82,17 @@ namespace Hopper.Core.Components.Basic
                 chain = (T) _chain;
                 return true;
             }
+            else if (template.TryGetValue(index.Id, out _chain))
+            {
+                // Lazy load the chain if it has any handlers.
+                if (!_chain.IsEmpty)
+                {
+                    // TODO: make the chain copy-on-write.
+                    chain = (T) _chain.Copy();
+                    store.Add(index.Id, chain);
+                    return true;
+                }
+            }
             chain = default;
             return false;
         }
@@ -112,6 +123,15 @@ namespace Hopper.Core.Components.Basic
             return false;
         }
 
+        /// <summary>
+        /// Returns the chain from `MoreChains` component, 
+        /// but only if it has been lazy loaded or will have handlers.
+        /// Returns `null` if the entity does not have `MoreChains` 
+        /// or the chain is not loaded and contained no handlers.
+        /// Use this if you need to pass the chain and you're not sure if any handler has been added on it.
+        /// If no handlers exist on it, you'll get `null` and so both 
+        /// no copy of chain will be created and the chain will not be passed in vain.
+        /// </summary>
         public T GetIfExists(Entity entity)
         {
             return entity.TryGetMoreChains(out var moreChains) 

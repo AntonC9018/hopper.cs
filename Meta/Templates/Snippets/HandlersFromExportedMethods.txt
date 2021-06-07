@@ -1,10 +1,10 @@
 <#  foreach (var method in ExportedMethods) 
     { #>
 public static void <#= method.Name #>HandlerAdapter(<#= method.ContextName #> ctx)
-{
-<# PushIndent("  "); Write(method.AdapterBody); PopIndent(); #>
+{<# PushIndent("  "); #> 
+<#= method.AdapterBody #><# PopIndent(); #>
 }
-public static Handler<<#= method.ContextName #>> <#= method.Name #>Handler;
+public static Handler<<#= method.ContextName #>> <#= method.Name #>Handler = new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);
 <#      if (method.IsDynamic) 
         { #>
 public static HandlerWrapper<<#= method.ContextName #>> <#= method.Name #>HandlerWrapper;

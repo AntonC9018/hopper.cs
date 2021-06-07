@@ -13,11 +13,11 @@ namespace Hopper.Core.WorldNS
     public partial class World
     {
         public static World Global;
-        [Chain("@SpawnEntity")] 
+        [Chain("gSpawnEntity")] 
         public static readonly Index<Chain<Entity>> SpawnEntityIndex = new Index<Chain<Entity>>();
-        [Chain("@StartLoop")]
+        [Chain("gStartLoop")]
         public static readonly Index<Chain<int>> StartLoopIndex = new Index<Chain<int>>();
-        [Chain("@EndLoop")]
+        [Chain("gEndLoop")]
         public static readonly Index<Chain<int>> EndLoopIndex = new Index<Chain<int>>();
 
         public GridManager Grid { get; private set; }

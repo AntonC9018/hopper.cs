@@ -6,6 +6,8 @@ namespace Hopper.Utils.Chains
 {
     public sealed class Chain<Context> : SortedSet<Handler<Context>>, IChain<Handler<Context>>
     {
+        public bool IsEmpty => Count > 0;
+
         public Chain() : base()
         {
         }

@@ -21,12 +21,13 @@ namespace <#= component.Namespace #>
 <#@ include file="Templates/Snippets/HandlersFromExportedMethods.txt" #>
 
 <#@ include file="Templates/Snippets/ContributedChains.txt" #>
+<# PopIndent(); #>
 
-<# PopIndent(); #>
         static <#= container.ClassName #>()
-        { <# PushIndent("          "); #>
-<#@ include file="Templates/Snippets/StaticConstructorContentForExporting.txt" #>
-<# PopIndent(); #>
+        { <# PushIndent("            "); #>
+        
+<#@ include file="Templates/Snippets/StaticConstructorContentForExporting.txt" #><# PopIndent(); #>
+
         }
     }
 

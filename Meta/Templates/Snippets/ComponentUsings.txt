@@ -4,6 +4,8 @@ using Hopper.Utils;
 using Hopper.Core.Components;
 using Hopper.Core;
 using Hopper.Shared.Attributes;
+/* TODO: move paths to Hopper.Core.Components */
+using Hopper.Core.Components.Basic;
 using System;
 
 <#@ include file="Templates/Snippets/GenericUsings.txt" #>

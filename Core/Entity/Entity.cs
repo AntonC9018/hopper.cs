@@ -21,10 +21,22 @@ namespace Hopper.Core
     [InstanceExport]
     public sealed partial class Entity
     {
+        /// <summary>
+        /// Exports a death chain to MoreChains.
+        /// The reason it is not in the entity itself is because it is probably unnecessary
+        /// most of the time and we shouldn't clutter the entity.
+        /// </summary>
+        [Chain("+Death")] 
+        public static readonly Index<Chain<Entity>> DeathIndex = new Index<Chain<Entity>>();
+
+        // TODO: This is a workaround for now.
+        // I'm pretty sure the codegen won't work for exporting a chain with the context type
+        // of `Entity` without this.
+        public Entity actor => this;
+
         public Identifier typeId;
         public RuntimeIdentifier id;
         public EntityFlags flags;
-
 
         // Do it the easy way, with classes, for now.
         // In the future, maybe switch to value types and store them in central place, 
@@ -97,18 +109,6 @@ namespace Hopper.Core
 
         public bool IsDead() => flags.HasFlag(EntityFlags.IsDead);
 
-        /// <summary>
-        /// Exports a death chain to MoreChains.
-        /// The reason it is not in the entity itself is because it is probably unnecessary
-        /// most of the time and we shouldn't clutter the entity.
-        /// </summary>
-        [Chain("+Death")] public static readonly Index<Chain<Entity>> DeathIndex = new Index<Chain<Entity>>();
-
-        // TODO: This is a workaround for now.
-        // I'm pretty sure the codegen won't work for exporting a chain with the context type
-        // of `Entity` without this.
-        public Entity actor => this;
-
         public void TryDie()
         {
             if (!IsDead()) Die();
@@ -120,7 +120,7 @@ namespace Hopper.Core
             flags |= EntityFlags.IsDead;
             DeathPath.GetIfExists(this)?.Pass(this);
             // TODO: Shouldn't this be a handler on the transform?
-            actor.GetTransform().TryRemoveFromGridWithoutEvent();
+            this.GetTransform().TryRemoveFromGridWithoutEvent();
             // TODO: update indices on the registry? or should this be done via a handler in transform?
         }
 

@@ -15,7 +15,7 @@ namespace Hopper.TestContent
     // [Service]
     public static partial class Explosion
     {
-        [Chain("@Explosion")] 
+        [Chain("gExplosion")] 
         public static readonly Index<Chain<IntVector2>> ExplosionChainIndex = new Index<Chain<IntVector2>>();
 
         private static Attack DefaultAttack =

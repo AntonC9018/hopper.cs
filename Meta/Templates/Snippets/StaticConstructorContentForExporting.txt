@@ -2,19 +2,16 @@
     { #>
 <#      if (chain.IsMore()) 
         { #>
-    <#= chain.Name #>Path = new MoreChainPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
+<#= chain.Name #>Path = new MoreChainPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
 <#      } 
         else if (chain.IsGlobal())
         { #>
-    <#= chain.Name #>Path = new GlobalChainPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
+<#= chain.Name #>Path = new GlobalChainPath<<#= chain.GetTypeText() #>>(<#= chain.FieldName #>);
 <#      } #>
-
 <#  } #>
-
 <#  foreach (var method in ExportedMethods) 
-    { #>
-<#= method.Name #>Handler = new Handler<<#= method.ContextName #>>(<#= method.Name #>HandlerAdapter);
-<#      if (method.IsDynamic) 
+    { 
+        if (method.IsDynamic) 
         { #>
 <#= method.Name #>HandlerWrapper = new HandlerWrapper<<#= method.ContextName #>>(<#= method.Name #>Handler, <#= method.ChainName #>Path);
 <#      } #>
