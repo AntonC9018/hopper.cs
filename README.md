@@ -16,6 +16,11 @@
   - [Entity factory](#entity-factory)
   - [Retouchers and Tinkers](#retouchers-and-tinkers)
 - [Documentation](#documentation)
+  - [Components](#components)
+    - [How to register components](#how-to-register-components)
+    - [How are components stored](#how-are-components-stored)
+    - [Injected fields](#injected-fields)
+    - [`InitInWorld`](#initinworld)
   - [Exporting stuff](#exporting-stuff)
     - [How to export to `MoreChains`](#how-to-export-to-morechains)
     - [How to export `global` chains](#how-to-export-global-chains)
@@ -192,6 +197,230 @@ In contrast, `Tinkers` *tink* the chains of an already instantiated entity. *Tin
 # Documentation
 
 This section describes some of the features the information on which cannot be found outside of my head currently.
+
+
+## Components
+
+`Components` are pieces of data stored in `Entity`.
+They are what define the properites of entities.
+
+
+### How to register components
+
+Make a class that *directly* implements `IComponent`.
+
+```C#
+public partial class MyComponent : IComponent
+{
+    public int myField;
+}
+```
+
+You will see a bunch of errors pop up if you try to just compile the code.
+Also, there is currently no way to add `MyComponent` to the `Entity`.
+They appear because components need code to be generated for them.
+
+Running the code generator should yield:
+- An `Index` static field with the id for your component;
+- An `InitIndex()` method, which registers the index in the registry;
+- `GetMyComponent()` and `TryGetMyComponent()` extension methods for `Entity`;
+- A parameterless constructor, initializing injected fields;
+- A copy constructor, copying injected fields;
+- A `Copy()` method, explicitly implementing `IComponent.Copy()`;
+- Another `Copy()` method;
+- An `AddTo` method taking in the injected fields, generated to simplify adding the component to an entity (or entity factory).
+
+You have not specified any injected fields yet, so the constructors are empty.
+
+> Note: if you have not declared at least one field, the code generator will not pick up on your component class.
+> This is most likely a bug in Roslyn.
+
+An example follows.
+
+```C#
+void Usage(Entity entity)
+{
+    // Instantiates a new MyComponent instance and adds it to the given entity
+    var component = MyComponent.AddTo(entity);
+
+    // Retrieves MyComponent from the entity.
+    // The entity must contain the component, otherwise this results in an assertion error.
+    var component = entity.GetMyComponent();
+    // Or using the index.
+    var component = entity.GetComponent(MyComponent.Index);
+
+    // Returns the component if it exists on entity
+    if (entity.TryGetMyComponent(out var component)) // ...
+    // Or using index
+    if (entity.TryGetComponent(MyComponent.Index, out var component)) // ...
+
+    // Note that the component variable is statically typed
+    // so this is valid and is statically checked.
+    component.myField = 5;
+}
+```
+
+### How are components stored
+
+The components are stored in a dictionary in `Entity` instances. 
+They are indexed by their `Identifiers`, known statically for each component class, and allocated by the registry.
+In fact, the identifier can be retrieved after your mod has loaded via the index.
+
+```C#
+void Example()
+{
+    // This is the key by which the component is stored.
+    Identifier id = MyComponent.Index.Id;
+}
+```
+
+Because of the fact that this id is assigned to the component *class*, there may never be 2 components of the same class at once in the `Entity`, assuming you have been using `AddTo()` to add components.
+
+
+### Injected fields
+
+The idea behind having components is that they are the same both in the entity factory on the subject entity and on entity instances. 
+When the factory instantiates a new entity, it copies all components from the subject.
+So *creating a copy* in this case does not imply creating a runtime copy, but rather capturing the *type* of the component.
+The exact definition of the *type* is controlled by *injections*.
+
+If you need a field to be copied when the component is copied when instantiating an entity, you need to mark that field with `[Inject]`.
+The field can be of any type.
+
+```C#
+using Hopper.Shared.Attributes;
+
+public partial class MyComponent : IComponent
+{
+    // This field will be copied when the component is copied.
+    [Inject] public int injection;
+
+    // This field will get the default value of 5 when the component is copied.
+    public int five = 5;
+
+    // This field will be 0 when the component is copied.
+    public int zero;
+}
+```
+
+The generated constructor in this will require to pass in a value for `injection`:
+
+```C#
+void Example(Entity entity)
+{
+    // Initialize with injection = 5
+    var component = MyComponent(injection: 5);
+
+    // Initialize and add MyComponent to the entity, passing 5 to the constructor
+    var component = MyComponent.AddTo(entity, 5);
+
+    // You can add components to the subject in factories as well
+    var factory = new EntityFactory();
+    var component = MyComponent.AddTo(factory, 5);
+    // Equivalent to
+    var component = MyComponent.AddTo(factory.subject, 5);
+}
+```
+
+You may override the autogenerated constructor if you specify your own one, in which case `AddTo()` will also call to it:
+
+```C#
+public partial class MyComponent : IComponent
+{
+    // This field will be copied when the component is copied.
+    [Inject] public int injection;
+
+    // Must take all injected fields
+    public MyComponent(int injection_)
+    {
+        this.injection = injection_ + 5;
+    }
+}
+```
+
+You may also override the copy constructor:
+
+```C#
+public partial class MyComponent : IComponent
+{
+    // This field will be copied when the component is copied.
+    [Inject] public int injection;
+
+    // Must take all injected fields
+    public MyComponent(int injection_)
+    {
+        this.injection = injection_ + 5;
+    }
+
+    public MyComponent(MyComponent other)
+    {
+        this.injection = other.injection + 5;
+    }
+}
+```
+
+If the injected field implements `ICopyable`, it will be copied by calling `Copy()` instead of a direct assignment.
+
+
+```C#
+public class Thing : ICopyable
+{
+    ICopyable.Copy() => new Thing();
+}
+
+public partial class MyComponent : IComponent
+{
+    [Inject] public Thing thing;
+}
+
+void Test()
+{
+    var thing         = new Thing();
+    var component     = new MyComponent(thing);
+    var componentCopy = new MyComponent(component);
+    
+    // It was passed to component by reference
+    Assert.AreSame(thing, component.thing);
+    // It was copied in the copy constructor
+    Assert.AreNotSame(thing, componentCopy.thing);
+}
+```
+
+### `InitInWorld`
+
+If you feel like you need an extra initialization step when the entity your component is in gets placed in the world, you may define an `InitInWorld()` member function like this:
+
+```C#
+public partial class MyComponent : IComponent
+{
+    // May even be private
+    public void InitInWorld(Tranform transform)
+    {
+        // You may access the entity via the transform.
+        var entity = transform.entity;
+        
+        // The transform contains the position and orientation of the entity.
+        transform.position;
+        transform.orientation;
+    }
+}
+```
+
+Running the code generator additionally generated an adapter for this function and an `AddInitTo()` method.
+
+```C#
+void Usage(EntityFactory factory)
+{
+    // AddInitTo can only be used on a factory.
+    MyComponent.AddTo(factory);
+    MyComponent.AddInitTo(factory);
+
+    // Creating the entity via `SpawnEntity()` 
+    // runs your `InitInWorld()` on the copied instance of the component.
+    var entity = World.Global.SpawnEntity(factory, IntVector2.Zero);
+}
+```
+
 
 ## Exporting stuff 
 
