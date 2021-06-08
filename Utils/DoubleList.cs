@@ -7,20 +7,20 @@ namespace Hopper.Utils
     {
         public List<T> _primaryBuffer;
         public List<T> _secondaryBuffer;
-        public bool _isIterating;
+        public bool _isFiltering;
 
         public DoubleList()
         {
             _primaryBuffer = new List<T>();
             _secondaryBuffer = new List<T>();
-            _isIterating = false;
+            _isFiltering = false;
         }
 
         public DoubleList(List<T> buffer)
         {
             _primaryBuffer = buffer;
             _secondaryBuffer = new List<T>();
-            _isIterating = false;
+            _isFiltering = false;
         }
 
 
@@ -31,15 +31,15 @@ namespace Hopper.Utils
 
         public IEnumerable<T> StartFiltering()
         {
-            Assert.Equals(_isIterating, $"Cannot initialize another filter while iterating over double list of {typeof(T).Name}");
+            Assert.False(_isFiltering, $"Cannot initialize another filter while filtering the double list of {typeof(T).Name}");
             _secondaryBuffer.Clear();
-            _isIterating = true;
+            _isFiltering = true;
             foreach (var item in _primaryBuffer)
             {
                 yield return item;
             }
             SwapBuffers();
-            _isIterating = false;
+            _isFiltering = false;
         }
 
         public void Filter(System.Predicate<T> predicate)
@@ -56,25 +56,25 @@ namespace Hopper.Utils
         private void SwapBuffers()
         {
             var t = _primaryBuffer;
-            _primaryBuffer = _secondaryBuffer;
+            _primaryBuffer   = _secondaryBuffer;
             _secondaryBuffer = t;
         }
 
         public void AddDirectly(T item)
         {
-            Assert.False(_isIterating, $"Cannot add to a double buffer of {typeof(T).Name} directly while iterating");
+            Assert.False(_isFiltering, $"Cannot add to the primary buffer of {typeof(T).Name} directly while filtering");
             _primaryBuffer.Add(item);
         }
 
         public void AddMaybeWhileIterating(T item)
         {
-            if (_isIterating) _secondaryBuffer.Add(item);
+            if (_isFiltering) _secondaryBuffer.Add(item);
             else              _primaryBuffer.Add(item);
         }
 
         public void AddToSecondaryBuffer(T item)
         {
-            Assert.That(_isIterating, $"Cannot add to a double buffer of {typeof(T).Name} directly while iterating");
+            Assert.That(_isFiltering, $"Cannot add to the secondary buffer of {typeof(T).Name} directly while not filtering");
             _secondaryBuffer.Add(item);
         }
 
