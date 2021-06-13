@@ -5,6 +5,7 @@ using Hopper.Utils.Chains;
 using Hopper.Core.Components;
 using Hopper.Core.WorldNS;
 using Hopper.Core.Components.Basic;
+using Hopper.Utils;
 
 namespace Hopper.Core.ActingNS
 {
@@ -69,6 +70,14 @@ namespace Hopper.Core.ActingNS
             return Activate();
         }
 
+        public void ActivateIfDidNotAct()
+        {
+            if (!_flags.HasFlag(ActingState.DidAction))
+            {
+                Activate();
+            }
+        }
+
         /// <summary>
         /// In essense, executes the stored calculated (or set directly) action.
         /// </summary>
@@ -126,7 +135,7 @@ namespace Hopper.Core.ActingNS
         [Alias("IsCurrentOrderFavorable")]
         public bool IsCurrentOrderFavorable()
         {
-            return World.Global.State.currentPhase == order;
+            return (int) World.Global.State.currentPhase == (int) order;
         }
 
         /// <summary>

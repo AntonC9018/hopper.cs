@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Hopper.Core.ActingNS;
 using Hopper.Core.Components.Basic;
@@ -8,123 +10,142 @@ namespace Hopper.Core.WorldNS
 {
     public class WorldStateManager
     {
-        public readonly DoubleList<Acting>[] actings;
-        public readonly DoubleList<Ticking> tickings;
+        public readonly DoubleList<Acting>[] _allActings;
+        public readonly DoubleList<Ticking> _allTickings;
 
-        public Order currentPhase = Order.Player;
+        public Phase currentPhase = Phase.Done;
 
         public WorldStateManager()
         {
-            actings = new DoubleList<Acting>[World.NumOrders];
+            _allActings = new DoubleList<Acting>[World.NumOrders];
 
-            for (int i = 0; i < actings.Length; i++)
+            for (int i = 0; i < _allActings.Length; i++)
             {
-                actings[i] = new DoubleList<Acting>();
+                _allActings[i] = new DoubleList<Acting>();
             }
 
-            tickings = new DoubleList<Ticking>();
+            _allTickings = new DoubleList<Ticking>();
         }
 
         public void AddActor(Acting acting)
         {
-            actings[(int)acting.order].AddMaybeWhileIterating(acting);
+            _allActings[(int)acting.order].AddMaybeWhileIterating(acting);
         }
 
         public void AddTicking(Ticking ticking)
         {
-            tickings.AddMaybeWhileIterating(ticking);
+            _allTickings.AddMaybeWhileIterating(ticking);
         }
 
         public void Loop()
         {
-            ResetPhase();
-            ActivatePlayers();
+            LoopCoroutine().Consume();
+
+            // ResetPhase();
+            // ActivatePlayers();
+            // CalculateActionOnEntities();
+            // ActivateOthers();
+            // TickAll();
+            // FilterDead();
+            // EndPhase();
+        }
+
+        /// <summary>
+        /// Does a controlled iteration by phases, in coroutine fashion.
+        /// Doing a foreach on this function is equivalent to calling <c>Loop()</c>.
+        /// You may use <c>MoveNext()</c> and <c>Current</c> to skip the individual elements.
+        /// The phase (order) value yield returned by the function indicates the next phase,
+        /// so consuming the next value would execute that phase.
+        /// </summary>
+        public IEnumerable<Phase> LoopCoroutine()
+        {
+            // Check if this coroutine has not been started already
+            Assert.That(currentPhase == Phase.Done, "Already doing the game loop!");
+
+            currentPhase = Phase.Calculate_Actions;
+            yield return currentPhase;
             CalculateActionOnEntities();
-            ActivateOthers();
+
+            currentPhase = Phase.Player_Act;
+            yield return currentPhase;
+            ActivatePlayers();
+            currentPhase++;
+
+            yield return currentPhase;
+            foreach (var phase in ActivateOthers())
+            {
+                // phase here is the same as current phase.
+                yield return phase;
+            }
+            
+            Assert.That(currentPhase == Phase.Ticking);
             TickAll();
+
+            currentPhase = Phase.FilterDead;
+            yield return currentPhase;
             FilterDead();
-            EndPhase();
+
+            currentPhase = Phase.Done;
         }
 
         private void Activate(Acting acting)
         {
-            if (acting.actor.IsDead()) return;
-            if (!acting._flags.HasFlag(ActingState.DidAction))
+            if (!acting.actor.IsDead()) 
             {
-                acting.Activate();
+                acting.ActivateIfDidNotAct();
             }
         }
 
         private void CalculateActionOnEntities()
         {
-            foreach (var _actings in actings)
-            foreach (var acting in _actings)
+            foreach (var actingsOfSomeOrder in _allActings)
+            foreach (var acting in actingsOfSomeOrder)
                 acting.CalculateAndSetAction();
         }
 
         private void ActivatePlayers()
         {
-            foreach (var acting in actings[0])
+            foreach (var acting in _allActings[0])
             {
                 Activate(acting);
             }
-            AdvancePhase();
         }
 
-        private void ActivateOthers()
+        private IEnumerable<Phase> ActivateOthers()
         {
             // skip the player, which is at 0.
-            foreach (var _actings in actings.Skip(1))
+            foreach (var actingsOfSomeOrder in _allActings.Skip(1))
             {
-                foreach (var acting in _actings)
+                foreach (var acting in actingsOfSomeOrder)
                 {
                     Activate(acting);
                 }
-                AdvancePhase();
+                yield return ++currentPhase;
             }
         }
 
         private void TickAll()
         {
-            foreach (var ticking in tickings.StartFiltering())
+            foreach (var ticking in _allTickings.StartFiltering())
             {
                 if (!ticking.actor.IsDead())
                 {
                     ticking.Activate();
-                    tickings.AddToSecondaryBuffer(ticking);
+                    _allTickings.AddToSecondaryBuffer(ticking);
                 }
             }
         }
 
         private void FilterDead()
         {
-            foreach (var _actings in actings)
+            foreach (var actingsOfSomeOrder in _allActings)
+            foreach (var acting in actingsOfSomeOrder.StartFiltering())
             {
-                foreach (var acting in _actings.StartFiltering())
+                if (!acting.actor.IsDead())
                 {
-                    if (!acting.actor.IsDead())
-                    {
-                        _actings.AddToSecondaryBuffer(acting);
-                    }
+                    actingsOfSomeOrder.AddToSecondaryBuffer(acting);
                 }
             }
-            // TODO: Filter the registry too
-        }
-
-        private void ResetPhase()
-        {
-            currentPhase = Order.Player;
-        }
-
-        private void AdvancePhase()
-        {
-            EndPhase();
-            currentPhase++;
-        }
-
-        private void EndPhase()
-        {
-            Assert.That((int)currentPhase <= World.NumOrders, $"{Enum.GetName(typeof(Order), currentPhase)}({(int)currentPhase}) is outside the phase range");
         }
     }
 }

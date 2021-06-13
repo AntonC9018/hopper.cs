@@ -4,6 +4,7 @@ using Hopper.Core.Components;
 using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Shared.Attributes;
+using Hopper.Utils;
 using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 
@@ -47,6 +48,25 @@ namespace Hopper.Core.WorldNS
             Chains.Get(StartLoopIndex).Pass(_loopCount);
             
             State.Loop();
+
+            Grid.ResetCellTriggers();
+
+            Chains.Get(EndLoopIndex).Pass(_loopCount);
+            _loopCount++;
+        }
+
+        /// <summary>
+        /// See <c>WorldStateManager.LoopCoroutine()</c>.
+        /// </summary>
+        public IEnumerable<Phase> LoopCoroutine()
+        {
+            Chains.Get(StartLoopIndex).Pass(_loopCount);
+
+            foreach (var phase in State.LoopCoroutine())
+            {
+                yield return phase;
+            }
+            
             Grid.ResetCellTriggers();
 
             Chains.Get(EndLoopIndex).Pass(_loopCount);

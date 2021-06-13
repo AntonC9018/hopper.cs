@@ -89,6 +89,12 @@ namespace Hopper.Utils
             }
         }
 
+        public static void Consume<T>(this IEnumerable<T> e)
+        {
+            var en = e.GetEnumerator();
+            while (en.MoveNext()) {}
+        }
+
         public static void AddRange<T>(this HashSet<T> set, IEnumerable<T> enumerable)
         {
             foreach (var it in enumerable)
