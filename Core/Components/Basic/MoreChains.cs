@@ -42,7 +42,7 @@ namespace Hopper.Core.Components.Basic
     public partial class MoreChains : IComponent
     {
         [Inject] public readonly ChainsBuilder template;
-        public Dictionary<Identifier, IChain> store = new Dictionary<Identifier, IChain>();
+        public ChainsBuilder store = new ChainsBuilder();
 
         /// <summary>
         /// Retrieves the specified chain.
@@ -51,17 +51,17 @@ namespace Hopper.Core.Components.Basic
         /// </summary>
         public T GetLazy<T>(Index<T> index) where T : IChain
         {
-            if (!store.TryGetValue(index.Id, out var chain))
+            if (!store.TryGet(index, out var chain))
             {
                 // Double lazy loading is the simplest solution to mods adding content synchronization
-                if (!template.TryGetValue(index.Id, out chain))
+                if (!template.TryGet(index, out chain))
                 {
-                    chain = Registry.Global.MoreChains._map[index.Id];
+                    chain = Registry.Global.MoreChains._map.Get(index);
                 }
-                chain = (IChain) chain.Copy();
+                chain = (T) chain.Copy();
                 store.Add(index.Id, chain);
             }
-            return (T) chain;
+            return chain;
         }
 
 
@@ -74,22 +74,25 @@ namespace Hopper.Core.Components.Basic
         {
             return (T) store[index.Id];
         }
-
+        
+        /// <summary>
+        /// Returns the chain if it has been lazy loaded.
+        /// If the chain on template containted at least one handler, lazy loads it and returns it.
+        /// </summary>
         public bool GetIfExists<T>(Index<T> index, out T chain) where T : IChain
         {
-            if (store.TryGetValue(index.Id, out var _chain))
+            if (store.TryGet(index, out chain))
             {
-                chain = (T) _chain;
                 return true;
             }
-            else if (template.TryGetValue(index.Id, out _chain))
+            if (template.TryGet(index, out chain))
             {
                 // Lazy load the chain if it has any handlers.
-                if (!_chain.IsEmpty)
+                if (!chain.IsEmpty)
                 {
                     // TODO: make the chain copy-on-write.
-                    chain = (T) _chain.Copy();
-                    store.Add(index.Id, chain);
+                    chain = (T) chain.Copy();
+                    store.Add(index, chain);
                     return true;
                 }
             }
@@ -125,7 +128,7 @@ namespace Hopper.Core.Components.Basic
 
         /// <summary>
         /// Returns the chain from `MoreChains` component, 
-        /// but only if it has been lazy loaded or will have handlers.
+        /// but only if it has been lazy loaded or would have handlers.
         /// Returns `null` if the entity does not have `MoreChains` 
         /// or the chain is not loaded and contained no handlers.
         /// Use this if you need to pass the chain and you're not sure if any handler has been added on it.
