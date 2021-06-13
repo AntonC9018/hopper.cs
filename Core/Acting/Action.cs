@@ -93,6 +93,30 @@ namespace Hopper.Core.ActingNS
         {
             return _storedAction as IUndirectedAction;
         }
+
+        public static bool operator ==(CompiledAction action1, CompiledAction action2)
+        {
+            return action1.direction == action2.direction && action1._storedAction == action2._storedAction;
+        }
+
+        public static bool operator !=(CompiledAction action1, CompiledAction action2)
+        {
+            return !(action1 == action2);
+        }
+
+        public override int GetHashCode()
+        {
+            if (_storedAction is null)
+            {
+                return direction.GetHashCode();
+            }
+            return _storedAction.GetHashCode() ^ direction.GetHashCode(); 
+        }
+
+        public override bool Equals(object obj)
+        {
+            return (obj is CompiledAction action) && action == this;
+        }
     }
 
     public class JoinedAction : IAction, IPredictable

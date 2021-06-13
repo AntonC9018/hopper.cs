@@ -75,7 +75,7 @@ namespace Hopper.Tests
             // Move onto the item
             var moveAction = Moving.Action.Compile(new IntVector2(-1, 0));
             var acting = entity.GetActing();
-            acting.nextAction = moveAction;
+            acting._nextAction = moveAction;
             acting.Activate();
             Assert.AreEqual(new IntVector2(0, 0), entity.GetTransform().position);
             Assert.True(inventory.ContainsItem(item.typeId));

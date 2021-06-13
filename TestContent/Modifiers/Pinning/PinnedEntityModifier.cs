@@ -51,14 +51,14 @@ namespace Hopper.TestContent.PinningNS
         public static Identifier[] AffectedActions => 
             new Identifier[] { Moving.Index.Id, Attacking.Index.Id, Digging.Index.Id };
 
-        [Export(Chain = "Acting.Check", Dynamic = true)]
-        public void ResetAction(Entity actor, ref CompiledAction action)
+        [Export(Chain = "Acting.SubstituteAction", Dynamic = true)]
+        public void ResetAction(Entity actor, ref CompiledAction currentAction)
         {
             if (!MaybeRemoveImmediately(actor)
-                && action.GetStoredAction().ActivatesEither(AffectedActions))
+                && currentAction.GetStoredAction().ActivatesEither(AffectedActions))
             {
-                action = action.WithAction(
-                    Compose(UAction, action.GetStoredAction()));
+                currentAction = currentAction.WithAction(
+                    Compose(UAction, currentAction.GetStoredAction()));
             }
         }
 

@@ -38,7 +38,7 @@ namespace Hopper.Tests
             var acting = skeleton.GetActing();
             acting.CalculateAndSetAction();
 
-            Assert.NotNull(acting.nextAction, "Will attack");
+            Assert.NotNull(acting._nextAction, "Will attack");
 
             var player = World.Global.SpawnEntity(Player.Factory, new IntVector2(1, 0));
             var predictor = new Predictor(World.Global, Layers.REAL, Faction.Player);

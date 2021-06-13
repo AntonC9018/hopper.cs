@@ -5,34 +5,61 @@ using Hopper.Utils.Chains;
 using Hopper.Core.Components;
 using Hopper.Core.WorldNS;
 using Hopper.Core.Components.Basic;
-using Hopper.Utils;
 
 namespace Hopper.Core.ActingNS
 {
     [Flags] public enum ActingState 
     {
-        DidAction         = 1,
-        DoingAction       = 2,
-        ActionSucceeded   = 4,
-        ActionSet         = 8,
-        ActionSubstituted = 16
+        DidAction                   = 1,
+        DoingAction                 = 1 << 1,
+        ActionSucceeded             = 1 << 2,
+        ActionSet                   = 1 << 3,
+        ActionSubstituted           = 1 << 4,
+        ActionSubstitutionTraversed = 1 << 5,
     };
     
     public partial class Acting : IBehavior
     {
-        [Chain("Do")]             private readonly Chain<Context> _DoChain;        
-        [Chain("Check")]          private readonly Chain<Context> _CheckChain;
-        [Chain("ActionSelected")] private readonly Chain<Context> _ActionSelectedChain;
-        [Chain("Success")]        private readonly Chain<Context> _SuccessChain;
-        [Chain("Fail")]           private readonly Chain<Context> _FailChain;
+        [Chain("Do")]               private readonly Chain<Context> _DoChain;        
+        [Chain("Check")]            private readonly Chain<Context> _CheckChain;
+        [Chain("SubstituteAction")] private readonly Chain<SubstitutionContext> _SubstituteActionChain;
+        [Chain("Success")]          private readonly Chain<Context> _SuccessChain;
+        [Chain("Fail")]             private readonly Chain<Context> _FailChain;
 
         [Inject] public readonly System.Func<Entity, CompiledAction> ActionCalculationAlgorithm;
         [Inject] public readonly System.Action<Context> ActionExecutionAlgorithm;
         [Inject] public readonly Order order;
 
         public ActingState _flags;
-        public CompiledAction nextAction;
+        public CompiledAction _nextAction;
         public Entity actor;
+
+        public class SubstitutionContext : ContextBase
+        {
+            public Entity actor => acting.actor;
+            public readonly Acting acting;
+            public readonly CompiledAction initialAction;
+            public CompiledAction currentAction;
+
+            public bool HasActionBeenReset => initialAction != currentAction;
+
+            public SubstitutionContext(Acting acting, CompiledAction action)
+            {
+                this.acting = acting;
+                this.initialAction = action;
+                this.currentAction = action;
+            }
+
+            public void SetAction(IAction action)
+            {
+                this.currentAction = this.currentAction.WithAction(action);
+            }
+
+            public void SetAction(in CompiledAction action)
+            {
+                this.currentAction = action;
+            }
+        }
 
         public class Context : ContextBase
         {
@@ -40,20 +67,6 @@ namespace Hopper.Core.ActingNS
             [Omit] public Acting acting;
             [Omit] public CompiledAction action;
             [Omit] public bool success = false;
-
-            public bool HasActionBeenReset => acting._flags.HasFlag(ActingState.ActionSubstituted);
-
-            public void SetAction(in IAction action)
-            {
-                this.action = this.action.WithAction(action);
-                acting._flags |= ActingState.ActionSubstituted;
-            }
-
-            public void SetAction(in CompiledAction action)
-            {
-                this.action = action;
-                acting._flags |= ActingState.ActionSubstituted;
-            }
         }
 
 
@@ -66,7 +79,7 @@ namespace Hopper.Core.ActingNS
 
         public bool ActivateWith(CompiledAction action)
         {
-            this.nextAction = action;
+            SetPotentialAction(action);
             return Activate();
         }
 
@@ -86,7 +99,7 @@ namespace Hopper.Core.ActingNS
             var ctx = new Context
             {
                 acting = this,
-                action = nextAction
+                action = GetNextAction()
             };
 
             _flags |= ActingState.DoingAction;
@@ -140,7 +153,7 @@ namespace Hopper.Core.ActingNS
 
         /// <summary>
         /// Runs the action selection algorithm if the action has not been set already.
-        /// Note that the actual action that will be selected is affected by the  ActionSelected chain (unimplemented).
+        /// Note that the actual action that will be selected is affected by the ActionSelected chain.
         /// See <see cref="SetPotentialAction"/> for more details.
         /// </summary>
         public void CalculateAndSetAction()
@@ -157,26 +170,59 @@ namespace Hopper.Core.ActingNS
         /// The given action may be altered, depending on the current state of the entity.
         /// For example, if the entity is sliding, the sliding action will be substituted here.
         /// The action's direction may also be influenced by e.g. dizzying effects.
-        /// This action substitution is governed by the ActionSelected chain (unimplemented).
+        /// This action substitution is governed by the ActionSelected chain.
         /// </summary>
         public void SetPotentialAction(CompiledAction action)
         {
-            // Iterate a chain to maybe change the action.
-            // TODO: 
-            // This should work with a different context type.
-            // This one has fields only useful for execution, and vice-versa.
-            var context = new Context { action = action, acting = this };
+            _nextAction = action;
+            _flags = _flags
+                .Set(ActingState.ActionSet)
+                // GetAction() should retraverse the chain
+                .Unset(ActingState.ActionSubstitutionTraversed);
+        }
 
-            // If the action gets substituted, the ActionSubstituted flag on acting gets set.
-            _ActionSelectedChain.PassWithPropagationChecking(context);
+        /// <summary>
+        /// Returns the next action.
+        /// This ensures the action has been modified by handlers in the ActionSelected chain.
+        ///
+        /// TODO: 
+        /// This would fail, if the chain were to be changed by some code adding a handler to it.
+        /// Then that handler may happen to be changing the action to something completely different.
+        /// However, this would only happen if the action is to be computed via this function prior to 
+        /// the Acting behavior being activated.
+        /// So, the solution in this case would be to change the type of chain we have here.
+        /// We would like to have this chain mark itself dirty when a handler is added.
+        /// Another solution would be to add handlers to this chain only via a function on Acting.
+        /// However, currently, the latter is completely unfeasible.
+        /// The first one should become possible when I poke the code generator some more.
+        ///
+        /// The only possible sort of workarounds currenly would be to like see the count of handlers 
+        /// in the chain each time, or compare hashes of all handlers or something like that, but that
+        /// won't work in all cases and that's a garbage solution as a whole.
+        ///
+        /// </summary>
+        public CompiledAction GetNextAction()
+        {
+            if (_flags.HasFlag(ActingState.ActionSubstitutionTraversed))
+            {
+                return _nextAction;
+            }
             
-            // Save the modified action.
-            // TODO: 
-            // This seems wasteful. 
-            // What is the point of storing this in the context, when it could be set directly on the acting?
-            // Would it be ok to save it directly?
-            nextAction = context.action;
-            _flags |= ActingState.ActionSet;
+            var context = new SubstitutionContext(this, _nextAction);
+
+            // We modify it here and not in Activate() because this matters for e.g. predictions.
+            // E.g. if the entity is sliding, then the attacking cannot happen.
+            _SubstituteActionChain.PassWithPropagationChecking(context);
+
+            // If the action gets substituted, the ActionSubstituted set the sustituted flag.
+            _flags = _flags
+                .Set(ActingState.ActionSubstituted, context.HasActionBeenReset)
+                // No need to traverse it again if the next action is needed
+                .Set(ActingState.ActionSubstitutionTraversed);
+
+            _nextAction = context.currentAction;
+
+            return _nextAction;
         }
         
         /// <summary>
@@ -194,7 +240,7 @@ namespace Hopper.Core.ActingNS
         {
             // This will have to be patched, if any other multidirectional algos appear
             // that depend on something else than the movs function.
-            if (nextAction.HasAction())
+            if (_nextAction.HasAction())
             {
                 if (actor.TryGetSequential(out var sequential))
                 {
@@ -209,7 +255,7 @@ namespace Hopper.Core.ActingNS
                 }
                 else
                 {
-                    yield return ((CompiledAction)nextAction).direction;
+                    yield return ((CompiledAction)_nextAction).direction;
                 }
             }
         }

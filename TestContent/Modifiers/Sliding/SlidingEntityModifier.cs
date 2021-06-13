@@ -54,10 +54,10 @@ namespace Hopper.TestContent.SlidingNS
         }
 
         // If the entity tries to move (on its own), slide instead
-        [Export(Chain = "Acting.Check", Dynamic = true)]
-        public void SlideInstead(ref CompiledAction action)
+        [Export(Chain = "Acting.SubstituteAction", Dynamic = true)]
+        public void SlideInstead(ref CompiledAction currentAction)
         {
-            action = Compose(Action, action.GetStoredAction()).Compile(directionOfSliding);
+            currentAction = Compose(Action, currentAction.GetStoredAction()).Compile(directionOfSliding);
         }
 
         // When displaced into something that is not slippery, stop sliding.

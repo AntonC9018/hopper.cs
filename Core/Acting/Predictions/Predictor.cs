@@ -24,13 +24,13 @@ namespace Hopper.Core.ActingNS
             foreach (var actings in world.State._allActings)
             foreach (var acting in actings)
             {
-                if (!acting.nextAction.HasAction())
+                if (!acting._nextAction.HasAction())
                 {
                     acting.CalculateAndSetAction();
                 }
 
                 // TODO: Add support for good/bad predicted positions (currenlty, all are processed as one thing)
-                if (acting.nextAction._storedAction is IPredictable action)
+                if (acting._nextAction._storedAction is IPredictable action)
                 if (action is IUndirectedPredictable undirectedPredictable)
                 {
                     set.AddRange(undirectedPredictable.Predict(acting.actor, predictionInfo));

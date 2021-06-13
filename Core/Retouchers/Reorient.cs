@@ -13,14 +13,14 @@ namespace Hopper.Core.Retouchers
         private static void OnDisplace(IntVector2 direction, Transform transform)
         {
             if (direction != IntVector2.Zero) 
-                transform.orientation = direction;
+                transform.Reorient(direction);
         }
 
         [Export(Chain = "Acting.Success", Dynamic = true)]
         private static void OnActionSuccess(CompiledAction action, Transform transform)
         {
             if (action.direction != IntVector2.Zero)
-                transform.orientation = action.direction;
+                transform.Reorient(action.direction);
         }
 
         [Export(Chain = "Acting.Success", Dynamic = true)]
@@ -33,11 +33,11 @@ namespace Hopper.Core.Retouchers
                 var abs = diff.Abs();
                 if (abs.x > abs.y)
                 {
-                    transform.orientation = new IntVector2(sign.x, 0);
+                    transform.Reorient(new IntVector2(sign.x, 0));
                 }
                 if (abs.y > abs.x)
                 {
-                    transform.orientation = new IntVector2(0, sign.y);
+                    transform.Reorient(new IntVector2(0, sign.y));
                 }
             }
         }

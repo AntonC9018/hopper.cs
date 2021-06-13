@@ -58,7 +58,7 @@ namespace Hopper.Tests.Test_Content
             // The move itself is allowed, though. The action itself is replaced.
             // Right now any action gets replaced, but, in theory, it is easy to tweak.
             var acting = entity.GetActing();
-            acting.nextAction = Moving.Action.Compile(IntVector2.Up); 
+            acting.SetPotentialAction(Moving.Action.Compile(IntVector2.Up)); 
             // Make sure the action actually ~fails~ succeeds.
             Assert.True(acting.Activate()); // 2, 1
             // Make sure the position has changed
@@ -88,20 +88,42 @@ namespace Hopper.Tests.Test_Content
             // We let the entity move up
             entity.Move(IntVector2.Up);
 
+            // _ _ _ _ 
+            // i i i _ 
+            // e _ _ _ 
+            // _ _ _ _ 
+
             // As a result, it gets the sliding modifier
             Assert.AreEqual(new IntVector2(0, 2), entity.GetTransform().position);
             Assert.True(entity.HasSlidingEntityModifier());
 
             // If we then push it to the right, it gets pushed successfully and loses the effect
+            
+            // _ _ _ _ 
+            // i i i _ 
+            // i e _ _ 
+            // _ _ _ _ 
+
             entity.BePushed(Push.Default(), IntVector2.Right); // < 1, 2 >
             Assert.AreEqual(new IntVector2(1, 2), entity.GetTransform().position);
             Assert.False(entity.HasSlidingEntityModifier());
 
             // Now we take the entity back to the initial position
             // Moving back to the left should not apply the effect since there is nowhere to slide
+            
+            // _ _ _ _ 
+            // i i i _ 
+            // e _ _ _ 
+            // _ _ _ _ 
+
             entity.Move(IntVector2.Left); // < 0, 2 >
             Assert.AreEqual(new IntVector2(0, 2), entity.GetTransform().position);
             Assert.False(entity.HasSlidingEntityModifier());
+
+            // _ _ _ _ 
+            // i i i _ 
+            // i _ _ _ 
+            // e _ _ _ 
 
             entity.Move(IntVector2.Down); // < 0, 3 >
             Assert.AreEqual(new IntVector2(0, 3), entity.GetTransform().position);
@@ -126,9 +148,7 @@ namespace Hopper.Tests.Test_Content
             Assert.AreEqual(IntVector2.Right, entity.GetSlidingEntityModifier().directionOfSliding);
 
             // Say we try moving up through the acting now, but we should keep moving right
-            var acting = entity.GetActing();
-            acting.nextAction = Moving.Action.Compile(IntVector2.Up);
-            acting.Activate();
+            entity.GetActing().ActivateWith(Moving.Action.Compile(IntVector2.Up));
             Assert.AreEqual(new IntVector2(2, 1), entity.GetTransform().position);
             Assert.True(entity.HasSlidingEntityModifier());
         }

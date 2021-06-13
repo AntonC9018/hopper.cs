@@ -120,6 +120,9 @@ namespace Hopper.Core.WorldNS
 
         public void Reorient(IntVector2 newOrientation)
         {
+            // I'm not sure about this at the moment
+            // Assert.That(newOrientation != IntVector2.Zero);
+            
             orientation = newOrientation;
             ReorientPath.GetIfExists(entity)?.Pass(this);
         }

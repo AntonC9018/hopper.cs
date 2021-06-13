@@ -54,7 +54,8 @@ namespace Hopper.Tests.Test_Content
             Assert.AreEqual(2, entity.GetTransform().GetCell().Count);
 
             // No ticking has happened, so nextAction is still set
-            entity.GetActing().Activate();
+            // However, it has been modified when we set it, so it is still set to sliding, then moving
+            entity.GetActing().ActivateWith(Moving.Action.Compile(Right));
             Assert.AreEqual(Zero + Right + Right, entity.GetTransform().position);
         }
 
