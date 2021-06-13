@@ -5,9 +5,11 @@ using Hopper.Utils.Chains;
 using Hopper.Core.Components;
 using Hopper.Core.WorldNS;
 using Hopper.Core.Components.Basic;
+using Hopper.Utils;
 
 namespace Hopper.Core.ActingNS
 {
+
     [Flags] public enum ActingState 
     {
         DidAction                   = 1,
@@ -61,12 +63,22 @@ namespace Hopper.Core.ActingNS
             }
         }
 
-        public class Context : ContextBase
+        public class Context : IPropagating
         {
             public Entity actor => acting.actor;
-            [Omit] public Acting acting;
-            [Omit] public CompiledAction action;
-            [Omit] public bool success = false;
+            public Acting acting;
+            public CompiledAction action;
+
+            // yay, two bools within 32 bits. (this is probably not very useful, but I don't care :D)
+            public AnonymousInt32Flags _aflags;
+            public bool Propagate { get => _aflags.Get(0); set => _aflags.Set(0, value); }
+            public bool Success   { get => _aflags.Get(1); set => _aflags.Set(1, value); }
+
+            public Context(Acting acting)
+            {
+                this.acting = acting;
+                this.action = acting.GetNextAction();
+            }
         }
 
 
@@ -96,39 +108,35 @@ namespace Hopper.Core.ActingNS
         /// </summary>
         public bool Activate()
         {
-            var ctx = new Context
-            {
-                acting = this,
-                action = GetNextAction()
-            };
+            var context = new Context(this);
 
             _flags |= ActingState.DoingAction;
 
-            if (_CheckChain.PassWithPropagationChecking(ctx))
+            if (_CheckChain.PassWithPropagationChecking(context))
             {
                 // Let's move it here for now
-                if (!ctx.action.HasAction())
+                if (!context.action.HasAction())
                 {
                     _flags = ActingState.DidAction | ActingState.ActionSucceeded;
-                    _SuccessChain.Pass(ctx);
+                    _SuccessChain.Pass(context);
                     return true;
                 }
 
-                ctx.success = true;
-                ActionExecutionAlgorithm(ctx);
+                context.Success = true;
+                ActionExecutionAlgorithm(context);
             }
 
-            _flags = _flags.Set(ActingState.ActionSucceeded, ctx.success);
+            _flags = _flags.Set(ActingState.ActionSucceeded, context.Success);
 
-            if (ctx.success)
-                _SuccessChain.Pass(ctx);
+            if (context.Success)
+                _SuccessChain.Pass(context);
             else
-                _FailChain.Pass(ctx);
+                _FailChain.Pass(context);
 
             _flags = _flags.Set(ActingState.DidAction)
                            .Unset(ActingState.DoingAction);
 
-            return ctx.success;
+            return context.Success;
         }
 
         /// <summary>

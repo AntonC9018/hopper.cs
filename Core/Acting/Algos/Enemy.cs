@@ -53,7 +53,7 @@ namespace Hopper.Core.ActingNS
             // if movs if null, consider the action succeeding all the time
             if (dirs == null)
             {
-                ctx.success = true;
+                ctx.Success = true;
                 return;
             }
 
@@ -62,12 +62,12 @@ namespace Hopper.Core.ActingNS
                 ctx.action = ctx.action.WithDirection(dir);
                 if (Iterate(ctx.actor, in ctx.action))
                 {
-                    ctx.success = true;
+                    ctx.Success = true;
                     return;
                 }
             }
 
-            ctx.success = false;
+            ctx.Success = false;
         }
 
     }
