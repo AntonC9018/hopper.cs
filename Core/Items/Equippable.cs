@@ -5,6 +5,8 @@ using Hopper.Utils;
 
 namespace Hopper.Core.Items
 {
+    // TODO: the typeId thing should be stored in the equippable or in another component.
+    // TODO: refactor it so that the checks are done once at the start which attaches concrete handlers. 
     public partial class Equippable : IComponent
     {
         [Inject] public IHookable hookable;

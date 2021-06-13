@@ -1,6 +1,7 @@
 using System.Linq;
 using Hopper.Core;
 using Hopper.Core.WorldNS;
+using Hopper.Utils.Chains;
 using Hopper.Utils.Vector;
 using NUnit.Framework;
 
@@ -37,6 +38,25 @@ namespace Hopper.Tests
 
             Assert.False(enumerator.MoveNext());
             Assert.AreEqual(World.Global.State.currentPhase, Phase.Done);
+        }
+
+        [Test]
+        public void GlobalChainsTest()
+        {
+            int callCount = 0;
+            var handler = new Handler<int>(10, loopCount => callCount++);
+            
+            World.StartLoopPath.Get().Add(handler);
+            World.Global.Loop();
+            Assert.AreEqual(callCount, 1);
+
+            World.StartLoopPath.Get().Remove(handler);
+            World.Global.Loop();
+            Assert.AreEqual(callCount, 1);
+
+            World.EndLoopPath.Get().Add(handler);
+            World.Global.Loop();
+            Assert.AreEqual(callCount, 2);
         }
 
     }
