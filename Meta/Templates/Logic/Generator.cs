@@ -135,7 +135,9 @@ namespace Hopper.Meta
                 .InitAndAfterInit(_env)
                 .ToArray();
 
-            var exportingClasses = _env.GetOtherExportingClasses().ToArray();
+            var exportingClasses = _env.GetOtherExportingClasses().ToArray()
+                // TODO: this is a horrible workaround, works for now though
+                .Where(e => e.TryAfterInit(_env)).ToArray();
 
             var topLevelStatTypes = GetJsonFileNames(_env.Paths.StatJsonsFolder)
                 .Select(fname => StatType.ParseJson(_env.statParsingContext, fname))

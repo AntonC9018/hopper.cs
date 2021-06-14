@@ -27,6 +27,7 @@ namespace Hopper.Meta
         public static AttributeSymbolWrapper<InstanceExportAttribute> InstanceExportAttribute;
         public static AttributeSymbolWrapper<RequiringInitAttribute> RequiringInitAttribute;
         public static AttributeSymbolWrapper<IdentifyingStatAttribute> IdentifyingStatAttribute;
+        public static AttributeSymbolWrapper<ExportingClassAttribute> ExportingClassAttribute;
         public static INamedTypeSymbol boolType;
         public static INamedTypeSymbol voidType;
         public static INamedTypeSymbol istandartActivateable;
@@ -83,6 +84,7 @@ namespace Hopper.Meta
             InstanceExportAttribute .Init(compilation);
             RequiringInitAttribute  .Init(compilation);
             IdentifyingStatAttribute.Init(compilation);
+            ExportingClassAttribute .Init(compilation);
             boolType = compilation.GetSpecialType(SpecialType.System_Boolean);
             voidType = compilation.GetSpecialType(SpecialType.System_Void);
         }

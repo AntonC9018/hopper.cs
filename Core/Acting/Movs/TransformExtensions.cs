@@ -9,11 +9,8 @@ namespace Hopper.Core.ActingNS
             float minDist = 0;
             Transform closestPlayerTransform = null;
 
-            // TODO: optimize such queries
-            foreach (var entity in Registry.Global.RuntimeEntities.map.Values)
-            if (entity.TryGetFactionComponent(out var f) 
-                && f.faction.HasFlag(Faction.Player)
-                && entity.TryGetTransform(out var playerTransform))
+            foreach (var player in Registry.Global.Queries.Faction.Get(Faction.Player))
+            if (player.TryGetTransform(out var playerTransform))
             {
                 float curDist = (transform.position - playerTransform.position).SqMag;
 

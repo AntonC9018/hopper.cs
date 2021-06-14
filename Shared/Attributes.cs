@@ -207,6 +207,11 @@ namespace Hopper.Shared.Attributes
     {
     }
 
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Field)]
+    public class ExportingClassAttribute : Attribute
+    {
+    }
+
     /// <summary>
     /// Indicates that the given field of the Context class should be omitted for AutoActivation.
     /// </summary>

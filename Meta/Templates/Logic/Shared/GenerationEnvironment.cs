@@ -179,6 +179,7 @@ namespace Hopper.Meta
             {
                 if (typeSymbol.IsStatic 
                     || typeSymbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol)
+                    || typeSymbol.HasAttribute(RelevantSymbols.ExportingClassAttribute.symbol)
                     && !exportingClasses.ContainsKey(typeSymbol.Name))
                 {
                     var classWrapper = new ExportedStuffClassSymbolWrapper(typeSymbol);
