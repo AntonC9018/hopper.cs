@@ -67,8 +67,8 @@ namespace Hopper.Meta
                 && !ctor.IsStatic
                 && ctor.ParameterTypesEqual(injectedFields));
         public bool ShouldGenerateCopyConstructor => !symbol.Constructors.Any(
-            ctor => ctor.Arity == 1 
-                && SymbolEqualityComparer.Default.Equals(ctor.Parameters.Single(), symbol));
+            ctor => ctor.Parameters.Length == 1 
+                && SymbolEqualityComparer.Default.Equals(ctor.Parameters.Single().Type, symbol));
         
         public bool IsStandartActivateable => symbol.AllInterfaces.Contains(RelevantSymbols.istandartActivateable);
         public bool IsPredictable => symbol.AllInterfaces.Contains(RelevantSymbols.ipredictable);

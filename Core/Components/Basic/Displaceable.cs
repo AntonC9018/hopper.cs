@@ -15,16 +15,18 @@ namespace Hopper.Core.Components.Basic
             public IntVector2 direction;
             public Move move;
             public Entity actor => transform.entity;
-            [Omit] public Transform transform;
-            [Omit] public IntVector2 newPosition;
-            [Omit] public Layers blockLayer;
+            public Transform transform;
+            public IntVector2 initialPosition;
+            public IntVector2 newPosition;
+            public Layers blockLayer;
 
             public Context(IntVector2 direction, Move move, Transform transform, Layers blockLayer)
             {
-                this.direction = direction;
-                this.move = move;
-                this.transform = transform;
-                this.blockLayer = blockLayer;
+                this.direction       = direction;
+                this.move            = move;
+                this.transform       = transform;
+                this.initialPosition = transform.position;
+                this.blockLayer      = blockLayer;
             }
 
             public void SetNewPosition()
