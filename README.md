@@ -309,7 +309,7 @@ The generated constructor in this will require to pass in a value for `injection
 void Example(Entity entity)
 {
     // Initialize with injection = 5
-    var component = MyComponent(injection: 5);
+    var component = new MyComponent(injection: 5);
 
     // Initialize and add MyComponent to the entity, passing 5 to the constructor
     var component = MyComponent.AddTo(entity, 5);
@@ -784,14 +784,14 @@ public static void DoStuff(ChainExporter.Context context)
 
 public void AddDoStuffExample(Entity entity)
 {
-    // Gets the chain via the path and adds the entity.
+    // Gets the chain via the path and adds the handler.
     // This assumes the entity has `MoreChains`.
     // This also assumes the chain does not already have the given handler.
     DoStuffHandlerWrapper.HookTo(entity);
 
-    // Gets the chain via the path and adds the entity, 
+    // Gets the chain via the path and adds the handler, 
     // if the entity has the given component 
-    // and the chain does not already the handler
+    // and the chain does not already have the handler
     DoStuffHandlerWrapper.TryHookTo(entity);
 
     // Similarly, removing.
