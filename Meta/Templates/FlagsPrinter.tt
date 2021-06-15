@@ -2,6 +2,7 @@
 <#@ assembly name="Meta" #>
 <#@ include file="Templates/Snippets/autogen_notice.txt" #>
 <#@ include file="Templates/Snippets/GenericUsings.txt" #>
+using System.Collections.Generic;
 
 namespace <#= flag.Namespace #>
 { 
@@ -51,6 +52,39 @@ namespace <#= flag.Namespace #>
         {
             if (set) return Set(flagInitial, flagToSet);
             else     return Unset(flagInitial, flagToSet);
+        }
+
+        /// <summary>
+        /// Returns all possible combinations of the set bits of the given <#= flag.ClassName #>.
+        /// For example, for the input 0111 it would give 0001, 0010, 0011, 0100, 0101 and 0111.
+        /// </summary>
+        public static IEnumerable<<#= flag.ClassName #>> GetBitCombinations(this <#= flag.ClassName #> flags)
+        {
+            int bits = (int) flags;
+            int current = (~bits + 1) & bits;
+
+            while (current != 0)
+            {
+                yield return (<#= flag.ClassName #>) current;
+                current = (~bits + (current << 1)) & bits;
+            }
+        }
+        
+        /// <summary>
+        /// Returns all individual set bits of the given <#= flag.ClassName #> on their positions.
+        /// For example, for the input 0111 it would give 0001, 0010 and 0100.
+        /// </summary>
+        public static IEnumerable<<#= flag.ClassName #>> GetSetBits(this <#= flag.ClassName #> flags)
+        {
+            int bits = (int) flags;
+            int current = 0;
+            
+            while (true)
+            {
+                current = (current - bits) & bits;
+                if (current == 0) yield break;
+                yield return (<#= flag.ClassName #>) current;
+            }
         }
     }
 }

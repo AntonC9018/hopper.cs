@@ -10,7 +10,7 @@ namespace Hopper.Core
         [Export(Chain = "gWorld.SpawnEntity")]
         public static void UpdateQueries(Entity entity)
         {
-            Registry.Global.Queries.Faction.Invalidate(entity);
+            Registry.Global.Queries.Faction.AddEntity(entity);
         }
     }
 
