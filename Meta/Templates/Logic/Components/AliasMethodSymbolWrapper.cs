@@ -20,6 +20,7 @@ namespace Hopper.Meta
         public string Name => _symbol.Name;
         public bool ReturnTypeIsVoid() => SymbolEqualityComparer.Default.Equals(_symbol.ReturnType, RelevantSymbols.voidType);  
         public string ReturnType => ReturnTypeIsVoid() ? "void" : ((INamedTypeSymbol)_symbol.ReturnType).TypeToText();
+        public bool ReturnTypeIsBool() => SymbolEqualityComparer.Default.Equals(_symbol.ReturnType, RelevantSymbols.boolType); 
         public string ParamsWithActor() => _symbol.Parameters.ParamsWithActor();
         public string Params() => _symbol.Parameters.Params();
         public IEnumerable<string> ParamNames() => _symbol.Parameters.ParamNames();

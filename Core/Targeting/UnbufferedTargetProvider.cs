@@ -33,7 +33,7 @@ namespace Hopper.Core.Targeting
             foreach (var t in _pattern.GetPositionsAndDirections(position, direction))
             {
                 var matches = World.Global.Grid.GetAllFromLayer(t.position, t.direction, _targetedLayer)
-                    .Where(t1 => t1.entity.TryCheckFaction(_targetedFaction, out bool result) && result);
+                    .Where(t1 => t1.entity.TryCheckFaction(_targetedFaction));
 
                 foreach (var transform in matches)
                 {

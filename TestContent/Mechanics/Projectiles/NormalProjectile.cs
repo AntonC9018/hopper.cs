@@ -34,7 +34,7 @@ namespace Hopper.TestContent.Projectiles
         {
             subject.GetDisplaceable().DefaultPreset();
             // subject.GetProjectileComponent()
-            subject.GetAttackable().DefaultPreset();
+            // subject.GetAttackable();
             subject.GetActing().DefaultPreset(subject);
             subject.GetDamageable().DefaultPreset();
             subject.GetTicking().DefaultPreset();

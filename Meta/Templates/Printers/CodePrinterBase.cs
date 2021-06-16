@@ -118,6 +118,18 @@ namespace Hopper.Meta.Template
             Write(text);
             PopIndent();
         }
+
+        public void WriteCommentedOutIf(bool condition, string text)
+        {
+            Write(CurrentIndent);
+
+            if (condition) 
+            {
+                Write("// ");
+            }
+            
+            Write(text);
+        }
         
         public void Write(string format, params object[] args) 
         {

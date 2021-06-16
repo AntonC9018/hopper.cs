@@ -12,7 +12,19 @@ namespace Hopper.Utils.Chains
                     return false;
                 handler.handler(ctx);
             }
-            return true;
+            return ctx.Propagate;
+        }
+
+        public static bool PassUntil<Context>(this Chain<Context> chain, Context ctx, System.Predicate<Context> predicate)
+        {
+            foreach (var handler in chain.ToArray())
+            {
+                handler.handler(ctx);
+
+                if (predicate(ctx))
+                    return true;
+            }
+            return false;
         }
 
         public static bool PassWithPropagationChecking<Context>(this LinearChain<Context> chain, Context ctx) where Context : IPropagating

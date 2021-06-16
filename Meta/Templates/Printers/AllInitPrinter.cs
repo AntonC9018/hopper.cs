@@ -16,6 +16,6 @@ namespace Hopper.Meta.Template
         public IEnumerable<FieldSymbolWrapper> slots;
         public IEnumerable<FieldSymbolWrapper> staticIndentiyingStatFields;
         public Scope<StatType> statRootScope;
-        public bool HasCustomInitFunction;
+        public bool HasBeforeInit;
     }
 }

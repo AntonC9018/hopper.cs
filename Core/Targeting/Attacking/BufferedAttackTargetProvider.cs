@@ -9,7 +9,25 @@ using Hopper.Core.WorldNS;
 
 namespace Hopper.Core.Targeting
 {
-    public partial class BufferedAttackTargetProvider : IComponent
+    public interface IAttackTargetProvider
+    {
+        AttackTargetingContext GetTargets(Entity attacker, Layers targetedLayer, IntVector2 position, IntVector2 direction);
+    }
+
+    public static class AttackTargetProviderExtensions
+    {
+        /// <summary>
+        /// Get targets relative to the position of the given entity.
+        /// The entity must have a transform component, otherwise this will crash.
+        /// </summary>
+        public static AttackTargetingContext GetTargets<T>(this T provider, Entity attacker, Layers targetLayer, IntVector2 attackDirection) where T : IAttackTargetProvider
+        {
+            return provider.GetTargets(attacker, targetLayer, attacker.GetTransform().position, attackDirection);
+        }
+    }
+
+
+    public partial class BufferedAttackTargetProvider : IAttackTargetProvider, IComponent
     {
         /// <summary>
         /// The pattern is used to make AttackTargetContext's initially.
@@ -23,7 +41,7 @@ namespace Hopper.Core.Targeting
         /// Only entities from this layer will be targeted.
         /// However the exact logic of this field depends on the map function.
         /// </summary>
-        [Inject] public Layers _targetLayer;
+        // [Inject] public Layers _targetLayer;
 
 
         /// <summary>
@@ -36,32 +54,22 @@ namespace Hopper.Core.Targeting
         /// </summary>
         [Inject] public Layers _blockLayer;
 
-
-        /// <summary>
-        /// Get targets relative to the position of the given entity.
-        /// The entity must have a transform components, otherwise this will crash.
-        /// </summary>
-        public AttackTargetingContext GetTargets(Entity attacker, IntVector2 attackDirection)
-        {
-            return GetTargets(attacker, attacker.GetTransform().position, attackDirection);
-        }
-
         /// <summary>
         /// Get targets at the given position and return a targeting context 
         /// with all extra information. The pattern will be rotated by 
         /// the attack direction in order to produce correct targeted positions.
-        /// If the attacker is null, the attacj us considered anonymous.
+        /// If the attacker is null, the attack us considered anonymous.
+        /// TODO: 
+        /// The targeted layer should be passed as a parameter.
+        /// Having the block layer be defined on the provider is fine.
         /// </summary>
         public AttackTargetingContext GetTargets(
-            Entity attacker, IntVector2 attackerPosition, IntVector2 attackDirection)
+            Entity attacker, Layers targetLayer, IntVector2 attackerPosition, IntVector2 attackDirection)
         {
             var context = new AttackTargetingContext(
                 targetContexts   : _pattern.MakeContexts(attackerPosition, attackDirection).ToList(),
                 pattern          : _pattern,
-                attacker         : attacker,
-                attackerPosition : attackerPosition,
-                attackDirection  : attackDirection,
-                targetedLayer    : _targetLayer,
+                targetedLayer    : targetLayer,
                 blockLayer       : _blockLayer
             );
 
@@ -77,7 +85,7 @@ namespace Hopper.Core.Targeting
         /// which jsut tries to return the first valid target.
         /// </summary>
         public static readonly BufferedAttackTargetProvider Simple = new BufferedAttackTargetProvider(
-            new PieceAttackPattern(Piece.Default), SingleSimpleMap, Layers.REAL, Layers.WALL);
+            new PieceAttackPattern(Piece.Default), SingleSimpleMap, Layers.WALL);
 
 
         /// <summary>
@@ -116,8 +124,7 @@ namespace Hopper.Core.Targeting
         public static bool _IsAttackableTarget_AndSetTransformAndAttackness(
                 AttackTargetContext context, Layers targetedLayer, Layers skipLayer)
         {
-            if (
-                World.Global.Grid.HasNoTransformAt(context.position, context.direction, skipLayer)
+            if (World.Global.Grid.HasNoTransformAt(context.position, context.direction, skipLayer)
                 && World.Global.Grid.TryGetTransformFromLayer(
                     context.position, context.direction, targetedLayer, out context.normal.transform)
                 && context.transform.entity.TryGetAttackable(out var attackable))
@@ -137,10 +144,14 @@ namespace Hopper.Core.Targeting
             var first = context.targetContexts.Where(
                 c => _IsAttackableTarget_AndSetTransformAndAttackness(c, context.targetedLayer, context.blockLayer)).FirstOrDefault();
             
-            if (context.targetContexts.Count > 0 && first != null)
+            if (first != null)
             {
                 context.targetContexts[0] = first;
                 context.targetContexts.RemoveRange(1, context.targetContexts.Count - 1);
+            }
+            else
+            {
+                context.targetContexts.Clear();
             }
         }
 

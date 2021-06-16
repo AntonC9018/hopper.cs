@@ -22,7 +22,7 @@ namespace Hopper.Tests.Test_Content
             entityFactory = new EntityFactory();
             Transform.AddTo(entityFactory, Layers.REAL, TransformFlags.Default);
             Stats.AddTo(entityFactory, Registry.Global.Stats._map);
-            Attackable.AddTo(entityFactory, Attackness.ALWAYS).DefaultPreset();
+            Attackable.AddTo(entityFactory, Attackness.ALWAYS);
             Damageable.AddTo(entityFactory, new Health(1)).DefaultPreset();
             Displaceable.AddTo(entityFactory, Layers.WALL | Layers.REAL).DefaultPreset();
             Moving.AddTo(entityFactory).DefaultPreset();
@@ -35,7 +35,7 @@ namespace Hopper.Tests.Test_Content
             Stats.AddTo(bindingFactory, Registry.Global.Stats._map);
             Binding.AddTo(bindingFactory, Layers.REAL, BoundEntityModifierDefault.Hookable).DefaultPreset();
             Damageable.AddTo(bindingFactory, new Health(1)).DefaultPreset();
-            Attackable.AddTo(bindingFactory, Attackness.ALWAYS).DefaultPreset();
+            Attackable.AddTo(bindingFactory, Attackness.ALWAYS);
             // The death chain is also required
             MoreChains.AddTo(bindingFactory, Registry.Global.MoreChains._map);
 

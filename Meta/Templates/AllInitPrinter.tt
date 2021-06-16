@@ -14,28 +14,36 @@ namespace <#= Namespace #>
 <# /* Load it dynamically? */ #>
             int modId = Registry.Global.NextMod(); 
             
-<#  if (HasCustomInitFunction)
-    { #>
-            CustomInit();
-            
-<#  } #>
-<#  foreach(var component in components) 
+<#  WriteCommentedOutIf(!HasBeforeInit, "BeforeInit()"); #> 
+
+<#  // Initalize chains and indices.
+    foreach(var component in components) 
     { #>
             <#= component.FullyQualifiedClassName #>.InitIndex();
-            <#= component.FullyQualifiedClassName #>.InitHandlers();
             <#= component.FullyQualifiedClassName #>.InitMoreChains();
 <#  } 
     foreach (var behavior in behaviors) 
     { #>
             <#= behavior.FullyQualifiedClassName #>.InitIndex();
-            <#= behavior.FullyQualifiedClassName #>.InitHandlers();
             <#= behavior.FullyQualifiedClassName #>.InitMoreChains();
 <#  } 
     foreach (var exportingClass in exportingClasses) 
     { #>
-            <#= exportingClass.FullyQualifiedClassName #>.InitHandlers();
             <#= exportingClass.FullyQualifiedClassName #>.InitMoreChains();
-<#  } 
+<#  }
+    // Initialization of handlers is done after the initialization of chains.
+    foreach (var component in components)
+    { #>
+            <#= component.FullyQualifiedClassName #>.InitHandlers();
+<#  }
+    foreach (var behavior in behaviors)
+    { #>
+            <#= behavior.FullyQualifiedClassName #>.InitHandlers();
+<#  }
+    foreach (var exportingClass in exportingClasses)
+    { #>
+            <#= exportingClass.FullyQualifiedClassName #>.InitHandlers();
+<#  }
     foreach (var methodClassInstance in methodClassInstances)
     { #>
             <#= methodClassInstance.FullyQualifiedName #>.InitInstanceHandlers();
@@ -59,14 +67,13 @@ namespace <#= Namespace #>
             var name = $"{stat.QualifiedName}.{identifyingField.name}"; #>
             <#= name #>.Index.Id = Registry.Global.Stats.AddForCurrentMod("<#= name #>", (Hopper.Core.Stat.IStat) <#= name #>.Default());
 <#      }
-        
     }
     foreach (var identifyingField in staticIndentiyingStatFields) 
     { #>
             <#= identifyingField.FullyQualifiedName #>.Index.Id = Registry.Global.Stats.AddForCurrentMod("<#= identifyingField.StringIdentifier #>", (Hopper.Core.Stat.IStat) <#= identifyingField.FullyQualifiedName #>.Default());
 <#  }
     foreach (var entityType in entityTypes) 
-    { /* TODO: Link the metadata (the name or whatever) */#>
+    { #>
             {
                 var factory = new EntityFactory();
                 <#= entityType.FullyQualifiedClassName #>.AddComponents(factory);

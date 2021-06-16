@@ -25,7 +25,7 @@ namespace Hopper.Core
         
         public static void InitComponents(Entity subject)
         {
-            subject.GetAttackable().DefaultPreset();
+            subject.GetAttackable();
             subject.GetDamageable().DefaultPreset();
         }
 

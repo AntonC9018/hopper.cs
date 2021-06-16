@@ -16,7 +16,7 @@ namespace Hopper.TestContent
         private const Layers TeleportedLayer = Layers.REAL | Layers.DROPPED | Layers.ITEM;
 
 
-        [Export(Chain = "Attackable.Do", Priority = PriorityRank.Lowest, Dynamic = true)]
+        [Export(Chain = "Attackable.After", Priority = PriorityRank.Lowest, Dynamic = true)]
         public static void Teleport(Attackable.Context ctx)
         {
             if (ctx.actor.IsDead() && ctx.attacker != null)

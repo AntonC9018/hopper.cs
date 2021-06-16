@@ -30,7 +30,7 @@ namespace Hopper.TestContent.SimpleMobs
         public static void InitComponents(Entity subject)
         {
             subject.GetDisplaceable().DefaultPreset();
-            subject.GetAttackable().DefaultPreset();
+            subject.GetAttackable();
             subject.GetPushable().DefaultPreset();
             subject.GetDamageable().DefaultPreset();
             subject.GetTicking().DefaultPreset();

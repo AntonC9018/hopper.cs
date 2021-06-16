@@ -44,7 +44,7 @@ namespace Hopper.TestContent.Items
             return _relativeDirection.Rotate(angle);
         }
 
-        [Export(Chain = "Attackable.Do")]
+        [Export(Chain = "Attackable.Should", Dynamic = true)]
         public static void BlockDirection(Attackable.Context ctx)
         {
             if (ctx.actor.TryGetShield(out var shieldItem))
@@ -58,7 +58,7 @@ namespace Hopper.TestContent.Items
             }
         }
 
-        [Export(Chain = "Attackable.Do")]
+        [Export(Chain = "Attackable.After", Dynamic = true)]
         private void AbsorbDamageAndBreak(Attackable.Context ctx)
         {
             if (ctx.attack.damage > 0
@@ -77,8 +77,8 @@ namespace Hopper.TestContent.Items
             }
         }
 
-        public static HandlerGroup<Attackable.Context> Hookable = new HandlerGroup<Attackable.Context>(
-            Attackable.DoPath, BlockDirectionHandler, AbsorbDamageAndBreakHandler
+        public static HandlerGroupsWrapper Hookable = new HandlerGroupsWrapper(
+            BlockDirectionHandlerWrapper, AbsorbDamageAndBreakHandlerWrapper
         );
     }
 }

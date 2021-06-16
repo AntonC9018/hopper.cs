@@ -42,7 +42,7 @@ namespace Hopper.Core
             }
             
             result = Registry.Global.RuntimeEntities.map.Values
-                .Where(entity => entity.TryCheckFaction(flag, out bool res) && res)
+                .Where(entity => entity.TryCheckFaction(flag))
                 .ToHashSet();
 
             Add(flag, result);

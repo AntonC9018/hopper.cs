@@ -42,23 +42,23 @@ namespace Hopper.Tests
                 new Piece(new IntVector2(1, 0), new IntVector2(1, 0), new Reach(true))
             );
             var provider = new BufferedAttackTargetProvider(pattern, 
-                BufferedAttackTargetProvider.SingleSimpleMap, Layers.REAL, 0);
+                BufferedAttackTargetProvider.SingleSimpleMap, 0);
             var entity = World.Global.SpawnEntity(entityFactory, new IntVector2(0, 0));
 
             AttackTargetingContext context;
 
             // 1. "Dagger" via our own pattern
-            context = provider.GetTargets(null, new IntVector2(0, 1), new IntVector2(0, -1));
+            context = provider.GetTargets(null, Layers.REAL, new IntVector2(0, 1), new IntVector2(0, -1));
             Assert.AreSame(context.targetContexts.Single().transform, entity.GetTransform());
 
             // 2. "Dagger" via the default simple target provider
-            context = BufferedAttackTargetProvider.Simple.GetTargets(null, new IntVector2(0, 1), new IntVector2(0, -1));
+            context = BufferedAttackTargetProvider.Simple.GetTargets(null, Layers.REAL, new IntVector2(0, 1), new IntVector2(0, -1));
             Assert.AreSame(context.targetContexts.Single().transform, entity.GetTransform());
 
             // 3. "Dagger" via SingleDefaultMap and a custom pattern
             provider = new BufferedAttackTargetProvider(pattern,
-                BufferedAttackTargetProvider.SingleDefaultMap, Layers.REAL, 0);
-            context = provider.GetTargets(null, new IntVector2(0, 1), new IntVector2(0, -1));
+                BufferedAttackTargetProvider.SingleDefaultMap, 0);
+            context = provider.GetTargets(null, Layers.REAL, new IntVector2(0, 1), new IntVector2(0, -1));
             Assert.AreSame(context.targetContexts.Single().transform, entity.GetTransform());
 
             // 4. "Spear" via SingleDefaultMap and a custom pattern
@@ -67,30 +67,30 @@ namespace Hopper.Tests
                 new Piece(new IntVector2(2, 0), new IntVector2(1, 0), new Reach(0))
             );
             provider = new BufferedAttackTargetProvider(pattern,
-                BufferedAttackTargetProvider.SingleDefaultMap, Layers.REAL, Layers.WALL);
+                BufferedAttackTargetProvider.SingleDefaultMap, Layers.WALL);
 
             // Targeting an entity 2 blocks away
-            context = provider.GetTargets(null, new IntVector2(0, 2), new IntVector2(0, -1));
+            context = provider.GetTargets(null, Layers.REAL, new IntVector2(0, 2), new IntVector2(0, -1));
             Assert.AreSame(context.targetContexts.Single().transform, entity.GetTransform());
 
             // Targeting an entity 1 block away
-            context = provider.GetTargets(null, new IntVector2(0, 1), new IntVector2(0, -1));
+            context = provider.GetTargets(null, Layers.REAL, new IntVector2(0, 1), new IntVector2(0, -1));
             Assert.AreSame(context.targetContexts.Single().transform, entity.GetTransform());
 
             // Targeting an entity 2 blocks away being blocked by a wall
             var wall = World.Global.SpawnEntity(wallFactory, new IntVector2(0, 1));
-            context = provider.GetTargets(null, new IntVector2(0, 2), new IntVector2(0, -1));
+            context = provider.GetTargets(null, Layers.REAL, new IntVector2(0, 2), new IntVector2(0, -1));
             Assert.That(context.targetContexts.Count == 0);
 
             // If the wall can be attacked but not at default, attack should go through it
             // Given the entity is not a block at the same time.
             wall.GetAttackable()._attackness = Attackness.SKIP;
-            context = provider.GetTargets(null, new IntVector2(0, 2), new IntVector2(0, -1));
+            context = provider.GetTargets(null, Layers.REAL, new IntVector2(0, 2), new IntVector2(0, -1));
             Assert.AreSame(context.targetContexts.Single().transform, entity.GetTransform());
 
             // If it blocks, and can be attacked, but not by default, then it should block the attack
             wall.GetAttackable()._attackness = Attackness.MAYBE;
-            context = provider.GetTargets(null, new IntVector2(0, 2), new IntVector2(0, -1));
+            context = provider.GetTargets(null, Layers.REAL, new IntVector2(0, 2), new IntVector2(0, -1));
             Assert.That(context.targetContexts.Count == 0);
 
             wall.GetTransform().RemoveFromGrid();
@@ -98,11 +98,11 @@ namespace Hopper.Tests
             // The entity that can only be attacked while next to it, should not be attacked
             // even if the weapon reaches from 2 spaces away, assuming the default map.
             entity.GetAttackable()._attackness = Attackness.CAN_BE_ATTACKED_IF_NEXT_TO;
-            context = provider.GetTargets(null, new IntVector2(0, 2), new IntVector2(0, -1));
+            context = provider.GetTargets(null, Layers.REAL, new IntVector2(0, 2), new IntVector2(0, -1));
             Assert.That(context.targetContexts.Count == 0);
 
             // If it is next to the position, the attack should go through
-            context = provider.GetTargets(null, new IntVector2(0, 1), new IntVector2(0, -1));
+            context = provider.GetTargets(null, Layers.REAL, new IntVector2(0, 1), new IntVector2(0, -1));
             Assert.AreSame(context.targetContexts.Single().transform, entity.GetTransform());
         }
 

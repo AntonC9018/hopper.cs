@@ -74,9 +74,7 @@ namespace Hopper.Tests
 
             // Move onto the item
             var moveAction = Moving.Action.Compile(new IntVector2(-1, 0));
-            var acting = entity.GetActing();
-            acting._nextAction = moveAction;
-            acting.Activate();
+            entity.GetActing().ActivateWith(moveAction);
             Assert.AreEqual(new IntVector2(0, 0), entity.GetTransform().position);
             Assert.True(inventory.ContainsItem(item.typeId));
             
@@ -103,7 +101,7 @@ namespace Hopper.Tests
             
             // item 1 gets picked up, then immediately replaced by item 2.
             // item 1 is dropped back as excess.
-            acting.Activate();
+            entity.GetActing().ActivateWith(moveAction);
             Assert.True(inventory.ContainsItem(item2.typeId));
             Assert.AreSame(inventory.GetItem(item2.typeId), item2);
             Assert.AreSame(item1.GetTransform().GetAllFromLayer(Layers.ITEM).Single().entity, item1);

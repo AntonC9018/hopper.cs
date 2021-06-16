@@ -78,6 +78,7 @@ namespace Hopper.Core.ActingNS
             {
                 this.acting = acting;
                 this.action = acting.GetNextAction();
+                this.Propagate = true;
             }
         }
 

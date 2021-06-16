@@ -12,7 +12,7 @@ namespace Hopper.TestContent.BindingNS
         [Inject] public Entity guest;
 
         // When the time comes to attack, attack that entity instead
-        [Export(Chain = "Attacking.Do", Priority = PriorityRank.High, Dynamic = true)]
+        [Export(Chain = "Attacking.SetTargets", Priority = PriorityRank.High, Dynamic = true)]
         public void AttackBinder(Attacking.Context context)
         {
             context.SetSingleTarget(guest.GetTransform());

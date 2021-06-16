@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Hopper.Core.ActingNS;
 using Hopper.Core.WorldNS;
 using Hopper.Utils.Vector;
 
@@ -8,21 +10,23 @@ namespace Hopper.Core.Targeting
     {
         public List<AttackTargetContext> targetContexts;
         public PieceAttackPattern pattern;
-        public Entity attacker;
-        public IntVector2 attackerPosition;
-        public IntVector2 attackDirection;
         public Layers targetedLayer;
         public Layers blockLayer;
 
-        public AttackTargetingContext(List<AttackTargetContext> targetContexts, PieceAttackPattern pattern, Entity attacker, IntVector2 attackerPosition, IntVector2 attackDirection, Layers targetedLayer, Layers blockLayer)
+        public AttackTargetingContext(List<AttackTargetContext> targetContexts, PieceAttackPattern pattern, Layers targetedLayer, Layers blockLayer)
         {
             this.targetContexts = targetContexts;
             this.pattern = pattern;
-            this.attacker = attacker;
-            this.attackerPosition = attackerPosition;
-            this.attackDirection = attackDirection;
             this.targetedLayer = targetedLayer;
             this.blockLayer = blockLayer;
+        }
+
+        public void LeaveTargetsOfFaction(Faction faction)
+        {
+            // TODO: maybe make this a double list
+            targetContexts = targetContexts
+                .Where(ctx => ctx.transform.entity.TryCheckFaction(faction))
+                .ToList();
         }
     }
 

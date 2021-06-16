@@ -5,6 +5,7 @@ using Hopper.Core.Components.Basic;
 using Hopper.Core.Items;
 using Hopper.Core.Stat;
 using Hopper.Core.WorldNS;
+using Hopper.Shared.Attributes;
 using Hopper.Utils;
 using Hopper.Utils.Chains;
 
@@ -25,12 +26,12 @@ namespace Hopper.Core
 
     public struct Registry
     {
-        public static Registry Global;
+        [RequiringInit] public static Registry Global;
         
         static Registry()
         {
             Global = new Registry();
-            Global.Init();
+            Global.BeforeModsInitialize();
         }
 
         public int _currentMod;
@@ -57,7 +58,7 @@ namespace Hopper.Core
         public StaticRegistry<ActingNS.InputMapping> InputMappings;
         public Queries Queries;
         
-        public void Init()
+        public void BeforeModsInitialize()
         {
             Priority.Init();
             RuntimeEntities.Init();
@@ -74,16 +75,8 @@ namespace Hopper.Core
 
         /// <summary>
         /// Added this as a temporary solution.
-        /// This function is called once all mods have been loaded.
-        /// Ideally, I'd imagine, we should allow any class of any mod define such function,
-        /// but allow it to be executed at the end of loading the corresponding mod instead.
-        /// I would also imagine more phases for mod loading would not be bad.
-        /// Some workarounds already exist in my code, e.g. the fact that Stats look at the global stats
-        /// if the given stat is not in the template. This basically implies that entity types should be 
-        /// initialized after all stats have been initialized, but I imagine it would be beneficial for
-        /// the exporting classes to select the exact stage in the process that they want to use instead.
         /// </summary>
-        public void AfterInit()
+        public void Init()
         {
             Queries.Init();
         }

@@ -23,7 +23,7 @@ namespace Hopper.TestContent
             Moving    .AddTo(subject);
             Ticking   .AddTo(subject);
             Pushable  .AddTo(subject);
-            Attacking .AddTo(subject);
+            Attacking .AddTo(subject, entity => BufferedAttackTargetProvider.Simple, Layers.REAL, Faction.Player);
             Sequential.AddTo(subject, new Sequence(sequenceSteps));
             Attackable.AddTo(subject, Attackness.ALWAYS);
             Damageable.AddTo(subject, new Health(1));
@@ -37,8 +37,8 @@ namespace Hopper.TestContent
             subject.GetMoving() .DefaultPreset();
             subject.GetTicking().DefaultPreset();
             subject.GetPushable()  .DefaultPreset();
-            subject.GetAttacking() .NoInventoryPreset();
-            subject.GetAttackable().DefaultPreset();
+            subject.GetAttacking() .SkipEmptyAttackPreset();
+            subject.GetAttackable();
             subject.GetDamageable().DefaultPreset();
             subject.GetDisplaceable().DefaultPreset();
         }

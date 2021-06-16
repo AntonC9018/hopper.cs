@@ -22,7 +22,6 @@ namespace Hopper.Core.Mods
             {
                 mod();
             }
-            Registry.Global.AfterInit();
         }
     }
 }

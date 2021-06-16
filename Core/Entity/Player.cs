@@ -28,7 +28,7 @@ namespace Hopper.Core
             Moving  .AddTo(subject);
             Digging .AddTo(subject);
             Pushable.AddTo(subject);
-            Attacking   .AddTo(subject);
+            Attacking   .AddTo(subject, Attacking.GetTargetProviderFromInventory, Layers.REAL, Faction.Enemy | Faction.Environment);
             Attackable  .AddTo(subject, Attackness.ALWAYS);
             Damageable  .AddTo(subject, new Health(5));
             Displaceable.AddTo(subject, Layers.BLOCK);
@@ -52,8 +52,8 @@ namespace Hopper.Core
             subject.GetDigging().DefaultPreset();
             subject.GetTicking().DefaultPreset();
             subject.GetPushable()  .DefaultPreset();
-            subject.GetAttacking() .InventoryPreset();
-            subject.GetAttackable().DefaultPreset();
+            subject.GetAttacking() .SkipEmptyAttackPreset();
+            subject.GetAttackable();
             subject.GetDamageable().DefaultPreset();
             subject.GetDisplaceable().DefaultPreset();
             // subject.TryGetFactionComponent()?.

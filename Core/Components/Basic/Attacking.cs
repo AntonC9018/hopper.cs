@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Hopper.Core.Targeting;
 using Hopper.Core.Stat;
 using Hopper.Utils.Vector;
@@ -6,18 +7,21 @@ using Hopper.Shared.Attributes;
 using Hopper.Core.ActingNS;
 using Hopper.Core.WorldNS;
 using Hopper.Core.Items;
+using Hopper.Utils.Chains;
 
 namespace Hopper.Core.Components.Basic
 {
-    [AutoActivation("Attack")]
     public partial class Attacking : IBehavior, IStandartActivateable, IPredictable
     {
         public class Context : StandartContext
         {
             public AttackTargetingContext targetingContext;
-            [Omit] public bool haveStatsBeenSet;
-            [Omit] public Attack attack;
-            [Omit] public Push push;
+
+            public Context(Entity actor, IntVector2 direction)
+            {
+                this.actor = actor;
+                this.direction = direction;
+            }
 
             public void SetSingleTarget(Transform target)
             {
@@ -25,94 +29,107 @@ namespace Hopper.Core.Components.Basic
 
                 targetingContext = new AttackTargetingContext(
                     new List<AttackTargetContext>(1) { new AttackTargetContext(transform) },
-                    null, actor, transform.position, direction, target.layer, 0);
+                    pattern          : null, 
+                    targetedLayer    : target.layer, 
+                    blockLayer       : 0);
             }
-        }
 
-        public bool Activate(Entity entity, IntVector2 direction)
-        {
-            return Activate(entity, direction, null);
-        }
-
-        /// <summary>
-        /// A helper method. Tries to apply the given attack to the given entity, without checking the attackness. 
-        /// </summary>
-        // [Alias("TryApplyAttack")] 
-        public static bool TryApplyAttack(Entity attacker, Entity attacked, Attack attack, IntVector2 direction)
-        {
-            if (!attacked.IsDead())
+            public void AttackTargets(Attack attack)
             {
-                return attacked.TryBeAttacked(attacker, attack, direction);
+                foreach (var target in targetingContext.targetContexts)
+                {
+                    if (!target.transform.entity.IsDead())
+                    {
+                        target.transform.entity.TryBeAttacked(actor, attack, direction);
+                    }
+                }
             }
-            return false;
-        }
 
-        /// <summary>
-        /// This is one of the default handlers of the CHECK chain.
-        /// It loads the attack and push from the stats manager.  
-        /// </summary>
-        [Export(Priority = PriorityRank.Low)] public static void SetStats(Context ctx)
-        {
-            if (!ctx.haveStatsBeenSet)
+            public void PushTargets(Push push)
             {
-                var stats = ctx.actor.GetStats();
-                stats.GetLazy(Attack.Index, out ctx.attack);
-                stats.GetLazy(Push.Index, out ctx.push);
+                foreach (var target in targetingContext.targetContexts)
+                {
+                    if (!target.transform.entity.IsDead())
+                    {
+                        target.transform.entity.TryBePushed(push, direction);
+                    }
+                }
             }
         }
 
         /// <summary>
-        /// This is one of the default handlers of the CHECK chain.
-        /// It finds targets using the target provider of the currently equipped weapon, if the entity has an inventory.
+        /// The prediction system needs the underlying pattern to show the endangered cells.
+        /// We have to go one step down from the chain abstraction, in order to get to this pattern.
+        /// Since this target provider may be either selected statically, or drawn dynamically 
+        /// from the inventory, or some other source, I say we abstract it away a little bit
+        /// by using a function that would get us the target provider.
+        /// TODO:
+        /// Now we may instead inject the provider itself, in which case it will have to be directly
+        /// synced when e.g. the weapon is changed. This is also a viable option, so this about it.
         /// </summary>
-        [Export(Priority = PriorityRank.Low)] public static void SetTargetsFromInventory(Context ctx)
+        [Inject] public readonly System.Func<Entity, BufferedAttackTargetProvider> GetDefaultAttackTargetProvider;
+        [Inject] public Layers targetedLayer;
+        [Inject] public Faction targetedFaction;
+
+        // [Chain("FilterTargets")] private Chain<Context> _FilterTargetsChain;
+
+        [Chain("Check")]      private Chain<Context> _CheckChain;
+        [Chain("SetTargets")] private Chain<Context> _SetTargetsChain;
+        [Chain("After")]      private Chain<Context> _AfterChain;
+
+        [Alias("Attack")]
+        public bool Activate(Entity actor, IntVector2 direction)
         {
-            if (
-                ctx.targetingContext == null
-                && ctx.actor.TryGetInventory(out var inventory)
+            var context = new Context(actor, direction);
+
+            // If the targets have not been set by any external handlers, set it manually here
+            if (!_SetTargetsChain.PassUntil(context, ctx => ctx.targetingContext != null))
+            {
+                var targetProvider = GetDefaultAttackTargetProvider(actor);
+
+                // Let's just say the action fails if that function returned nothing.
+                if (targetProvider is null) return false;
+
+                var targetingContext = targetProvider.GetTargets(actor, targetedLayer, direction);
+
+                // This filters the targets by the leaving the ones of the correct faction.
+                targetingContext.LeaveTargetsOfFaction(targetedFaction);
+
+                context.targetingContext = targetingContext;
+            }
+
+            // The next chain checks if the action should be done.
+            // As a rule, this would include a function that would check if e.g. the attack is not empty.
+            if (!_CheckChain.PassWithPropagationChecking(context))
+            {
+                return false;
+            }
+
+            var stats = actor.GetStats();
+
+            // Now we can do the action normally.
+            // Apply all attacks
+            context.AttackTargets(stats.GetLazy(Attack.Index));
+            context.PushTargets(stats.GetLazy(Push.Index));
+
+            _AfterChain.Pass(context);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Returns the target provider from the current weapon of the given entity.
+        /// If they hold no weapon, null will be returned.
+        /// </summary>
+        public static BufferedAttackTargetProvider GetTargetProviderFromInventory(Entity actor)
+        {
+            if (actor.TryGetInventory(out var inventory)
                 && inventory.TryGetWeapon(out var weapon)
                 && weapon.TryGetBufferedAttackTargetProvider(out var provider))
             {
-                ctx.targetingContext = provider.GetTargets(ctx.actor, ctx.direction);
+                return provider;
             }
-        }
-
-        /// <summary>
-        /// This is one of the default handlers of the CHECK chain.
-        /// It gets the entity that is right in the direction that this entity has decided to attack.
-        /// Should be used for enemies without a weapon in the inventory.
-        /// </summary>
-        [Export(Priority = PriorityRank.Low)] public static void SetTargetsRightBeside(Context ctx)
-        {
-            if (ctx.targetingContext == null)
-            {
-                ctx.targetingContext = BufferedAttackTargetProvider.Simple.GetTargets(ctx.actor, ctx.direction);
-            }
-        }
-
-        /// <summary>
-        /// This is one of the default handlers of the DO chain.
-        /// It tries to ATTACK all the targets one by one.
-        /// </summary>
-        [Export] public static void ApplyAttacks(
-            AttackTargetingContext targetingContext, Attack attack, Entity actor)
-        {
-            foreach (var target in targetingContext.targetContexts)
-            {
-                TryApplyAttack(target.transform.entity, actor, attack.Copy(), target.direction);
-            }
-        }
-
-        /// <summary>
-        /// This is one of the default handlers of the DO chain.
-        /// It tries to PUSH all the targets one by one.
-        /// </summary>
-        [Export] public static void ApplyPushes(AttackTargetingContext targetingContext, Push push)
-        {
-            foreach (var target in targetingContext.targetContexts)
-            {
-                target.transform.entity.TryBePushed(push.Copy(), target.direction);
-            }
+            return null;
         }
 
         /// <summary>
@@ -121,44 +138,27 @@ namespace Hopper.Core.Components.Basic
         /// </summary>
         public IEnumerable<IntVector2> Predict(Entity actor, IntVector2 direction, PredictionTargetInfo info)
         {
-            if (_CheckChain.Contains(SetTargetsRightBesideHandler))
+            // If the entity would not be targeted, skip
+            if (info.faction.HasNeitherFlag(targetedFaction) || info.layer.HasNeitherFlag(targetedLayer)) 
             {
-                yield return actor.GetTransform().position + direction;
+                yield break;
             }
-            else if (actor.TryGetInventory(out var inventory)
-                && inventory.TryGetWeapon(out var weapon)
-                && weapon.TryGetBufferedAttackTargetProvider(out var provider))
+
+            // TODO: maybe generalize this to use the SetTargets chain.
+            var provider = GetDefaultAttackTargetProvider(actor);
+            if (provider is null) yield break;
+            
+            foreach (var ctx in provider._pattern.MakeContexts(actor.GetTransform().position, direction))
             {
-                var position = actor.GetTransform().position;
-
-                foreach (var ctx in provider._pattern.MakeContexts(position, direction))
-                {
-                    // This has more info, can use.
-                    yield return ctx.position;
-                }
+                // This has more info, can use.
+                // TODO: The info contains
+                yield return ctx.position;
             }
         }
 
-        // Check { SetTargets, SetStats }
-        // Do    { ApplyAttack, ApplyPush, UpdateHistory }
-        public void InventoryPreset()
+        public void SkipEmptyAttackPreset()
         {
-            _CheckChain.AddMany(SetStatsHandler, SetTargetsFromInventoryHandler);
-            _DoChain.AddMany(ApplyAttacksHandler, ApplyPushesHandler);            
-        }
-
-        public void NoInventoryPreset()
-        {
-            _CheckChain.AddMany(SetStatsHandler, SetTargetsRightBesideHandler);
-            _DoChain.AddMany(ApplyAttacksHandler, ApplyPushesHandler);            
-        }
-
-        public void AutoPreset(Entity entity)
-        {
-            if (entity.HasInventory())
-                InventoryPreset();
-            else
-                NoInventoryPreset();
+            _CheckChain.Add(Hopper.Core.Retouchers.Skip.SkipEmptyAttackHandler);
         }
     }
 }
