@@ -69,6 +69,7 @@ namespace Hopper.Core
             Component = new IdentifierAssigner();
             Slot = new IdentifierAssigner();
             InputMappings.Init();
+            _extensions = new Dictionary<int, IRegistryExtension>();
         }
 
         /// <summary>
