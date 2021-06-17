@@ -79,7 +79,7 @@ namespace <#= Namespace #>
                 <#= entityType.FullyQualifiedClassName #>.AddComponents(factory);
                 <#= entityType.FullyQualifiedClassName #>.InitComponents(factory);
                 <#= entityType.FullyQualifiedClassName #>.Retouch(factory);
-                factory.id = Registry.Global.EntityFactory.AddForCurrentMod("<#= entityType.ClassName #>", factory);
+                factory.id = Registry.Global.EntityFactory.AddForCurrentMod("<#= entityType.IdentifierString #>", factory);
                 <#= entityType.FullyQualifiedClassName #>.Factory = factory;
             }
 <#  } #>

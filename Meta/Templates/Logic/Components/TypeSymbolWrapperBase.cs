@@ -152,6 +152,13 @@ namespace Hopper.Meta
         public string Identity => $"{ClassName} {TypeText}";
         public string Location => $"{symbol.Locations.First()}";
         public string StaticityString => symbol.IsStatic ? "static " : "";
+        
+        /// <summary> 
+        /// Used as name for a given piece of content.
+        /// This may be e.g. the name by which the entity type is stored in the registry,
+        /// used to interact with the file system and the editor.
+        /// </summary> 
+        public string IdentifierString => ClassName.ToSnakeCase();
         public bool IsExportingInstanceMethods => symbol.HasAttribute(RelevantSymbols.InstanceExportAttribute.symbol);
     }
 }

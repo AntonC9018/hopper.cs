@@ -420,5 +420,31 @@ namespace Hopper.Meta
                 yield return symbol;
             }
         }
+
+        public static string ToSnakeCase(this string input)
+        {
+            if (input.Length == 0) return input;
+
+            var sb = new StringBuilder();
+
+            sb.Append(char.ToLowerInvariant(input[0]));
+
+            for (int i = 1; i < input.Length; i++)
+            {
+                char ch = input[i];
+
+                if (char.IsUpper(ch))
+                {
+                    sb.Append('_');
+                    sb.Append(char.ToLowerInvariant(ch));
+                }
+                else
+                {
+                    sb.Append(ch);
+                }
+            }
+
+            return sb.ToString();
+        }
     }
 }
