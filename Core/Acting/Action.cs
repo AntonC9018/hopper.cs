@@ -33,6 +33,7 @@ namespace Hopper.Core.ActingNS
     public interface IAction
     {
         bool DoAction(Entity actor, IntVector2 direction);
+        bool ContainsAction(IAction target);
     }
 
     public interface IUndirectedAction : IAction
@@ -128,6 +129,11 @@ namespace Hopper.Core.ActingNS
             this.actions = actions;
         }
 
+        public bool ContainsAction(IAction target)
+        {
+            return actions.Any(a => a.ContainsAction(target));
+        }
+
         public bool DoAction(Entity actor, IntVector2 direction)
         {
             bool success = false;
@@ -156,6 +162,11 @@ namespace Hopper.Core.ActingNS
         public CompositeAction(params IAction[] actions)
         {
             this.actions = actions;
+        }
+
+        public bool ContainsAction(IAction target)
+        {
+            return actions.Any(a => a.ContainsAction(target));
         }
 
         public bool DoAction(Entity actor, IntVector2 direction)
@@ -187,6 +198,11 @@ namespace Hopper.Core.ActingNS
             this.DoFunc = DoFunc;
         }
 
+        public bool ContainsAction(IAction target)
+        {
+            return ReferenceEquals(this, target);
+        }
+
         public bool DoAction(Entity actor, IntVector2 direction)
         {
             return DoFunc(actor, direction);
@@ -215,6 +231,11 @@ namespace Hopper.Core.ActingNS
         public SimpleUndirectedAction(UndirectedDo DoFunc)
         {
             this.DoFunc = DoFunc;
+        }
+
+        public bool ContainsAction(IAction target)
+        {
+            return ReferenceEquals(this, target);
         }
 
         public bool DoAction(Entity actor)
@@ -269,6 +290,11 @@ namespace Hopper.Core.ActingNS
             this.activateableId = activateableId;
         }
 
+        public bool ContainsAction(IAction target)
+        {
+            return target is ActivatingAction<T> a && a.activateableId == activateableId;
+        }
+
         public bool DoAction(Entity actor, IntVector2 direction)
         {
             return actor.GetComponent(activateableId).Activate(actor, direction);
@@ -284,6 +310,11 @@ namespace Hopper.Core.ActingNS
         public UndirectedActivatingAction(Index<T> activateableId)
         {
             this.activateableId = activateableId;
+        }
+
+        public bool ContainsAction(IAction target)
+        {
+            return target is UndirectedActivatingAction<T> a && a.activateableId == activateableId;
         }
 
         public bool DoAction(Entity actor)
@@ -331,6 +362,11 @@ namespace Hopper.Core.ActingNS
             Assert.That(If != null, "The conditional must not be null");
             IfAction = If;
             ThenAction = Then;
+        }
+
+        public bool ContainsAction(IAction target)
+        {
+            return IfAction.ContainsAction(target) || ThenAction.ContainsAction(target);
         }
 
         public bool DoAction(Entity actor, IntVector2 direction)

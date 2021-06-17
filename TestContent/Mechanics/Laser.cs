@@ -76,5 +76,7 @@ namespace Hopper.TestContent.LaserNS
             Shoot(actor.GetTransform().position, direction);
             return true;
         }
+
+        public bool ContainsAction(IAction target) => false;
     }
 }

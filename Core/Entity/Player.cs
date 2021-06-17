@@ -39,7 +39,9 @@ namespace Hopper.Core
             Inventory.AddTo(subject);
 
             // TODO: pass this an action
-            Controllable.AddTo(subject, null);
+            Controllable.AddTo(subject, 
+                // The default action is the AttackDigMove action.
+                Action.Compose(Attacking.Action, Digging.Action, Moving.Action));
 
             // TODO: rename the namespaces
             Stats.AddTo(subject, Registry.Global.Stats._map);
