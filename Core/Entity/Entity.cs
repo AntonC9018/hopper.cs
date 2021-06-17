@@ -5,6 +5,7 @@ using Hopper.Shared.Attributes;
 using Hopper.Utils.Chains;
 using Hopper.Core.WorldNS;
 using Hopper.Core.Components.Basic;
+using System.Linq;
 
 namespace Hopper.Core
 {
@@ -139,6 +140,16 @@ namespace Hopper.Core
         public static bool operator!=(Entity a, Entity b)
         {
             return a.id != b.id;
+        }
+
+        // A debug thing, to see the name nicely
+        public string IdentifierName {
+            get {
+                var name = Registry.Global.EntityFactory._nameMap
+                    .Where(kvp => kvp.Value == typeId).FirstOrDefault().Key;
+                if (name == null) return "unknown";
+                return name;
+            }
         }
     }
 }

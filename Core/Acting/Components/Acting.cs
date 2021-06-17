@@ -18,6 +18,16 @@ namespace Hopper.Core.ActingNS
         ActionSet                   = 1 << 3,
         ActionSubstituted           = 1 << 4,
         ActionSubstitutionTraversed = 1 << 5,
+
+        /// <summary>
+        /// Indicates reexecution of an action if all the actions so far have been unsuccessful.
+        /// This applies to mostly just the EnemyAlgo.
+        /// The player is always desperate.
+        /// This means that for example they would always bump againt the wall if the movement fails.
+        /// This is still a TODO.
+        /// The easiest way of making it work as expected is to check if the action had moving, and bump if it did.
+        /// </summary>
+        IsDesperate                 = 1 << 6,
     };
     
     public partial class Acting : IBehavior
