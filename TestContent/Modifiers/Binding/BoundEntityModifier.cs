@@ -26,7 +26,7 @@ namespace Hopper.TestContent.BindingNS
         }
 
         // No disaplacements
-        [Export(Chain = "Moving.Do", Priority = PriorityRank.High, Dynamic = true)]
+        [Export(Chain = "Moving.Should", Priority = PriorityRank.High, Dynamic = true)]
         public bool StopDisplacement()
         {
             // continue if the guest is dead

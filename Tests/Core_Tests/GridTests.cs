@@ -148,7 +148,7 @@ namespace Hopper.Tests
             */
 
             var queriedPosition = new IntVector2(0, 0);
-            var queriedDirection = new IntVector2(-1, 0); // equivalently, IntVector2.Up
+            var queriedDirection = new IntVector2(0, -1); // equivalently, IntVector2.Up
 
             Assert.False(Grid.HasBlockAt(queriedPosition, queriedDirection, Layers.REAL)); // no entity place there yet
 

@@ -13,23 +13,20 @@ namespace Hopper.Core.Components.Basic
         public class Context : ContextBase
         {
             public IntVector2 direction;
-            public Move move;
             public Entity actor => transform.entity;
             public Transform transform;
             public IntVector2 initialPosition;
             public IntVector2 newPosition;
             public Layers blockLayer;
 
-            public Context(IntVector2 direction, Move move, Transform transform, Layers blockLayer)
+            public Context(Transform transform, IntVector2 direction)
             {
                 this.direction       = direction;
-                this.move            = move;
                 this.transform       = transform;
                 this.initialPosition = transform.position;
-                this.blockLayer      = blockLayer;
             }
 
-            public void SetNewPosition()
+            public void SetNewPosition(Move move, Layers blockLayer)
             {
                 int i = 1;
 
@@ -53,6 +50,15 @@ namespace Hopper.Core.Components.Basic
                 }
             }
 
+            /// <summary>
+            /// Set the next position to the given value.
+            /// This would make the entity teleport if followed by DisplaceLogic().
+            /// </summary>
+            public void SetNewPosition(IntVector2 position)
+            {
+                newPosition = position;
+            }
+
             public void RemoveFromGrid()
             {
                 transform.RemoveFromGrid(direction);
@@ -73,26 +79,47 @@ namespace Hopper.Core.Components.Basic
         [Inject] public Layers blockLayer;
 
         // TODO: To support sized entities, a lot has to be done here
-        [Alias("Displace")] public bool Activate(Entity actor, IntVector2 direction, Move move)
+        [Alias("Displace")] 
+        public bool Activate(Entity actor, IntVector2 direction, Move move)
         {
-            var ctx = new Context(direction, move, actor.GetTransform(), blockLayer);
+            var ctx = MakeContextWithMove(actor, direction, move);
 
-            ctx.SetNewPosition();
-
-            if (!_CheckChain.PassWithPropagationChecking(ctx))
+            if (!Check(ctx))
             {
                 return false;
             }
 
-            if (_BeforeRemoveChain.PassWithPropagationChecking(ctx))
-            {
-                ctx.RemoveFromGrid();
-                _BeforeResetChain.Pass(ctx);
-                ctx.ResetInGrid();
-                _AfterChain.Pass(ctx);
-            }
-
+            DisplaceLogic(ctx);
             return true;
+        }
+
+        [Alias("DisplaceTo")] 
+        public void Activate(Entity actor, IntVector2 direction, IntVector2 newPosition)
+        {
+            var ctx = new Context(actor.GetTransform(), direction);
+            ctx.SetNewPosition(newPosition);
+            DisplaceLogic(ctx);
+        }
+
+        public Context MakeContextWithMove(Entity actor, IntVector2 direction, Move move)
+        {
+            var ctx = new Context(actor.GetTransform(), direction);
+            ctx.SetNewPosition(move, blockLayer);
+            return ctx;
+        }
+
+        public bool Check(Context context)
+        {
+            return _CheckChain.PassWithPropagationChecking(context);
+        }
+
+        public void DisplaceLogic(Context context)
+        {
+            _BeforeRemoveChain.Pass(context);
+            context.RemoveFromGrid();
+            _BeforeResetChain.Pass(context);
+            context.ResetInGrid();
+            _AfterChain.Pass(context);
         }
 
         public void DefaultPreset()

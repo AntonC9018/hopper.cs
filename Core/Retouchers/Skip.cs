@@ -21,7 +21,7 @@ namespace Hopper.Core.Retouchers
         }
 
         [Export(Chain = "Moving.Check", Priority = PriorityRank.Low, Dynamic = true)]
-        private static bool SkipBlocked(Moving.Context ctx)
+        private static bool SkipBlocked(Displaceable.Context ctx)
         {
             return !ctx.actor.GetTransform().HasBlockRelative(ctx.direction);
         }
