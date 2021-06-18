@@ -14,7 +14,7 @@ namespace Hopper.Core
     {
         public static EntityFactory Factory;
 
-        public static void AddComponents(Entity subject)
+        public static void AddComponents(EntityFactory factory)
         {
             // Apply these one after the other.
             // This will only initialize the inject variables of the behavior / component.
@@ -24,27 +24,28 @@ namespace Hopper.Core
             // central (optionally), these can actually reference a global storage for them.
             
             // So this just adds the behavior
-            Acting  .AddTo(subject, null, Algos.SimpleAlgo, Order.Player);
-            Moving  .AddTo(subject);
-            Digging .AddTo(subject);
-            Pushable.AddTo(subject);
-            Attacking   .AddTo(subject, Attacking.GetTargetProviderFromInventory, Layers.REAL, Faction.Enemy | Faction.Environment);
-            Attackable  .AddTo(subject, Attackness.ALWAYS);
-            Damageable  .AddTo(subject, new Health(5));
-            Displaceable.AddTo(subject, Layers.BLOCK);
-            Ticking.AddTo(subject);
+            Acting  .AddTo(factory, null, Algos.SimpleAlgo, Order.Player);
+            Moving  .AddTo(factory);
+            Digging .AddTo(factory);
+            Pushable.AddTo(factory);
+            Attacking   .AddTo(factory, Attacking.GetTargetProviderFromInventory, Layers.REAL, Faction.Enemy|Faction.Environment);
+            Attackable  .AddTo(factory, Attackness.ALWAYS);
+            Damageable  .AddTo(factory, new Health(5));
+            Displaceable.AddTo(factory, Layers.BLOCK);
+            Ticking.AddTo(factory);
 
-            FactionComponent.AddTo(subject, Faction.Player);
-            Transform.AddTo(subject, Layers.REAL, TransformFlags.Default);
-            Inventory.AddTo(subject);
+            FactionComponent.AddTo(factory, Faction.Player);
+            Transform.AddTo(factory, Layers.REAL, TransformFlags.Default);
+            Inventory.AddTo(factory);
+            Inventory.AddInitTo(factory);
 
             // TODO: pass this an action
-            Controllable.AddTo(subject, 
+            Controllable.AddTo(factory, 
                 // The default action is the AttackDigMove action.
                 Action.Compose(Attacking.Action, Digging.Action, Moving.Action));
 
             // TODO: rename the namespaces
-            Stats.AddTo(subject, Registry.Global.Stats._map);
+            Stats.AddTo(factory, Registry.Global.Stats._map);
         }
 
         public static void InitComponents(Entity subject)
@@ -71,7 +72,6 @@ namespace Hopper.Core
             Skip.SkipEmptyAttackHandlerWrapper.HookTo(factory);
             Equip.OnDisplaceHandlerWrapper.HookTo(factory);
             Reorient.OnActionSuccessHandlerWrapper.HookTo(factory);
-            
         }
     }
 }
