@@ -14,11 +14,11 @@ namespace Hopper.Core.Retouchers
             return ctx.targetingContext.targetContexts.Count > 0;
         }
 
-        [Export(Chain = "Digging.Check", Priority = PriorityRank.Low, Dynamic = true)]
-        private static bool SkipEmptyDig(Digging.Context ctx)
-        {
-            return ctx.targets.Count > 0;
-        }
+        // [Export(Chain = "Digging.Check", Priority = PriorityRank.Low, Dynamic = true)]
+        // private static bool SkipEmptyDig(Digging.Context ctx)
+        // {
+        //     return ctx.targets.Count > 0;
+        // }
 
         [Export(Chain = "Moving.Check", Priority = PriorityRank.Low, Dynamic = true)]
         private static bool SkipBlocked(Displaceable.Context ctx)

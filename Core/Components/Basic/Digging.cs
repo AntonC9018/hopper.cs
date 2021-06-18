@@ -7,47 +7,41 @@ using Hopper.Core.Stat;
 using System.Linq;
 using Hopper.Core.ActingNS;
 using Hopper.Core.WorldNS;
+using Hopper.Utils.Vector;
 
 namespace Hopper.Core.Components.Basic
 {
-    [AutoActivation("Dig")]
     public partial class Digging : IBehavior, IStandartActivateable
     {
         public class Context : StandartContext
         {
-            [Omit] public Dig dig;
-            [Omit] public List<TargetContext> targets;
         }
 
-        [Export] public static void SetDig(Stats stats, out Dig dig)
+        // TODO: Currently unused
+        [Chain("After")] private readonly Chain<Context> _AfterChain;
+        public bool Activate(Entity actor, IntVector2 direction)
         {
-            stats.GetLazy(Dig.Index, out dig);
-        }
-
-        [Export] public static void SetTargets(Context ctx)
-        {
-            if (ctx.targets == null
-                && ctx.actor.TryGetInventory(out var inv)
+            if (actor.TryGetInventory(out var inv)
                 && inv.TryGetShovel(out var shovel)
                 && shovel.TryGetUnbufferedTargetProvider(out var provider))
             {
-                ctx.targets = provider.GetTargets(ctx.actor.GetTransform().position, ctx.direction).ToList();
-            }
-        }
+                var targets = provider.GetTargets(actor.GetTransform().position, direction);
 
-        [Export] public static void Attack(Context ctx)
-        {
-            foreach (var target in ctx.targets)
-            {
-                ctx.dig.ToAttack(out Attack attack);
-                target.transform.entity.TryBeAttacked(ctx.actor, attack, ctx.direction);
-            }
-        }
+                if (!targets.Any()) return false;
 
-        public void DefaultPreset()
-        {
-            _CheckChain.AddMany(SetDigHandler, SetTargetsHandler);
-            _DoChain.Add(AttackHandler);
+                var stats = actor.GetStats();
+                var dig = stats.GetLazy(Dig.Index);
+                var attack = dig.ToAttack();
+                
+                foreach (var target in targets)
+                {
+                    target.transform.entity.TryBeAttacked(actor, attack, direction);
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

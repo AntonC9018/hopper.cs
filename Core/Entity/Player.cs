@@ -52,7 +52,7 @@ namespace Hopper.Core
         {
             subject.GetActing() .DefaultPreset(subject);
             subject.GetMoving() .DefaultPreset();
-            subject.GetDigging().DefaultPreset();
+            // subject.GetDigging().DefaultPreset();
             subject.GetTicking().DefaultPreset();
             subject.GetPushable()  .DefaultPreset();
             subject.GetAttacking() .SkipEmptyAttackPreset();
