@@ -2,6 +2,8 @@
 
 - [Overview](#overview)
   - [View](#view)
+  - [Getting started](#getting-started)
+  - [Running tests](#running-tests)
 - [Introduction](#introduction)
 - [Documentation](#documentation)
   - [Components](#components)
@@ -32,6 +34,30 @@ The documentation does not exist, although some general concepts like Chains, Ti
 There is one WIP `View` I'm currently working on, see [this](https://github.com/AntonC9018/hopper-godot).
 
 There also an implementation based on unity (currently broken), see [this repo](https://github.com/AntonC9018/hopper-unity).
+
+## Getting started
+
+When you clone the code to your hard drive, it won't compile yet.
+You need to generate some more code using the custom code generator.
+It is not included as a build process, because it is extremely slow.
+
+To run the code generator, run the following command in the root.
+```
+meta all
+```
+
+## Running tests
+
+I'm using the NUnit framework for tests. They are located in `/Tests` subproject.
+Either run them via your IDE, or via the `test` script:
+```
+test all
+```
+
+All tests of a specific class may be run likewise using the `test` script:
+```
+test ChainTests
+```
 
 # Introduction
 
