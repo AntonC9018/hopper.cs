@@ -72,6 +72,7 @@ namespace Hopper.Core
             Skip.SkipEmptyAttackHandlerWrapper.HookTo(factory);
             Equip.OnDisplaceHandlerWrapper.HookTo(factory);
             Reorient.OnActionSuccessHandlerWrapper.HookTo(factory);
+            Skip.SkipEmptyDigHandlerWrapper.HookTo(factory);
         }
     }
 }

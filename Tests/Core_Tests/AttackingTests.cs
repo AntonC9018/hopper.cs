@@ -54,11 +54,11 @@ namespace Hopper.Tests
             
             bool pain = false;
             var painHandler = new Handler<Attackable.Context>(ctx => pain = true);
-            Attackable.AfterPath.Chain(attacked).Add(painHandler);
+            Attackable.AfterPath.Get(attacked).Add(painHandler);
 
             bool did = false;
             var didHandler = new Handler<Attacking.Context>(ctx => did = true);
-            Attacking.AfterPath.Chain(attacker).Add(didHandler);
+            Attacking.AfterPath.Get(attacker).Add(didHandler);
 
             Assert.True(attacker.Attack(IntVector2.Right));
             Assert.True(pain);

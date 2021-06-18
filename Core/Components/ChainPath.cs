@@ -20,21 +20,28 @@ namespace Hopper.Core.Components
         T Get(Entity entity);
     }
 
-    public readonly struct BehaviorChainPath<T> : IPath<T> where T : IChain
+    public readonly struct BehaviorChainPath<B, T> : IPath<T> 
+        where T : IChain 
+        where B : IComponent
     {
         /// <summary>
         /// Returns the chain if the entity has the behavior with which the chain is associated
         /// Otherwise, null is returned.
         /// </summary>
-        public readonly System.Func<Entity, T> Chain;
+        public readonly System.Func<B, T> Chain;
+        public readonly Index<B> BehaviorIndex;
 
-        public BehaviorChainPath(System.Func<Entity, T> GetChainFunction)
+        public BehaviorChainPath(Index<B> index, System.Func<B, T> GetChainFunction)
         {
+            BehaviorIndex = index;
             Chain = GetChainFunction;
         }
 
-        public T FactoryChain(EntityFactory factory) => Chain(factory.subject);
-
-        T IPath<T>.Get(Entity entity) => Chain(entity);
+        public T Get(Entity entity) 
+        {
+            if (entity.TryGetComponent(BehaviorIndex, out var component))
+                return Chain(component);
+            return default;
+        }
     }
 }

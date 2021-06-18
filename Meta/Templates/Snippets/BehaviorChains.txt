@@ -7,8 +7,8 @@ public readonly Chain<Context> _<#= chain.Name #>Chain;
 /// <summary>
 /// Retrieves the <#= chain.Name #> chain from the <#= behavior.ClassName #> behavior of the given entity / entity factory.
 /// </summary>
-public static readonly BehaviorChainPath<<#= chain.GetTypeText() #>> <#= chain.Name #>Path = new BehaviorChainPath<<#= chain.GetTypeText() #>>(
-    (Entity entity) => entity.TryGetComponent(Index, out var component) ? component.<#= chain.FieldName #> : null);
+public static readonly BehaviorChainPath<<#= behavior.ClassName #>, <#= chain.GetTypeText() #>> <#= chain.Name #>Path = new BehaviorChainPath<<#= behavior.ClassName #>, <#= chain.GetTypeText() #>>(
+    Index, (<#= behavior.ClassName #> component) => component.<#= chain.FieldName #>);
 
 <#  }
     if (behavior.ShouldGenerateAutoActivation) 
