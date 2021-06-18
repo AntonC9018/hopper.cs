@@ -24,7 +24,7 @@ namespace Hopper.Core
             // central (optionally), these can actually reference a global storage for them.
             
             // So this just adds the behavior
-            Acting  .AddTo(subject, null, null, Order.Player);
+            Acting  .AddTo(subject, null, Algos.SimpleAlgo, Order.Player);
             Moving  .AddTo(subject);
             Digging .AddTo(subject);
             Pushable.AddTo(subject);
