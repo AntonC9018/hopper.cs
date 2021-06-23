@@ -43,5 +43,10 @@ namespace Hopper.Core.Components
                 return Chain(component);
             return default;
         }
+
+        public override string ToString()
+        {
+            return $"Path to {BehaviorIndex}";
+        }
     }
 }

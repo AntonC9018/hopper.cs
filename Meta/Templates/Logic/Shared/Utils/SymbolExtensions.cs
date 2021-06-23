@@ -34,6 +34,15 @@ namespace Hopper.Meta
             return String.Join(".", names);
         }
 
+        public static IEnumerable<string> GetNamespaceNames(this INamespaceSymbol symbol)
+        {
+            while (symbol != null && symbol.Name != "")
+            {
+                yield return symbol.Name;
+                symbol = symbol.ContainingNamespace;
+            }
+        }
+
         public static string GetTypeQualification(this ISymbol symbol)
         {
             Stack<string> names = new Stack<string>();
@@ -59,14 +68,6 @@ namespace Hopper.Meta
             return String.Join(".", names);
         }
 
-        public static IEnumerable<string> GetNamespaceNames(this INamespaceSymbol symbol)
-        {
-            while (symbol != null && symbol.Name != "")
-            {
-                yield return symbol.Name;
-                symbol = symbol.ContainingNamespace;
-            }
-        }
 
         // TODO: This function is pretty jank. Learn the right way to do this.
         public static string TypeToText(this ITypeSymbol symbol)
@@ -180,41 +181,7 @@ namespace Hopper.Meta
             return String.Join(", ", ParamTypeNames(parameters));
         }
 
-        public static T MapToType<T>(this AttributeData attributeData) where T : Attribute
-        {
-            T attribute;
-            if (attributeData.AttributeConstructor != null && attributeData.ConstructorArguments.Length > 0)
-            {
-                attribute = (T) Activator.CreateInstance(typeof(T), attributeData.GetActualConstuctorParams().ToArray());
-            }
-            else
-            {
-                attribute = (T) Activator.CreateInstance(typeof(T));
-            }
-            foreach (var p in attributeData.NamedArguments)
-            {
-                typeof(T).GetField(p.Key).SetValue(attribute, p.Value.Value);
-            }
-            return attribute;
-        }
-
-        public static IEnumerable<object> GetActualConstuctorParams(this AttributeData attributeData)
-        {
-            foreach (var arg in attributeData.ConstructorArguments)
-            {
-                if (arg.Kind == TypedConstantKind.Array)
-                {
-                    // Assume they are strings, but the array that we get from this
-                    // should actually be of type of the objects within it, be it strings or ints
-                    // This is definitely possible with reflection, I just don't know how exactly. 
-                    yield return arg.Values.Select(a => a.Value).OfType<string>().ToArray();
-                }
-                else
-                {
-                    yield return arg.Value;
-                }
-            }
-        } 
+        
 
         public static int IndexOfFirst<T>(this IEnumerable<T> e, Predicate<T> predicate)
         {
@@ -229,7 +196,7 @@ namespace Hopper.Meta
 
         public static bool TryGetExportAttribute(this IMethodSymbol method, out ExportAttribute attribute)
         {
-            return TryGetAttribute(method, RelevantSymbols.ExportAttribute, out attribute);
+            return method.TryGetAttribute(RelevantSymbols.ExportAttribute, out attribute);
         }
         
         public static IEnumerable<IMethodSymbol> GetMethods(this ITypeSymbol symbol)
@@ -253,63 +220,6 @@ namespace Hopper.Meta
         {
             return method.Parameters.Select(m1 => m1.Type).SequenceEqual(
                 fields.Select(field => field.symbol.Type), SymbolEqualityComparer.Default);
-        }
-
-        // TODO: THIS IS NOT A SYMBOL!!
-        public static int IndexOfFirstDifference(this string x, string y)
-        {
-            int count = x.Length;
-            if (count > y.Length)
-            {
-                return IndexOfFirstDifference(y, x);
-            }
-            if (ReferenceEquals(x, y))
-            {
-                return -1;
-            }
-            for (int index = 0; index != count; ++index)
-            {
-                if (x[index] != y[index])
-                    return index;
-            }
-            return count == y.Length ? -1 : count;
-        }
-
-        public static bool TryGetAttributeData(this ISymbol symbol, ISymbol attributeType, out AttributeData attributeData)
-        {
-            foreach (var a in symbol.GetAttributes())
-            {
-                if (SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeType))
-                {
-                    attributeData = a;
-                    return true;
-                }
-            }
-            attributeData = default;
-            return false;
-        }
-
-        public static bool TryGetAttribute<T>(this ISymbol symbol, AttributeSymbolWrapper<T> attributeSymbolWrapper, out T attribute) where T : System.Attribute
-        {
-            if (TryGetAttributeData(symbol, attributeSymbolWrapper.symbol, out var attributeData))
-            {
-                attribute = attributeData.MapToType<T>();
-                return true;
-            }
-            attribute = default;
-            return false;
-        }
-
-        public static bool HasAttribute(this ISymbol symbol, ISymbol attributeType)
-        {
-            foreach (var a in symbol.GetAttributes())
-            {
-                if (SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeType))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         public static bool HasInterface(this ITypeSymbol symbol, ISymbol interfaceType)
@@ -421,30 +331,6 @@ namespace Hopper.Meta
             }
         }
 
-        public static string ToSnakeCase(this string input)
-        {
-            if (input.Length == 0) return input;
-
-            var sb = new StringBuilder();
-
-            sb.Append(char.ToLowerInvariant(input[0]));
-
-            for (int i = 1; i < input.Length; i++)
-            {
-                char ch = input[i];
-
-                if (char.IsUpper(ch))
-                {
-                    sb.Append('_');
-                    sb.Append(char.ToLowerInvariant(ch));
-                }
-                else
-                {
-                    sb.Append(ch);
-                }
-            }
-
-            return sb.ToString();
-        }
+        
     }
 }

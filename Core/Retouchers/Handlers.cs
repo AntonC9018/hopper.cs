@@ -18,7 +18,9 @@ namespace Hopper.Core
 
         public void HookTo(Entity entity)
         {
-            chainPath.Get(entity).Add(handler);
+            var chain = chainPath.Get(entity);
+            Assert.False(chain is null, $"{entity} did not contain the chain {chainPath}");
+            chain.Add(handler);
         }
 
         public bool IsHookedTo(Entity entity)

@@ -10,7 +10,7 @@ namespace Hopper.Meta
     {
         public static async Task Main(string[] args)
         {
-            MSBuildLocator.RegisterDefaults();
+            var a = MSBuildLocator.RegisterDefaults();
             await Start(ParseArguments(args));
         }
 

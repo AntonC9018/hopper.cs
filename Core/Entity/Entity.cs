@@ -151,5 +151,10 @@ namespace Hopper.Core
                 return name;
             }
         }
+
+        public override string ToString()
+        {
+            return $"Entity {IdentifierName} {id}";
+        }
     }
 }

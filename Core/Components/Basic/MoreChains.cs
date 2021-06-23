@@ -141,5 +141,10 @@ namespace Hopper.Core.Components.Basic
                 && moreChains.GetIfExists(Index, out var chain) 
                     ? chain : default;
         }
+
+        public override string ToString()
+        {
+            return $"MoreChains path to {Index}";
+        }
     }
 }
