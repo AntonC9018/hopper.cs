@@ -35,6 +35,7 @@
     - [How can you help me](#how-can-you-help-me)
     - [Actual code of the current set up](#actual-code-of-the-current-set-up)
 - [More ideas](#more-ideas)
+- [Entity Type IR (sort of)](#entity-type-ir-sort-of)
 
 <!-- /TOC -->
 
@@ -1177,7 +1178,103 @@ The Godot code is currently broken: the nested repo for first is not used in any
 
 # More ideas
 
-1. Moving should do Check and then Do, separately, on the displaceable, or work differently than a check do (like check and before or something).
+1. Moving should do Check and then Do, separately, on the displaceable, or work differently than a check do (like check and before or something). +
 2. Movs should use the faction to figure out what faction to target.
-3. Add DB "indices" to the registry, that is, accelerate common queries.
-4. FLag and enum registry types.
+3. Add DB "indices" to the registry, that is, accelerate common queries. +
+4. Flag and enum registry types.
+
+
+# Entity Type IR (sort of)
+
+The goal is to be able to generate typesafe code for entity type creation (entity types should be called *archetypes* btw).
+Currently you have to write all of this code manually (the 3-step procedure of setting up an entity factory).
+
+Ok, for first perhaps there needs to be a separate step for initializing entity factories, in order to avoid double lazy loading of e.g. stats.
+
+Now to injections. In order to call the constructor with plausible arguments, they must at least match the types of the injection. This is easy for manually written code. 
+There is a sort of a catch though. 
+Even though two different injections may be of the same type, it does not necessarily mean that the values provided to one of them are going to be meaningful for the other one too.
+
+My idea is to have *categories*. By default, concrete types like enums, form a category. Other types form custom categories.
+So e.g. `Attacking` is exporting `SomeFunc` of type `Action<int>`. 
+This injection will automatically be assigned the category `Attacking.SomeFunc`, so that the only functions that can be injected into this field have been specifically designed for this field. 
+
+
+```C#
+class Attacking : IComponent 
+{
+    [Inject] Action<int> SomeFunc;
+}
+
+static class Stuff
+{
+    // It will be possible to reference this function in the json entity type spec
+    // By saying the full qualification (Stuff.Func1) (or ModName.Stuff.Func1 idk yet)
+    [Category("Attacking.SomeFunc")]
+    // Since having raw strings like this is unreliable, the following is preffered
+    // [Category(nameof(Attacking) + "." + nameof(Attacking.SomeFunc))]
+    void Func1(int thing)
+    {
+        // do stuff
+    }
+
+    // This one is not marked with category, so it will not be visible.
+    void Func2(int thing) {}
+}
+```
+
+The fields will have to be type-checked by the analyzer, which is fine.
+The data collected by analyzing the code can be stored in a dictionary of categories and used in order to verify json files with entity types.
+
+
+```Json
+// my_entity.json => MyEntity entity type (name of static class too)
+{
+    "components":
+    {
+        "Attacking":
+        {
+            // Allowed, works fine
+            "SomeFunc": "Stuff.Func1",
+
+            // Allowed, but tweakable
+            "SomeFunc": null,
+
+            // Compile-time error (while analyzing code):
+            // SomeRandomFunc is not within the required category
+            "SomeFunc": "SomeRandomFunc"
+        }
+    }
+}
+```
+
+Now, optionality. Add named arguments to `[Inject]`:
+
+```C#
+class InjectAttribute
+{
+    // Whether the category allows null as a value 
+    bool Nullable = true;
+    
+    // I'm not sure about this one and how to implement this
+    // This probably should be a string representing an item from the category pool
+    object DefaultValue;
+
+    // By default, create a new category
+    // Otherwise, things cannot reference this field to get exported
+    bool CreateCategory = true;
+
+    // Category name to override the full qualification
+    string CategoryName = null;
+
+    // Make the given injection accept an already existing category
+    // Since this cannot coexist with CreateCategory, 
+    // this should be a property setting the same bool 
+    bool ShareCategory = false;
+}
+```
+
+We'll be able to apply `[Category]` to static fields and functions.
+
+The problem with such power is that the code generation will become even slower, which means we really need something more powerful, like an lsp, which I have no clue how to do.
+But, when we have an lsp, it will be possible to provide diagnostics at the time of writing the code, instead of erroring out at the time of code generation.  
